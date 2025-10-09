@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  --breakpoint-xxs: 375px;
+  --breakpoint-xs: 480px;
+  --breakpoint-ss: 620px;
+  --breakpoint-sm: 768px;
+  --breakpoint-md: 1060px;
+  --breakpoint-lg: 1200px;
+  --breakpoint-xl: 1700px;
+  --color-background: #ffffff;
+  --color-primary: #318061;
+  --color-secondary: #4a4459bf;
+  --color-border: #31806126;
+  --color-bgCard: #31806105;
+  --font-primary: "Inter";
+  --color-text: #4a445980;
+  --color-button: #3180611a;
+}
+
+:root {
+  @apply bg-background;
+}
+
+* {
+  scroll-behavior: smooth;
+}
