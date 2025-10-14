@@ -8,7 +8,7 @@ type props = {
 
 const Titlabar:React.FC<props> = ({className}) => {
   return (
-    <div className={cn("flex flex-col sm:flex-row sm:items-center gap-[10px] sm:gap-[120px]", className)}>
+    <div className={cn("flex flex-col sm:flex-row sm:items-center gap-[10px] sm:gap-[90px]", className)}>
       <div className="flex items-center gap-2">
         <CalendarDays size={18} />
         <h3 className="font-[500]">April 02, 2026 - April 07, 2026</h3>

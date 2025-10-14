@@ -79,7 +79,7 @@ const TabsList = ({
   return (
     <div
       className={cn(
-        "bg-muted text-muted-foreground inline-flex h-9 w-full sm:w-fit items-center justify-center rounded-lg p-[3px] overflow-x-auto pl-[200px] xxs:pl-[140px] xs:pl-[0]",
+        "bg-muted text-muted-foreground inline-flex h-9 w-full sm:w-fit items-center justify-center rounded-lg p-[3px] overflow-x-auto",
         className
       )}
     >

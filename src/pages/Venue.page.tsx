@@ -6,9 +6,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 
 const Venue_page = () => {
   return (
-    <div className="p-4">
+    <div className="p-4 mx-[7.5%]">
       <Tabs defaultValue="Getting there">
-        <TabsList className="mb-4">
+        <TabsList className="mb-4 pl-49 xs:pl-0">
           <TabsTrigger value="Getting there">Getting there</TabsTrigger>
           <TabsTrigger value="Floor Plan">Floor Plan</TabsTrigger>
           <TabsTrigger value="Visa Information">Visa Information</TabsTrigger>

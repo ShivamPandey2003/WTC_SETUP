@@ -33,7 +33,7 @@ const Getting_there = () => {
       <div className="w-full lg:w-1/2">
         <img src={MAP} alt="MAP" className=" hidden lg:block w-[900px] h-[400px] mb-4" />
         <Titlabar className="justify-center xl:text-lg mb-4 w-full" />
-        <div className="flex items-center w-full justify-center gap-[50px] sm:gap-[100px] md:gap-[180px]">
+        <div className="flex items-center w-full justify-center gap-[50px] sm:gap-[100px] md:gap-[130px]">
           <div>
             <Button variant={"link"}>Add to calendar</Button>
             <Button variant={"link"}>Notify me</Button>
