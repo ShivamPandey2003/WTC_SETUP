@@ -10,7 +10,7 @@ const Navbar = () => {
 
   return (
     <nav className="w-full">
-      <div className="fixed top-0 w-full flex justify-between items-center px-4 py-2 z-[999] bg-background">
+      <div className="fixed top-0 w-full flex justify-between items-center py-2 z-[999] bg-background px-[7.5%]">
         <img src="./Logo.png" className="w-[122px] h-[67px]" />
         <div className="hidden lg:flex items-center justify-between w-[615px] gap-2">
           {Navroutes.map(({ Icon, title, route }) => (
