@@ -3,10 +3,14 @@ import { cn } from "@/lib/utils";
 import Navroutes from "@/data/Navroutes";
 import { Link, useLocation } from "react-router";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/redux/store";
+import { setLoginModel } from "@/redux/ModalSlice";
 
 const Navbar = () => {
   const { pathname } = useLocation();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const dispatch = useDispatch<AppDispatch>()
 
   return (
     <nav className="w-full">
@@ -84,7 +88,7 @@ const Navbar = () => {
               ></line>
             </svg>
           </div>
-          <Button className="hidden sm:block px-[12px] py-[6px] w-[115px] h-[32px]">
+          <Button onClick={()=>dispatch(setLoginModel(true))} className="hidden sm:block px-[12px] py-[6px] w-[115px] h-[32px]">
             Log In
           </Button>
         </div>
@@ -119,7 +123,7 @@ const Navbar = () => {
                   </span>
                 </Link>
               ))}
-              <Button className="sm:hidden w-[150px] h-[32px]">Log In</Button>
+              <Button onClick={()=>dispatch(setLoginModel(true))} className="sm:hidden w-[150px] h-[32px]">Log In</Button>
             </div>
           </div>
         )}

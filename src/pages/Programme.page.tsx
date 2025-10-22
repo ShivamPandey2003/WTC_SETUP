@@ -14,7 +14,7 @@ const Programme_page = () => {
   const [selected1, setSelected1] = useState<string | null>(null);
 
   return (
-    <div className="p-4 mx-[7.5%]">
+    <div className="mx-[7.5%]">
       <Titlabar className="mb-8" />
       <Tabs
         defaultValue={Dates[0]}
@@ -29,37 +29,41 @@ const Programme_page = () => {
         </TabsList>
         {Dates.map((date) => {
           if (date === "Apr 03, 2026") {
-            return <TabsContent key={date} value={date} className="md:mx-auto">
-              {Events.map((data, index) => {
-                return (
-                  <EventCard2
-                    key={index}
-                    {...data}
-                    isFirst={index === 0}
-                    isLast={index === Events.length - 1}
-                    selected={selected1}
-                    setSeleced={setSelected1}
-                  />
-                );
-              })}
-            </TabsContent>
+            return (
+              <TabsContent key={date} value={date} className="md:mx-auto">
+                {Events.map((data, index) => {
+                  return (
+                    <EventCard2
+                      key={index}
+                      {...data}
+                      isFirst={index === 0}
+                      isLast={index === Events.length - 1}
+                      selected={selected1}
+                      setSeleced={setSelected1}
+                    />
+                  );
+                })}
+              </TabsContent>
+            );
           }
 
-          if(date === "Apr 04, 2026"){
-             return <TabsContent key={date} value={date} className="md:mx-auto">
-              {Events.map((data, index) => {
-                return (
-                  <EventCard3
-                    key={index}
-                    {...data}
-                    isFirst={index === 0}
-                    isLast={index === Events.length - 1}
-                    selected={selected1}
-                    setSeleced={setSelected1}
-                  />
-                );
-              })}
-            </TabsContent>
+          if (date === "Apr 04, 2026") {
+            return (
+              <TabsContent key={date} value={date} className="md:mx-auto">
+                {Events.map((data, index) => {
+                  return (
+                    <EventCard3
+                      key={index}
+                      {...data}
+                      isFirst={index === 0}
+                      isLast={index === Events.length - 1}
+                      selected={selected1}
+                      setSeleced={setSelected1}
+                    />
+                  );
+                })}
+              </TabsContent>
+            );
           }
 
           return (

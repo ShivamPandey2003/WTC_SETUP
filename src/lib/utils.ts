@@ -23,3 +23,7 @@ export function getDatesInRangeFormatted(startDate: string, endDate: string): st
 
   return dates;
 }
+
+export function getPrefix(str: string): string {
+  return str.replaceAll('/', '').split('-')[0];
+}

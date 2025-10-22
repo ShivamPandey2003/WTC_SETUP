@@ -2,6 +2,7 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
+import { cva, type VariantProps } from "class-variance-authority";
 
 interface TabsProps {
   value?: string;
@@ -23,7 +24,9 @@ interface TabsListProps {
   onTabChange?: (val: string) => void;
 }
 
-interface TabsTriggerProps {
+interface TabsTriggerProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof tabTriggerVariants> {
   value: string;
   className?: string;
   activeTab?: string;
@@ -60,10 +63,10 @@ const Tabs = ({
     <div className={cn("flex flex-col gap-2", className)}>
       {React.Children.map(children, (child) =>
         React.isValidElement(child)
-          ? React.cloneElement(
-              child as React.ReactElement<TabsChildProps>,
-              { activeTab, onTabChange: handleChange }
-            )
+          ? React.cloneElement(child as React.ReactElement<TabsChildProps>, {
+              activeTab,
+              onTabChange: handleChange,
+            })
           : child
       )}
     </div>
@@ -85,21 +88,55 @@ const TabsList = ({
     >
       {React.Children.map(children, (child) =>
         React.isValidElement(child)
-          ? React.cloneElement(
-              child as React.ReactElement<TabsChildProps>,
-              { activeTab, onTabChange }
-            )
+          ? React.cloneElement(child as React.ReactElement<TabsChildProps>, {
+              activeTab,
+              onTabChange,
+            })
           : child
       )}
     </div>
   );
 };
 
+export const tabTriggerVariants = cva(
+  "inline-flex h-[calc(100%-1px)] items-center justify-center rounded-md border border-transparent px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none",
+  {
+    variants: {
+      variant: {
+        default: "text-text hover:bg-muted/50",
+        filled: "bg-primary text-white shadow-sm",
+        link: "text-black underline-offset-4 hover:underline",
+      },
+      active: {
+        true: "",
+        false: "",
+      },
+    },
+    compoundVariants: [
+      {
+        variant: "default",
+        active: true,
+        class: "bg-primary text-white shadow-sm",
+      },
+      {
+        variant: "link",
+        active: true,
+        class: "underline font-semibold",
+      },
+    ],
+    defaultVariants: {
+      variant: "default",
+      active: false,
+    },
+  }
+);
+
 const TabsTrigger = ({
   value,
   className,
   activeTab,
   onTabChange,
+  variant,
   children,
 }: TabsTriggerProps) => {
   const isActive = activeTab === value;
@@ -108,10 +145,7 @@ const TabsTrigger = ({
     <button
       onClick={() => onTabChange?.(value)}
       className={cn(
-        "inline-flex h-[calc(100%-1px)] items-center justify-center rounded-md border border-transparent px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none",
-        isActive
-          ? "bg-primary text-white shadow-sm"
-          : "text-text hover:bg-muted/50",
+        tabTriggerVariants({ variant, active: isActive }),
         className
       )}
     >
@@ -128,9 +162,7 @@ const TabsContent = ({
 }: TabsContentProps) => {
   if (activeTab !== value) return null;
 
-  return (
-    <div className={cn("flex-1 outline-none", className)}>{children}</div>
-  );
+  return <div className={cn("flex-1 outline-none", className)}>{children}</div>;
 };
 
 export { Tabs, TabsList, TabsTrigger, TabsContent };
