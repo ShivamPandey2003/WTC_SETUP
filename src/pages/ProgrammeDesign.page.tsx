@@ -1,5 +1,6 @@
 import CustomTable from "@/components/common/Programme_Design/CustomTable";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
+import GlobalModal from "@/components/global/GlobalModal";
 import Section from "@/components/global/Section";
 import TextStyleRow from "@/components/global/TextStyleRow";
 import { Button } from "@/components/ui/Button";
@@ -20,6 +21,18 @@ const ProgrammeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   const Dates = getDatesInRangeFormatted("04-02-2026", "04-07-2026");
   const [select, setSelected] = React.useState<number>(0);
+  const [isModel, setIsModel] = React.useState<boolean>(false);
+  const Obj = {
+    Title:"The effect of AI on tunnelling",
+    Category:"Technical",
+    Location:"Hall 10, Main Building",
+    "Start Time":"9:00am EST",
+    "End Time":"10:00am EST",
+    Speakers:["Dr. Alex Johnson","Dr. Leila Capstone"],
+    Attachments:["effect_of_ai_on_tunnelling.pdf", "effect_of_ai_on_tunnelling.ppt"],
+    "External Link":"https://documents.company.com/the-effect-of-ai-on-tunnelling/index.html",
+    Description:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+  }
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -46,7 +59,7 @@ const ProgrammeDesign_page = () => {
                 </Button>
               ))}
             </div>
-            <Button onClick={() => {}} className="w-[100px] py-1 h-7">
+            <Button onClick={() => setIsModel(true)} className="w-[100px] py-1 h-7">
               <Plus />
               Add New
             </Button>
@@ -158,6 +171,7 @@ const ProgrammeDesign_page = () => {
           </TabsContent>
         </Tabs>
       </div>
+      <GlobalModal size="lg" isOpen={isModel} onClose={()=>setIsModel(false)} Title={`Add New Session for ${Dates[select]}`} Value={Obj}/>
     </div>
   );
 };

@@ -27,3 +27,20 @@ export function getDatesInRangeFormatted(startDate: string, endDate: string): st
 export function getPrefix(str: string): string {
   return str.replaceAll('/', '').split('-')[0];
 }
+
+export function CategoryColor(str:string):string{
+  switch(str){
+    case "Diamond": {
+      return "bg-[#CDB054]"
+    }
+    case "Platinum": {
+      return "bg-[#BFCD54]"
+    }
+    case "Gold": {
+      return "bg-[#CD8C54]"
+    }
+    default: {
+      return ""
+    }
+  }
+}

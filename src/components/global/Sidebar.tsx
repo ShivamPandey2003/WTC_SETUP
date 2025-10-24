@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Globe, Home, CreditCard, User } from "lucide-react";
+import { Globe, Home, CreditCard, User, UserRound, Navigation, Boxes } from "lucide-react";
 import { useNavigate } from "react-router";
 
 interface SidebarProps {
@@ -45,7 +45,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
 
         <button
           className={cn(
-            `w-full px-4 py-2 flex items-center gap-3 text-sm transition-colors rounded-[5px]`,
+            `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px]`,
             activeItem === "programme"
               ? "bg-white text-[#318061]"
               : "hover:bg-white/10"
@@ -54,6 +54,42 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
         >
           <CreditCard size={18} />
           <span>Programme</span>
+        </button>
+        <button
+          className={cn(
+            `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px]`,
+            activeItem === "speakers"
+              ? "bg-white text-[#318061]"
+              : "hover:bg-white/10"
+          )}
+          onClick={() => navigate("/speakers-design")}
+        >
+          <UserRound size={18} />
+          <span>Speakers</span>
+        </button>
+        <button
+          className={cn(
+            `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px]`,
+            activeItem === "venue"
+              ? "bg-white text-[#318061]"
+              : "hover:bg-white/10"
+          )}
+          onClick={() => navigate("/venue-design")}
+        >
+          <Navigation size={18} />
+          <span>Venue</span>
+        </button>
+        <button
+          className={cn(
+            `w-full px-4 py-2 flex items-center gap-3 text-sm transition-colors rounded-[5px]`,
+            activeItem === "exhibitors"
+              ? "bg-white text-[#318061]"
+              : "hover:bg-white/10"
+          )}
+          onClick={() => navigate("/exhibitors-design")}
+        >
+          <Boxes size={18} />
+          <span>Exhibitors</span>
         </button>
       </nav>
 

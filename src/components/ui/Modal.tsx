@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
@@ -12,6 +13,7 @@ interface ModalProps {
   showCloseButton?: boolean;
   closeOnOverlayClick?: boolean;
   closeOnEscape?: boolean;
+  classname?:string
 }
 
 const sizeClasses = {
@@ -33,6 +35,7 @@ export default function Modal({
   showCloseButton = true,
   closeOnOverlayClick = true,
   closeOnEscape = true,
+  classname
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -96,7 +99,7 @@ export default function Modal({
             )}
           </div>
         )}
-        <div className="p-6">{children}</div>
+        <div className={cn("p-6", classname)}>{children}</div>
       </div>
     </div>
   );

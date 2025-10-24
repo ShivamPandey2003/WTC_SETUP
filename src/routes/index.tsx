@@ -8,6 +8,9 @@ import AdminLayout from "@/layouts/adminlayout";
 import GlobalDesign_page from "@/pages/GlobalDesign.page";
 import HomeDesign_page from "@/pages/HomeDesign.page";
 import ProgrammeDesign_page from "@/pages/ProgrammeDesign.page";
+import SpeakersDesign_page from "@/pages/SpeakersDesign.page";
+import VenueDesign_page from "@/pages/VenueDesign.page";
+import ExhibitorsDesign_page from "@/pages/ExhibitorsDesign.page";
 
 const Router = createBrowserRouter(
   [
@@ -48,6 +51,18 @@ const Router = createBrowserRouter(
         {
           path:"programme-design",
           element:<ProgrammeDesign_page/>
+        },
+        {
+          path:"speakers-design",
+          element:<SpeakersDesign_page/>
+        },
+        {
+          path:"venue-design",
+          element:<VenueDesign_page/>
+        },
+        {
+          path:"exhibitors-design",
+          element:<ExhibitorsDesign_page/>
         },
       ]
     }
