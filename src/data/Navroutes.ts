@@ -1,5 +1,5 @@
 import Speaker from "@/assets/Icons/Speaker"
-import { BookText, Navigation, Phone, TableProperties, type LucideIcon } from "lucide-react"
+import { BookText, Boxes, Navigation, Phone, TableProperties, type LucideIcon } from "lucide-react"
 
 type Nav_Routes = {
     Icon: LucideIcon|React.ElementType ,
@@ -27,6 +27,11 @@ export default [
         Icon:Navigation,
         title: "Venue",
         route: "/venue"
+    },
+    {
+        Icon:Boxes,
+        title: "Exhibitors",
+        route: "/exhibitors"
     },
     {
         Icon:Phone,

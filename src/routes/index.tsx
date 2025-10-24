@@ -11,6 +11,7 @@ import ProgrammeDesign_page from "@/pages/ProgrammeDesign.page";
 import SpeakersDesign_page from "@/pages/SpeakersDesign.page";
 import VenueDesign_page from "@/pages/VenueDesign.page";
 import ExhibitorsDesign_page from "@/pages/ExhibitorsDesign.page";
+import Exhibitors_page from "@/pages/Exhibitors.page";
 
 const Router = createBrowserRouter(
   [
@@ -33,6 +34,10 @@ const Router = createBrowserRouter(
         {
           path: "venue",
           element: <Venue_page />,
+        },
+        {
+          path: "exhibitors",
+          element: <Exhibitors_page />,
         },
       ],
     },
