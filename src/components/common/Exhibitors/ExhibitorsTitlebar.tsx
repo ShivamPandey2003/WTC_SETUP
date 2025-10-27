@@ -1,10 +1,9 @@
 import { cn } from '@/lib/utils'
 import { CalendarDays, Navigation, Search } from 'lucide-react'
-import React from 'react'
 
 const ExhibitorsTitlebar = () => {
   return (
-    <div className='flex items-center justify-between'>
+    <div className='flex flex-col gap-4 sm:gap-0 sm:flex-row items-center justify-between'>
         <h2 className='text-[20px] font-[600] leading-[20px]'>Exhibitors & Sponsors</h2>
         <div className='w-[250px] h-[30px] rounded-[5px] border-[1px] border-[#0000001A] bg-[#D9D9D90D] flex items-center gap-2 px-2 py-2'>
             <Search/>

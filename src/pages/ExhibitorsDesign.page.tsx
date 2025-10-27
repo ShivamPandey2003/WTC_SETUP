@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
 import { Plus } from "lucide-react";
 import React from "react";
-import Dummy from '@/assets/Images/Avatar10.png'
+import Dummy from '@/assets/Images/Dummy.png'
 
 const ExhibitorsDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");

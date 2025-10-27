@@ -1,11 +1,11 @@
-import dummy from "@/assets/Images/Avatar10.png";
+import dummy from "@/assets/Images/Dummy.png";
 import { ExternalLink, Mail } from "lucide-react";
 import Map_Pin from "@/assets/Icons/Map_Pin";
 
 const Card2 = () => {
   return (
-    <div className="w-[300px] rounded-[8px] border-[1px] border-[#0000000D] bg-[#D9D9D90D] flex items-center gap-2 justify-center p-2">
-      <img src={dummy} alt="test" className="w-[100px]" />
+    <div className="w-[130px] md:w-[300px] rounded-[8px] border-[1px] border-[#0000000D] bg-[#D9D9D90D] flex flex-col md:flex-row md:items-center gap-2 justify-center p-2">
+      <img src={dummy} alt="test" className="w-[100px] mx-auto md:mx-0" />
       <div>
         <div className="flex items-center gap-3 justify-center mb-2 cursor-pointer">
           <h3 className="text-[14px] font-[500] leading-[20px]">Epiroc</h3>

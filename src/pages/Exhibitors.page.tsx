@@ -8,21 +8,21 @@ const Exhibitors_page = () => {
     <div className="mx-[7.5%]">
       <ExhibitorsTitlebar />
       <ExibitorSection title="Diamond Partners">
-        <div className="flex gap-6">
+        <div className="flex gap-3 md:gap-5 flex-wrap lg:flex-nowrap justify-center md:justify-start">
           {[1, 2, 3, 4, 5, 6].map((item) => (
             <Card1 key={item} />
           ))}
         </div>
       </ExibitorSection>
       <ExibitorSection title="Platinum Partners">
-        <div className="flex gap-6">
+        <div className="flex gap-3 md:gap-5 flex-wrap lg:flex-nowrap justify-center md:justify-start">
           {[1, 2, 3, 4, 5, 6].map((item) => (
             <Card1 key={item} />
           ))}
         </div>
       </ExibitorSection>
       <ExibitorSection title="Gold Partners">
-        <div className="flex gap-6">
+        <div className="flex gap-3 md:gap-5 flex-wrap lg:flex-nowrap justify-center md:justify-start">
           {[1, 2, 3, 4, 5, 6].map((item) => (
             <Card2 key={item} />
           ))}
