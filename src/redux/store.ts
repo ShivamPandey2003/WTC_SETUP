@@ -2,6 +2,7 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
 import ModelSlice from './ModalSlice'
+import Home_DesignSlice from './HomeDesignSlice'
 
 const persistConfig = {
   key: "root",
@@ -10,7 +11,8 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-  model:ModelSlice
+  model:ModelSlice,
+  Home_Design:Home_DesignSlice
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

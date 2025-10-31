@@ -1,0 +1,55 @@
+export default [
+    {
+      title: "Sixth new updated",
+      description: "some desc has",
+      tile_space: "1x",
+      is_active: true,
+      is_published: false,
+      "Created On": "Oct 12, 2025",
+      created_by: "5ade26e078d8894567d0",
+      id: "ygpdRECunz",
+    },
+    {
+      title: "Fourth News",
+      description:
+        "Some asdkjaklsdj lkasd ipsum data has b asdkhk asdhjkas djkahsd jkeen rendered here",
+      tile_space: "2x",
+      is_active: true,
+      is_published: false,
+      "Created On": "Oct 12, 2025",
+      created_by: null,
+      id: "H6kor0deXyO",
+    },
+    {
+      title: "Third News",
+      description:
+        "Some asdkjaklsdj lkasd ipsum data has b asdkhk asdhjkas djkahsd jkeen rendered here",
+      tile_space: "1x",
+      is_active: true,
+      is_published: false,
+      "Created On": "Oct 12, 2025",
+      created_by: null,
+      id: "gkeZkfOBLXtup2e",
+    },
+    {
+      title: "Second News",
+      description:
+        "Some lorem ipsum data has b asdkhk asdhjkas djkahsd jkeen rendered here",
+      tile_space: "2x",
+      is_active: true,
+      is_published: false,
+      "Created On": "Oct 12, 2025",
+      created_by: null,
+      id: "1gXru42hIX8Qj",
+    },
+    {
+      title: "First News",
+      description: "Some lorem ipsum data has een rendered here",
+      tile_space: "2x",
+      is_active: true,
+      is_published: false,
+      "Created On": "Oct 12, 2025",
+      created_by: null,
+      id: "BVFdtZjmvB7KZIdG",
+    },
+  ];

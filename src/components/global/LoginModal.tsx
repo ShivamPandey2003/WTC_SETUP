@@ -1,8 +1,21 @@
 import React from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Modal from "../ui/Modal";
 import { Button } from "../ui/Button";
-import User from "@/data/User";
 import { useNavigate } from "react-router";
+import { useMutation } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import { apiRequest } from "@/services/apiService";
+import { toast } from "sonner";
+
+const loginSchema = z.object({
+  username: z.email("Invalid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
 
 type ModalProps = {
   isOpen: boolean;
@@ -10,38 +23,58 @@ type ModalProps = {
 };
 
 const LoginModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const { mutate: Login, isPending: isSubmitting } = useMutation<
+    LoginResponse,
+    AxiosError,
+    LoginFormValues
+  >({
+    mutationFn: async (data: LoginFormValues) => {
+      const res = await apiRequest("post", "users/login", data);
+      console.log(res)
+      return res.response;
+    },
+    onSuccess: (data) => {
+      localStorage.setItem("token", data.response.access_token);
+      navigate("/global-design");
+    },
+    onError: (error: AxiosError) => {
+      const msg =
+        error.message ||
+        "Login failed. Please check your credentials and try again.";
+      console.error("Login failed:", error);
+      toast.error(msg);
+    },
+  });
 
-    const user = User.find(p=>p.email === username);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    mode: "onBlur",
+  });
 
-    if(!user){
-        console.log("user not found");
-        return;
-    }
-
-    const token = btoa(username + password)
-
-    localStorage.setItem("token",token)
-
-    navigate('/global-design')
-    console.log("Login submitted:", { username, password });
+  const onSubmit = (data: LoginFormValues) => {
+    Login(data);
   };
 
   return (
     <Modal
       showHeader={false}
       isOpen={isOpen}
-      onClose={() => onClose()}
+      onClose={onClose}
       size="sm"
       showCloseButton={false}
     >
       <div className="w-full max-w-md p-4">
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="bg-white rounded-lg"
+          noValidate
+        >
           <h1 className="text-[16px] font-[700] text-black mb-8">
             Log in to your account
           </h1>
@@ -56,12 +89,17 @@ const LoginModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             <input
               id="username"
               type="email"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
               placeholder="john.doe@example.com"
-              className="w-full px-4 py-2 bg-bgCard border border-gray-300 rounded-md focus:outline-none focus:border text-gray-900 placeholder-gray-400"
-              required
+              {...register("username")}
+              className={`w-full px-4 py-2 bg-bgCard border ${
+                errors.username ? "border-red-500" : "border-gray-300"
+              } rounded-md focus:outline-none focus:border-primary text-gray-900 placeholder-gray-400`}
             />
+            {errors.username && (
+              <p className="mt-1 text-xs text-red-500">
+                {errors.username.message}
+              </p>
+            )}
           </div>
 
           <div className="mb-8">
@@ -74,16 +112,23 @@ const LoginModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             <input
               id="password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••••"
-              className="w-full px-4 py-2 bg-bgCard border border-gray-300 rounded-md focus:outline-none focus:border text-gray-900 placeholder-gray-400"
-              required
+              {...register("password")}
+              className={`w-full px-4 py-2 bg-bgCard border ${
+                errors.password ? "border-red-500" : "border-gray-300"
+              } rounded-md focus:outline-none focus:border-primary text-gray-900 placeholder-gray-400`}
             />
+            {errors.password && (
+              <p className="mt-1 text-xs text-red-500">
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
           <div className="flex justify-center">
-            <Button type="submit">Submit</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Logging in..." : "Submit"}
+            </Button>
           </div>
         </form>
       </div>

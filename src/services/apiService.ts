@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "sonner";
 
-const platform_url = import.meta.env.VITE_API_URL;
+const platform_url = import.meta.env.VITE_REACT_APP_API_URL;
 
 type ApiMethod = "get" | "post" | "put" | "delete";
 

@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@hookform/resolvers':
+        specifier: ^5.2.2
+        version: 5.2.2(react-hook-form@7.65.0(react@19.2.0))
       '@reduxjs/toolkit':
         specifier: ^2.9.0
         version: 2.9.0(react-redux@9.2.0(@types/react@19.2.2)(react@19.2.0)(redux@5.0.1))(react@19.2.0)
@@ -29,6 +32,9 @@ importers:
       react-dom:
         specifier: ^19.1.1
         version: 19.2.0(react@19.2.0)
+      react-hook-form:
+        specifier: ^7.65.0
+        version: 7.65.0(react@19.2.0)
       react-redux:
         specifier: ^9.2.0
         version: 9.2.0(@types/react@19.2.2)(react@19.2.0)(redux@5.0.1)
@@ -44,6 +50,9 @@ importers:
       tailwindcss:
         specifier: ^4.1.14
         version: 4.1.14
+      zod:
+        specifier: ^4.1.12
+        version: 4.1.12
     devDependencies:
       '@eslint/js':
         specifier: ^9.36.0
@@ -372,6 +381,11 @@ packages:
   '@eslint/plugin-kit@0.4.0':
     resolution: {integrity: sha512-sB5uyeq+dwCWyPi31B2gQlVlo+j5brPlWx4yZBrEaRo/nhdDE8Xke1gsGgtiBdaBTxuTkceLVuVt/pclrasb0A==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@hookform/resolvers@5.2.2':
+    resolution: {integrity: sha512-A/IxlMLShx3KjV/HeTcTfaMxdwy690+L/ZADoeaTltLx+CVuzkeVIPuybK3jrRfw7YZnmdKsVVHAlEPIAEUNlA==}
+    peerDependencies:
+      react-hook-form: ^7.55.0
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -1344,6 +1358,12 @@ packages:
     peerDependencies:
       react: ^19.2.0
 
+  react-hook-form@7.65.0:
+    resolution: {integrity: sha512-xtOzDz063WcXvGWaHgLNrNzlsdFgtUWcb32E6WFaGTd7kPZG3EeDusjdZfUsPwKCKVXy1ZlntifaHZ4l8pAsmw==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
+
   react-redux@9.2.0:
     resolution: {integrity: sha512-ROY9fvHhwOD9ySfrF0wmvu//bKCQ6AeZZq1nJNtbDC+kk5DuSuNX/n6YWYF/SYy7bSba4D4FSz8DJeKY/S/r+g==}
     peerDependencies:
@@ -1571,6 +1591,9 @@ packages:
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  zod@4.1.12:
+    resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
 
 snapshots:
 
@@ -1809,6 +1832,11 @@ snapshots:
     dependencies:
       '@eslint/core': 0.16.0
       levn: 0.4.1
+
+  '@hookform/resolvers@5.2.2(react-hook-form@7.65.0(react@19.2.0))':
+    dependencies:
+      '@standard-schema/utils': 0.3.0
+      react-hook-form: 7.65.0(react@19.2.0)
 
   '@humanfs/core@0.19.1': {}
 
@@ -2721,6 +2749,10 @@ snapshots:
       react: 19.2.0
       scheduler: 0.27.0
 
+  react-hook-form@7.65.0(react@19.2.0):
+    dependencies:
+      react: 19.2.0
+
   react-redux@9.2.0(@types/react@19.2.2)(react@19.2.0)(redux@5.0.1):
     dependencies:
       '@types/use-sync-external-store': 0.0.6
@@ -2904,3 +2936,5 @@ snapshots:
   yallist@5.0.0: {}
 
   yocto-queue@0.1.0: {}
+
+  zod@4.1.12: {}
