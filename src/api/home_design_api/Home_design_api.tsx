@@ -1,9 +1,20 @@
+import { queryClient } from "@/provider/TanstackProvider";
+import {
+  setIsCreating,
+  setIsDeleting,
+  setIsPublished,
+  setNews,
+  setSelected,
+} from "@/redux/HomeDesignSlice";
+import type { AppDispatch } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 export const useCreateNews = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const {
     mutate: CreateNews,
     isPending,
@@ -11,10 +22,12 @@ export const useCreateNews = () => {
   } = useMutation<NewsCreateResponse, AxiosError, NewCreateRequest>({
     mutationFn: async (data) => {
       const res = await apiRequest("post", "news/create", data);
-      return res.data;
+      return res.response;
     },
     onSuccess: () => {
       toast.success("News created successfully");
+      queryClient.invalidateQueries({ queryKey: ["newsList"] });
+      dispatch(setIsCreating(false));
     },
     onError: (err, Variable) => {
       toast.error(`Error creating news: ${err.message}`);
@@ -26,6 +39,7 @@ export const useCreateNews = () => {
 };
 
 export const useEditNews = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const {
     mutate: EditNews,
     isPending,
@@ -38,10 +52,12 @@ export const useEditNews = () => {
     mutationFn: async (data) => {
       const { id, ...rest } = data;
       const res = await apiRequest("post", `news/edit/${id}`, rest);
-      return res.data;
+      return res.response;
     },
     onSuccess: () => {
       toast.success("News edited successfully");
+      dispatch(setSelected(null));
+      queryClient.invalidateQueries({ queryKey: ["newsList"] });
     },
     onError: (err, Variable) => {
       toast.error(`Error editing news: ${err.message}`);
@@ -53,36 +69,42 @@ export const useEditNews = () => {
 };
 
 export const useGetNewsList = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const {
     data: NewsList,
-    isPending,
-    error,
+    isPending: isNewsListPending,
+    error: errorInNewsList,
   } = useQuery<NewsListResponse, AxiosError>({
     queryKey: ["newsList"],
     queryFn: async () => {
       const res = await apiRequest("get", "news/list");
-      return res.data;
+      return res.response;
     },
     select: (data) => {
+      dispatch(setNews(data.response));
       return data;
     },
+    refetchOnWindowFocus: false,
   });
 
-  return { NewsList, isPending, error };
+  return { NewsList, isNewsListPending, errorInNewsList };
 };
 
 export const useDeleteNews = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const {
     mutate: DeleteNews,
     isPending,
     error,
   } = useMutation<DeleteNewsResponse, AxiosError, { id: string }>({
     mutationFn: async ({ id }) => {
-      const res = await apiRequest("delete", `news/delete/${id}`);
-      return res.data;
+      const res = await apiRequest("delete", `news/${id}`);
+      return res.response;
     },
     onSuccess: () => {
       toast.success("News deleted successfully");
+      dispatch(setIsDeleting(null));
+      queryClient.invalidateQueries({ queryKey: ["newsList"] });
     },
     onError: (err, Variable) => {
       toast.error(`Error deleting news: ${err.message}`);
@@ -94,17 +116,20 @@ export const useDeleteNews = () => {
 };
 
 export const usePublishedNews = () => {
-    const {
+  const dispatch = useDispatch<AppDispatch>();
+  const {
     mutate: PulishedNew,
     isPending,
     error,
   } = useMutation<DeleteNewsResponse, AxiosError, { id: string }>({
     mutationFn: async ({ id }) => {
       const res = await apiRequest("post", `news/publish/${id}`);
-      return res.data;
+      return res.response;
     },
     onSuccess: () => {
       toast.success("News Published successfully");
+      queryClient.invalidateQueries({ queryKey: ["newsList"] });
+      dispatch(setIsPublished(null));
     },
     onError: (err, Variable) => {
       toast.error(`Error Publishing news: ${err.message}`);
@@ -113,4 +138,4 @@ export const usePublishedNews = () => {
   });
 
   return { PulishedNew, isPending, error };
-}
+};

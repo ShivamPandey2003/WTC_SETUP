@@ -1,18 +1,49 @@
 import Linkedin from "@/assets/Icons/Linkedin";
 import { Pencil, Trash2 } from "lucide-react";
 import DeleteModel from "@/components/global/DeleteModel";
-import Speaker from "@/data/Speaker";
 import Keynote from "@/assets/Icons/Keynote";
-import { useState } from "react";
+import {
+  useDeleteSpeaker,
+  useGetSpeakerList,
+} from "@/api/speaker_design_api/speaker_design_api";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/redux/store";
+import { setIsDeleting, setSelected } from "@/redux/SpeakerDesignSlice";
+import EditModal from "./EditModal";
 
 const CustomTable = () => {
+  const {
+    SpeakerList,
+    isPending: isSpeakerListPending,
+    error: errorInSpeakerList,
+  } = useGetSpeakerList();
+  const { DeleteSpeaker, isPending: isDeleteSpeakerPending } =
+    useDeleteSpeaker();
+  const { selected, isDeleting } = useSelector(
+    (state: RootState) => state.Speaker_DesignSlice
+  );
+  const dispatch = useDispatch<AppDispatch>();
 
-  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
+  if (isSpeakerListPending) {
+    return [1, 2, 3, 4].map((val) => (
+      <div key={val} className="w-full">
+        <Skeleton className="h-8 w-full mb-2" />
+      </div>
+    ));
+  }
+
+  if (errorInSpeakerList) {
+    return <div>{errorInSpeakerList.message}</div>;
+  }
 
   return (
     <div className="bg-white rounded-lg overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="min-w-full border-separate" style={{ borderSpacing: "0 8px" }}>
+        <table
+          className="min-w-full border-separate"
+          style={{ borderSpacing: "0 8px" }}
+        >
           <thead className="">
             <tr>
               <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -39,24 +70,36 @@ const CustomTable = () => {
             </tr>
           </thead>
           <tbody>
-            {Speaker.map((item, index) => (
+            {SpeakerList?.response.map((item, index) => (
               <tr key={index} className="bg-gray-50 border">
-                <td className="px-6 py-2 rounded-[8px]">{index}</td>
-                <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">{item.name}</td>
-                <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[320px]">{item.bio}</td>
-                <td className="pl-9 py-2"><Linkedin size={20} /></td>
-                <td className="pl-9 py-2">
-                    <img src={item.attachments[0]} className="w-[24px] h-[24px]" />
+                <td className="px-6 py-2 rounded-[8px]">{index + 1}</td>
+                <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">
+                  {item.name}
                 </td>
-                <td className="pl-12 py-2"><Keynote size={20} className="text-primary"/></td>
+                <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[320px]">
+                  {item.bio}
+                </td>
+                <td className="pl-9 py-2">
+                  <Linkedin size={20} />
+                </td>
+                <td className="pl-9 py-2">
+                  <img
+                    src={item.attachments[0]}
+                    className="w-[24px] h-[24px]"
+                  />
+                </td>
+                <td className="pl-12 py-2">
+                  <Keynote size={20} className="text-primary" />
+                </td>
                 <td className="px-6 py-2 flex gap-2 rounded-[8px]">
                   <Pencil
+                    onClick={() => dispatch(setSelected(item.speaker_id))}
                     color="#425EBC"
                     size={18}
                     className="cursor-pointer"
                   />
                   <Trash2
-                  onClick={()=>setIsDeleteOpen(true)}
+                    onClick={() => dispatch(setIsDeleting(item.speaker_id))}
                     color="#B85555"
                     size={18}
                     className="cursor-pointer"
@@ -67,13 +110,16 @@ const CustomTable = () => {
           </tbody>
         </table>
       </div>
-       <DeleteModel
-              isOpen={isDeleteOpen}
-              onClose={() => setIsDeleteOpen(false)}
-              onConfirm={() => {}}
-              itemName="Important Document"
-              isDeleting={false}
-            />
+      <DeleteModel
+        isOpen={Boolean(isDeleting)}
+        onClose={() => dispatch(setIsDeleting(null))}
+        onConfirm={() => DeleteSpeaker({ id: isDeleting as string })}
+        isDeleting={isDeleteSpeakerPending}
+      />
+      <EditModal
+        isOpen={Boolean(selected)}
+        onClose={() => dispatch(setSelected(null))}
+      />
     </div>
   );
 };

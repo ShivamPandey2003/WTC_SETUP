@@ -1,30 +1,21 @@
 import BannerPreview from "@/components/common/Home_Design/BannerPreview";
+import CreateModal from "@/components/common/Home_Design/CreateModal";
 import CustomTable from "@/components/common/Home_Design/Table";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
-import GlobalModal from "@/components/global/GlobalModal";
 import Section from "@/components/global/Section";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { cn } from "@/lib/utils";
+import { setIsCreating } from "@/redux/HomeDesignSlice";
+import type { AppDispatch, RootState } from "@/redux/store";
 import { Check, Plus, SquareArrowOutUpRight } from "lucide-react";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const HomeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
-  const [isModel, setIsModel] = React.useState<boolean>(false);
-  const Obj = {
-    Title: "New Amdendments",
-    Description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-    Category: "Technical",
-    Attachments: [
-      "effect_of_ai_on_tunnelling.pdf",
-      "effect_of_ai_on_tunnelling.ppt",
-    ],
-    "External Link":
-      "https://documents.company.com/the-effect-of-ai-on-tunnelling/index.html",
-    "Tile Space": { active: 1, value: ["x1, x2"] },
-  };
+  const dispatch = useDispatch<AppDispatch>();
+  const {isCreating} = useSelector((state: RootState)=>state.Home_Design)
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -37,7 +28,7 @@ const HomeDesign_page = () => {
         {Boolean(value === "News") && (
           <div className="absolute right-10">
             <Button
-              onClick={() => setIsModel(true)}
+              onClick={() => dispatch(setIsCreating(true))}
               className="w-[80px] py-1 h-7"
             >
               <Plus />
@@ -128,12 +119,7 @@ const HomeDesign_page = () => {
           </TabsContent>
         </Tabs>
       </div>
-      <GlobalModal
-        isOpen={isModel}
-        onClose={() => setIsModel(false)}
-        Title="Add New Update"
-        Value={Obj}
-      />
+      <CreateModal isOpen={isCreating} onClose={() => dispatch(setIsCreating(false))} />
     </div>
   );
 };

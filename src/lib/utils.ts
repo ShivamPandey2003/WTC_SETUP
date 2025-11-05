@@ -5,7 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function getDatesInRangeFormatted(startDate: string, endDate: string): string[] {
+export function getDatesInRangeFormatted(
+  startDate: string,
+  endDate: string
+): string[] {
   const start = new Date(startDate);
   const end = new Date(endDate);
   const dates: string[] = [];
@@ -25,22 +28,32 @@ export function getDatesInRangeFormatted(startDate: string, endDate: string): st
 }
 
 export function getPrefix(str: string): string {
-  return str.replaceAll('/', '').split('-')[0];
+  return str.replaceAll("/", "").split("-")[0];
 }
 
-export function CategoryColor(str:string):string{
-  switch(str){
+export function CategoryColor(str: string): string {
+  switch (str) {
     case "Diamond": {
-      return "bg-[#CDB054]"
+      return "bg-[#CDB054]";
     }
     case "Platinum": {
-      return "bg-[#BFCD54]"
+      return "bg-[#BFCD54]";
     }
     case "Gold": {
-      return "bg-[#CD8C54]"
+      return "bg-[#CD8C54]";
     }
     default: {
-      return ""
+      return "";
     }
   }
 }
+
+export const dateCustom = (datestr: string) => {
+  const time = new Date(datestr).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  return time;
+};

@@ -12,6 +12,7 @@ import SpeakersDesign_page from "@/pages/SpeakersDesign.page";
 import VenueDesign_page from "@/pages/VenueDesign.page";
 import ExhibitorsDesign_page from "@/pages/ExhibitorsDesign.page";
 import Exhibitors_page from "@/pages/Exhibitors.page";
+import ProtectedRoute from "./ProtectedRoute";
 
 const Router = createBrowserRouter(
   [
@@ -43,7 +44,7 @@ const Router = createBrowserRouter(
     },
     {
       path:"/",
-      element:<AdminLayout/>,
+      element:<ProtectedRoute element={<AdminLayout/>}/>,
       children:[
         {
           path:"global-design",
@@ -72,9 +73,9 @@ const Router = createBrowserRouter(
       ]
     }
   ],
-  {
-    basename: "/wtc/",
-  }
+  // {
+  //   basename: "/wtc/",
+  // }
 );
 
 export default Router;

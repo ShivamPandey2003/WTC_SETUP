@@ -1,26 +1,20 @@
 import CustomTable from "@/components/common/Speaker_Design/CustomTable";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
-import GlobalModal from "@/components/global/GlobalModal";
 import Section from "@/components/global/Section";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
 import { Plus, SquareArrowOutUpRight } from "lucide-react";
 import React from "react";
-import Avatar from '@/assets/Images/Avatar1.png'
+import CreateModal from "@/components/common/Speaker_Design/CreateModal";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/redux/store";
+import { setIsCreating } from "@/redux/SpeakerDesignSlice";
 
 const SpeakersDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
-  const [isModel, setIsModel] = React.useState<boolean>(false);
-  const Obj={
-    Picture:Avatar,
-    Name:"The effect of AI on tunnelling",
-    Category:"Technical",
-    Sessions:["Dr. Alex Johnson", "Dr. Leila Capstone"],
-    Attachments:["effect_of_ai_on_tunnelling.pdf", "effect_of_ai_on_tunnelling.ppt"],
-    LinkedIn:"https://documents.company.com/the-effect-of-ai-on-tunnelling/index.html",
-    Bio:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting"
-  }
+  const {isCreating} = useSelector((state:RootState)=>state.Speaker_DesignSlice)
+  const dispatch = useDispatch<AppDispatch>()
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -28,7 +22,7 @@ const SpeakersDesign_page = () => {
         <AdminTitlebar Title="Speakers Design" onSave={() => {}} show={Boolean(value !== "Session Data")} />
         {Boolean(value === "Session Data") && (
           <div className="absolute right-10 flex items-center gap-4">
-            <Button onClick={() => setIsModel(true)} className="w-[100px] py-1 h-7">
+            <Button onClick={()=>dispatch(setIsCreating(true))} className="w-[100px] py-1 h-7">
               <Plus />
               Add New
             </Button>
@@ -103,7 +97,7 @@ const SpeakersDesign_page = () => {
           </TabsContent>
         </Tabs>
       </div>
-      <GlobalModal isOpen={isModel} onClose={()=>setIsModel(false)} Title="Add New Speaker for WTC 2026" Value={Obj}/>
+      <CreateModal isOpen={isCreating} onClose={()=>dispatch(setIsCreating(false))}/>
     </div>
   );
 };

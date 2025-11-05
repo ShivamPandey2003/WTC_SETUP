@@ -1,14 +1,18 @@
 import { z } from "zod";
 
 export const speakerSchema = z.object({
-  speaker_id: z.string().uuid(),
   name: z.string().min(1, "Name is required"),
   designation: z.string().optional().nullable(),
   company: z.string().optional().nullable(),
   bio: z.string().optional().nullable(),
-  external_link: z.string().url().optional().nullable(),
-  created_on: z.string().datetime(),
-  attachments: z.array(z.string()).optional().default([]),
+  external_link: z.url().optional(),
+  attachments: z
+    .instanceof(FileList)
+    .optional()
+    .refine(
+      (files) => !files || files.length > 0,
+      "At least one file is required"
+    )
 });
 
-export type Speaker = z.infer<typeof speakerSchema>;
+export type SpeakerForm = z.infer<typeof speakerSchema>;

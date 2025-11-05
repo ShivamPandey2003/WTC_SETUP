@@ -1,19 +1,39 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-const initialState:HomeDesignStateType = {
-   selected: null
-}
+const initialState: HomeDesignStateType = {
+  selected: null,
+  news: [],
+  isDeleting: null,
+  isPublished: null,
+  isCreating:false
+};
 
 const Home_DesignSlice = createSlice({
-    name:"Home_Design",
-    initialState,
-    reducers:{
-        setSelected:(state, payload:PayloadAction<string|null>)=>{
-            state.selected = payload.payload
-            return state
-        }
+  name: "Home_Design",
+  initialState,
+  reducers: {
+    setSelected: (state, payload: PayloadAction<string | null>) => {
+      state.selected = payload.payload;
+      return state;
+    },
+    setNews: (state, payload: PayloadAction<News[]>) => {
+      state.news = payload.payload;
+      return state;
+    },
+    setIsDeleting: (state, payload: PayloadAction<string | null>) => {
+      state.isDeleting = payload.payload;
+      return state;
+    },
+    setIsPublished: (state, payload: PayloadAction<string | null>) => {
+      state.isPublished = payload.payload;
+      return state;
+    },
+    setIsCreating:(state, payload: PayloadAction<boolean>)=>{
+        state.isCreating = payload.payload
+        return state;
     }
-})
+  },
+});
 
-export const {setSelected} =Home_DesignSlice.actions
+export const { setSelected, setNews, setIsDeleting, setIsPublished, setIsCreating } = Home_DesignSlice.actions;
 export default Home_DesignSlice.reducer;

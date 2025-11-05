@@ -1,19 +1,32 @@
 import { CircleUserRound, Pencil, Trash2, Upload } from "lucide-react";
 import DeleteModel from "../../global/DeleteModel";
 import UploadModal from "@/components/global/UploadModel";
-import { useState } from "react";
 import EditModal from "./EditModal";
-import News from "@/data/News";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { setSelected } from "@/redux/HomeDesignSlice";
+import { setIsDeleting, setIsPublished, setSelected } from "@/redux/HomeDesignSlice";
+import { useDeleteNews, useGetNewsList, usePublishedNews } from "@/api/home_design_api/Home_design_api";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const CustomTable = () => {
+  const { NewsList, isNewsListPending, errorInNewsList } = useGetNewsList();
+  const {DeleteNews, isPending:isDeletePending} = useDeleteNews()
+  const {PulishedNew, isPending:isPublishPending} = usePublishedNews()
 
-  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
-  const [isPublishOpen, setIsPublishOpen] = useState<boolean>(false);
-  const {selected} = useSelector((state:RootState)=>state.Home_Design)
+  const { selected, isDeleting, isPublished } = useSelector((state: RootState) => state.Home_Design);
   const dispatch = useDispatch<AppDispatch>();
+
+  if (isNewsListPending) {
+    return [1, 2, 3, 4].map((val) => (
+      <div key={val} className="w-full">
+        <Skeleton className="h-8 w-full mb-2" />
+      </div>
+    ));
+  }
+
+  if(errorInNewsList){
+    return <div>{errorInNewsList.message}</div>
+  }
 
   return (
     <div className="bg-white rounded-lg overflow-hidden">
@@ -48,7 +61,7 @@ const CustomTable = () => {
             </tr>
           </thead>
           <tbody>
-            {News.map((item, index) => (
+            {NewsList?.response.map((item, index) => (
               <tr key={item.id} className="bg-gray-50 border">
                 <td className="px-6 py-2 rounded-[8px]">{index + 1}</td>
                 <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">
@@ -57,7 +70,8 @@ const CustomTable = () => {
                 <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[350px]">
                   {item.description}
                 </td>
-                <td className="px-6 py-2">{item["Created On"]}</td>
+                <td className="px-6 py-2">{"Oct 12, 2025"}</td>
+                {/* <td className="px-6 py-2">{item["Created On"]}</td> */}
                 <td className="px-6 py-2">
                   <CircleUserRound className="ml-[1.4rem]" />
                 </td>
@@ -72,14 +86,14 @@ const CustomTable = () => {
                     className="cursor-pointer"
                   />
                   <Trash2
-                    onClick={() => setIsDeleteOpen(true)}
+                    onClick={() => dispatch(setIsDeleting(item.id))}
                     color="#B85555"
                     size={18}
                     className="cursor-pointer"
                   />
                   {!item.is_published && (
                     <Upload
-                      onClick={() => setIsPublishOpen(true)}
+                      onClick={() => dispatch(setIsPublished(item.id))}
                       size={18}
                       className="cursor-pointer"
                     />
@@ -92,20 +106,21 @@ const CustomTable = () => {
       </div>
 
       <DeleteModel
-        isOpen={isDeleteOpen}
-        onClose={() => setIsDeleteOpen(false)}
-        onConfirm={() => {}}
-        itemName="Important Document"
-        isDeleting={false}
+        isOpen={Boolean(isDeleting)}
+        onClose={() => dispatch(setIsDeleting(null))}
+        onConfirm={() => DeleteNews({id: isDeleting as string})}
+        isDeleting={isDeletePending}
       />
       <UploadModal
-        isOpen={isPublishOpen}
-        onClose={() => setIsPublishOpen(false)}
-        onConfirm={() => {}}
-        itemName="Important Document"
-        isAction={false}
+        isOpen={Boolean(isPublished)}
+        onClose={() => dispatch(setIsPublished(null))}
+        onConfirm={() => PulishedNew({id:isPublished as string})}
+        isAction={isPublishPending}
       />
-      <EditModal isOpen={Boolean(selected)} onClose={() => dispatch(setSelected(null))} />
+      <EditModal
+        isOpen={Boolean(selected)}
+        onClose={() => dispatch(setSelected(null))}
+      />
     </div>
   );
 };

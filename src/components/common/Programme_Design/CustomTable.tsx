@@ -1,55 +1,30 @@
 import { Pencil, Trash2 } from "lucide-react";
 import DeleteModel from "@/components/global/DeleteModel";
-import { useState } from "react";
+import { useDeleteSession, useGetSessionList } from "@/api/programme_design_api/Programme_design_api";
+import { dateCustom } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/redux/store";
+import { setIsDeleting } from "@/redux/ProgrammeDesignSlice";
 
 const CustomTable = () => {
-  const dateCustom = (datestr: string) => {
-    const time = new Date(datestr).toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
+  const {SessionList, isPending:isSessionListPending, error:errorInSessionList} = useGetSessionList()
+  const {DeleteSession, isPending:isDeleetSessionPending} = useDeleteSession()
+  const {isDeleting} = useSelector((state:RootState)=>state.Programme_Design)
+  const dispatch = useDispatch<AppDispatch>()
 
-    return time;
-  };
 
-  const newData = [
-    {
-      sno: 3,
-      session_id: "3gBZcXmK7ZTPr",
-      title: "New Title",
-      category: "some category",
-      location: "New Delhi",
-      start_time: "2025-11-10T09:00:00+05:30",
-      end_time: "2025-11-10T17:00:00+05:30",
-      speakers: ["John Doe", "Priya Mehta", "Alex Chen"],
-      attachments: [
-        "uploads/session_attachments\\session_attach_20251029102644908724_3c68f183cbd6.png",
-      ],
-      external_link: "https://www.wtcconference.com/summit2026",
-      description: "Nw",
-      created_on: "2025-10-29T10:26:44.917512+05:30",
-    },
-    {
-      sno: 1,
-      session_id: "ANguLsCtReB5gz",
-      title: "WTC Annual Tech Summit 2025",
-      category: "Technical",
-      location: "WTC Conference Hall, Bengaluru",
-      start_time: "2025-11-10T09:00:00+05:30",
-      end_time: "2025-11-10T17:00:00+05:30",
-      speakers: ["John Doe", "Priya Mehta", "Alex Chen"],
-      attachments: [
-        "uploads/session_attachments\\session_attach_20251029095743984939_d71a999e1146.png",
-      ],
-      external_link: "https://www.wtcconference.com/summit2025",
-      description:
-        "The WTC Annual Tech Summit focuses on innovation, AI, and emerging technologies shaping the future of global commerce.",
-      created_on: "2025-10-29T09:57:43.989689+05:30",
-    },
-  ];
+  if (isSessionListPending) {
+    return [1, 2, 3, 4].map((val) => (
+      <div key={val} className="w-full">
+        <Skeleton className="h-8 w-full mb-2" />
+      </div>
+    ));
+  }
 
-  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
+  if(errorInSessionList){
+    return <div>{errorInSessionList.message}</div>
+  }
 
   return (
     <div className="bg-white rounded-lg overflow-hidden">
@@ -84,7 +59,7 @@ const CustomTable = () => {
             </tr>
           </thead>
           <tbody>
-            {newData.map((item, index) => (
+            {SessionList?.response.map((item, index) => (
               <tr key={item.session_id} className="bg-gray-50 border">
                 <td className="px-6 py-2 rounded-[8px]">{index + 1}</td>
                 <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">
@@ -103,7 +78,7 @@ const CustomTable = () => {
                     className="cursor-pointer"
                   />
                   <Trash2
-                  onClick={()=>setIsDeleteOpen(true)}
+                  onClick={()=>dispatch(setIsDeleting(item.session_id))}
                     color="#B85555"
                     size={18}
                     className="cursor-pointer"
@@ -115,11 +90,10 @@ const CustomTable = () => {
         </table>
       </div>
       <DeleteModel
-        isOpen={isDeleteOpen}
-        onClose={() => setIsDeleteOpen(false)}
-        onConfirm={() => {}}
-        itemName="Important Document"
-        isDeleting={false}
+        isOpen={Boolean(isDeleting)}
+        onClose={()=>dispatch(setIsDeleting(null))}
+        onConfirm={() => DeleteSession({id:isDeleting as string})}
+        isDeleting={isDeleetSessionPending}
       />
     </div>
   );

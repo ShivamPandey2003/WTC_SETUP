@@ -3,9 +3,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import CustomForm from "@/components/global/CustomForm";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/redux/store";
-import News from "@/data/News";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/redux/store";
+import {
+  useCreateNews,
+  useEditNews,
+} from "@/api/home_design_api/Home_design_api";
+import { setIsCreating, setSelected } from "@/redux/HomeDesignSlice";
 
 export const FormSchema = newsSchema.omit({
   "Created On": true,
@@ -18,10 +22,13 @@ export const FormSchema = newsSchema.omit({
 type FormData = z.infer<typeof FormSchema>;
 
 const NewFrom = () => {
-
-  const {selected} = useSelector((state:RootState)=>state.Home_Design)
-
-  const data = News.find(item=>item.id === selected)
+  const { selected, news } = useSelector(
+    (state: RootState) => state.Home_Design
+  );
+  const data = news.find((item) => item.id === selected);
+  const { EditNews, isPending } = useEditNews();
+  const { CreateNews, isPending: isCreatePending } = useCreateNews();
+  const dispatch = useDispatch<AppDispatch>();
 
   const {
     register,
@@ -29,21 +36,44 @@ const NewFrom = () => {
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(FormSchema),
-    defaultValues: selected ? data: {}
+    defaultValues: selected && data ? data : {},
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log("✅ Form data:", data);
+  const onSubmit = (newData: FormData) => {
+    if (selected && data) {
+      EditNews({
+        ...data,
+        ...newData,
+        id: `${selected}`,
+      } as NewCreateRequest & { id: string });
+    } else {
+      CreateNews({
+        ...newData,
+        is_active: true,
+        is_published: false,
+      } as NewCreateRequest);
+    }
   };
+
+  const onClose =
+    selected && data
+      ? () => dispatch(setSelected(null))
+      : () => dispatch(setIsCreating(false));
 
   const fields: {
     name: keyof FormData;
     label: string;
     type?: "text" | "textarea" | "file";
+    placeholder?: string;
   }[] = [
-    { name: "title", label: "Title" },
-    { name: "description", label: "Description", type: "textarea" },
-    { name: "tile_space", label: "Tile Space" },
+    { name: "title", label: "Title", placeholder: "Enter title here" },
+    {
+      name: "description",
+      label: "Description",
+      type: "textarea",
+      placeholder: "Enter detailed description...",
+    },
+    { name: "tile_space", label: "Tile Space", placeholder: "example:- 2x" },
   ];
 
   return (
@@ -52,6 +82,8 @@ const NewFrom = () => {
       fields={fields}
       register={register}
       errors={errors}
+      isLoading={isPending || isCreatePending}
+      onClose={() => onClose()}
     />
   );
 };

@@ -4,6 +4,10 @@ declare type ModelSliceType = {
 
 declare type HomeDesignStateType = {
   selected: string | null;
+  isDeleting: string | null;
+  isPublished: string | null;
+  isCreating: boolean
+  news: News[]
 };
 
 declare type LoginResponse = {
@@ -25,6 +29,7 @@ declare type News = {
   created_by: string;
   is_active: boolean;
   is_published: boolean;
+  tile_space: string;
 };
 
 declare type ResponseHeader = {
@@ -66,21 +71,26 @@ declare type CreateSessionResponse = {
   };
 };
 
-declare type CreateSessionRequest = {
+declare type Session = {
+  sno: number;
+  session_id: string;
   title: string;
   category: string;
   location: string;
   start_time: string;
   end_time: string;
   speakers: string;
+  attachments: File[];
   external_link: string;
   description: string;
-  attachments: File[];
-};
+  created_on: string;
+}
+
+declare type CreateSessionRequest = Omit<Session, "sno"|"session_id"|"created_on">;
 
 declare type SessionListResponse = {
   header: ResponseHeader;
-  response: CreateSessionRequest & { id: string }[];
+  response: Session[];
 };
 
 declare type DeleteSessionResponse = {
@@ -99,17 +109,17 @@ declare type CreateSpeakerResponse = {
 };
 
 declare type CreateSpeakerRequest = {
-  fullname: string;
+  name: string;
   designation: string;
   company: string;
   bio: string;
   external_link: string;
-  attachments: File[];
+  attachments: string[];
 };
 
 declare type SpeakerListResponse = {
   header: ResponseHeader;
-  response: CreateSpeakerRequest & { id: string }[];
+  response: (CreateSpeakerRequest & { speaker_id: string, created_on:string })[];
 };
 
 declare type DeleteSpeakerResponse = {

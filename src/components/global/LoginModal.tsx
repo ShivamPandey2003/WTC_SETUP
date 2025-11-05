@@ -11,7 +11,7 @@ import { apiRequest } from "@/services/apiService";
 import { toast } from "sonner";
 
 const loginSchema = z.object({
-  username: z.email("Invalid email address"),
+  email: z.email("Invalid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
@@ -90,14 +90,14 @@ const LoginModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
               id="username"
               type="email"
               placeholder="john.doe@example.com"
-              {...register("username")}
+              {...register("email")}
               className={`w-full px-4 py-2 bg-bgCard border ${
-                errors.username ? "border-red-500" : "border-gray-300"
+                errors.email ? "border-red-500" : "border-gray-300"
               } rounded-md focus:outline-none focus:border-primary text-gray-900 placeholder-gray-400`}
             />
-            {errors.username && (
+            {errors.email && (
               <p className="mt-1 text-xs text-red-500">
-                {errors.username.message}
+                {errors.email.message}
               </p>
             )}
           </div>
