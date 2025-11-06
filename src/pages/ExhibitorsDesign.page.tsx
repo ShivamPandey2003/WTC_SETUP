@@ -95,19 +95,19 @@ const ExhibitorsDesign_page = () => {
                   <div className="w-40 text-sm font-[500] mr-8">
                     {"Open links in new tab"}
                   </div>
-                  <ToggleSwitch />
+                  <ToggleSwitch isOpen={false} setIsOn={()=>{}} />
                 </div>
                 <div className="flex items-center py-2">
                   <div className="w-40 text-sm font-[500] mr-8">
                     {"Allow email exposure"}
                   </div>
-                  <ToggleSwitch />
+                  <ToggleSwitch isOpen={false} setIsOn={()=>{}}/>
                 </div>
                 <div className="flex items-center py-2">
                   <div className="w-40 text-sm font-[500] mr-8">
                     {"Booth Location Required"}
                   </div>
-                  <ToggleSwitch />
+                  <ToggleSwitch isOpen={false} setIsOn={()=>{}}/>
                 </div>
               </div>
             </Section>

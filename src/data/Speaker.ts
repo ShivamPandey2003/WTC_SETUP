@@ -1,6 +1,6 @@
 import Avatar1 from "@/assets/images/Avatar1.png"
 import Avatar2 from "@/assets/images/Avatar2.png"
-import type { Speaker } from "@/Schema/speakerSchema";
+// import type { Speaker } from "@/Schema/speakerSchema";
 // import Avatar3 from "@/assets/images/Avatar3.png"
 // import Avatar4 from "@/assets/images/Avatar4.png"
 // import Avatar5 from "@/assets/images/Avatar5.png"
@@ -32,4 +32,4 @@ export default [
       "created_on": "2025-10-29T11:15:04.960834",
       "attachments": [Avatar2]
     },
-] as Speaker[];
+];
