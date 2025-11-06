@@ -1,14 +1,22 @@
 import MAP from "@/assets/Images/Map.png";
 import Titlabar from "@/components/global/Titlabar";
 import { Button } from "@/components/ui/Button";
+import { formatDate } from "@/lib/utils";
+import type { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 
 const Getting_there = () => {
+  const { Venue } = useSelector((state: RootState) => state.Global_Slice);
+
   return (
     <div className="flex flex-col lg:flex-row items-start justify-center gap-4">
       <div className="lg:w-1/2">
-        <h2 className="text-2xl mb-2 font-bold">Montréal</h2>
+        <h2 className="text-2xl mb-2 font-bold">
+          {Venue.getting_there.sub_title}
+        </h2>
         <img src={MAP} alt="MAP" className=" lg:hidden w-full h-[400px] mb-4" />
-        <p className="mb-2 text-md">
+        <p className="text-md">{Venue.getting_there.description}</p>
+        {/* <p className="mb-2 text-md">
           Welcome to the second largest French-speaking metropolis in the world,
           a city where hospitality has a very French tone.
         </p>
@@ -28,11 +36,21 @@ const Getting_there = () => {
           range of exciting options to choose from – dance, theatre, music,
           lectures, shopping, gastronomy, outdoor recreation… or simply soaking
           up its unique atmosphere.
-        </p>
+        </p> */}
       </div>
       <div className="w-full lg:w-1/2">
-        <img src={MAP} alt="MAP" className=" hidden lg:block w-[900px] h-[400px] mb-4" />
-        <Titlabar className="justify-center xl:text-lg mb-4 w-full" />
+        <img
+          src={MAP}
+          alt="MAP"
+          className=" hidden lg:block w-[900px] h-[400px] mb-4"
+        />
+        <Titlabar
+          location={Venue.conference_location}
+          date={`${formatDate(
+            Venue.conference_start_date
+          )} - ${formatDate(Venue.conference_end_date)}`}
+          className="justify-center xl:text-lg mb-4 w-full"
+        />
         <div className="flex items-center w-full justify-center gap-[50px] sm:gap-[100px] md:gap-[130px]">
           <div>
             <Button variant={"link"}>Add to calendar</Button>

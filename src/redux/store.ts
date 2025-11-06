@@ -5,18 +5,22 @@ import ModelSlice from './ModalSlice'
 import Home_DesignSlice from './HomeDesignSlice'
 import Programme_DesignSlice from './ProgrammeDesignSlice'
 import Speaker_DesignSlice from './SpeakerDesignSlice'
+import Global_DesignSlice from './GlobalDesignSlice'
+import Global_Slice from './GlobalSlice'
 
 const persistConfig = {
   key: "root",
   storage, // localStorage
-  whitelist:[]
+  whitelist:["Global_DesignSlice"]
 };
 
 const rootReducer = combineReducers({
   model:ModelSlice,
   Home_Design:Home_DesignSlice,
   Programme_Design:Programme_DesignSlice,
-  Speaker_DesignSlice:Speaker_DesignSlice
+  Speaker_DesignSlice:Speaker_DesignSlice,
+  Global_DesignSlice:Global_DesignSlice,
+  Global_Slice:Global_Slice
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

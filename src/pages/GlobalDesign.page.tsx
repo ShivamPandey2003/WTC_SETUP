@@ -1,36 +1,68 @@
+import { useGlobalDesign } from "@/api/global_api/global_api";
 import ColorPicker from "@/components/common/Global_Design/ColorPicker";
 import LogoUpload from "@/components/common/Global_Design/LogoUpload";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
 import Section from "@/components/global/Section";
 import TextStyleRow from "@/components/global/TextStyleRow";
+import { normalizeLabel } from "@/lib/utils";
+import { setAppConfig } from "@/redux/GlobalDesignSlice";
+import type { AppDispatch, RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
 
 const GlobalDesign_page = () => {
+  const { GlobalDesign, isGlobalDesignPending } = useGlobalDesign();
+  const { appConfig } = useSelector(
+    (state: RootState) => state.Global_DesignSlice
+  );
+  const dispatch = useDispatch<AppDispatch>();
+
+  if (isGlobalDesignPending || !GlobalDesign) {
+    return;
+  }
+
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="mx-auto px-8 py-6">
-        <AdminTitlebar Title="Global Design" onSave={()=>{}} />
+        <AdminTitlebar Title="Global Design" onSave={() => {}} />
         <Section title="Color Scheme">
-          <ColorPicker
-            label="Primary Color"
-            color="#318061"
-            description="The primary color is used in bold titles, default selection buttons and everywhere where user's attention has to be brought in."
-          />
-          <ColorPicker
-            label="Secondary Color"
-            color="#D6E6DF"
-            description="The primary color is used in bold titles, default selection buttons and everywhere where user's attention has to be brought in."
-          />
+          {Object.entries(appConfig.color_schema).map(([key, value], i) => (
+            <ColorPicker
+              key={i}
+              label={normalizeLabel(key)}
+              color={value}
+              description="The primary color is used in bold titles, default selection buttons and everywhere where user's attention has to be brought in."
+              onChange={(e)=>  dispatch(
+                  setAppConfig({
+                    ...appConfig,
+                    color_schema: { ...appConfig.color_schema, [key]: e },
+                  })
+                )}
+            />
+          ))}
         </Section>
         <Section title="Logo">
-          <LogoUpload />
+          <LogoUpload
+            logoUrl={appConfig.logo.url}
+            fileName={appConfig.logo.name}
+          />
         </Section>
         <Section title="Text and styles">
-            <TextStyleRow label="Font family" value="Inter Sans" onChange={()=>{}} />
-            <TextStyleRow label="Heading 1" value="20 px" onChange={()=>{}} />
-            <TextStyleRow label="Heading 2" value="16 px" onChange={()=>{}} />
-            <TextStyleRow label="Heading 3" value="14 px" onChange={()=>{}} />
-            <TextStyleRow label="All other text" value="14 px" onChange={()=>{}} />
-          </Section>
+          {Object.entries(appConfig.text_style).map(([key, value], i) => (
+            <TextStyleRow
+              key={i}
+              label={normalizeLabel(key)}
+              value={value}
+              onChange={(e) =>
+                dispatch(
+                  setAppConfig({
+                    ...appConfig,
+                    text_style: { ...appConfig.text_style, [key]: e },
+                  })
+                )
+              }
+            />
+          ))}
+        </Section>
       </div>
     </div>
   );

@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
-import Events from "@/data/Events";
+import { dateCustom } from "@/lib/utils";
+import type { RootState } from "@/redux/store";
 import { FileText, X } from "lucide-react";
 import React from "react";
+import { useSelector } from "react-redux";
 
 type ModalProps = {
   isOpen: boolean;
@@ -11,7 +13,8 @@ type ModalProps = {
 };
 
 const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
-  const Event = Events.find((pre) => pre.title === id);
+  const {Programme} = useSelector((state:RootState)=>state.Global_Slice)
+  const Event = Programme.find((pre) => pre.title === id);
 
   return (
     <Modal
@@ -25,8 +28,8 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
         {/* Header Image */}
         <div className="flex items-start gap-4">
           <img
-            src={Event?.image}
-            alt={Event?.time}
+            src={""}
+            alt={Event?.title}
             className="w-[200px] h-[118px] rounded-[8px] object-cover opacity-80"
           />
           <div className="">
@@ -34,7 +37,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
               {Event?.title}
             </h2>
             <p className="text-sm text-primary font-[600] mb-1">
-              {Event?.time}
+              {`${dateCustom(Event?.start_time as string)} - ${dateCustom(Event?.end_time as string)}`}
             </p>
             <Button variant={"link"} size={"sm"} className="p-0">
               {Event?.location}
@@ -69,7 +72,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
           </div>
 
           <div className="flex items-center gap-6">
-            {Event?.speakers.split("&").map((speaker, index) => (
+            {Event?.speakers.map((speaker, index) => (
               <div key={index} className="flex flex-col items-center">
                 <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center mb-2 overflow-hidden">
                   {!speaker ? (

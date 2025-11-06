@@ -85,6 +85,7 @@ export const useGetNewsList = () => {
       return data;
     },
     refetchOnWindowFocus: false,
+    retry:1
   });
 
   return { NewsList, isNewsListPending, errorInNewsList };

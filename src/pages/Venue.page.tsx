@@ -1,3 +1,4 @@
+import { useGetVenue } from "@/api/global_api/global_api";
 import Floor_plan from "@/components/common/Venue/Floor_plan";
 import Getting_there from "@/components/common/Venue/Getting_there";
 import Travel_Information from "@/components/common/Venue/Travel_Information";
@@ -5,6 +6,13 @@ import Visa_Information from "@/components/common/Venue/Visa_Information";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 
 const Venue_page = () => {
+
+  const {Venue, isPending}=useGetVenue()
+
+  if(isPending || !Venue){
+    return
+  }
+
   return (
     <div className="mx-[7.5%]">
       <Tabs defaultValue="Getting there">

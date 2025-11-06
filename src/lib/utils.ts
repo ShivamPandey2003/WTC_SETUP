@@ -57,3 +57,19 @@ export const dateCustom = (datestr: string) => {
 
   return time;
 };
+
+export function normalizeLabel(str: string): string {
+  return str.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+export const formatDate = (date: string) =>
+  new Date(date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+
+export function formatSpeakers(arr: string[]) {
+  if (arr.length <= 1) return arr[0] || "";
+  return arr.join(" & ");
+}

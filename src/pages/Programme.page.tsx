@@ -1,3 +1,4 @@
+import { useGetProgrammeList } from "@/api/global_api/global_api";
 import EventCard1 from "@/components/common/Programme/EventCard1";
 import EventCard2 from "@/components/common/Programme/EventCard2";
 import { EventCard3 } from "@/components/common/Programme/EventCard3";
@@ -12,6 +13,15 @@ const Programme_page = () => {
   const Dates = getDatesInRangeFormatted("04-02-2026", "04-07-2026");
   const [selected, setSelected] = useState<string | null>(null);
   const [selected1, setSelected1] = useState<string | null>(null);
+  const { ProgrammeList, isPending, error } = useGetProgrammeList();
+
+  if (isPending || !ProgrammeList) {
+    return;
+  }
+
+  if (error) {
+    return <div>{error.message}</div>;
+  }
 
   return (
     <div className="mx-[7.5%]">
@@ -68,13 +78,16 @@ const Programme_page = () => {
 
           return (
             <TabsContent key={date} value={date} className="md:mx-auto">
-              {Events.map((data, index) => {
+              {ProgrammeList.response.programme.map((data, index) => {
                 return (
                   <EventCard1
+                    image={""}
                     key={index}
                     {...data}
                     isFirst={index === 0}
-                    isLast={index === Events.length - 1}
+                    isLast={
+                      index === ProgrammeList.response.programme.length - 1
+                    }
                     setSeleced={setSelected}
                   />
                 );

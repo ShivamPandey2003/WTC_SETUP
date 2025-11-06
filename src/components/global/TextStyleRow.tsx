@@ -7,6 +7,7 @@ interface TextStyleRowProps {
   onChange: (value: string) => void;
   Icons?: LucideIcon;
   classname?: string;
+  containerClassname?:string
 }
 
 export default function TextStyleRow({
@@ -15,9 +16,10 @@ export default function TextStyleRow({
   onChange,
   Icons,
   classname,
+  containerClassname
 }: TextStyleRowProps) {
   return (
-    <div className="flex items-center py-2">
+    <div className={cn("flex items-center py-2", containerClassname)}>
       <div className="w-40 text-sm font-[500]">{label}</div>
       <div
         className={cn(

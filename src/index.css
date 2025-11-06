@@ -10,8 +10,10 @@
   --breakpoint-lg: 1200px;
   --breakpoint-xl: 1700px;
   --color-background: #ffffff;
-  --color-primary: #318061;
-  --color-secondary: #4a4459bf;
+  /* --color-primary: #318061;
+  --color-secondary: #4a4459bf; */
+  --color-primary: var(--app-primary-color);
+  --color-secondary: var(--app-secondary-color);
   --color-border: #31806126;
   --color-bgCard: #31806105;
   --font-primary: "Inter";

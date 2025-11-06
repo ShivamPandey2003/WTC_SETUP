@@ -1,3 +1,4 @@
+import { useGetSpeakerSetting } from "@/api/speaker_design_api/speaker_design_api";
 import CreateModal from "@/components/common/Programme_Design/CreateModal";
 import CustomTable from "@/components/common/Programme_Design/CustomTable";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
@@ -6,8 +7,9 @@ import TextStyleRow from "@/components/global/TextStyleRow";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
-import { cn, getDatesInRangeFormatted } from "@/lib/utils";
+import { cn, getDatesInRangeFormatted, normalizeLabel } from "@/lib/utils";
 import { setIsCreating } from "@/redux/ProgrammeDesignSlice";
+import { setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import {
   CalendarDays,
@@ -24,8 +26,14 @@ const ProgrammeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   const Dates = getDatesInRangeFormatted("04-02-2026", "04-07-2026");
   const [select, setSelected] = React.useState<number>(0);
-  const {isCreating} = useSelector((state:RootState)=>state.Programme_Design)
-  const dispatch = useDispatch<AppDispatch>()
+  const { isCreating } = useSelector(
+    (state: RootState) => state.Programme_Design
+  );
+  const { SpeakerSettings } = useSelector(
+    (state: RootState) => state.Speaker_DesignSlice
+  );
+  const dispatch = useDispatch<AppDispatch>();
+  const {} = useGetSpeakerSetting();
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -52,7 +60,10 @@ const ProgrammeDesign_page = () => {
                 </Button>
               ))}
             </div>
-            <Button onClick={() => dispatch(setIsCreating(true))} className="w-[100px] py-1 h-7">
+            <Button
+              onClick={() => dispatch(setIsCreating(true))}
+              className="w-[100px] py-1 h-7"
+            >
               <Plus />
               Add New
             </Button>
@@ -77,41 +88,29 @@ const ProgrammeDesign_page = () => {
           </TabsList>
           <TabsContent value="General Settings">
             <Section title="Basic info">
-              <div className="flex items-center gap-20">
-                <TextStyleRow
-                  label="Conference Start Date"
-                  value="Tuesday, April 02, 2026"
-                  onChange={() => {}}
-                  Icons={CalendarDays}
-                />
-                <TextStyleRow
-                  label="Conference End Date"
-                  value="Sunday, April 07, 2026"
-                  onChange={() => {}}
-                  Icons={CalendarDays}
-                />
+              <div className="grid sm:grid-cols-2 items-center">
+                {Object.entries(SpeakerSettings)
+                  .filter(([key]) => key.includes("conference"))
+                  .map(([key, value], i) => (
+                    <TextStyleRow
+                      key={i}
+                      label={normalizeLabel(key)}
+                      value={String(value)}
+                      onChange={(e) => dispatch(setSpeakerSettings({...SpeakerSettings, [key]:e}))}
+                      Icons={
+                        key.includes("date")
+                          ? CalendarDays
+                          : key.includes("time")
+                          ? Clock
+                          : Navigation
+                      }
+                      classname={cn(key.includes("location") && "w-[400px]")}
+                      containerClassname={cn(
+                        key.includes("location") ? "col-span-2" : "col-span-1"
+                      )}
+                    />
+                  ))}
               </div>
-              <div className="flex items-center gap-20">
-                <TextStyleRow
-                  label="Conference Start Time"
-                  value="Tuesday, April 02, 2026"
-                  onChange={() => {}}
-                  Icons={Clock}
-                />
-                <TextStyleRow
-                  label="Conference End Time"
-                  value="06:00 AM EST"
-                  onChange={() => {}}
-                  Icons={Clock}
-                />
-              </div>
-              <TextStyleRow
-                label="Conference Location"
-                value="The Convention Center, Montreal, QC"
-                onChange={() => {}}
-                Icons={Navigation}
-                classname="w-[400px]"
-              />
             </Section>
             <Section title="Session Configuration">
               <div className="flex items-center py-2">
@@ -120,7 +119,7 @@ const ProgrammeDesign_page = () => {
                 </div>
                 <div className="flex items-center gap-4">
                   <p>Disabled</p>
-                  <ToggleSwitch />
+                  <ToggleSwitch isOpen={false} setIsOn={() => {}} />
                   <p>Enabled</p>
                 </div>
               </div>
@@ -135,13 +134,19 @@ const ProgrammeDesign_page = () => {
                     )}
                   >
                     {["Technical", "Activity", "Open", "Lunch"].map((str) => (
-                      <div key={str} className="flex items-center gap-2 px-3 bg-white rounded-[8px] border border-transparent hover:border-gray-300">
+                      <div
+                        key={str}
+                        className="flex items-center gap-2 px-3 bg-white rounded-[8px] border border-transparent hover:border-gray-300"
+                      >
                         {str}
                         <X size={18} />
                       </div>
                     ))}
                   </div>
-                  <Button variant={'link'}><Plus/>Add New</Button>
+                  <Button variant={"link"}>
+                    <Plus />
+                    Add New
+                  </Button>
                 </div>
               </div>
             </Section>
@@ -164,7 +169,10 @@ const ProgrammeDesign_page = () => {
           </TabsContent>
         </Tabs>
       </div>
-      <CreateModal isOpen={isCreating} onClose={() => dispatch(setIsCreating(false))}/>
+      <CreateModal
+        isOpen={isCreating}
+        onClose={() => dispatch(setIsCreating(false))}
+      />
     </div>
   );
 };

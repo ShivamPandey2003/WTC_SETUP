@@ -1,11 +1,13 @@
 import { Button } from '@/components/ui/Button';
+import { dateCustom } from '@/lib/utils';
 import React from 'react'
 
 interface EventCardProps {
   title: string;
-  speakers: string;
+  speakers: string[];
   description: string;
-  time: string;
+  start_time: string;
+  end_time: string;
   location: string;
   image: string;
   isFirst?: boolean;
@@ -13,7 +15,7 @@ interface EventCardProps {
   setSeleced: React.Dispatch<React.SetStateAction<string | null>>
 }
 
-const EventCard1:React.FC<EventCardProps> = ({title, speakers, description, time, location,image, isFirst, isLast, setSeleced}) => {
+const EventCard1:React.FC<EventCardProps> = ({title, speakers, description, start_time, end_time, location,image, isFirst, isLast, setSeleced}) => {
   return (
      <div className="flex gap-6 relative">
       <div className="flex flex-col items-center relative">
@@ -40,7 +42,7 @@ const EventCard1:React.FC<EventCardProps> = ({title, speakers, description, time
             <p className="text-[12px] text-gray-500 line-clamp-2">{description}</p>
 
             <div className="flex flex-wrap gap-4 text-sm items-center">
-              <span className="text-primary font-medium">{time}</span>
+              <span className="text-primary font-medium">{`${dateCustom(start_time)} - ${dateCustom(end_time)}`}</span>
               <Button variant={'link'} size={'sm'}>
                 {location}
               </Button>
