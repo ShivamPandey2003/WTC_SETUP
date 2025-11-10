@@ -3,12 +3,13 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 type ProgrammeDesignStateType = Omit<
   HomeDesignStateType,
   "selected" | "isPublished" | "news"
-> & { session: Session[] };
+> & { session: Session[], categoryModal:boolean };
 
 const initialState: ProgrammeDesignStateType = {
   session: [],
   isDeleting: null,
   isCreating: false,
+  categoryModal: false
 };
 
 const Programme_DesignSlice = createSlice({
@@ -22,9 +23,13 @@ const Programme_DesignSlice = createSlice({
     setIsCreating:(state, payload: PayloadAction<boolean>)=>{
         state.isCreating = payload.payload
         return state;
+    },
+    setCategoryModal:(state, payload: PayloadAction<boolean>)=>{
+      state.categoryModal = payload.payload
+      return state;
     }
   },
 });
 
-export const { setIsDeleting, setIsCreating } = Programme_DesignSlice.actions;
+export const { setIsDeleting, setIsCreating, setCategoryModal } = Programme_DesignSlice.actions;
 export default Programme_DesignSlice.reducer;

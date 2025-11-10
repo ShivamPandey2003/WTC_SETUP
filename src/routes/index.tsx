@@ -13,6 +13,7 @@ import VenueDesign_page from "@/pages/VenueDesign.page";
 import ExhibitorsDesign_page from "@/pages/ExhibitorsDesign.page";
 import Exhibitors_page from "@/pages/Exhibitors.page";
 import ProtectedRoute from "./ProtectedRoute";
+import Profile_page from "@/pages/Profile.page";
 
 const Router = createBrowserRouter(
   [
@@ -69,7 +70,17 @@ const Router = createBrowserRouter(
         {
           path:"exhibitors-design",
           element:<ExhibitorsDesign_page/>
-        },
+        }
+      ]
+    },
+    {
+      path:'/',
+      element:<ProtectedRoute element={<RootLayout/>}/>,
+      children:[
+        {
+          path:'profile',
+          element:<Profile_page/>
+        }
       ]
     }
   ],

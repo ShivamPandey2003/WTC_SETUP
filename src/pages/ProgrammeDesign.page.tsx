@@ -1,4 +1,6 @@
+// import { useDeleteCategory } from "@/api/programme_design_api/Programme_design_api";
 import { useGetSpeakerSetting } from "@/api/speaker_design_api/speaker_design_api";
+import AddCategoryModel from "@/components/common/Programme_Design/AddCategoryModel";
 import CreateModal from "@/components/common/Programme_Design/CreateModal";
 import CustomTable from "@/components/common/Programme_Design/CustomTable";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
@@ -8,7 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
 import { cn, getDatesInRangeFormatted, normalizeLabel } from "@/lib/utils";
-import { setIsCreating } from "@/redux/ProgrammeDesignSlice";
+import { setCategoryModal, setIsCreating } from "@/redux/ProgrammeDesignSlice";
 import { setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import {
@@ -25,6 +27,7 @@ import { useDispatch, useSelector } from "react-redux";
 const ProgrammeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   const Dates = getDatesInRangeFormatted("04-02-2026", "04-07-2026");
+  // const {DeleteCategory, isDeleteCategoryPending} = useDeleteCategory()
   const [select, setSelected] = React.useState<number>(0);
   const { isCreating } = useSelector(
     (state: RootState) => state.Programme_Design
@@ -96,7 +99,11 @@ const ProgrammeDesign_page = () => {
                       key={i}
                       label={normalizeLabel(key)}
                       value={String(value)}
-                      onChange={(e) => dispatch(setSpeakerSettings({...SpeakerSettings, [key]:e}))}
+                      onChange={(e) =>
+                        dispatch(
+                          setSpeakerSettings({ ...SpeakerSettings, [key]: e })
+                        )
+                      }
                       Icons={
                         key.includes("date")
                           ? CalendarDays
@@ -119,7 +126,17 @@ const ProgrammeDesign_page = () => {
                 </div>
                 <div className="flex items-center gap-4">
                   <p>Disabled</p>
-                  <ToggleSwitch isOpen={false} setIsOn={() => {}} />
+                  <ToggleSwitch
+                    isOpen={SpeakerSettings.category_filter}
+                    setIsOn={() =>
+                      dispatch(
+                        setSpeakerSettings({
+                          ...SpeakerSettings,
+                          category_filter: !SpeakerSettings.category_filter,
+                        })
+                      )
+                    }
+                  />
                   <p>Enabled</p>
                 </div>
               </div>
@@ -133,7 +150,7 @@ const ProgrammeDesign_page = () => {
                       "relative flex w-fit items-center gap-3 bg-[#1111110D] px-3 py-1 text-sm text-gray-600 rounded-[7px] text-center focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
                     )}
                   >
-                    {["Technical", "Activity", "Open", "Lunch"].map((str) => (
+                    {SpeakerSettings.category_labels.map((str) => (
                       <div
                         key={str}
                         className="flex items-center gap-2 px-3 bg-white rounded-[8px] border border-transparent hover:border-gray-300"
@@ -143,7 +160,7 @@ const ProgrammeDesign_page = () => {
                       </div>
                     ))}
                   </div>
-                  <Button variant={"link"}>
+                  <Button variant={"link"} onClick={() => dispatch(setCategoryModal(true))}>
                     <Plus />
                     Add New
                   </Button>
@@ -173,6 +190,7 @@ const ProgrammeDesign_page = () => {
         isOpen={isCreating}
         onClose={() => dispatch(setIsCreating(false))}
       />
+      <AddCategoryModel/>
     </div>
   );
 };

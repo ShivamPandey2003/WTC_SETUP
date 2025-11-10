@@ -21,6 +21,8 @@ type ProgrammeDesignStateType = Omit<
     show_no_of_sessions: boolean;
     show_bio: boolean;
     is_active: boolean;
+    category_filter: boolean,
+    category_labels: string[]
   };
 };
 
@@ -42,6 +44,8 @@ const initialState: ProgrammeDesignStateType = {
     show_no_of_sessions: false,
     show_bio: false,
     is_active: false,
+    category_filter:false,
+    category_labels:[]
   },
 };
 

@@ -192,21 +192,21 @@ declare type GlobalVenue = {
   conference_end_date: string;
   conference_location: string;
   getting_there: {
-      sub_title: string,
-      description: string,
-      latitude: string,
-      longitude: string
-    },
-    floor_plan: string,
-    visa_info: {
-      title: string,
-      sub_title: string,
-      description: string
-    },
-    travel_info: {
-      title: string,
-      description: string
-    }
+    sub_title: string;
+    description: string;
+    latitude: string;
+    longitude: string;
+  };
+  floor_plan: string;
+  visa_info: {
+    title: string;
+    sub_title: string;
+    description: string;
+  };
+  travel_info: {
+    title: string;
+    description: string;
+  };
 };
 
 declare type GlobalVenueResponse = {
@@ -227,6 +227,8 @@ declare type SpeakerSetting = {
   show_no_of_sessions: boolean;
   show_bio: boolean;
   is_active: boolean;
+  category_filter: boolean;
+  category_labels: string[];
 };
 
 declare type SpeakerSettingResponse = {
@@ -242,5 +244,14 @@ declare type GlobalProgrammeListResponse = {
     conference_end_date: string;
     conference_location: string;
     programme: Omit<Session, "session_id">[];
+  };
+};
+
+declare type ProgrammeCreateCategoryResponse = {
+  header: ResponseHeader;
+  response: {
+    id: string;
+    name: string;
+    color: string;
   };
 };

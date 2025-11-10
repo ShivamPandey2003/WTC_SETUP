@@ -1,5 +1,9 @@
 import { queryClient } from "@/provider/TanstackProvider";
-import { setIsCreating, setIsDeleting } from "@/redux/ProgrammeDesignSlice";
+import {
+  setCategoryModal,
+  setIsCreating,
+  setIsDeleting,
+} from "@/redux/ProgrammeDesignSlice";
 import type { AppDispatch } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -16,7 +20,7 @@ export const useCreateSession = () => {
   } = useMutation<CreateSessionResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
       const res = await apiRequest("post", "programme/create", data);
-      return res.data;
+      return res.resposne;
     },
     onSuccess: () => {
       toast.success("Session created successfully");
@@ -47,7 +51,7 @@ export const useGetSessionList = () => {
       return data;
     },
     refetchOnWindowFocus: false,
-    retry:1
+    retry: 1,
   });
 
   return { SessionList, isPending, error };
@@ -76,4 +80,67 @@ export const useDeleteSession = () => {
   });
 
   return { DeleteSession, isPending, error };
+};
+
+export const useAddCategory = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    mutate: AddCategory,
+    isPending: isAddCategoryPending,
+    error,
+  } = useMutation<
+    ProgrammeCreateCategoryResponse,
+    AxiosError,
+    {
+      name: string;
+      color: string;
+    }
+  >({
+    mutationFn: async (data) => {
+      const res = await apiRequest("post", "category/add", data);
+      return res.resposne;
+    },
+    onSuccess: () => {
+      toast.success("Category added successfully");
+      queryClient.invalidateQueries({ queryKey: ["Settings"] });
+      dispatch(setCategoryModal(false));
+    },
+    onError: (err) => {
+      toast.error(`Error adding category: ${err.message}`);
+      // console.log(Variable);
+    },
+  });
+
+  return { AddCategory, isAddCategoryPending, error };
+};
+
+export const useDeleteCategory = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    mutate: DeleteCategory,
+    isPending: isDeleteCategoryPending,
+    error,
+  } = useMutation<
+    ProgrammeCreateCategoryResponse,
+    AxiosError,
+    {
+      id: string;
+    }
+  >({
+    mutationFn: async (data) => {
+      const res = await apiRequest("delete", `/category/delete/${data}`);
+      return res.resposne;
+    },
+    onSuccess: () => {
+      toast.success("Category delete successfully");
+      queryClient.invalidateQueries({ queryKey: ["Settings"] });
+      dispatch(setCategoryModal(false));
+    },
+    onError: (err) => {
+      toast.error(`Error deleting category: ${err.message}`);
+      // console.log(Variable);
+    },
+  });
+
+  return {DeleteCategory, isDeleteCategoryPending, error}
 };

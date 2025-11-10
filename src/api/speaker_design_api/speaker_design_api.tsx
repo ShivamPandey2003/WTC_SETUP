@@ -119,7 +119,7 @@ export const useGetSpeakerSetting = () => {
     isPending,
     error,
   } = useQuery<SpeakerSettingResponse, AxiosError>({
-    queryKey: ["speakerSettings"],
+    queryKey: ["Settings"],
     queryFn: async () => {
       const res = await apiRequest("get", "settings");
       return res.response;
