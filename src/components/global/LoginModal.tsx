@@ -32,7 +32,6 @@ const LoginModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   >({
     mutationFn: async (data: LoginFormValues) => {
       const res = await apiRequest("post", "users/login", data);
-      console.log(res)
       return res.response;
     },
     onSuccess: (data) => {
