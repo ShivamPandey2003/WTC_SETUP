@@ -37,6 +37,7 @@ const LoginModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     },
     onSuccess: (data) => {
       localStorage.setItem("token", data.response.access_token);
+      onClose()
       navigate("/global-design");
     },
     onError: (error: AxiosError) => {

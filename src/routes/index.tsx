@@ -78,7 +78,7 @@ const Router = createBrowserRouter(
       element:<ProtectedRoute element={<RootLayout/>}/>,
       children:[
         {
-          path:'profile',
+          path:'wtc-profile',
           element:<Profile_page/>
         }
       ]

@@ -93,7 +93,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
         </button>
       </nav>
 
-      <button className="p-4 flex items-center gap-3 text-sm hover:bg-white/10 transition-colors border-t border-white/20">
+      <button onClick={()=>navigate("/wtc-profile")} className="p-4 flex items-center gap-3 text-sm hover:bg-white/10 transition-colors border-t border-white/20">
         <User size={18} />
         <span>User</span>
       </button>
