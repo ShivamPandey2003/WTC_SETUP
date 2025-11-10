@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import Navroutes from "@/data/Navroutes";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
@@ -10,7 +10,9 @@ import { setLoginModel } from "@/redux/ModalSlice";
 const Navbar = () => {
   const { pathname } = useLocation();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>();
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   return (
     <nav className="w-full">
@@ -88,9 +90,21 @@ const Navbar = () => {
               ></line>
             </svg>
           </div>
-          <Button onClick={()=>dispatch(setLoginModel(true))} className="hidden sm:block px-[12px] py-[6px] w-[115px] h-[32px]">
-            Log In
-          </Button>
+          {!token ? (
+            <Button
+              onClick={() => dispatch(setLoginModel(true))}
+              className="hidden sm:block px-[12px] py-[6px] w-[115px] h-[32px]"
+            >
+              Log In
+            </Button>
+          ) : (
+            <Button
+              onClick={() => navigate("/global-design")}
+              className="hidden sm:block px-[12px] py-[6px] w-fit h-[32px]"
+            >
+              Go to dashboard
+            </Button>
+          )}
         </div>
       </div>
       <div className="pt-[6rem]">
@@ -123,7 +137,21 @@ const Navbar = () => {
                   </span>
                 </Link>
               ))}
-              <Button onClick={()=>dispatch(setLoginModel(true))} className="sm:hidden w-[150px] h-[32px]">Log In</Button>
+              {!token ? (
+                <Button
+                  onClick={() => dispatch(setLoginModel(true))}
+                  className="sm:hidden w-[150px] h-[32px]"
+                >
+                  Log In
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => navigate("/global-design")}
+                  className="sm:hidden w-[150px] h-[32px]"
+                >
+                  Go to dashboard
+                </Button>
+              )}
             </div>
           </div>
         )}
