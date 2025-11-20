@@ -29,7 +29,7 @@ export const useCreateSpeaker = () => {
       queryClient.invalidateQueries({ queryKey: ["speakerList"] });
       dispatch(setIsCreating(false));
     },
-    onError: (err, Variable) => {
+    onError: (err) => {
       toast.error(`Error creating speaker: ${err.message}`);
     },
   });
@@ -54,7 +54,7 @@ export const useEditSpeaker = () => {
       queryClient.invalidateQueries({ queryKey: ["speakerList"] });
       dispatch(setSelected(null));
     },
-    onError: (err, Variable) => {
+    onError: (err) => {
       toast.error(`Error editing speaker: ${err.message}`);
     },
   });
@@ -101,7 +101,7 @@ export const useDeleteSpeaker = () => {
       dispatch(setIsDeleting(null));
       queryClient.invalidateQueries({ queryKey: ["speakerList"] });
     },
-    onError: (err, Variable) => {
+    onError: (err) => {
       toast.error(`Error deleting speaker: ${err.message}`);
     },
   });

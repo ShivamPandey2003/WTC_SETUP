@@ -1,10 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
-import { dateCustom } from "@/lib/utils";
-import type { RootState } from "@/redux/store";
 import { FileText, X } from "lucide-react";
 import React from "react";
-import { useSelector } from "react-redux";
 
 type ModalProps = {
   isOpen: boolean;
@@ -12,8 +9,7 @@ type ModalProps = {
   id: string;
 };
 
-const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
-  const {Session} = useSelector((state:RootState)=>state.Global_Slice)
+const EventModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   // const Event = Programme.find((pre) => pre.title === id);
 
   return (
