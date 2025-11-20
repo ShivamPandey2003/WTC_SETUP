@@ -7,6 +7,9 @@ import Programme_DesignSlice from './ProgrammeDesignSlice'
 import Speaker_DesignSlice from './SpeakerDesignSlice'
 import Global_DesignSlice from './GlobalDesignSlice'
 import Global_Slice from './GlobalSlice'
+import Profile_Slice from './ProfileSlice'
+import AuthSlice from './AuthSlice'
+import ExhibitorSlice from './ExhibitorSlice'
 
 const persistConfig = {
   key: "root",
@@ -20,7 +23,10 @@ const rootReducer = combineReducers({
   Programme_Design:Programme_DesignSlice,
   Speaker_DesignSlice:Speaker_DesignSlice,
   Global_DesignSlice:Global_DesignSlice,
-  Global_Slice:Global_Slice
+  Global_Slice:Global_Slice,
+  Profile_Slice:Profile_Slice,
+  AuthSlice:AuthSlice,
+  ExhibitorSlice:ExhibitorSlice
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

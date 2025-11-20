@@ -1,10 +1,15 @@
 import { Calendar, MapPin } from "lucide-react"; // for icons
-import EXQR from "@/assets/Icons/Primary.svg";
+// import EXQR from "@/assets/Icons/Primary.svg";
 import LOGO from "@/assets/Images/Logo.svg";
 import Avatar from "@/assets/Images/Avatar1.png";
 import BgIMG from "@/assets/Images/image_2.png";
+import type { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 
 export default function WTCBadge() {
+
+   const {qr_code_base64, user_info} = useSelector((state:RootState)=>state.Profile_Slice)
+
   return (
     <div
       className={`w-[370px] rounded-lg shadow-lg p-5 text-center relative overflow-hidden border border-gray-100`}
@@ -26,7 +31,7 @@ export default function WTCBadge() {
       </div>
 
       <div className="flex justify-center mb-3">
-        <img src={Avatar} alt="User" className="w-32 h-32 rounded-full" />
+        <img src={`data:image/png;base64,${user_info.profile_image}`} alt="User" className="w-32 h-32 rounded-full" />
       </div>
 
       <div>
@@ -36,7 +41,12 @@ export default function WTCBadge() {
       </div>
 
       <div className="flex items-center justify-center">
-        <img src={EXQR} alt="QR" width={200} />
+        {/* <img src={EXQR} alt="QR" width={200} /> */}
+        <img
+          src={`data:image/png;base64,${qr_code_base64}`}
+          alt="User QR Code"
+          width={200}
+        />
       </div>
     </div>
   );

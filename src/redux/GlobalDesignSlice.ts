@@ -21,6 +21,7 @@ const initialState: initialStateType = {
     logo: {
       url: "",
       name: "",
+      logo_img:""
     },
   },
 };

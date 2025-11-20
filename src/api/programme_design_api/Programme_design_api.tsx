@@ -3,6 +3,7 @@ import {
   setCategoryModal,
   setIsCreating,
   setIsDeleting,
+  setSession,
 } from "@/redux/ProgrammeDesignSlice";
 import type { AppDispatch } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
@@ -20,7 +21,7 @@ export const useCreateSession = () => {
   } = useMutation<CreateSessionResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
       const res = await apiRequest("post", "programme/create", data);
-      return res.resposne;
+      return res.response;
     },
     onSuccess: () => {
       toast.success("Session created successfully");
@@ -29,7 +30,6 @@ export const useCreateSession = () => {
     },
     onError: (err) => {
       toast.error(`Error creating session: ${err.message}`);
-      // console.log(Variable);
     },
   });
 
@@ -37,6 +37,7 @@ export const useCreateSession = () => {
 };
 
 export const useGetSessionList = () => {
+  const dispatch = useDispatch<AppDispatch>()
   const {
     data: SessionList,
     isPending,
@@ -48,6 +49,7 @@ export const useGetSessionList = () => {
       return res.response;
     },
     select: (data) => {
+      dispatch(setSession(data.response))
       return data;
     },
     refetchOnWindowFocus: false,
@@ -66,7 +68,7 @@ export const useDeleteSession = () => {
   } = useMutation<DeleteSessionResponse, AxiosError, { id: string }>({
     mutationFn: async ({ id }) => {
       const res = await apiRequest("delete", `programme/delete/${id}`);
-      return res.data;
+      return res.response;
     },
     onSuccess: () => {
       toast.success("Session deleted successfully");
@@ -75,7 +77,6 @@ export const useDeleteSession = () => {
     },
     onError: (err) => {
       toast.error(`Error deleting session: ${err.message}`);
-      // console.log(Variable);
     },
   });
 
@@ -94,11 +95,12 @@ export const useAddCategory = () => {
     {
       name: string;
       color: string;
+      category_type: number;
     }
   >({
     mutationFn: async (data) => {
       const res = await apiRequest("post", "category/add", data);
-      return res.resposne;
+      return res.response;
     },
     onSuccess: () => {
       toast.success("Category added successfully");
@@ -107,7 +109,6 @@ export const useAddCategory = () => {
     },
     onError: (err) => {
       toast.error(`Error adding category: ${err.message}`);
-      // console.log(Variable);
     },
   });
 
@@ -129,7 +130,7 @@ export const useDeleteCategory = () => {
   >({
     mutationFn: async (data) => {
       const res = await apiRequest("delete", `/category/delete/${data}`);
-      return res.resposne;
+      return res.response;
     },
     onSuccess: () => {
       toast.success("Category delete successfully");
@@ -138,7 +139,6 @@ export const useDeleteCategory = () => {
     },
     onError: (err) => {
       toast.error(`Error deleting category: ${err.message}`);
-      // console.log(Variable);
     },
   });
 

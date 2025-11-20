@@ -12,6 +12,7 @@ import type { AppDispatch, RootState } from "@/redux/store";
 import { setIsCreating, setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
 import { useGetSpeakerSetting } from "@/api/speaker_design_api/speaker_design_api";
 import { normalizeLabel } from "@/lib/utils";
+import { useSpeakerDesignUpdate } from "@/api/global_api/global_api";
 
 const SpeakersDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
@@ -20,14 +21,16 @@ const SpeakersDesign_page = () => {
   );
   const {} = useGetSpeakerSetting();
   const dispatch = useDispatch<AppDispatch>();
+  const {UpdateSpeakerDesign, isUpdateSpeakerDesignPending} = useSpeakerDesignUpdate();
 
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="mx-auto px-8 py-6">
         <AdminTitlebar
           Title="Speakers Design"
-          onSave={() => {}}
+          onSave={() => UpdateSpeakerDesign()}
           show={Boolean(value !== "Session Data")}
+          loading={isUpdateSpeakerDesignPending}
         />
         {Boolean(value === "Session Data") && (
           <div className="absolute right-10 flex items-center gap-4">
@@ -45,14 +48,14 @@ const SpeakersDesign_page = () => {
             <TabsTrigger
               variant={"link"}
               value={"General Settings"}
-              className="text-[15px] font-[600] leading-[15px] px-0 mr-6"
+              className="text-[15px] font-semibold leading-[15px] px-0 mr-6"
             >
               General Settings
             </TabsTrigger>
             <TabsTrigger
               variant={"link"}
               value={"Session Data"}
-              className="text-[15px] font-[600] leading-[15px] px-0"
+              className="text-[15px] font-semibold leading-[15px] px-0"
             >
               Speaker Data
             </TabsTrigger>
@@ -63,7 +66,7 @@ const SpeakersDesign_page = () => {
                 .filter(([key]) => !key.includes("conference") && !key.includes("category"))
                 .map(([key, value], i) => (
                   <div className="flex items-center py-2" key={i}>
-                    <div className="w-40 text-sm font-[500]">
+                    <div className="w-40 text-sm font-medium">
                       {normalizeLabel(key)}
                     </div>
                     <ToggleSwitch

@@ -1,4 +1,5 @@
 // import { useDeleteCategory } from "@/api/programme_design_api/Programme_design_api";
+import { useProgrameDesignUpdate } from "@/api/global_api/global_api";
 import { useGetSpeakerSetting } from "@/api/speaker_design_api/speaker_design_api";
 import AddCategoryModel from "@/components/common/Programme_Design/AddCategoryModel";
 import CreateModal from "@/components/common/Programme_Design/CreateModal";
@@ -28,6 +29,7 @@ const ProgrammeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   const Dates = getDatesInRangeFormatted("04-02-2026", "04-07-2026");
   // const {DeleteCategory, isDeleteCategoryPending} = useDeleteCategory()
+  const {UpdateProgrammeDesign, isUpdateProgrammeDesignPending} = useProgrameDesignUpdate()
   const [select, setSelected] = React.useState<number>(0);
   const { isCreating } = useSelector(
     (state: RootState) => state.Programme_Design
@@ -43,8 +45,9 @@ const ProgrammeDesign_page = () => {
       <div className="mx-auto px-8 py-6 relative">
         <AdminTitlebar
           Title="Programme Design"
-          onSave={() => {}}
+          onSave={() => UpdateProgrammeDesign()}
           show={Boolean(value !== "Session Data")}
+          loading={isUpdateProgrammeDesignPending}
         />
         {Boolean(value === "Session Data") && (
           <div className="absolute right-10 flex items-center gap-4">
@@ -56,7 +59,7 @@ const ProgrammeDesign_page = () => {
                   variant={"ghost"}
                   className={cn(
                     "h-7",
-                    index === select && "bg-[#31806126] text-primary"
+                    index === select && "bg-border text-primary"
                   )}
                 >
                   {date}
@@ -121,7 +124,7 @@ const ProgrammeDesign_page = () => {
             </Section>
             <Section title="Session Configuration">
               <div className="flex items-center py-2">
-                <div className="w-40 text-sm font-[500]">
+                <div className="w-40 text-sm font-medium">
                   {"Category Filters"}
                 </div>
                 <div className="flex items-center gap-4">
@@ -141,7 +144,7 @@ const ProgrammeDesign_page = () => {
                 </div>
               </div>
               <div className="flex items-center py-2">
-                <div className="w-40 text-sm font-[500]">
+                <div className="w-40 text-sm font-medium">
                   {"Category Filters"}
                 </div>
                 <div className="flex">
@@ -153,7 +156,7 @@ const ProgrammeDesign_page = () => {
                     {SpeakerSettings.category_labels.map((str) => (
                       <div
                         key={str}
-                        className="flex items-center gap-2 px-3 bg-white rounded-[8px] border border-transparent hover:border-gray-300"
+                        className="flex items-center gap-2 px-3 bg-white rounded-lg border border-transparent hover:border-gray-300"
                       >
                         {str}
                         <X size={18} />

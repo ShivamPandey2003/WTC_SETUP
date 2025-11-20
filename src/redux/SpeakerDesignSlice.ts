@@ -9,20 +9,26 @@ type ProgrammeDesignStateType = Omit<
     created_on: string;
   })[];
   SpeakerSettings: {
-    conference_title: string,
-    conference_start_date: string,
-    conference_end_date: string,
-    conference_start_time: string,
-    conference_end_time: string,
-    conference_location: string,
+    conference_title: string;
+    conference_start_date: string;
+    conference_end_date: string;
+    conference_start_time: string;
+    conference_end_time: string;
+    conference_location: string;
     show_speaker_fullname: boolean;
     show_short_name: boolean;
     show_linkedin_badge: boolean;
     show_no_of_sessions: boolean;
     show_bio: boolean;
     is_active: boolean;
-    category_filter: boolean,
-    category_labels: string[]
+    category_filter: boolean;
+    category_labels: string[];
+    exhibitor_settings: {
+      exhibitors_category_list: string[];
+      open_link_new_tab: boolean;
+      allow_email_exposure: boolean;
+      booth_location: boolean;
+    };
   };
 };
 
@@ -44,8 +50,14 @@ const initialState: ProgrammeDesignStateType = {
     show_no_of_sessions: false,
     show_bio: false,
     is_active: false,
-    category_filter:false,
-    category_labels:[]
+    category_filter: false,
+    category_labels: [],
+     exhibitor_settings: {
+      exhibitors_category_list:[],
+      open_link_new_tab: false,
+      allow_email_exposure: false,
+      booth_location: false,
+    }
   },
 };
 
@@ -74,13 +86,18 @@ const Speakers_DesignSlice = createSlice({
       state.isCreating = payload.payload;
       return state;
     },
-    setSpeakerSettings:(state, payload: PayloadAction<SpeakerSetting>)=>{
-      state.SpeakerSettings = payload.payload
-      return state
-    }
+    setSpeakerSettings: (state, payload: PayloadAction<SpeakerSetting>) => {
+      state.SpeakerSettings = payload.payload;
+      return state;
+    },
   },
 });
 
-export const { setSelected, setSpeaker, setIsDeleting, setIsCreating, setSpeakerSettings } =
-  Speakers_DesignSlice.actions;
+export const {
+  setSelected,
+  setSpeaker,
+  setIsDeleting,
+  setIsCreating,
+  setSpeakerSettings,
+} = Speakers_DesignSlice.actions;
 export default Speakers_DesignSlice.reducer;

@@ -1,10 +1,14 @@
+import { CustomPick } from "@/lib/utils";
+import { queryClient } from "@/provider/TanstackProvider";
+import { setCategory } from "@/redux/ExhibitorSlice";
 import { setAppConfig } from "@/redux/GlobalDesignSlice";
 import { setProgramme, setVenue } from "@/redux/GlobalSlice";
-import type { AppDispatch } from "@/redux/store";
+import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 
 export const useGlobalDesign = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,7 +27,7 @@ export const useGlobalDesign = () => {
       return data;
     },
     refetchOnWindowFocus: false,
-    retry:1
+    retry: 1,
   });
 
   return { GlobalDesign, isGlobalDesignPending, error };
@@ -44,13 +48,13 @@ export const useGetNewsList = () => {
       return data;
     },
     refetchOnWindowFocus: false,
-    retry:1
+    retry: 1,
   });
 
   return { NewsList, isPending, error };
 };
 
-export const useGetSpeakersList = ()=>{
+export const useGetSpeakersList = () => {
   const {
     data: SpeakersList,
     isPending,
@@ -65,14 +69,14 @@ export const useGetSpeakersList = ()=>{
       return data;
     },
     refetchOnWindowFocus: false,
-    retry:1
+    retry: 1,
   });
 
   return { SpeakersList, isPending, error };
 };
 
-export const useGetProgrammeList = ()=>{
-  const dispatch = useDispatch<AppDispatch>()
+export const useGetProgrammeList = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const {
     data: ProgrammeList,
     isPending,
@@ -84,17 +88,17 @@ export const useGetProgrammeList = ()=>{
       return res.response;
     },
     select: (data) => {
-      dispatch(setProgramme(data.response.programme))
+      dispatch(setProgramme(data.response));
       return data;
     },
     refetchOnWindowFocus: false,
-    retry:1
+    retry: 1,
   });
 
   return { ProgrammeList, isPending, error };
 };
 
-export const useGetNavMenu = ()=>{
+export const useGetNavMenu = () => {
   const {
     data: NavMenu,
     isPending,
@@ -109,14 +113,14 @@ export const useGetNavMenu = ()=>{
       return data;
     },
     refetchOnWindowFocus: false,
-    retry:1
+    retry: 1,
   });
 
   return { NavMenu, isPending, error };
 };
 
-export const useGetVenue = ()=>{
-  const dispatch= useDispatch<AppDispatch>()
+export const useGetVenue = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const {
     data: Venue,
     isPending,
@@ -128,12 +132,205 @@ export const useGetVenue = ()=>{
       return res.response;
     },
     select: (data) => {
-      dispatch(setVenue(data.response))
+      dispatch(setVenue(data.response));
       return data;
     },
     refetchOnWindowFocus: false,
-    retry:1
+    retry: 1,
   });
 
   return { Venue, isPending, error };
+};
+
+export const useAppConfigUpdate = () => {
+  const { appConfig } = useSelector(
+    (state: RootState) => state.Global_DesignSlice
+  );
+
+  const cleanData = {
+    ...appConfig,
+    logo: (({ url, logo_img, ...rest }) => rest)(appConfig.logo),
+  };
+
+  const {
+    mutate: updateAppConfig,
+    isPending: isUpdateAppConfigPending,
+    error: errorInUpdateAppConfig,
+  } = useMutation<ProfilePicResponse, AxiosError>({
+    mutationFn: async () => {
+      const res = await apiRequest("post", "settings/update", cleanData);
+      return res.response;
+    },
+    onSuccess: (data) => {
+      toast.success(data.header.message);
+      queryClient.invalidateQueries({ queryKey: ["global-design"] });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+  return { updateAppConfig, isUpdateAppConfigPending, errorInUpdateAppConfig };
+};
+
+export const useUploadLogo = () => {
+  const {
+    mutate: UploadLogo,
+    isPending,
+    error,
+  } = useMutation<LogoUpdateResponse, AxiosError, FormData>({
+    mutationFn: async (data) => {
+      const res = await apiRequest("post", "global/settings/logo/update", data);
+      return res.response;
+    },
+    onSuccess: (data) => {
+      toast.success(data.header.message);
+    },
+    onError: (err) => {
+      toast.error(`Error updating logo: ${err.message}`);
+    },
+  });
+
+  return { UploadLogo, isPending, error };
+};
+
+export const useSpeakerDesignUpdate = () => {
+  const { SpeakerSettings } = useSelector(
+    (state: RootState) => state.Speaker_DesignSlice
+  );
+  const filtered = CustomPick(SpeakerSettings, [
+    "show_speaker_fullname",
+    "show_short_name",
+    "show_linkedin_badge",
+    "show_no_of_sessions",
+    "show_bio",
+    "is_active",
+  ]);
+
+  const {
+    mutate: UpdateSpeakerDesign,
+    isPending: isUpdateSpeakerDesignPending,
+    error: errorInUpdateSpeakerDesign,
+  } = useMutation<ProfilePicResponse, AxiosError>({
+    mutationFn: async () => {
+      const res = await apiRequest("post", "speaker/settings/save", filtered);
+      return res.response;
+    },
+    onSuccess: (data) => {
+      toast.success(data.header.message);
+    },
+    onError: (err) => {
+      toast.error(`Error updating logo: ${err.message}`);
+    },
+  });
+
+  return {
+    UpdateSpeakerDesign,
+    isUpdateSpeakerDesignPending,
+    errorInUpdateSpeakerDesign,
+  };
+};
+
+export const useProgrameDesignUpdate = () => {
+  const { SpeakerSettings } = useSelector(
+    (state: RootState) => state.Speaker_DesignSlice
+  );
+  const filtered = CustomPick(SpeakerSettings, [
+    "conference_title",
+    "conference_start_date",
+    "conference_end_date",
+    "conference_start_time",
+    "conference_end_time",
+    "conference_location",
+    "category_filter",
+    "category_labels",
+  ]);
+
+  const {
+    mutate: UpdateProgrammeDesign,
+    isPending: isUpdateProgrammeDesignPending,
+    error: errorInUpdateProgrammeDesign,
+  } = useMutation<ProfilePicResponse, AxiosError>({
+    mutationFn: async () => {
+      const lables = filtered.category_labels.map((item) => item);
+      const value = { ...filtered, category_labels: lables };
+      const res = await apiRequest("post", "general/programme/save", value);
+      return res.response;
+    },
+    onSuccess: (data) => {
+      toast.success(data.header.message);
+    },
+    onError: (err) => {
+      toast.error(`Error updating logo: ${err.message}`);
+    },
+  });
+
+  return {
+    UpdateProgrammeDesign,
+    isUpdateProgrammeDesignPending,
+    errorInUpdateProgrammeDesign,
+  };
+}
+
+export const useCategoryList = ()=>{
+  const dispatch = useDispatch<AppDispatch>();
+  const {data:Category, isPending:isCategoryPending} = useQuery<CategoryListResponse,AxiosError>({
+    queryKey:["category-list"],
+    queryFn:async()=>{
+      const res = await apiRequest("get","category/all")
+      return res.response
+    },
+    select:(data)=>{
+      dispatch(setCategory(data.response.filter((pre) => pre.type === 1)))
+      return data
+    },
+    retry:1,
+    refetchOnWindowFocus:false
+  })
+  return {Category, isCategoryPending}
+}
+
+export const useGeneralExhibitorsUpdate = ()=>{
+  const {open_link_new_tab, allow_email_exposure, booth_location, Categorys} = useSelector((state:RootState)=>state.ExhibitorSlice)
+  const exhibitors_category_list = Categorys.map((item)=>item.id);
+  const Body = {
+    exhibitors_category_list,
+    open_link_new_tab,
+    allow_email_exposure,
+    booth_location
+  }
+  const {mutate:GeneralExhibitorsUpdate, isPending:isGeneralExhibitorsUpdatePending, error} = useMutation<ProfilePicResponse, AxiosError>({
+    mutationFn:async()=>{
+      const res = await apiRequest("post", "general/exhibitors/save", Body)
+      return res.response;
+    },
+    onSuccess:(data)=>{
+      toast.success(data.header.message);
+    },
+    onError:(err)=>{
+      toast.error(`Error updating settings: ${err.message}`);
+    }
+  })
+
+  return {GeneralExhibitorsUpdate, isGeneralExhibitorsUpdatePending, error}
+}
+
+export const useGetExhibitorsList = () => {
+  const {
+    data: ExhibitorList,
+    isPending,
+    error,
+  } = useQuery<GlobalExhibitorListResponse, AxiosError>({
+    queryKey: ["global-Exhibitors"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "exhibitors/list");
+      return res.response;
+    },
+    select: (data) => {
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  return { ExhibitorList, isPending, error };
 };

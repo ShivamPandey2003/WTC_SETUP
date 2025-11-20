@@ -5,12 +5,6 @@ const platform_url = import.meta.env.VITE_REACT_APP_API_URL;
 
 type ApiMethod = "get" | "post" | "put" | "delete";
 
-// interface ApiResponse<T = any> {
-//   response?: T;
-//   code?: number;
-//   message?: any;
-// }
-
 const apiClient = axios.create({
   baseURL: platform_url,
 });
@@ -88,7 +82,7 @@ export const apiRequest = async (
       error?.data?.code === 400
     ) {
       console.log(error);
-      toast.error(error.data.message);
+      toast.error(error.data.header.message);
     }
   }
 };

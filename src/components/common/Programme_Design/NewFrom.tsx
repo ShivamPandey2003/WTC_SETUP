@@ -1,21 +1,35 @@
 import { useCreateSession } from "@/api/programme_design_api/Programme_design_api";
 import CustomForm from "@/components/global/CustomForm";
 import { setIsCreating } from "@/redux/HomeDesignSlice";
-import type { AppDispatch } from "@/redux/store";
+import { setSelected } from "@/redux/ProgrammeDesignSlice";
+import type { AppDispatch, RootState } from "@/redux/store";
 import { SessionSchema, type SessionForm } from "@/Schema/sessionSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const NewFrom = () => {
+  const { selected, session } = useSelector(
+    (state: RootState) => state.Programme_Design
+  );
+
+  const value = session.find((pre) => pre.session_id === selected);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SessionForm>({resolver:zodResolver(SessionSchema)});
+  } = useForm<SessionForm>({
+    resolver: zodResolver(SessionSchema),
+    defaultValues: selected && value ? value : ({} as any),
+  });
   const dispatch = useDispatch<AppDispatch>();
   const { CreateSession, isPending: isCreateSessionPending } =
     useCreateSession();
+
+  const onClose =
+    selected && value
+      ? () => dispatch(setSelected(null))
+      : () => dispatch(setIsCreating(false));
 
   const onSubmit = (newData: SessionForm) => {
     const formData = new FormData();
@@ -46,7 +60,7 @@ const NewFrom = () => {
       | "array-string"
       | "array-attachment";
     placeholder?: string;
-    accept?:string
+    accept?: string;
   }[] = [
     { name: "title", label: "Title", placeholder: "Enter title here" },
     {
@@ -57,7 +71,12 @@ const NewFrom = () => {
     },
     { name: "start_time", label: "Start Time", type: "date" },
     { name: "end_time", label: "End Time", type: "date" },
-    { name: "attachments", label: "Attachments", type: "file", accept: "image/*" },
+    {
+      name: "attachments",
+      label: "Attachments",
+      type: "file",
+      accept: "image/*",
+    },
     { name: "location", label: "Location" },
     { name: "external_link", label: "External Link" },
     { name: "category", label: "Category" },
@@ -71,7 +90,7 @@ const NewFrom = () => {
       register={register}
       errors={errors}
       isLoading={isCreateSessionPending}
-      onClose={() => dispatch(setIsCreating(false))}
+      onClose={onClose}
     />
   );
 };

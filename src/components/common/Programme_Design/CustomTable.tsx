@@ -5,12 +5,13 @@ import { dateCustom } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { setIsDeleting } from "@/redux/ProgrammeDesignSlice";
+import { setIsDeleting, setSelected } from "@/redux/ProgrammeDesignSlice";
+import EditModal from "./EditModel";
 
 const CustomTable = () => {
   const {SessionList, isPending:isSessionListPending, error:errorInSessionList} = useGetSessionList()
   const {DeleteSession, isPending:isDeleetSessionPending} = useDeleteSession()
-  const {isDeleting} = useSelector((state:RootState)=>state.Programme_Design)
+  const {isDeleting, selected} = useSelector((state:RootState)=>state.Programme_Design)
   const dispatch = useDispatch<AppDispatch>()
 
 
@@ -61,7 +62,7 @@ const CustomTable = () => {
           <tbody>
             {SessionList?.response.map((item, index) => (
               <tr key={item.session_id} className="bg-gray-50 border">
-                <td className="px-6 py-2 rounded-[8px]">{index + 1}</td>
+                <td className="px-6 py-2 rounded-lg">{index + 1}</td>
                 <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">
                   {item.title}
                 </td>
@@ -71,8 +72,9 @@ const CustomTable = () => {
                 <td className="px-6 py-2">{dateCustom(item.start_time)}</td>
                 <td className="px-6 py-2">{dateCustom(item.end_time)}</td>
                 <td className="px-6 py-2">{item.category}</td>
-                <td className="px-6 py-2 flex gap-2 rounded-[8px]">
+                <td className="px-6 py-2 flex gap-2 rounded-lg">
                   <Pencil
+                  onClick={()=>dispatch(setSelected(item.session_id))}
                     color="#425EBC"
                     size={18}
                     className="cursor-pointer"
@@ -89,6 +91,7 @@ const CustomTable = () => {
           </tbody>
         </table>
       </div>
+      <EditModal isOpen={Boolean(selected)} onClose={()=>dispatch(setSelected(null))}/>
       <DeleteModel
         isOpen={Boolean(isDeleting)}
         onClose={()=>dispatch(setIsDeleting(null))}

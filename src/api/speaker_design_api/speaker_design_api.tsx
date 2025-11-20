@@ -22,7 +22,7 @@ export const useCreateSpeaker = () => {
   } = useMutation<CreateSpeakerResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
       const res = await apiRequest("post", "speakers/create", data);
-      return res.resposne;
+      return res.response;
     },
     onSuccess: () => {
       toast.success("Speaker created successfully");
@@ -31,7 +31,6 @@ export const useCreateSpeaker = () => {
     },
     onError: (err, Variable) => {
       toast.error(`Error creating speaker: ${err.message}`);
-      console.log(Variable);
     },
   });
 
@@ -57,7 +56,6 @@ export const useEditSpeaker = () => {
     },
     onError: (err, Variable) => {
       toast.error(`Error editing speaker: ${err.message}`);
-      console.log(Variable);
     },
   });
 
@@ -105,7 +103,6 @@ export const useDeleteSpeaker = () => {
     },
     onError: (err, Variable) => {
       toast.error(`Error deleting speaker: ${err.message}`);
-      console.log(Variable);
     },
   });
 

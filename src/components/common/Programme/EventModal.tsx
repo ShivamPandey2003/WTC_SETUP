@@ -13,8 +13,8 @@ type ModalProps = {
 };
 
 const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
-  const {Programme} = useSelector((state:RootState)=>state.Global_Slice)
-  const Event = Programme.find((pre) => pre.title === id);
+  const {Session} = useSelector((state:RootState)=>state.Global_Slice)
+  // const Event = Programme.find((pre) => pre.title === id);
 
   return (
     <Modal
@@ -29,18 +29,18 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
         <div className="flex items-start gap-4">
           <img
             src={""}
-            alt={Event?.title}
+            // alt={Event?.title??}
             className="w-[200px] h-[118px] rounded-[8px] object-cover opacity-80"
           />
           <div className="">
             <h2 className="text-xl font-[700] text-primary mb-2">
-              {Event?.title}
+              {/* {Event?.title} */}
             </h2>
             <p className="text-sm text-primary font-[600] mb-1">
-              {`${dateCustom(Event?.start_time as string)} - ${dateCustom(Event?.end_time as string)}`}
+              {/* {`${dateCustom(Event?.start_time as string)} - ${dateCustom(Event?.end_time as string)}`} */}
             </p>
             <Button variant={"link"} size={"sm"} className="p-0">
-              {Event?.location}
+              {/* {Event?.location} */}
             </Button>
             <button
               onClick={() => onClose(null)}
@@ -63,7 +63,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
         {/* Content */}
         <div className="relative">
           <p className="text-sm text-gray-600 leading-relaxed mb-4">
-            {Event?.description}
+            {/* {Event?.description} */}
           </p>
 
           <div className="flex items-center gap-2 mb-5 text-sm text-gray-700">
@@ -72,7 +72,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
           </div>
 
           <div className="flex items-center gap-6">
-            {Event?.speakers.map((speaker, index) => (
+            {/* {Event?.speakers.map((speaker, index) => (
               <div key={index} className="flex flex-col items-center">
                 <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center mb-2 overflow-hidden">
                   {!speaker ? (
@@ -95,7 +95,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                   {speaker}
                 </span>
               </div>
-            ))}
+            ))} */}
           </div>
         </div>
       </div>

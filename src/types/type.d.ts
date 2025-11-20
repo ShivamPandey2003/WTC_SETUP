@@ -144,6 +144,7 @@ declare type AppConfig = {
   logo: {
     url: string;
     name: string;
+    logo_img: string;
   };
   text_style: {
     heading_1: string;
@@ -214,6 +215,11 @@ declare type GlobalVenueResponse = {
   response: GlobalVenue;
 };
 
+declare type Category_Label = {
+  name: string;
+  id: string;
+};
+
 declare type SpeakerSetting = {
   conference_title: string;
   conference_start_date: string;
@@ -229,11 +235,31 @@ declare type SpeakerSetting = {
   is_active: boolean;
   category_filter: boolean;
   category_labels: string[];
+  exhibitor_settings: {
+    exhibitors_category_list: string[];
+    open_link_new_tab: boolean;
+    allow_email_exposure: boolean;
+    booth_location: boolean;
+  };
 };
 
 declare type SpeakerSettingResponse = {
   header: ResponseHeader;
   response: SpeakerSetting;
+};
+
+declare type Programme = {
+  title: string;
+  categories: { name: string; color: string }[];
+  location: string;
+  start_time: string;
+  end_time: string;
+  speakers: string[];
+  attachments: string[];
+  external_link: string;
+  description: string;
+  start_date: string;
+  end_date: string;
 };
 
 declare type GlobalProgrammeListResponse = {
@@ -242,8 +268,13 @@ declare type GlobalProgrammeListResponse = {
     conference_title: string;
     conference_start_date: string;
     conference_end_date: string;
+    conference_start_time: sring;
+    conference_end_time: string;
     conference_location: string;
-    programme: Omit<Session, "session_id">[];
+    programme: {
+      [date: string]: [];
+    };
+    seq: string[];
   };
 };
 
@@ -253,5 +284,108 @@ declare type ProgrammeCreateCategoryResponse = {
     id: string;
     name: string;
     color: string;
+  };
+};
+
+declare type ProfileResponse = {
+  header: ResponseHeader;
+  response: {
+    user_info: {
+      firstname: string;
+      lastname: string;
+      email: string;
+      designation: string;
+      company_name: string;
+      linkedin_url: string;
+      phone_number: string;
+      profile_image: string;
+    };
+    qr_code_base64: string;
+  };
+};
+
+declare type ProfilePicResponse = {
+  header: ResponseHeader;
+  response: {};
+};
+
+declare type ProfileUpdateRequest = {
+  name_prefix: string;
+  firstname: string;
+  lastname: string;
+  gender: string;
+  company_name: string;
+  designation: string;
+  linkedin_url: string;
+  // user_image: string;
+  phone_number: string;
+};
+
+declare type OtpResponse = {
+  header: ResponseHeader;
+  response: {
+    access_token: string;
+    firstname: string;
+    lastname: string;
+    grp: number;
+  };
+};
+
+declare type ResendResponse = {
+  header: ResponseHeader;
+  response: {
+    email: string;
+    resend_attempt: number;
+    message: string;
+  };
+};
+
+declare type LogoUpdateResponse = {
+  header: ResponseHeader;
+  response: {
+    logo: {
+      url: string;
+      name: string;
+    };
+  };
+};
+
+declare type Exhibitor = {
+  id: string;
+  full_name: string;
+  url: string;
+  email: string;
+  logo: string;
+  category: string;
+  ads: boolean;
+};
+
+declare type ExhibitorListResponse = {
+  header: ResponseHeader;
+  response: {
+    seq: string[];
+  } & {
+    [category: string]: Exhibitor[];
+  };
+};
+
+declare type Category = {
+  id: string;
+  name: string;
+  color: string;
+  type: number;
+};
+
+declare type CategoryListResponse = {
+  header: ResponseHeader;
+  response: Category[];
+};
+
+declare type GlobalExhibitorListResponse = {
+  header: ResponseHeader;
+  response: {
+    seq: string[];
+  } & {
+    [category: string]: Omit<Exhibitor, "category">[];
   };
 };

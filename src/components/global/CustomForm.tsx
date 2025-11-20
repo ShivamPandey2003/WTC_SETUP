@@ -91,11 +91,6 @@ const CustomForm = <T extends Record<string, any>>({
         });
       });
 
-    console.log("Form with arrays:", {
-      arrayStrings,
-      arrayAttachments,
-      formData: Object.fromEntries(formData),
-    });
     onSubmit(e);
   };
 
@@ -103,7 +98,7 @@ const CustomForm = <T extends Record<string, any>>({
     <form onSubmit={handleFormSubmit} className="space-y-4">
       {fields.map((field) => (
         <div key={field.name} className="flex items-start gap-3">
-          {field.type !== "checkbox" && (
+          {(
             <label className="text-sm font-medium text-gray-700 w-32 pt-1">
               {field.label}
             </label>
@@ -117,15 +112,12 @@ const CustomForm = <T extends Record<string, any>>({
                 rows={4}
               />
             ) : field.type === "checkbox" ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 pt-1.5">
                 <input
                   type="checkbox"
                   {...register(field.name)}
                   className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
                 />
-                <label className="text-sm font-medium text-gray-700">
-                  {field.label}
-                </label>
               </div>
             ) : field.type === "file" ? (
               <input
@@ -204,7 +196,7 @@ const CustomForm = <T extends Record<string, any>>({
                 type={field.type ?? "text"}
                 {...register(field.name)}
                 placeholder={field.placeholder}
-                className="w-full rounded outline-0 border-[1px] border-gray-200 px-2 py-1 focus:border-blue-500"
+                className="w-full rounded outline-0 border-[1px] border-gray-200 px-2 py-1 focus:border-primary"
               />
             )}
 

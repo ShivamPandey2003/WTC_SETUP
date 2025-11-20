@@ -29,9 +29,8 @@ export const useCreateNews = () => {
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
       dispatch(setIsCreating(false));
     },
-    onError: (err, Variable) => {
+    onError: (err) => {
       toast.error(`Error creating news: ${err.message}`);
-      console.log(Variable);
     },
   });
 
@@ -59,9 +58,8 @@ export const useEditNews = () => {
       dispatch(setSelected(null));
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
     },
-    onError: (err, Variable) => {
+    onError: (err) => {
       toast.error(`Error editing news: ${err.message}`);
-      console.log(Variable);
     },
   });
 
@@ -107,9 +105,8 @@ export const useDeleteNews = () => {
       dispatch(setIsDeleting(null));
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
     },
-    onError: (err, Variable) => {
+    onError: (err) => {
       toast.error(`Error deleting news: ${err.message}`);
-      console.log(Variable);
     },
   });
 
@@ -132,9 +129,8 @@ export const usePublishedNews = () => {
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
       dispatch(setIsPublished(null));
     },
-    onError: (err, Variable) => {
+    onError: (err) => {
       toast.error(`Error Publishing news: ${err.message}`);
-      console.log(Variable);
     },
   });
 
