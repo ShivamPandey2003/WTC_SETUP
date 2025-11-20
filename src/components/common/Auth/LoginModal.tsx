@@ -128,7 +128,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             onSubmit={handleEmailSubmit((data) => sendOtp(data))}
             noValidate
           >
-            <h1 className="text-[16px] font-[700] text-black mb-6">
+            <h1 className="text-[16px] font-bold text-black mb-6">
               Log in to your account
             </h1>
 
@@ -165,7 +165,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
         {step === "otp" && (
           <form onSubmit={handleOtpSubmit}>
-            <h1 className="text-[16px] font-[700] text-black mb-2">
+            <h1 className="text-[16px] font-bold text-black mb-2">
               Enter verification code
             </h1>
             <p className="text-sm text-gray-600 mb-8">

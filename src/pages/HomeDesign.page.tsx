@@ -29,7 +29,7 @@ const HomeDesign_page = () => {
           <div className="absolute right-10">
             <Button
               onClick={() => dispatch(setIsCreating(true))}
-              className="w-[80px] py-1 h-7"
+              className="w-20 py-1 h-7"
             >
               <Plus />
               Add
@@ -41,14 +41,14 @@ const HomeDesign_page = () => {
             <TabsTrigger
               variant={"link"}
               value={"General Settings"}
-              className="text-[15px] font-[600] leading-[15px] px-0 mr-6"
+              className="text-[15px] font-semibold leading-[15px] px-0 mr-6"
             >
               General Settings
             </TabsTrigger>
             <TabsTrigger
               variant={"link"}
               value={"News"}
-              className="text-[15px] font-[600] leading-[15px] px-0"
+              className="text-[15px] font-semibold leading-[15px] px-0"
             >
               News
             </TabsTrigger>
@@ -59,7 +59,7 @@ const HomeDesign_page = () => {
                 type="text"
                 value={"News Feed"}
                 onChange={(e) => console.log(e.target.value)}
-                className="bg-[#1111110D] font-[600] px-5 py-1 text-sm text-black rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
+                className="bg-[#1111110D] font-semibold px-5 py-1 text-sm text-black rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
               />
             </Section>
             <Section title="Carousel Display">
@@ -75,7 +75,7 @@ const HomeDesign_page = () => {
                     <div
                       key={index}
                       className={cn(
-                        "flex items-center gap-2 bg-[#1111110D] px-5 py-1 text-sm text-black font-[600] rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors",
+                        "flex items-center gap-2 bg-[#1111110D] px-5 py-1 text-sm text-black font-semibold rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors",
                         index === 0 && "text-primary"
                       )}
                     >
@@ -85,7 +85,7 @@ const HomeDesign_page = () => {
                   ))}
                 </div>
                 <div className="w-1/2">
-                  <h3 className="text-[12px] font-[500] leading-[15px] mb-2">
+                  <h3 className="text-[12px] font-medium leading-[15px] mb-2">
                     Carousel Preview
                   </h3>
                   <div className="flex gap-2">

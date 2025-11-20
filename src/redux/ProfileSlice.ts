@@ -11,7 +11,7 @@ type ProfileT = {
     phone_number: string;
     profile_image: string;
   };
-  qr_code_base64: string;
+  qr_image: string;
 };
 
 const initialState: ProfileT = {
@@ -25,7 +25,7 @@ const initialState: ProfileT = {
     phone_number: "",
     profile_image: "",
   },
-  qr_code_base64: "",
+  qr_image: "",
 };
 
 const profileSlice = createSlice({

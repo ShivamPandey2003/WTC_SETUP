@@ -80,14 +80,14 @@ const ProgrammeDesign_page = () => {
             <TabsTrigger
               variant={"link"}
               value={"General Settings"}
-              className="text-[15px] font-[600] leading-[15px] px-0 mr-6"
+              className="text-[15px] font-semibold leading-[15px] px-0 mr-6"
             >
               General Settings
             </TabsTrigger>
             <TabsTrigger
               variant={"link"}
               value={"Session Data"}
-              className="text-[15px] font-[600] leading-[15px] px-0"
+              className="text-[15px] font-semibold leading-[15px] px-0"
             >
               Session Data
             </TabsTrigger>

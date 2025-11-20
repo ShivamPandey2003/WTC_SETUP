@@ -14,6 +14,7 @@ import ExhibitorsDesign_page from "@/pages/ExhibitorsDesign.page";
 import Exhibitors_page from "@/pages/Exhibitors.page";
 import ProtectedRoute from "./ProtectedRoute";
 import Profile_page from "@/pages/Profile.page";
+import UsersProfile_page from "@/pages/UsersProfile.page";
 
 const Router = createBrowserRouter(
   [
@@ -41,6 +42,10 @@ const Router = createBrowserRouter(
           path: "exhibitors",
           element: <Exhibitors_page />,
         },
+        {
+          path:"profile",
+          element:<UsersProfile_page/>
+        }
       ],
     },
     {

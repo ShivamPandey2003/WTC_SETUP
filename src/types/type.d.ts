@@ -300,7 +300,7 @@ declare type ProfileResponse = {
       phone_number: string;
       profile_image: string;
     };
-    qr_code_base64: string;
+    qr_image: string;
   };
 };
 
@@ -389,3 +389,17 @@ declare type GlobalExhibitorListResponse = {
     [category: string]: Omit<Exhibitor, "category">[];
   };
 };
+
+declare type GlobalUsersProfile = {
+  header: ResponseHeader;
+  response:{
+    firstname: string;
+      lastname: string;
+      email: string;
+      designation: string;
+      company_name: string;
+      linkedin_url: string;
+      phone_number: string;
+      profile_image: string;
+  }
+}

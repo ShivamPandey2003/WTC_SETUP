@@ -15,7 +15,7 @@ const EditModal:React.FC<EditModalProps> = ({isOpen, onClose}) => {
       showCloseButton
       classname="p-0"
     >
-      <div className="bg-primary w-full rounded-t-lg px-8 text-white py-3 text-xl font-[600]">
+      <div className="bg-primary w-full rounded-t-lg px-8 text-white py-3 text-xl font-semibold">
         {"Edit News"}
       </div>
       <div className="p-6">

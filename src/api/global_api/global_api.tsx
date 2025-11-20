@@ -334,3 +334,24 @@ export const useGetExhibitorsList = () => {
 
   return { ExhibitorList, isPending, error };
 };
+
+export const useGetUsersProfile = (id:string)=>{
+  const {
+    data: UsersProfile,
+    isPending,
+    error,
+  } = useQuery<GlobalUsersProfile, AxiosError>({
+    queryKey: ["users-profile"],
+    queryFn: async () => {
+      const res = await apiRequest("get", `profile/view?ID=${id}`);
+      return res.response;
+    },
+    select: (data) => {
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  return { UsersProfile, isPending, error };
+}
