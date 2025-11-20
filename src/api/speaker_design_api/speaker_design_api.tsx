@@ -22,16 +22,15 @@ export const useCreateSpeaker = () => {
   } = useMutation<CreateSpeakerResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
       const res = await apiRequest("post", "speakers/create", data);
-      return res.resposne;
+      return res.response;
     },
     onSuccess: () => {
       toast.success("Speaker created successfully");
       queryClient.invalidateQueries({ queryKey: ["speakerList"] });
       dispatch(setIsCreating(false));
     },
-    onError: (err, Variable) => {
+    onError: (err) => {
       toast.error(`Error creating speaker: ${err.message}`);
-      console.log(Variable);
     },
   });
 
@@ -55,9 +54,8 @@ export const useEditSpeaker = () => {
       queryClient.invalidateQueries({ queryKey: ["speakerList"] });
       dispatch(setSelected(null));
     },
-    onError: (err, Variable) => {
+    onError: (err) => {
       toast.error(`Error editing speaker: ${err.message}`);
-      console.log(Variable);
     },
   });
 
@@ -103,9 +101,8 @@ export const useDeleteSpeaker = () => {
       dispatch(setIsDeleting(null));
       queryClient.invalidateQueries({ queryKey: ["speakerList"] });
     },
-    onError: (err, Variable) => {
+    onError: (err) => {
       toast.error(`Error deleting speaker: ${err.message}`);
-      console.log(Variable);
     },
   });
 

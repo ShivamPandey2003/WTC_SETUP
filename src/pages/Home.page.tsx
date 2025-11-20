@@ -18,6 +18,8 @@ const Home_page = () => {
     return <div>{error?.message ?? DesignError?.message}</div>;
   }
 
+  // console.log(atob("Z0FBQUFBQnBGWUZObzRLMldGTkhXQm9rNWNIY0JOSVBhZnFGME5HOEFQSHRtdVlnZDc3ZzFHUjVMa3ItUjdYX2tab1k3NG1XUVExZU5aXzhZXzlKOGFGaDE3QzVCQXA0Tm9GY2JOcU9OM1BYWW9ES0lIeHdKMlYwMGtwcUNXV1dMNFF3dWNULUxobWphQnBidUFvbUdlWHlXd1U2Q3pqTGpzRnByY3J2VXk1bTA5S3Mxb2M1YzE2YTFpdE9pYm5kLTl6dU5vQmN4X0VEdFVXWmpoR1hST1pyRlEyNjJKX0pWeWhIalp6UURzQmNxT21vckktYTIta0pIV1VfSGI1Qm1JbHFxZ0pabEdMU1BaWkdXaG8yVEx4akZiWWx5RlVUNUlseUw3dDRfWmxybmFBM3Zhd3o5UHh1WXo2Z1VEckYtVkRKdmxfdnRuZDR4ZW1jaUFyXzd0NlZ0YU9xcUNNekszTEJtbmttaHcxR2FjVnF3eHhiS3dmeUR2TlpZbzFYUEhySEs5eGRkYmFDN0NidEp5a2FfcTlOTEgyRVkzWkpCdz09"))
+
   return (
     <div className="mx-[7.5%]">
       <div className="grid grid-cols-1 sm:grid-cols-2 justify-center gap-6 md:gap-8">

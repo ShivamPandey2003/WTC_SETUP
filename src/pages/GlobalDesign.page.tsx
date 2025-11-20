@@ -1,4 +1,7 @@
-import { useGlobalDesign } from "@/api/global_api/global_api";
+import {
+  useAppConfigUpdate,
+  useGlobalDesign,
+} from "@/api/global_api/global_api";
 import ColorPicker from "@/components/common/Global_Design/ColorPicker";
 import LogoUpload from "@/components/common/Global_Design/LogoUpload";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
@@ -15,6 +18,7 @@ const GlobalDesign_page = () => {
     (state: RootState) => state.Global_DesignSlice
   );
   const dispatch = useDispatch<AppDispatch>();
+  const { updateAppConfig, isUpdateAppConfigPending } = useAppConfigUpdate();
 
   if (isGlobalDesignPending || !GlobalDesign) {
     return;
@@ -23,7 +27,11 @@ const GlobalDesign_page = () => {
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="mx-auto px-8 py-6">
-        <AdminTitlebar Title="Global Design" onSave={() => {}} />
+        <AdminTitlebar
+          Title="Global Design"
+          onSave={() => updateAppConfig()}
+          loading={isUpdateAppConfigPending}
+        />
         <Section title="Color Scheme">
           {Object.entries(appConfig.color_schema).map(([key, value], i) => (
             <ColorPicker
@@ -31,18 +39,20 @@ const GlobalDesign_page = () => {
               label={normalizeLabel(key)}
               color={value}
               description="The primary color is used in bold titles, default selection buttons and everywhere where user's attention has to be brought in."
-              onChange={(e)=>  dispatch(
+              onChange={(e) =>
+                dispatch(
                   setAppConfig({
                     ...appConfig,
                     color_schema: { ...appConfig.color_schema, [key]: e },
                   })
-                )}
+                )
+              }
             />
           ))}
         </Section>
         <Section title="Logo">
           <LogoUpload
-            logoUrl={appConfig.logo.url}
+            logoUrl={`data:image/png;base64,${appConfig.logo.logo_img}`}
             fileName={appConfig.logo.name}
           />
         </Section>
