@@ -84,7 +84,7 @@ const CustomTable = () => {
                 </td>
                 <td className="pl-9 py-2">
                   <img
-                    src={item.attachments[0]}
+                    src={`data:image/png;base64,${item.attachments[0].speaker_image}`}
                     className="w-[24px] h-[24px]"
                   />
                 </td>

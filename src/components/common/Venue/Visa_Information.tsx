@@ -10,7 +10,7 @@ const Visa_Information = () => {
       <h1 className="text-2xl font-bold mb-3">
         {Venue.visa_info.title}
       </h1>
-      <h3 className="text-lg font-[500] mb-3">
+      <h3 className="text-lg font-medium mb-3">
         {Venue.visa_info.sub_title}
       </h3>
       <p>

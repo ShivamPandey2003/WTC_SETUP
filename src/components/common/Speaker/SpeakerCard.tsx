@@ -1,5 +1,6 @@
 import Linkedin from "@/assets/Icons/Linkedin";
 import React from "react";
+import Avatar1 from '@/assets/Images/Avatar1.png'
 
 type prop = {
   name: string;
@@ -10,12 +11,12 @@ type prop = {
 
 const SpeakerCard: React.FC<prop> = ({ name, image, bio, company }) => {
   return (
-    <div className="flex flex-col items-center bg-[#31806105] p-2 border rounded-md border-[#31806126]">
-      <img src={image} className="w-[120px] h-[120px] my-2" />
+    <div className="flex flex-col items-center bg-bgCard p-2 border rounded-md border-border">
+      <img src={image?`data:image/png;base64,${image}`:Avatar1} className="w-[120px] h-[120px] my-2" />
       <div className="flex gap-2 items-center justify-center">
         <Linkedin size={20} />
         <h2
-          className="text-primary font-[700] text-[18px]"
+          className="text-primary font-bold text-[18px]"
         >
           {name}
         </h2>

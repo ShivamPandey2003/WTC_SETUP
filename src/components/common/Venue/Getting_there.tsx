@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 const apiKey = import.meta.env.VITE_REACT_GOOGLE_MAPS_API_KEY;
 
 const Getting_there = () => {
-  const { Venue } = useSelector((state: RootState) => state.Global_Slice);
+  const { Venue, conference_location, conference_end_date, conference_start_date } = useSelector((state: RootState) => state.Global_Slice);
 
   function parseCoordinate(value: string): number {
     const num = parseFloat(value); // get numeric part
@@ -105,9 +105,9 @@ const Getting_there = () => {
           </GoogleMap>
         </LoadScriptNext>
         <Titlabar
-          location={Venue.conference_location}
-          date={`${formatDate(Venue.conference_start_date)} - ${formatDate(
-            Venue.conference_end_date
+          location={conference_location}
+          date={`${formatDate(conference_start_date)} - ${formatDate(
+            conference_end_date
           )}`}
           className="justify-center xl:text-lg mb-4 w-full"
         />
