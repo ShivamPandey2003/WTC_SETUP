@@ -2,7 +2,7 @@ import { CustomPick } from "@/lib/utils";
 import { queryClient } from "@/provider/TanstackProvider";
 import { setCategory } from "@/redux/ExhibitorSlice";
 import { setAppConfig } from "@/redux/GlobalDesignSlice";
-import { setProgramme, setVenue } from "@/redux/GlobalSlice";
+import { setConference_title, setProgramme, setVenue } from "@/redux/GlobalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -355,3 +355,26 @@ export const useGetUsersProfile = (id:string)=>{
 
   return { UsersProfile, isPending, error };
 }
+
+export const useGetConferenceDetails = () => {
+  const dipatch = useDispatch<AppDispatch>()
+  const {
+    data: ConferenceDetails,
+    isPending,
+    error,
+  } = useQuery<ConferenceDetailResponse, AxiosError>({
+    queryKey: ["Conference-Details"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "conference/details");
+      return res.response;
+    },
+    select: (data) => {
+      dipatch(setConference_title(data.response))
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  return { ConferenceDetails, isPending, error };
+};

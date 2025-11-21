@@ -117,12 +117,30 @@ declare type CreateSpeakerRequest = {
   company: string;
   bio: string;
   external_link: string;
-  attachments: string[];
+  created_on: string;
+  user_img: string;
+  coming_sessions: Record<string, string>[];
+  total_sessions: number;
+};
+
+declare type CreateSpeakerRequestT = {
+  name: string;
+  designation: string;
+  company: string;
+  bio: string;
+  external_link: string;
+  created_on: string;
+  attachments: {
+    filename: string;
+    speaker_image: string;
+  }[];
+  coming_sessions: Record<string, string>[];
+  total_sessions: number;
 };
 
 declare type SpeakerListResponse = {
   header: ResponseHeader;
-  response: (CreateSpeakerRequest & {
+  response: (CreateSpeakerRequestT & {
     speaker_id: string;
     created_on: string;
   })[];
@@ -160,20 +178,11 @@ declare type GlobalDesignResponse = {
   response: AppConfig;
 };
 
-declare type ConferenceProgramme = {
-  conference_title: string;
-  conference_start_date: string;
-  conference_end_date: string;
-  conference_location: string;
-  speaker_list: (CreateSpeakerRequest & {
-    speaker_id: string;
-    created_on: string;
-  })[];
-};
-
 declare type GlobalSpeakerListResponse = {
   header: ResponseHeader;
-  response: ConferenceProgramme;
+  response: (CreateSpeakerRequest & {
+    speaker_id: string;
+  })[];
 };
 
 declare type NavItem = {
@@ -188,10 +197,6 @@ declare type GlobalNavMenuResponse = {
 };
 
 declare type GlobalVenue = {
-  conference_title: string;
-  conference_start_date: string;
-  conference_end_date: string;
-  conference_location: string;
   getting_there: {
     sub_title: string;
     description: string;
@@ -208,6 +213,20 @@ declare type GlobalVenue = {
     title: string;
     description: string;
   };
+};
+
+declare type ConferenceDetail = {
+  conference_title: string;
+  conference_start_date: string;
+  conference_end_date: string;
+  conference_start_time: string;
+  conference_end_time: string;
+  conference_location: string;
+};
+
+declare type ConferenceDetailResponse = {
+  header: ResponseHeader;
+  response: ConferenceDetail;
 };
 
 declare type GlobalVenueResponse = {
@@ -272,7 +291,7 @@ declare type GlobalProgrammeListResponse = {
     conference_end_time: string;
     conference_location: string;
     programme: {
-      [date: string]: [];
+      [date: string]: Programme[];
     };
     seq: string[];
   };
@@ -392,14 +411,14 @@ declare type GlobalExhibitorListResponse = {
 
 declare type GlobalUsersProfile = {
   header: ResponseHeader;
-  response:{
+  response: {
     firstname: string;
-      lastname: string;
-      email: string;
-      designation: string;
-      company_name: string;
-      linkedin_url: string;
-      phone_number: string;
-      profile_image: string;
-  }
-}
+    lastname: string;
+    email: string;
+    designation: string;
+    company_name: string;
+    linkedin_url: string;
+    phone_number: string;
+    profile_image: string;
+  };
+};

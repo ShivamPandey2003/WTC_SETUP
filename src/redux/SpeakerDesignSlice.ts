@@ -4,7 +4,7 @@ type ProgrammeDesignStateType = Omit<
   HomeDesignStateType,
   "isPublished" | "news"
 > & {
-  speakers: (CreateSpeakerRequest & {
+  speakers: (CreateSpeakerRequestT & {
     speaker_id: string;
     created_on: string;
   })[];
@@ -72,7 +72,7 @@ const Speakers_DesignSlice = createSlice({
     setSpeaker: (
       state,
       payload: PayloadAction<
-        (CreateSpeakerRequest & { speaker_id: string; created_on: string })[]
+        (CreateSpeakerRequestT & { speaker_id: string; created_on: string })[]
       >
     ) => {
       state.speakers = payload.payload;
