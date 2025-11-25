@@ -75,7 +75,10 @@ declare type Session = {
   sno: number;
   session_id: string;
   title: string;
-  category: string;
+  categories: {
+    name: string;
+    color: string;
+  }[];
   location: string;
   start_time: string;
   end_time: string;

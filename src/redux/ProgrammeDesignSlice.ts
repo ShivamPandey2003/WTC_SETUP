@@ -1,16 +1,18 @@
+import { formatDate } from "@/lib/utils";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 type ProgrammeDesignStateType = Omit<
   HomeDesignStateType,
   "selected" | "isPublished" | "news"
-> & { session: Session[], categoryModal:boolean,  selected: string | null; };
+> & { session: Session[], categoryModal:boolean,  selected: string | null, slectedDate:string };
 
 const initialState: ProgrammeDesignStateType = {
   session: [],
   selected: null,
   isDeleting: null,
   isCreating: false,
-  categoryModal: false
+  categoryModal: false,
+  slectedDate:`${formatDate(`${new Date()}`)}`
 };
 
 const Programme_DesignSlice = createSlice({
@@ -36,9 +38,13 @@ const Programme_DesignSlice = createSlice({
     setSession:(state, payload: PayloadAction<Session[]>)=>{
       state.session = payload.payload;
       return state;
+    },
+    setSelectedDate:(state, payload: PayloadAction<string>)=>{
+      state.slectedDate = payload.payload;
+      return state
     }
   },
 });
 
-export const { setIsDeleting, setIsCreating, setCategoryModal, setSelected, setSession } = Programme_DesignSlice.actions;
+export const { setIsDeleting, setIsCreating, setCategoryModal, setSelected, setSession, setSelectedDate } = Programme_DesignSlice.actions;
 export default Programme_DesignSlice.reducer;

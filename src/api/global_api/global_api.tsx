@@ -38,6 +38,7 @@ export const useGetNewsList = () => {
     data: NewsList,
     isPending,
     error,
+    refetch
   } = useQuery<NewsListResponse, AxiosError>({
     queryKey: ["global-News"],
     queryFn: async () => {
@@ -51,7 +52,7 @@ export const useGetNewsList = () => {
     retry: 1,
   });
 
-  return { NewsList, isPending, error };
+  return { NewsList, isPending, error, refetch };
 };
 
 export const useGetSpeakersList = () => {
@@ -81,6 +82,7 @@ export const useGetProgrammeList = () => {
     data: ProgrammeList,
     isPending,
     error,
+    refetch
   } = useQuery<GlobalProgrammeListResponse, AxiosError>({
     queryKey: ["global-programme"],
     queryFn: async () => {
@@ -95,7 +97,7 @@ export const useGetProgrammeList = () => {
     retry: 1,
   });
 
-  return { ProgrammeList, isPending, error };
+  return { ProgrammeList, isPending, error, refetch };
 };
 
 export const useGetNavMenu = () => {
@@ -158,7 +160,7 @@ export const useAppConfigUpdate = () => {
     error: errorInUpdateAppConfig,
   } = useMutation<ProfilePicResponse, AxiosError>({
     mutationFn: async () => {
-      const res = await apiRequest("post", "settings/update", cleanData);
+      const res = await apiRequest("post", "global/settings/update", cleanData);
       return res.response;
     },
     onSuccess: (data) => {

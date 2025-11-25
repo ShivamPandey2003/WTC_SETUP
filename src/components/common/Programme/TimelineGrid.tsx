@@ -4,9 +4,10 @@ import { buildTimeline, toMin, type Placeholder } from "@/lib";
 import { formatTime } from "@/lib/utils";
 import type { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
+import NoData from "@/components/global/NoData";
 
 export default function TimelineGrid() {
-  const {selectedDate, filterData } = useSelector(
+  const { selectedDate, filterData } = useSelector(
     (state: RootState) => state.Global_Slice
   );
   const timeSlots = Array.from({ length: 12 }, (_, i) => {
@@ -19,6 +20,8 @@ export default function TimelineGrid() {
     };
   });
 
+  // console.log(filterData[selectedDate])
+
   const Data = buildTimeline(filterData[selectedDate]);
 
   function isSession(item: Programme | Placeholder): item is Programme {
@@ -28,7 +31,7 @@ export default function TimelineGrid() {
   const filtered = timeSlots.filter((slot) =>
     filterData[selectedDate].some((event) => {
       const eventHour = parseInt(
-        formatTime(event.start_time).split(":")[0],
+        event.start_time.split(":")[0],
         10
       );
       return eventHour === slot.startHour;
@@ -36,7 +39,11 @@ export default function TimelineGrid() {
   );
 
   if (Object.keys(Data).length === 0) {
-    return <div>No data</div>;
+    return (
+      <div className="flex items-center justify-center">
+        <NoData />
+      </div>
+    );
   }
 
   return (
@@ -52,14 +59,20 @@ export default function TimelineGrid() {
                   return null;
                 }
                 const TOP_MARGIN = roundMinutes(
-                  Number(roundTime(formatTime(s.start_time)).split(":")[1])
+                  Number(roundTime(s.start_time).split(":")[1])
                 );
                 return (
                   <div
                     key={i}
                     className={clsx(
                       "absolute right-0 w-[250px] z-50",
-                      i === 0 ? "left-1" : i === 1? `left-2/7`:i===2?'left-4/7':"left-6/7"
+                      i === 0
+                        ? "left-1"
+                        : i === 1
+                        ? `left-2/7`
+                        : i === 2
+                        ? "left-4/7"
+                        : "left-6/7"
                     )}
                     style={{
                       top:
@@ -71,16 +84,16 @@ export default function TimelineGrid() {
                           ? "70px"
                           : "100px",
                       height: `${getDurationHeight(
-                        formatTime(s.start_time),
-                        formatTime(s.end_time)
+                        s.start_time,
+                        s.end_time
                       )}px`,
                     }}
                   >
                     <SessionCard
                       session={s}
                       className={`h-full max-h-[${getDurationHeight(
-                        formatTime(s.start_time),
-                        formatTime(s.end_time)
+                        s.start_time,
+                        s.end_time
                       )}px] py-1.5 px-2`}
                     />
                   </div>
@@ -101,7 +114,7 @@ function getDurationHeight(start: any, end: any) {
 function roundMinutes(min: number): number {
   if (min < 5) return 0;
   if (min < 20) return 15;
-  if (min < 35) return 30; 
+  if (min < 35) return 30;
   if (min < 50) return 45;
   return 0;
 }

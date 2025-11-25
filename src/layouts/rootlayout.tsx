@@ -1,4 +1,4 @@
-import { useGetConferenceDetails } from "@/api/global_api/global_api";
+import { useGetConferenceDetails, useGlobalDesign } from "@/api/global_api/global_api";
 import LoginModal2 from "@/components/common/Auth/LoginModal";
 // import LoginModal from "@/components/global/LoginModal";
 import Navbar from "@/components/global/Navbar";
@@ -11,6 +11,7 @@ import { Outlet } from "react-router";
 const RootLayout = () => {
   const { loginModel } = useSelector((state: RootState) => state.model);
   const dispatch = useDispatch<AppDispatch>()
+    const {} = useGlobalDesign();
 
   const {} = useGetConferenceDetails()
 

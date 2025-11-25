@@ -1,9 +1,11 @@
 import { useGetProgrammeList } from "@/api/global_api/global_api";
 import ProgrammeTitlabar from "@/components/common/Programme/ProgrammeTitleBar";
 import TimelineGrid from "@/components/common/Programme/TimelineGrid";
+import ErrorDisplay from "@/components/global/ErrorDisplay";
+import NoData from "@/components/global/NoData";
 import { setFilterData } from "@/redux/GlobalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { Check, Search } from "lucide-react";
+import { Check, Loader, Search } from "lucide-react";
 
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,7 +26,6 @@ const Programme_page = () => {
       if (!exists) acc.push(curr);
       return acc;
     }, []);
-
 
   const toggleCategory = (cat: string) => {
     setSelectedCategories((prev) =>
@@ -54,12 +55,25 @@ const Programme_page = () => {
     filteredProgramme();
   }, [selectedCategories, filteredProgramme]);
 
-  if (isPending || !ProgrammeList) {
-    return;
+  if (isPending) {
+    return <div className="w-full h-[80vh] flex flex-col items-center justify-center">
+      <Loader className="text-primary animate-spin" size={30}/>
+      <p className="text-primary font-semibold text-lg">Sessions is loading...</p>
+    </div>;
   }
 
   if (error) {
-    return <div>{error.message}</div>;
+    return <div className="flex items-center justify-center h-[80vh]">
+      <ErrorDisplay title="Programme Error" message={error.message}/>
+    </div>;
+  }
+
+  if (!ProgrammeList || !ProgrammeList.response) {
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <NoData />
+      </div>
+    );
   }
 
   return (

@@ -15,7 +15,7 @@ const CreateModal:React.FC<CreateModalProps> = ({isOpen, onClose}) => {
       showCloseButton
       classname="p-0"
     >
-      <div className="bg-primary w-full rounded-t-lg px-8 text-white py-3 text-xl font-[600]">
+      <div className="bg-primary w-full rounded-t-lg px-8 text-white py-3 text-xl font-semibold">
         {"Create Programme"}
       </div>
       <div className="p-6 h-[85vh] overflow-auto">

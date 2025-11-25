@@ -4,16 +4,28 @@ import UploadModal from "@/components/global/UploadModel";
 import EditModal from "./EditModal";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { setIsDeleting, setIsPublished, setSelected } from "@/redux/HomeDesignSlice";
-import { useDeleteNews, useGetNewsList, usePublishedNews } from "@/api/home_design_api/Home_design_api";
+import {
+  setIsDeleting,
+  setIsPublished,
+  setSelected,
+} from "@/redux/HomeDesignSlice";
+import {
+  useDeleteNews,
+  useGetNewsList,
+  usePublishedNews,
+} from "@/api/home_design_api/Home_design_api";
 import { Skeleton } from "@/components/ui/skeleton";
+import ErrorDisplay from "@/components/global/ErrorDisplay";
+import NoData from "@/components/global/NoData";
 
 const CustomTable = () => {
   const { NewsList, isNewsListPending, errorInNewsList } = useGetNewsList();
-  const {DeleteNews, isPending:isDeletePending} = useDeleteNews()
-  const {PulishedNew, isPending:isPublishPending} = usePublishedNews()
+  const { DeleteNews, isPending: isDeletePending } = useDeleteNews();
+  const { PulishedNew, isPending: isPublishPending } = usePublishedNews();
 
-  const { selected, isDeleting, isPublished } = useSelector((state: RootState) => state.Home_Design);
+  const { selected, isDeleting, isPublished } = useSelector(
+    (state: RootState) => state.Home_Design
+  );
   const dispatch = useDispatch<AppDispatch>();
 
   if (isNewsListPending) {
@@ -24,8 +36,23 @@ const CustomTable = () => {
     ));
   }
 
-  if(errorInNewsList){
-    return <div>{errorInNewsList.message}</div>
+  if (errorInNewsList) {
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <ErrorDisplay
+          title="Programme Error"
+          message={errorInNewsList.message}
+        />
+      </div>
+    );
+  }
+
+   if (!NewsList || !NewsList.response) {
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <NoData />
+      </div>
+    );
   }
 
   return (
@@ -63,7 +90,7 @@ const CustomTable = () => {
           <tbody>
             {NewsList?.response.map((item, index) => (
               <tr key={item.id} className="bg-gray-50 border">
-                <td className="px-6 py-2 rounded-[8px]">{index + 1}</td>
+                <td className="px-6 py-2 rounded-lg">{index + 1}</td>
                 <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">
                   {item.title}
                 </td>
@@ -78,7 +105,7 @@ const CustomTable = () => {
                 <td className="px-6 py-2">
                   <div className="ml-[1.4rem]">{item.tile_space}</div>
                 </td>
-                <td className="px-6 py-2 flex gap-3 rounded-[8px]">
+                <td className="px-6 py-2 flex gap-3 rounded-lg">
                   <Pencil
                     onClick={() => dispatch(setSelected(item.id))}
                     color="#425EBC"
@@ -108,13 +135,13 @@ const CustomTable = () => {
       <DeleteModel
         isOpen={Boolean(isDeleting)}
         onClose={() => dispatch(setIsDeleting(null))}
-        onConfirm={() => DeleteNews({id: isDeleting as string})}
+        onConfirm={() => DeleteNews({ id: isDeleting as string })}
         isDeleting={isDeletePending}
       />
       <UploadModal
         isOpen={Boolean(isPublished)}
         onClose={() => dispatch(setIsPublished(null))}
-        onConfirm={() => PulishedNew({id:isPublished as string})}
+        onConfirm={() => PulishedNew({ id: isPublished as string })}
         isAction={isPublishPending}
       />
       <EditModal

@@ -1,6 +1,9 @@
 import { useGetSpeakersList } from "@/api/global_api/global_api";
 import SpeakerCard from "@/components/common/Speaker/SpeakerCard";
+import ErrorDisplay from "@/components/global/ErrorDisplay";
+import NoData from "@/components/global/NoData";
 import Titlabar from "@/components/global/Titlabar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/lib/utils";
 import type { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
@@ -16,11 +19,25 @@ const Speaker_page = () => {
   } = useSelector((state: RootState) => state.Global_Slice);
 
   if (isPending || !SpeakersList) {
-    return;
+    return <div className="grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4 mx-[7.5%]">
+      {[1,2,3,4,5].map((val)=>
+        <Skeleton key={val} className="w-60 h-60"/>
+      )}
+    </div>
   }
 
   if (error) {
-    return <div>{error.message}</div>;
+    return <div className="flex items-center justify-center h-[80vh]">
+      <ErrorDisplay title="Speakers Error" message={error.message}/>
+    </div>;
+  }
+
+  if (!SpeakersList || !SpeakersList.response || !SpeakersList.response.length) {
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <NoData />
+      </div>
+    );
   }
 
   return (
@@ -34,7 +51,7 @@ const Speaker_page = () => {
         className="mb-8"
       />
       <div className="grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4">
-        {SpeakersList?.response.map((prop, index) => (
+        {SpeakersList.response.map((prop, index) => (
           <SpeakerCard key={index} image={prop.user_img} {...prop} />
         ))}
       </div>

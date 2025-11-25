@@ -5,23 +5,49 @@ import {
 import ColorPicker from "@/components/common/Global_Design/ColorPicker";
 import LogoUpload from "@/components/common/Global_Design/LogoUpload";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
+import ErrorDisplay from "@/components/global/ErrorDisplay";
+import NoData from "@/components/global/NoData";
 import Section from "@/components/global/Section";
 import TextStyleRow from "@/components/global/TextStyleRow";
 import { normalizeLabel } from "@/lib/utils";
 import { setAppConfig } from "@/redux/GlobalDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
+import { Loader } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
 const GlobalDesign_page = () => {
-  const { GlobalDesign, isGlobalDesignPending } = useGlobalDesign();
+  const { GlobalDesign, isGlobalDesignPending, error } = useGlobalDesign();
   const { appConfig } = useSelector(
     (state: RootState) => state.Global_DesignSlice
   );
   const dispatch = useDispatch<AppDispatch>();
   const { updateAppConfig, isUpdateAppConfigPending } = useAppConfigUpdate();
 
-  if (isGlobalDesignPending || !GlobalDesign) {
-    return;
+  if (isGlobalDesignPending) {
+    return (
+      <div className="w-full h-screen flex flex-col items-center justify-center">
+        <Loader className="text-primary animate-spin" size={30} />
+        <p className="text-primary font-semibold text-lg">
+          Please wait data is loading...
+        </p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <ErrorDisplay title="News Feed Error" message={error.message} />
+      </div>
+    );
+  }
+
+  if (!GlobalDesign || !GlobalDesign.response) {
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <NoData />
+      </div>
+    );
   }
 
   return (

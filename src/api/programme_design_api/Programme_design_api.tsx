@@ -144,3 +144,17 @@ export const useDeleteCategory = () => {
 
   return {DeleteCategory, isDeleteCategoryPending, error}
 };
+
+export const useGetCategoryAll = ()=>{
+  const {data:AllCategory, isPending, error} = useQuery({
+    queryKey:['category-list'],
+    queryFn:async()=>{
+       const res = await apiRequest("get", "category/all");
+      return res.response;
+    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+  })
+
+  return {AllCategory, isPending, error}
+}
