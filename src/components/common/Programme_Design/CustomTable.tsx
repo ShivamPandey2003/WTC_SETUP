@@ -1,7 +1,6 @@
 import { Pencil, Trash2 } from "lucide-react";
 import DeleteModel from "@/components/global/DeleteModel";
 import { useDeleteSession, useGetSessionList } from "@/api/programme_design_api/Programme_design_api";
-import { dateCustom } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";

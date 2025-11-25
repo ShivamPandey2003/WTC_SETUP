@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import SessionCard from "./SessionCard";
 import { buildTimeline, toMin, type Placeholder } from "@/lib";
-import { formatTime } from "@/lib/utils";
 import type { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import NoData from "@/components/global/NoData";
