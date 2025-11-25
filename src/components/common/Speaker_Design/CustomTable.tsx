@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { setIsDeleting, setSelected } from "@/redux/SpeakerDesignSlice";
 import EditModal from "./EditModal";
+import ErrorDisplay from "@/components/global/ErrorDisplay";
+import NoData from "@/components/global/NoData";
 
 const CustomTable = () => {
   const {
@@ -34,7 +36,19 @@ const CustomTable = () => {
   }
 
   if (errorInSpeakerList) {
-    return <div>{errorInSpeakerList.message}</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <ErrorDisplay title="News Feed Error" message={errorInSpeakerList.message} />
+      </div>
+    );
+  }
+
+  if (!SpeakerList || !SpeakerList.response) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <NoData />
+      </div>
+    );
   }
 
   return (
@@ -72,7 +86,7 @@ const CustomTable = () => {
           <tbody>
             {SpeakerList?.response.map((item, index) => (
               <tr key={index} className="bg-gray-50 border">
-                <td className="px-6 py-2 rounded-[8px]">{index + 1}</td>
+                <td className="px-6 py-2 rounded-lg">{index + 1}</td>
                 <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">
                   {item.name}
                 </td>
@@ -85,13 +99,13 @@ const CustomTable = () => {
                 <td className="pl-9 py-2">
                   <img
                     src={`data:image/png;base64,${item.attachments[0].speaker_image}`}
-                    className="w-[24px] h-[24px]"
+                    className="w-6 h-6"
                   />
                 </td>
                 <td className="pl-12 py-2">
                   <Keynote size={20} className="text-primary" />
                 </td>
-                <td className="px-6 py-2 flex gap-2 rounded-[8px]">
+                <td className="px-6 py-2 flex gap-2 rounded-lg">
                   <Pencil
                     onClick={() => dispatch(setSelected(item.speaker_id))}
                     color="#425EBC"

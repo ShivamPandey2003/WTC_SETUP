@@ -30,39 +30,38 @@ function groupByTime(events: Programme[]): Record<number, Programme[]> {
 
   const sorted = [...events].sort(
     (a, b) =>
-      toMin(formatTime(a.start_time)) - toMin(formatTime(b.start_time))
+      toMin(a.start_time) - toMin(b.start_time)
   );
 
   const uniqueHours: number[] = [];
   sorted.forEach(ev => {
-    const hour = Number(formatTime(ev.start_time).split(":")[0]);
+    const hour = Number(ev.start_time.split(":")[0]);
     if (!uniqueHours.includes(hour)) {
       uniqueHours.push(hour);
     }
   });
 
   sorted.forEach(ev => {
-    const hour = Number(formatTime(ev.start_time).split(":")[0]);
+    const hour = Number(ev.start_time.split(":")[0]);
     const groupIndex = uniqueHours.indexOf(hour);
 
     if (!groups[groupIndex]) groups[groupIndex] = [];
     groups[groupIndex].push(ev);
   });
-
   return groups;
 }
 
 
 function alignGroup(events: Programme[], nextEvents: (Programme | Placeholder)[]): TimelineGroup {
   const end = nextEvents.filter(isSession).reduce((max, ev) => {
-    return toMin(formatTime(ev.end_time)) > toMin(formatTime(max.end_time)) ? ev : max;
+    return toMin(ev.end_time) > toMin(max.end_time) ? ev : max;
   });
   const result: TimelineGroup = [];
 
   events.forEach((ev, index) => {
-    const startMin = toMin(formatTime(ev.start_time));
+    const startMin = toMin(ev.start_time);
 
-    if (index === nextEvents.indexOf(end) && startMin < toMin(formatTime(end.end_time))) {
+    if (index === nextEvents.indexOf(end) && startMin < toMin(end.end_time)) {
       result.push({});
     }
 

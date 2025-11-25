@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { setIsDeleting, setSelected } from "@/redux/ProgrammeDesignSlice";
 import EditModal from "./EditModel";
+import ErrorDisplay from "@/components/global/ErrorDisplay";
+import NoData from "@/components/global/NoData";
 
 const CustomTable = () => {
   const {SessionList, isPending:isSessionListPending, error:errorInSessionList} = useGetSessionList()
@@ -23,8 +25,23 @@ const CustomTable = () => {
     ));
   }
 
-  if(errorInSessionList){
-    return <div>{errorInSessionList.message}</div>
+  if (errorInSessionList) {
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <ErrorDisplay
+          title="Table Error"
+          message={errorInSessionList.message}
+        />
+      </div>
+    );
+  }
+
+   if (!SessionList || !SessionList.response) {
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <NoData />
+      </div>
+    );
   }
 
   return (
@@ -69,9 +86,9 @@ const CustomTable = () => {
                 <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[320px]">
                   {item.description}
                 </td>
-                <td className="px-6 py-2">{dateCustom(item.start_time)}</td>
-                <td className="px-6 py-2">{dateCustom(item.end_time)}</td>
-                <td className="px-6 py-2">{item.category}</td>
+                <td className="px-6 py-2">{item.start_time}</td>
+                <td className="px-6 py-2">{item.end_time}</td>
+                <td className="px-6 py-2">{item.categories.map((e)=>e.name)}</td>
                 <td className="px-6 py-2 flex gap-2 rounded-lg">
                   <Pencil
                   onClick={()=>dispatch(setSelected(item.session_id))}

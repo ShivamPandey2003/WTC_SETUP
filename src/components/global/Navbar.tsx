@@ -16,16 +16,17 @@ const Navbar = () => {
 
   return (
     <nav className="w-full">
-      <div className="fixed top-0 w-full flex justify-between items-center py-2 z-[999] bg-background px-[7.5%]">
+      <div className="fixed top-0 w-full flex justify-between items-center py-2 z-999 bg-background px-[7.5%]">
         <img src="./Logo.png" className="w-[122px] h-[67px]" />
         <div className="hidden lg:flex items-center justify-between w-[690px] gap-2">
           {Navroutes.map(({ Icon, title, route }) => (
             <Link
               key={route}
-              to={route}
+              to={title === "Contact" ? "#" : route}
               className={cn(
-                "flex gap-2 rounded-[5px] w-[150px] h-[32px] items-center justify-center cursor-pointer",
-                pathname === route && "bg-button border-border border-[1px]"
+                "flex gap-2 rounded-[5px] w-[150px] h-8 items-center justify-center cursor-pointer",
+                pathname === route && "bg-button border-border border",
+                title === "Contact" && "cursor-not-allowed"
               )}
             >
               <Icon
@@ -37,7 +38,7 @@ const Navbar = () => {
               />
               <span
                 className={cn(
-                  "font-[600] text-[14px] text-text",
+                  "font-semibold text-[14px] text-text",
                   pathname === route && "text-primary"
                 )}
               >
@@ -47,7 +48,7 @@ const Navbar = () => {
           ))}
         </div>
         <div className="flex items-center gap-6">
-          <div className="bg-bgCard border-[1px] border-border p-1 rounded-[5px] block md:hidden">
+          <div className="bg-bgCard border border-border p-1 rounded-[5px] block md:hidden">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -93,31 +94,31 @@ const Navbar = () => {
           {!token ? (
             <Button
               onClick={() => dispatch(setLoginModel(true))}
-              className="hidden sm:block px-[12px] py-[6px] w-[115px] h-[32px]"
+              className="hidden sm:block px-3 py-1.5 w-[115px] h-8"
             >
               Log In
             </Button>
           ) : (
             <Button
               onClick={() => navigate("/global-design")}
-              className="hidden sm:block px-[12px] py-[6px] w-fit h-[32px]"
+              className="hidden sm:block px-3 py-1.5 w-fit h-8"
             >
               Go to dashboard
             </Button>
           )}
         </div>
       </div>
-      <div className="pt-[6rem]">
+      <div className="pt-24">
         {isOpen && (
-          <div className="h-auto transition-all duration-200 overflow-hidden bg-bgCard border-[1px] border-border rounded-[5px] p-4">
+          <div className="h-auto transition-all duration-200 overflow-hidden bg-bgCard border border-border rounded-[5px] p-4">
             <div className="flex flex-col items-center gap-4 py-2">
               {Navroutes.map(({ Icon, title, route }) => (
                 <Link
-                  to={route}
+                  to={title === "Contact" ? "#" : route}
                   key={route}
                   className={cn(
-                    "flex gap-2 rounded-[5px] w-[150px] h-[32px] items-center justify-center cursor-pointer",
-                    pathname === route && "bg-button border-border border-[1px]"
+                    "flex gap-2 rounded-[5px] w-[150px] h-8 items-center justify-center cursor-pointer",
+                    pathname === route && "bg-button border-border border"
                   )}
                 >
                   <Icon
@@ -129,7 +130,7 @@ const Navbar = () => {
                   />
                   <span
                     className={cn(
-                      "font-[600] text-[14px] text-text",
+                      "font-semibold text-[14px] text-text",
                       pathname === route && "text-primary"
                     )}
                   >
@@ -140,14 +141,14 @@ const Navbar = () => {
               {!token ? (
                 <Button
                   onClick={() => dispatch(setLoginModel(true))}
-                  className="sm:hidden w-[150px] h-[32px]"
+                  className="sm:hidden w-[150px] h-8"
                 >
                   Log In
                 </Button>
               ) : (
                 <Button
                   onClick={() => navigate("/global-design")}
-                  className="sm:hidden w-[150px] h-[32px]"
+                  className="sm:hidden w-[150px] h-8"
                 >
                   Go to dashboard
                 </Button>

@@ -15,6 +15,8 @@ import Exhibitors_page from "@/pages/Exhibitors.page";
 import ProtectedRoute from "./ProtectedRoute";
 import Profile_page from "@/pages/Profile.page";
 import UsersProfile_page from "@/pages/UsersProfile.page";
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorDisplay from "@/components/global/ErrorDisplay";
 
 const Router = createBrowserRouter(
   [
@@ -32,7 +34,18 @@ const Router = createBrowserRouter(
         },
         {
           path: "programme",
-          element: <Programme_page />,
+          element: (
+            <ErrorBoundary
+              fallback={
+                <ErrorDisplay
+                  title="Something went wrong"
+                  message="Oops!, Something went wrong. please wait for a while"
+                />
+              }
+            >
+              <Programme_page />
+            </ErrorBoundary>
+          ),
         },
         {
           path: "venue",
@@ -43,52 +56,63 @@ const Router = createBrowserRouter(
           element: <Exhibitors_page />,
         },
         {
-          path:"profile",
-          element:<UsersProfile_page/>
-        }
+          path: "profile",
+          element: (
+            <ErrorBoundary
+              fallback={
+                <ErrorDisplay
+                  title="Something went wrong"
+                  message="Oops!, Something went wrong. please wait for a while"
+                />
+              }
+            >
+              <UsersProfile_page />,
+            </ErrorBoundary>
+          ),
+        },
       ],
     },
     {
-      path:"/",
-      element:<ProtectedRoute element={<AdminLayout/>}/>,
-      children:[
+      path: "/",
+      element: <ProtectedRoute element={<AdminLayout />} />,
+      children: [
         {
-          path:"global-design",
-          element:<GlobalDesign_page/>
+          path: "global-design",
+          element: <GlobalDesign_page />,
         },
         {
-          path:"home-design",
-          element:<HomeDesign_page/>
+          path: "home-design",
+          element: <HomeDesign_page />,
         },
         {
-          path:"programme-design",
-          element:<ProgrammeDesign_page/>
+          path: "programme-design",
+          element: <ProgrammeDesign_page />,
         },
         {
-          path:"speakers-design",
-          element:<SpeakersDesign_page/>
+          path: "speakers-design",
+          element: <SpeakersDesign_page />,
         },
         {
-          path:"venue-design",
-          element:<VenueDesign_page/>
+          path: "venue-design",
+          element: <VenueDesign_page />,
         },
         {
-          path:"exhibitors-design",
-          element:<ExhibitorsDesign_page/>
-        }
-      ]
+          path: "exhibitors-design",
+          element: <ExhibitorsDesign_page />,
+        },
+      ],
     },
     {
-      path:'/',
-      element:<ProtectedRoute element={<RootLayout/>}/>,
-      children:[
+      path: "/",
+      element: <ProtectedRoute element={<RootLayout />} />,
+      children: [
         {
-          path:'wtc-profile',
-          element:<Profile_page/>
-        }
-      ]
-    }
-  ],
+          path: "wtc-profile",
+          element: <Profile_page />,
+        },
+      ],
+    },
+  ]
   // {
   //   basename: "/wtc/",
   // }

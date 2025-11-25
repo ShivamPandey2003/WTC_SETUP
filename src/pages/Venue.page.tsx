@@ -3,14 +3,39 @@ import Floor_plan from "@/components/common/Venue/Floor_plan";
 import Getting_there from "@/components/common/Venue/Getting_there";
 import Travel_Information from "@/components/common/Venue/Travel_Information";
 import Visa_Information from "@/components/common/Venue/Visa_Information";
+import ErrorDisplay from "@/components/global/ErrorDisplay";
+import NoData from "@/components/global/NoData";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { Loader } from "lucide-react";
 
 const Venue_page = () => {
+  const { Venue, isPending, error } = useGetVenue();
 
-  const {Venue, isPending}=useGetVenue()
+  if (isPending) {
+    return (
+      <div className="w-full h-[80vh] flex flex-col items-center justify-center">
+        <Loader className="text-primary animate-spin" size={30} />
+        <p className="text-primary font-semibold text-lg">
+          Venue details is loading...
+        </p>
+      </div>
+    );
+  }
 
-  if(isPending || !Venue){
-    return
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <ErrorDisplay title="Venue Error" message={error.message} />
+      </div>
+    );
+  }
+
+  if (!Venue || !Venue.response) {
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <NoData />
+      </div>
+    );
   }
 
   return (
@@ -30,15 +55,21 @@ const Venue_page = () => {
         </TabsContent>
 
         <TabsContent value="Floor Plan" className="w-full">
-          <Floor_plan/>
+          <Floor_plan />
         </TabsContent>
 
-        <TabsContent value="Visa Information" className="w-full flex justify-center">
-          <Visa_Information/>
+        <TabsContent
+          value="Visa Information"
+          className="w-full flex justify-center"
+        >
+          <Visa_Information />
         </TabsContent>
 
-        <TabsContent value="Travel Information" className="w-full flex justify-center">
-          <Travel_Information/>
+        <TabsContent
+          value="Travel Information"
+          className="w-full flex justify-center"
+        >
+          <Travel_Information />
         </TabsContent>
       </Tabs>
     </div>

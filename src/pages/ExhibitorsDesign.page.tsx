@@ -5,35 +5,61 @@ import Section from "@/components/global/Section";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
-import { Plus } from "lucide-react";
+import { Loader, Plus } from "lucide-react";
 import React from "react";
 import CreateModal from "@/components/common/Exhibitors_Design/CreateModal";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
-import {
-  setIsCreating,
-} from "@/redux/ExhibitorSlice";
+import { setIsCreating } from "@/redux/ExhibitorSlice";
 import {
   useCategoryList,
   useGeneralExhibitorsUpdate,
 } from "@/api/global_api/global_api";
 import { useGetSpeakerSetting } from "@/api/speaker_design_api/speaker_design_api";
 import { setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
+import ErrorDisplay from "@/components/global/ErrorDisplay";
+import NoData from "@/components/global/NoData";
 
 const ExhibitorsDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   const {} = useCategoryList();
-  const {} = useGetSpeakerSetting();
-  const {
-    isCreating,
-    Categorys,
-  } = useSelector((state: RootState) => state.ExhibitorSlice);
+  const { SpeakerSettings:SettingValue ,isPending, error} = useGetSpeakerSetting();
+  const { isCreating, Categorys } = useSelector(
+    (state: RootState) => state.ExhibitorSlice
+  );
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice
   );
   const dispatch = useDispatch();
   const { GeneralExhibitorsUpdate, isGeneralExhibitorsUpdatePending } =
     useGeneralExhibitorsUpdate();
+
+  if (isPending) {
+    return (
+      <div className="w-full h-screen flex flex-col items-center justify-center">
+        <Loader className="text-primary animate-spin" size={30} />
+        <p className="text-primary font-semibold text-lg">
+          Please wait data is loading...
+        </p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <ErrorDisplay title="News Feed Error" message={error.message} />
+      </div>
+    );
+  }
+
+  if (!SettingValue || !SettingValue.response) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <NoData />
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 overflow-y-auto">

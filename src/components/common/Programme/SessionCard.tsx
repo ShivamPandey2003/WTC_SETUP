@@ -1,7 +1,6 @@
 import { MapPin, Bell, Calendar } from "lucide-react";
 import clsx from "clsx";
 import { CATEGORY_COLORS, formatDuration } from "@/lib";
-import { formatTime } from "@/lib/utils";
 
 export default function SessionCard({
   session,
@@ -17,6 +16,7 @@ export default function SessionCard({
   return (
     <div
       className={clsx("rounded-xl border shadow-sm text-sm flex flex-col", color, className)}
+      // style={{backgroundColor:session.categories[0].color}}
     >
       <div className="flex-1">
         <h3 className="font-medium text-gray-800 mb-1">{session.title}</h3>
@@ -34,9 +34,9 @@ export default function SessionCard({
         <div className="flex justify-between text-xs text-gray-600">
           <span className="text-xs text-gray-500">{session.categories[0].name}</span>
           <span>
-            {formatTime(session.start_time)} - {formatTime(session.end_time)}
+            {(session.start_time)} - {(session.end_time)}
           </span>
-          <span>{formatDuration(`${formatTime(session.start_time)} - ${formatTime(session.end_time)}`)}</span>
+          <span>{formatDuration(`${(session.start_time)} - ${(session.end_time)}`)}</span>
         </div>
     </div>
   );

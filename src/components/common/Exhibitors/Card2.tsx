@@ -13,7 +13,7 @@ type Props = {
 const Card2: React.FC<Props> = ({ full_name, logo, url, email }) => {
   return (
     <div className="w-[130px] md:w-fit rounded-lg border border-[#0000000D] bg-[#D9D9D90D] flex flex-col md:flex-row md:items-center gap-2 justify-center p-2">
-      <img src={logo} alt="test" className="w-[100px] mx-auto md:mx-0" />
+      <img src={logo} alt="test" className="w-20 h-20 mx-auto md:mx-0" />
       <div>
         <div className="flex items-center gap-3 justify-center mb-2 cursor-pointer">
           <h3 className="text-[14px] font-medium leading-5">{full_name}</h3>

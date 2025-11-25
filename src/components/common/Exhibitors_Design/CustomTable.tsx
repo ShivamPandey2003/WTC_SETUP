@@ -10,9 +10,11 @@ import type { AppDispatch, RootState } from "@/redux/store";
 import { setIsDeleting, setSelected } from "@/redux/ExhibitorSlice";
 import DeleteModel from "@/components/global/DeleteModel";
 import EditModal from "./EditModel";
+import ErrorDisplay from "@/components/global/ErrorDisplay";
+import NoData from "@/components/global/NoData";
 
 const CustomTable = () => {
-  const { isExhibitorsPending, errorInError } = useGetExhibitorsList();
+  const { Exhibitors:ValueExhibitors, isExhibitorsPending, errorInError } = useGetExhibitorsList();
   const { isDeleting, selected, Exhibitors } = useSelector(
     (state: RootState) => state.ExhibitorSlice
   );
@@ -28,7 +30,22 @@ const CustomTable = () => {
   }
 
   if (errorInError) {
-    return <div>{errorInError.message}</div>;
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <ErrorDisplay
+          title="Table Error"
+          message={errorInError.message}
+        />
+      </div>
+    );
+  }
+
+   if (!ValueExhibitors || !ValueExhibitors.response) {
+    return (
+      <div className="flex items-center justify-center h-[80vh]">
+        <NoData />
+      </div>
+    );
   }
 
   return (
@@ -67,7 +84,8 @@ const CustomTable = () => {
             </tr>
           </thead>
           <tbody>
-            {Exhibitors.map((item, index) => (
+            {/* {!Exhibitors.length && <td className="text-center">No date</td>} */}
+            {Boolean(Exhibitors.length) && Exhibitors.map((item, index) => (
               <tr key={index} className="bg-gray-50 border">
                 <td className="pl-3 py-2 rounded-lg">{index + 1}</td>
                 <td className="pl-6 py-2">{item.full_name}</td>

@@ -10,9 +10,20 @@ import { Save, X, Plus } from "lucide-react";
 type FieldConfig<T extends Record<string, any>> = {
   name: Path<T>;
   label: string;
-  type?: "text" | "textarea" | "number" | "file" | "checkbox" | "date" | "array-string" | "array-attachment";
+  type?:
+    | "text"
+    | "textarea"
+    | "number"
+    | "file"
+    | "checkbox"
+    | "date"
+    | "array-string"
+    | "array-attachment"
+    | "time"
+    | "select";
   placeholder?: string;
   accept?: string;
+  options?: { label: string; value: string }[];
 };
 
 type Props<T extends Record<string, any>> = {
@@ -32,8 +43,12 @@ const CustomForm = <T extends Record<string, any>>({
   isLoading,
   onClose,
 }: Props<T>) => {
-  const [arrayStrings, setArrayStrings] = useState<Record<string, string[]>>({});
-  const [arrayAttachments, setArrayAttachments] = useState<Record<string, File[]>>({});
+  const [arrayStrings, setArrayStrings] = useState<Record<string, string[]>>(
+    {}
+  );
+  const [arrayAttachments, setArrayAttachments] = useState<
+    Record<string, File[]>
+  >({});
 
   const handleAddStringToArray = (fieldName: string) => {
     setArrayStrings((prev) => ({
@@ -49,7 +64,11 @@ const CustomForm = <T extends Record<string, any>>({
     }));
   };
 
-  const handleUpdateString = (fieldName: string, index: number, value: string) => {
+  const handleUpdateString = (
+    fieldName: string,
+    index: number,
+    value: string
+  ) => {
     setArrayStrings((prev) => {
       const updated = [...(prev[fieldName] || [])];
       updated[index] = value;
@@ -98,11 +117,11 @@ const CustomForm = <T extends Record<string, any>>({
     <form onSubmit={handleFormSubmit} className="space-y-4">
       {fields.map((field) => (
         <div key={field.name} className="flex items-start gap-3">
-          {(
+          {
             <label className="text-sm font-medium text-gray-700 w-32 pt-1">
               {field.label}
             </label>
-          )}
+          }
           <div className="w-full">
             {field.type === "textarea" ? (
               <textarea
@@ -131,7 +150,13 @@ const CustomForm = <T extends Record<string, any>>({
               <input
                 type="date"
                 {...register(field.name)}
-                className="w-full rounded outline-0 border-[1px] border-gray-200 px-2 py-1 focus:border-primary"
+                className="w-full rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary"
+              />
+            ) : field.type === "time" ? (
+              <input
+                type="time"
+                {...register(field.name)}
+                className="w-fit rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary"
               />
             ) : field.type === "array-string" ? (
               <div className="space-y-2">
@@ -141,14 +166,20 @@ const CustomForm = <T extends Record<string, any>>({
                       type="text"
                       value={value}
                       onChange={(e) =>
-                        handleUpdateString(field.name as string, index, e.target.value)
+                        handleUpdateString(
+                          field.name as string,
+                          index,
+                          e.target.value
+                        )
                       }
                       placeholder={field.placeholder}
                       className="flex-1 rounded outline-0 border-[1px] border-gray-200 px-2 py-1 focus:border-primary"
                     />
                     <button
                       type="button"
-                      onClick={() => handleRemoveStringFromArray(field.name as string, index)}
+                      onClick={() =>
+                        handleRemoveStringFromArray(field.name as string, index)
+                      }
                       className="p-1 text-red-500 hover:bg-red-50 rounded"
                     >
                       <X size={18} />
@@ -167,14 +198,23 @@ const CustomForm = <T extends Record<string, any>>({
             ) : field.type === "array-attachment" ? (
               <div className="space-y-2">
                 {(arrayAttachments[field.name] || []).map((file, index) => (
-                  <div key={index} className="flex gap-2 items-center p-2 bg-gray-50 rounded border border-gray-200">
+                  <div
+                    key={index}
+                    className="flex gap-2 items-center p-2 bg-gray-50 rounded border border-gray-200"
+                  >
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-700">{file.name}</p>
-                      <p className="text-xs text-gray-500">{(file.size / 1024).toFixed(2)} KB</p>
+                      <p className="text-sm font-medium text-gray-700">
+                        {file.name}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {(file.size / 1024).toFixed(2)} KB
+                      </p>
                     </div>
                     <button
                       type="button"
-                      onClick={() => handleRemoveAttachment(field.name as string, index)}
+                      onClick={() =>
+                        handleRemoveAttachment(field.name as string, index)
+                      }
                       className="p-1 text-red-500 hover:bg-red-50 rounded"
                     >
                       <X size={18} />
@@ -191,6 +231,20 @@ const CustomForm = <T extends Record<string, any>>({
                   className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-bgCard file:text-primary hover:file:bg-blue-100"
                 />
               </div>
+            ) : field.type === "select" ? (
+              <select
+                {...register(field.name)}
+                className="w-full rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary"
+              >
+                <option value="" disabled>
+                  {field.placeholder || "Select an option"}
+                </option>
+                {field.options?.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
             ) : (
               <input
                 type={field.type ?? "text"}
