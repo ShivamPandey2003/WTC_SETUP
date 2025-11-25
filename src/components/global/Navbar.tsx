@@ -3,13 +3,14 @@ import { cn } from "@/lib/utils";
 import Navroutes from "@/data/Navroutes";
 import { Link, useLocation, useNavigate } from "react-router";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/redux/store";
 import { setLoginModel } from "@/redux/ModalSlice";
 
 const Navbar = () => {
   const { pathname } = useLocation();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const {appConfig} = useSelector((state:RootState)=>state.Global_DesignSlice)
   const dispatch = useDispatch<AppDispatch>();
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const Navbar = () => {
   return (
     <nav className="w-full">
       <div className="fixed top-0 w-full flex justify-between items-center py-2 z-999 bg-background px-[7.5%]">
-        <img src="./Logo.png" className="w-[122px] h-[67px]" />
+        <img src={appConfig.logo.url?`data:image/png;base64,${appConfig.logo.logo_img}`:"./Logo.png"} className="w-[122px] h-[67px]" />
         <div className="hidden lg:flex items-center justify-between w-[690px] gap-2">
           {Navroutes.map(({ Icon, title, route }) => (
             <Link
