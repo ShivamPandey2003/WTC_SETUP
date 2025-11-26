@@ -63,8 +63,10 @@ const NewFrom = () => {
   const fields: {
     name: keyof FormData;
     label: string;
-    type?: "text" | "textarea" | "file";
+    type?: "text" | "textarea" | "file"| "select";
     placeholder?: string;
+    accept?: string;
+    options?: { label: string; value: string }[];
   }[] = [
     { name: "title", label: "Title", placeholder: "Enter title here" },
     {
@@ -73,7 +75,13 @@ const NewFrom = () => {
       type: "textarea",
       placeholder: "Enter detailed description...",
     },
-    { name: "tile_space", label: "Tile Space", placeholder: "example:- 2x" },
+    { name: "tile_space", label: "Tile Space", placeholder: "example:- 2x", type: "select", options:[{label:"1x", value:"1x"},{label:"2x", value:"2x"}] },
+    {
+      name: "attachments",
+      label: "Attachments",
+      type: "file",
+      accept: "image/*",
+    }
   ];
 
   return (

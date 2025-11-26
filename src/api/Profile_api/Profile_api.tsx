@@ -36,7 +36,6 @@ export const useUploadProfilePic = () => {
     error,
   } = useMutation<ProfilePicResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
-      console.log(data)
       const res = await apiRequest("post", "user/profile/upload-image", data);
       return res.response;
     },

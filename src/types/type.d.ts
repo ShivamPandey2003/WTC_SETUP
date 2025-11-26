@@ -72,21 +72,19 @@ declare type CreateSessionResponse = {
 };
 
 declare type Session = {
-  sno: number;
   session_id: string;
   title: string;
-  categories: {
-    name: string;
-    color: string;
-  }[];
+  category: string[];
   location: string;
+  start_date: string;
+  end_date: string;
   start_time: string;
   end_time: string;
   speakers: string[];
-  attachments: File[];
   external_link: string;
   description: string;
-  created_on: string;
+  bg_img: null | string;
+  is_active: boolean;
 };
 
 declare type CreateSessionRequest = Omit<
@@ -378,7 +376,7 @@ declare type Exhibitor = {
   url: string;
   email: string;
   logo: string;
-  category: string;
+  categoryId: string;
   ads: boolean;
 };
 

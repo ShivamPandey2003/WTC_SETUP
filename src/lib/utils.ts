@@ -74,16 +74,17 @@ export function formatSpeakers(arr: string[]) {
   return arr.join(" & ");
 }
 
-export const CustomPick = <T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> => {
+export const CustomPick = <T, K extends keyof T>(
+  obj: T,
+  keys: K[]
+): Pick<T, K> => {
   return keys.reduce((acc, key) => {
     acc[key] = obj[key];
     return acc;
   }, {} as Pick<T, K>);
 };
 
-export const filterDates = (
-  dates: { date: string; day_name: string }[]
-) => {
+export const filterDates = (dates: { date: string; day_name: string }[]) => {
   const today = new Date();
   const todayStr = today.toLocaleDateString("en-US", {
     month: "short",

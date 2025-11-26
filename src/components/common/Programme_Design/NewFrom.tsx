@@ -32,9 +32,6 @@ const NewFrom = () => {
   const { CreateSession, isPending: isCreateSessionPending } =
     useCreateSession();
 
-  console.log(SpeakerList);
-  console.log(AllCategory);
-
   const onClose =
     selected && value
       ? () => dispatch(setSelected(null))

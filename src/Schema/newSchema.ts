@@ -9,6 +9,10 @@ export const newsSchema = z.object({
   "Created On": z.string().min(1, "Created On is required"),
   created_by: z.string().min(1, "Created by is required"),
   id: z.string().min(1, "ID is required"),
+  attachments: z
+    .instanceof(FileList)
+    .optional()
+    .refine((files) => !files || files.length > 0, "At least one file is required")
 });
 
 export type News = z.infer<typeof newsSchema>;

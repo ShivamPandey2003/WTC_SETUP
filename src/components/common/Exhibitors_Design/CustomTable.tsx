@@ -1,5 +1,5 @@
 import { CircleX, Pencil, SquareCheck, Trash2 } from "lucide-react";
-import { CategoryColor, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import {
   useDeleteExibitor,
   useGetExhibitorsList,
@@ -12,16 +12,19 @@ import DeleteModel from "@/components/global/DeleteModel";
 import EditModal from "./EditModel";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
+import { useGetCategoryAll } from "@/api/programme_design_api/Programme_design_api";
 
 const CustomTable = () => {
   const { Exhibitors:ValueExhibitors, isExhibitorsPending, errorInError } = useGetExhibitorsList();
+  const { AllCategory, isPending } = useGetCategoryAll();
   const { isDeleting, selected, Exhibitors } = useSelector(
     (state: RootState) => state.ExhibitorSlice
   );
   const dispatch = useDispatch<AppDispatch>();
   const { DeleteExibitor, isPending: isDeletingPending } = useDeleteExibitor();
 
-  if (isExhibitorsPending || !Exhibitors) {
+
+  if (isExhibitorsPending || isPending) {
     return [1, 2, 3, 4].map((val) => (
       <div key={val} className="w-full">
         <Skeleton className="h-8 w-full mb-2" />
@@ -107,11 +110,10 @@ const CustomTable = () => {
                 <td className="pl-2 py-2">
                   <div
                     className={cn(
-                      "w-[100px] h-5 rounded-[7px] text-xs flex items-center justify-center mr-2 text-white",
-                      CategoryColor(item.category)
+                      "w-[100px] h-5 rounded-[7px] flex items-center justify-center mr-2"
                     )}
                   >
-                    {item.category}
+                    {AllCategory?.response.find((pre:any)=>pre.id === item.categoryId).name}
                   </div>
                 </td>
                 <td className="pl-6 py-2">
