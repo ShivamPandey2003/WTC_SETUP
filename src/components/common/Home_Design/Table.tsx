@@ -88,7 +88,7 @@ const CustomTable = () => {
             </tr>
           </thead>
           <tbody>
-            {NewsList?.response.map((item, index) => (
+            {NewsList.response.map((item, index) => (
               <tr key={item.id} className="bg-gray-50 border">
                 <td className="px-6 py-2 rounded-lg">{index + 1}</td>
                 <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">

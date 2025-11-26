@@ -11,6 +11,7 @@ import {
 } from "@/redux/ExhibitorSlice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
+import type { ExhibitorSchemaType } from "@/Schema/exhibitorSchema";
 
 export const useGetExhibitorsList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -45,7 +46,7 @@ export const useCreateExhibitor = () => {
     mutate: CreateExhibitor,
     isPending: isCreatePending,
     error,
-  } = useMutation<ProfilePicResponse, AxiosError, Omit<Exhibitor, "id">>({
+  } = useMutation<ProfilePicResponse, AxiosError, ExhibitorSchemaType>({
     mutationFn: async (data) => {
       const res = await apiRequest("post", "/exhibitors/add", data);
       return res.response;
@@ -93,7 +94,11 @@ export const useEditExhibitor = () => {
     mutate: EditExhibitor,
     isPending: isEditPending,
     error,
-  } = useMutation<ProfilePicResponse, AxiosError, Exhibitor>({
+  } = useMutation<
+    ProfilePicResponse,
+    AxiosError,
+    ExhibitorSchemaType & { id: string }
+  >({
     mutationFn: async (data) => {
       const { id, ...rest } = data;
       const res = await apiRequest("post", `exhibitors/edit/${id}`, rest);

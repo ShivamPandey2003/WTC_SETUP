@@ -1,7 +1,10 @@
-import { useCreateExhibitor, useEditExhibitor } from "@/api/exhibitor_design_api/exhibitor_design_api";
+import {
+  useCreateExhibitor,
+  useEditExhibitor,
+} from "@/api/exhibitor_design_api/exhibitor_design_api";
+import { useGetCategoryAll } from "@/api/programme_design_api/Programme_design_api";
 import CustomForm from "@/components/global/CustomForm";
-import { setSelected } from "@/redux/ExhibitorSlice";
-import { setIsCreating } from "@/redux/HomeDesignSlice";
+import { setSelected, setIsCreating } from "@/redux/ExhibitorSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import {
   ExhibitorSchema,
@@ -19,7 +22,11 @@ const NewFrom = () => {
   const value = Exhibitors.find((pre) => pre.id === selected);
 
   const { CreateExhibitor, isCreatePending } = useCreateExhibitor();
-  const {EditExhibitor, isEditPending} = useEditExhibitor();
+  const { EditExhibitor, isEditPending } = useEditExhibitor();
+  const { AllCategory, isPending } = useGetCategoryAll();
+
+  const { categoryId, ...rest } = value!;
+  const data = { ...rest, category: categoryId };
 
   const {
     register,
@@ -27,24 +34,26 @@ const NewFrom = () => {
     formState: { errors },
   } = useForm<ExhibitorSchemaType>({
     resolver: zodResolver(ExhibitorSchema),
-    defaultValues: selected && value ? value : ({} as any),
+    defaultValues: selected && value ? data : ({} as any),
   });
   const dispatch = useDispatch<AppDispatch>();
 
-
   const onSubmit = (newData: ExhibitorSchemaType) => {
-     if (selected && value) {
-      EditExhibitor({...newData, id:`${selected}`});
-     }
-     else{
-       CreateExhibitor(newData);
-     }
+    if (selected && value) {
+      EditExhibitor({ ...newData, id: `${selected}` });
+    } else {
+      CreateExhibitor(newData);
+    }
   };
 
   const onClose =
     selected && value
       ? () => dispatch(setSelected(null))
       : () => dispatch(setIsCreating(false));
+
+  if (isPending) {
+    return;
+  }
 
   const fields: {
     name: keyof ExhibitorSchemaType;
@@ -57,9 +66,11 @@ const NewFrom = () => {
       | "checkbox"
       | "date"
       | "array-string"
+      | "select"
       | "array-attachment";
     placeholder?: string;
     accept?: string;
+    options?: { label: string; value: string }[];
   }[] = [
     { name: "full_name", label: "Name", placeholder: "Enter name here" },
     {
@@ -69,7 +80,17 @@ const NewFrom = () => {
     },
     { name: "email", label: "Email", placeholder: "example@mail.com" },
     { name: "logo", label: "Logo" },
-    { name: "category", label: "Category", placeholder: "Enter category here" },
+    {
+      name: "category",
+      label: "Category",
+      placeholder: "Enter category here",
+      type: "select",
+      options: AllCategory.response
+        .filter((pre: any) => Boolean(pre.type))
+        .map((item: any) => {
+          return { label: item.name, value: item.id };
+        }),
+    },
     { name: "ads", label: "Ads", type: "checkbox" },
   ];
 
