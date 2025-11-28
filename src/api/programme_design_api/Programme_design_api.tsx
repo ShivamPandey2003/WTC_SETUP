@@ -3,6 +3,7 @@ import {
   setCategoryModal,
   setIsCreating,
   setIsDeleting,
+  setSelected,
   setSession,
 } from "@/redux/ProgrammeDesignSlice";
 import type { AppDispatch } from "@/redux/store";
@@ -158,3 +159,28 @@ export const useGetCategoryAll = ()=>{
 
   return {AllCategory, isPending, error}
 }
+
+export const useEditSession = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    mutate: EditSession,
+    isPending,
+    error,
+  } = useMutation<CreateSpeakerResponse, AxiosError, FormData>({
+    mutationFn: async (data) => {
+      const id = data.get("id");
+      const res = await apiRequest("post", `/programme/edit/${id}`, data);
+      return res.response;
+    },
+    onSuccess: () => {
+      toast.success("Session edited successfully");
+      queryClient.invalidateQueries({ queryKey: ["sessionList"] });
+      dispatch(setSelected(null));
+    },
+    onError: (err) => {
+      toast.error(`Error editing session: ${err.message}`);
+    },
+  });
+
+  return { EditSession, isPending, error };
+};

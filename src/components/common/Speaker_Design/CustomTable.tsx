@@ -1,5 +1,5 @@
 import Linkedin from "@/assets/Icons/Linkedin";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, X } from "lucide-react";
 import DeleteModel from "@/components/global/DeleteModel";
 import Keynote from "@/assets/Icons/Keynote";
 import {
@@ -13,6 +13,7 @@ import { setIsDeleting, setSelected } from "@/redux/SpeakerDesignSlice";
 import EditModal from "./EditModal";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
+import Avatar1 from '@/assets/Images/Avatar1.png'
 
 const CustomTable = () => {
   const {
@@ -88,7 +89,7 @@ const CustomTable = () => {
               <tr key={index} className="bg-gray-50 border">
                 <td className="px-6 py-2 rounded-lg">{index + 1}</td>
                 <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">
-                  {item.name}
+                  {`${item.prefix} ${item.firstname} ${item.lastname}`}
                 </td>
                 <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[320px]">
                   {item.bio}
@@ -98,12 +99,12 @@ const CustomTable = () => {
                 </td>
                 <td className="pl-9 py-2">
                   <img
-                    src={`data:image/png;base64,${item.attachments[0].speaker_image}`}
+                    src={item.attachments[0].speaker_image?`data:image/png;base64,${item.attachments[0].speaker_image}`:Avatar1}
                     className="w-6 h-6"
                   />
                 </td>
                 <td className="pl-12 py-2">
-                  <Keynote size={20} className="text-primary" />
+                  {item.keyNote?<Keynote size={20} className="text-primary" />:<X size={20} className="text-red-400"/>}
                 </td>
                 <td className="px-6 py-2 flex gap-2 rounded-lg">
                   <Pencil

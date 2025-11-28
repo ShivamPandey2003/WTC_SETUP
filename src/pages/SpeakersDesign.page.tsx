@@ -91,8 +91,7 @@ const SpeakersDesign_page = () => {
           </TabsList>
           <TabsContent value="General Settings">
             <Section title="Basic info">
-              {Object.entries(SpeakerSettings)
-                .filter(([key]) => !key.includes("conference") && !key.includes("category"))
+              {Object.entries(SpeakerSettings.speaker_info)
                 .map(([key, value], i) => (
                   <div className="flex items-center py-2" key={i}>
                     <div className="w-40 text-sm font-medium">

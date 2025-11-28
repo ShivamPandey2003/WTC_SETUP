@@ -25,16 +25,13 @@ const NewFrom = () => {
   const { EditExhibitor, isEditPending } = useEditExhibitor();
   const { AllCategory, isPending } = useGetCategoryAll();
 
-  const { categoryId, ...rest } = value!;
-  const data = { ...rest, category: categoryId };
-
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<ExhibitorSchemaType>({
     resolver: zodResolver(ExhibitorSchema),
-    defaultValues: selected && value ? data : ({} as any),
+    defaultValues: selected && value ? {...value, category:value.categoryId} : ({} as any),
   });
   const dispatch = useDispatch<AppDispatch>();
 

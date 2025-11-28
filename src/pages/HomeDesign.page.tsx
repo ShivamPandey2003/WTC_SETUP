@@ -1,3 +1,4 @@
+import { useHomeDesignUpdate } from "@/api/global_api/global_api";
 import BannerPreview from "@/components/common/Home_Design/BannerPreview";
 import CreateModal from "@/components/common/Home_Design/CreateModal";
 import CustomTable from "@/components/common/Home_Design/Table";
@@ -6,6 +7,7 @@ import Section from "@/components/global/Section";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { cn } from "@/lib/utils";
+import { setAppConfig } from "@/redux/GlobalDesignSlice";
 import { setIsCreating } from "@/redux/HomeDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { Check, Plus, SquareArrowOutUpRight } from "lucide-react";
@@ -15,15 +17,20 @@ import { useDispatch, useSelector } from "react-redux";
 const HomeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   const dispatch = useDispatch<AppDispatch>();
-  const {isCreating} = useSelector((state: RootState)=>state.Home_Design)
+  const { isCreating } = useSelector((state: RootState) => state.Home_Design);
+  const { appConfig } = useSelector(
+    (state: RootState) => state.Global_DesignSlice
+  );
+  const {UpdateHomeDesign, isUpdateHomeDesignPending} = useHomeDesignUpdate()
 
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="mx-auto px-8 py-6 relative">
         <AdminTitlebar
           Title="Home Design"
-          onSave={() => {}}
+          onSave={() => UpdateHomeDesign()}
           show={Boolean(value !== "News")}
+          loading={isUpdateHomeDesignPending}
         />
         {Boolean(value === "News") && (
           <div className="absolute right-10">
@@ -57,32 +64,56 @@ const HomeDesign_page = () => {
             <Section title="Tab Title">
               <input
                 type="text"
-                value={"News Feed"}
-                onChange={(e) => console.log(e.target.value)}
+                value={appConfig.home_design.home_title}
+                onChange={(e) =>
+                  dispatch(
+                    setAppConfig({
+                      ...appConfig,
+                      home_design: {
+                        ...appConfig.home_design,
+                        home_title: e.target.value,
+                      },
+                    })
+                  )
+                }
                 className="bg-[#1111110D] font-semibold px-5 py-1 text-sm text-black rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
               />
             </Section>
             <Section title="Carousel Display">
               <div className="flex items-center justify-between">
-                <div className="w-1/2 flex flex-wrap gap-3">
-                  {[
-                    "Upcoming Session Info",
-                    "Gold Exhibitors Info",
-                    "Keynote Speakers Info",
-                    "Advertisements",
-                    "Exhibitors with Ad Subscription",
-                  ].map((value, index) => (
-                    <div
-                      key={index}
-                      className={cn(
-                        "flex items-center gap-2 bg-[#1111110D] px-5 py-1 text-sm text-black font-semibold rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors",
-                        index === 0 && "text-primary"
-                      )}
-                    >
-                      {index === 0 && <Check />}
-                      {value}
-                    </div>
-                  ))}
+                <div className="w-3/7 flex flex-wrap gap-3">
+                  {Object.keys(appConfig.home_design)
+                    .filter((pre) => pre !== "home_title")
+                    .map((value) => (
+                      <div
+                        key={value}
+                        className={cn(
+                          "flex items-center gap-2 bg-[#1111110D] px-3 py-1 text-sm text-black font-semibold rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors cursor-pointer",
+                          appConfig.home_design[
+                            value as keyof typeof appConfig.home_design
+                          ] && "text-primary"
+                        )}
+                        onClick={() =>
+                          dispatch(
+                            setAppConfig({
+                              ...appConfig,
+                              home_design: {
+                                ...appConfig.home_design,
+                                [value]:
+                                  !appConfig.home_design[
+                                    value as keyof typeof appConfig.home_design
+                                  ],
+                              },
+                            })
+                          )
+                        }
+                      >
+                        {appConfig.home_design[
+                          value as keyof typeof appConfig.home_design
+                        ] && <Check  size={20}/>}
+                        {value}
+                      </div>
+                    ))}
                 </div>
                 <div className="w-1/2">
                   <h3 className="text-[12px] font-medium leading-[15px] mb-2">
@@ -119,7 +150,10 @@ const HomeDesign_page = () => {
           </TabsContent>
         </Tabs>
       </div>
-      <CreateModal isOpen={isCreating} onClose={() => dispatch(setIsCreating(false))} />
+      <CreateModal
+        isOpen={isCreating}
+        onClose={() => dispatch(setIsCreating(false))}
+      />
     </div>
   );
 };

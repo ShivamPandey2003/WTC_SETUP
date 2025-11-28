@@ -22,6 +22,8 @@ const NewFrom = () => {
     resolver: zodResolver(speakerSchema),
     defaultValues: selected && value ? value : ({} as any),
   });
+
+  console.log(value)
   const dispatch = useDispatch<AppDispatch>();
   const {CreateSpeaker, isPending:isCreateSpeakerPending} = useCreateSpeaker()
   const {EditSpeaker, isPending:isEditSpeakerPending} = useEditSpeaker()
@@ -29,12 +31,15 @@ const NewFrom = () => {
   const onSubmit = (newData: SpeakerForm) => {
     const formData = new FormData();
 
-    formData.append("fullname", newData.name);
+    formData.append("prefix", newData.prefix as string);
+    formData.append("firstname", newData.firstname);
+    formData.append("lastname", newData.lastname);
     formData.append("bio", newData.bio as string);
     formData.append("company", newData.company as string);
     formData.append("designation", newData.designation as string);
     formData.append("external_link", newData?.external_link as string);
     formData.append("attachments", newData.attachments?.[0] as Blob);
+    formData.append("keyNote", String(newData.keyNote));
 
     if(selected && value){
       formData.append("id", selected)
@@ -64,7 +69,9 @@ const NewFrom = () => {
     placeholder?: string;
     accept?: string;
   }[] = [
-    { name: "name", label: "name", placeholder: "Enter name here" },
+    { name: "prefix", label: "Prefix", placeholder: "Enter prefix here" },
+    { name: "firstname", label: "Firstname", placeholder: "Enter first name here" },
+    { name: "lastname", label: "Lastname", placeholder: "Enter last name here" },
     {
       name: "bio",
       label: "Bio",
@@ -80,6 +87,7 @@ const NewFrom = () => {
       accept: "image/*",
     },
     { name: "external_link", label: "External Link" },
+    {name:"keyNote", label:"Keynote", type:"checkbox"}
   ];
 
   return (

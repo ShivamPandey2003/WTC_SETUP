@@ -1,5 +1,6 @@
 import {
   useCreateSession,
+  useEditSession,
   useGetCategoryAll,
 } from "@/api/programme_design_api/Programme_design_api";
 import { useGetSpeakerList } from "@/api/speaker_design_api/speaker_design_api";
@@ -32,6 +33,8 @@ const NewFrom = () => {
   const { CreateSession, isPending: isCreateSessionPending } =
     useCreateSession();
 
+  const { EditSession, isPending: isEditSessionPending } = useEditSession();
+
   const onClose =
     selected && value
       ? () => dispatch(setSelected(null))
@@ -60,7 +63,12 @@ const NewFrom = () => {
     formData.append("speakers", newData.speakers);
     formData.append("attachments", newData.attachments?.[0] as Blob);
 
-    CreateSession(formData);
+    if (value) {
+      formData.append("id", selected as string);
+      EditSession(formData);
+    } else {
+      CreateSession(formData);
+    }
   };
 
   if (isPending || isSpeakersListPenindg) {
@@ -119,7 +127,10 @@ const NewFrom = () => {
       type: "select",
       placeholder: "select one value",
       options: SpeakerList?.response.map((item) => {
-        return { label: item.name, value: item.speaker_id };
+        return {
+          label: `${item.prefix} ${item.firstname} ${item.lastname}`,
+          value: item.speaker_id,
+        };
       }),
     },
   ];
@@ -130,7 +141,7 @@ const NewFrom = () => {
       fields={fields}
       register={register}
       errors={errors}
-      isLoading={isCreateSessionPending}
+      isLoading={isCreateSessionPending || isEditSessionPending}
       onClose={onClose}
     />
   );

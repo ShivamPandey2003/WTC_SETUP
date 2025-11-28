@@ -1,4 +1,3 @@
-// import dummy from "@/assets/Images/Dummy.png";
 import { ExternalLink, Mail } from "lucide-react";
 import Map_Pin from "@/assets/Icons/Map_Pin";
 import type React from "react";
