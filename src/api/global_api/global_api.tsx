@@ -1,14 +1,25 @@
+// import {
+//   getDateRange,
+//   getEarliestAndLatest,
+//   transformSessions,
+// } from "@/lib/extra";
 import { CustomPick } from "@/lib/utils";
 import { queryClient } from "@/provider/TanstackProvider";
 import { setCategory } from "@/redux/ExhibitorSlice";
 import { setAppConfig } from "@/redux/GlobalDesignSlice";
-import { setConference_title, setProgramme, setVenue } from "@/redux/GlobalSlice";
+import {
+  setConference_title,
+  setProgramme,
+  setVenue,
+} from "@/redux/GlobalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
+// import { nanoid } from "nanoid";
+// import { setProgrammes, type ProgrammeRecord } from "@/redux/ExtraSlice";
 
 export const useGlobalDesign = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -38,7 +49,7 @@ export const useGetNewsList = () => {
     data: NewsList,
     isPending,
     error,
-    refetch
+    refetch,
   } = useQuery<NewsListResponse, AxiosError>({
     queryKey: ["global-News"],
     queryFn: async () => {
@@ -82,7 +93,7 @@ export const useGetProgrammeList = () => {
     data: ProgrammeList,
     isPending,
     error,
-    refetch
+    refetch,
   } = useQuery<GlobalProgrammeListResponse, AxiosError>({
     queryKey: ["global-programme"],
     queryFn: async () => {
@@ -90,7 +101,67 @@ export const useGetProgrammeList = () => {
       return res.response;
     },
     select: (data) => {
+      // const value: ProgrammeRecord = {
+      //   start_date: "",
+      //   start_time: "",
+      //   end_date: "",
+      //   end_time: "",
+      //   data: {},
+      // };
+
+      // const parseDate = (dateStr: string): Date => {
+      //   const [y, m, d] = dateStr.split("-").map(Number);
+      //   return new Date(y, m - 1, d); // Safe, no timezone issues
+      // };
+
+      // const formatYMD = (date: Date): string => {
+      //   return date.toLocaleDateString("en-CA"); // YYYY-MM-DD
+      // };
+
+      // const dates = data.response.programme.map((item) =>
+      //   parseDate(item.start_date)
+      // );
+
+      // const earliest = new Date(Math.min(...dates.map((d) => d.getTime())));
+      // const latest = new Date(Math.max(...dates.map((d) => d.getTime())));
+      // const Time = getEarliestAndLatest(data.response.programme);
+
+      // value.start_date = formatYMD(earliest);
+      // value.end_date = formatYMD(latest);
+      // value.start_time = Time.earliest;
+      // value.end_time = Time.latest;
+
+      // const dateRange = getDateRange(value.start_date, value.end_date);
+
+      // dateRange.forEach((item) => {
+      //   const val = data.response.programme
+      //     .filter((e) => e.start_date === item)
+      //     .map((Datas) => {
+      //       const detail = Object.entries(Datas.categories).map(([_, set]) => {
+      //         return {
+      //           name: set.name,
+      //           color: set.color,
+      //         };
+      //       });
+      //       return {
+      //         session_id:Datas.id,
+      //         id: nanoid(),
+      //         title: detail[0].name,
+      //         color: detail[0].color,
+      //         start_time: Datas.start_time,
+      //         end_time: Datas.end_time,
+      //         type: "normal",
+      //       };
+      //     });
+      //   value.data = {
+      //     [item]: transformSessions(val as any),
+      //     ...value.data,
+      //   };
+      // });
+
+      // dispatch(setProgrammes(value));
       dispatch(setProgramme(data.response));
+      
       return data;
     },
     refetchOnWindowFocus: false,
@@ -199,14 +270,7 @@ export const useSpeakerDesignUpdate = () => {
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice
   );
-  const filtered = CustomPick(SpeakerSettings, [
-    "show_speaker_fullname",
-    "show_short_name",
-    "show_linkedin_badge",
-    "show_no_of_sessions",
-    "show_bio",
-    "is_active",
-  ]);
+  const filtered = CustomPick(SpeakerSettings, ["speaker_info"]);
 
   const {
     mutate: UpdateSpeakerDesign,
@@ -214,7 +278,11 @@ export const useSpeakerDesignUpdate = () => {
     error: errorInUpdateSpeakerDesign,
   } = useMutation<ProfilePicResponse, AxiosError>({
     mutationFn: async () => {
-      const res = await apiRequest("post", "speaker/settings/save", filtered);
+      const res = await apiRequest(
+        "post",
+        "speaker/settings/save",
+        filtered.speaker_info
+      );
       return res.response;
     },
     onSuccess: (data) => {
@@ -271,50 +339,58 @@ export const useProgrameDesignUpdate = () => {
     isUpdateProgrammeDesignPending,
     errorInUpdateProgrammeDesign,
   };
-}
+};
 
-export const useCategoryList = ()=>{
+export const useCategoryList = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const {data:Category, isPending:isCategoryPending} = useQuery<CategoryListResponse,AxiosError>({
-    queryKey:["category-list"],
-    queryFn:async()=>{
-      const res = await apiRequest("get","category/all")
-      return res.response
+  const { data: Category, isPending: isCategoryPending } = useQuery<
+    CategoryListResponse,
+    AxiosError
+  >({
+    queryKey: ["category-list"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "category/all");
+      return res.response;
     },
-    select:(data)=>{
-      dispatch(setCategory(data.response.filter((pre) => pre.type === 1)))
-      return data
+    select: (data) => {
+      dispatch(setCategory(data.response.filter((pre) => pre.type === 1)));
+      return data;
     },
-    retry:1,
-    refetchOnWindowFocus:false
-  })
-  return {Category, isCategoryPending}
-}
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+  return { Category, isCategoryPending };
+};
 
-export const useGeneralExhibitorsUpdate = ()=>{
-  const {open_link_new_tab, allow_email_exposure, booth_location, Categorys} = useSelector((state:RootState)=>state.ExhibitorSlice)
-  const exhibitors_category_list = Categorys.map((item)=>item.id);
+export const useGeneralExhibitorsUpdate = () => {
+  const { open_link_new_tab, allow_email_exposure, booth_location, Categorys } =
+    useSelector((state: RootState) => state.ExhibitorSlice);
+  const exhibitors_category_list = Categorys.map((item) => item.id);
   const Body = {
     exhibitors_category_list,
     open_link_new_tab,
     allow_email_exposure,
-    booth_location
-  }
-  const {mutate:GeneralExhibitorsUpdate, isPending:isGeneralExhibitorsUpdatePending, error} = useMutation<ProfilePicResponse, AxiosError>({
-    mutationFn:async()=>{
-      const res = await apiRequest("post", "general/exhibitors/save", Body)
+    booth_location,
+  };
+  const {
+    mutate: GeneralExhibitorsUpdate,
+    isPending: isGeneralExhibitorsUpdatePending,
+    error,
+  } = useMutation<ProfilePicResponse, AxiosError>({
+    mutationFn: async () => {
+      const res = await apiRequest("post", "general/exhibitors/save", Body);
       return res.response;
     },
-    onSuccess:(data)=>{
+    onSuccess: (data) => {
       toast.success(data.header.message);
     },
-    onError:(err)=>{
+    onError: (err) => {
       toast.error(`Error updating settings: ${err.message}`);
-    }
-  })
+    },
+  });
 
-  return {GeneralExhibitorsUpdate, isGeneralExhibitorsUpdatePending, error}
-}
+  return { GeneralExhibitorsUpdate, isGeneralExhibitorsUpdatePending, error };
+};
 
 export const useGetExhibitorsList = () => {
   const {
@@ -337,7 +413,7 @@ export const useGetExhibitorsList = () => {
   return { ExhibitorList, isPending, error };
 };
 
-export const useGetUsersProfile = (id:string)=>{
+export const useGetUsersProfile = (id: string) => {
   const {
     data: UsersProfile,
     isPending,
@@ -356,10 +432,10 @@ export const useGetUsersProfile = (id:string)=>{
   });
 
   return { UsersProfile, isPending, error };
-}
+};
 
 export const useGetConferenceDetails = () => {
-  const dipatch = useDispatch<AppDispatch>()
+  const dipatch = useDispatch<AppDispatch>();
   const {
     data: ConferenceDetails,
     isPending,
@@ -371,7 +447,7 @@ export const useGetConferenceDetails = () => {
       return res.response;
     },
     select: (data) => {
-      dipatch(setConference_title(data.response))
+      dipatch(setConference_title(data.response));
       return data;
     },
     refetchOnWindowFocus: false,
@@ -379,4 +455,39 @@ export const useGetConferenceDetails = () => {
   });
 
   return { ConferenceDetails, isPending, error };
+};
+
+export const useHomeDesignUpdate = () => {
+  const { appConfig } = useSelector(
+    (state: RootState) => state.Global_DesignSlice
+  );
+  const filtered = CustomPick(appConfig, ["home_design"]);
+
+  const {
+    mutate: UpdateHomeDesign,
+    isPending: isUpdateHomeDesignPending,
+    error: errorInUpdateHomeDesign,
+  } = useMutation<ProfilePicResponse, AxiosError>({
+    mutationFn: async () => {
+      const res = await apiRequest(
+        "post",
+        "/home/design/save",
+        filtered.home_design
+      );
+      return res.response;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["global-design"] });
+      toast.success(data.header.message);
+    },
+    onError: (err) => {
+      toast.error(`Error updating logo: ${err.message}`);
+    },
+  });
+
+  return {
+    UpdateHomeDesign,
+    isUpdateHomeDesignPending,
+    errorInUpdateHomeDesign,
+  };
 };

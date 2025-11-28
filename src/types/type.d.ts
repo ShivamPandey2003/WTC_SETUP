@@ -125,7 +125,9 @@ declare type CreateSpeakerRequest = {
 };
 
 declare type CreateSpeakerRequestT = {
-  name: string;
+  prefix: string;
+  firstname: string;
+  lastname: string;
   designation: string;
   company: string;
   bio: string;
@@ -137,6 +139,7 @@ declare type CreateSpeakerRequestT = {
   }[];
   coming_sessions: Record<string, string>[];
   total_sessions: number;
+  keyNote: boolean;
 };
 
 declare type SpeakerListResponse = {
@@ -171,6 +174,14 @@ declare type AppConfig = {
     heading_3: string;
     font_family: string;
     all_other_text: string;
+  };
+  home_design: {
+    home_title: string;
+    upcoming_session: boolean;
+    gold_exhibitors_session: boolean;
+    keynote_speaker_session: boolean;
+    advertisements: boolean;
+    exhibitors_with_ad: boolean;
   };
 };
 
@@ -240,26 +251,42 @@ declare type Category_Label = {
   id: string;
 };
 
+declare type carusole = {
+  session_id: string;
+  title: string;
+  start_date: string;
+  end_date: string;
+  start_time: string;
+  end_time: string;
+  location: string;
+  description: string;
+};
+
 declare type SpeakerSetting = {
+  carusole_display: carusole[];
   conference_title: string;
   conference_start_date: string;
   conference_end_date: string;
   conference_start_time: string;
   conference_end_time: string;
   conference_location: string;
-  show_speaker_fullname: boolean;
-  show_short_name: boolean;
-  show_linkedin_badge: boolean;
-  show_no_of_sessions: boolean;
-  show_bio: boolean;
-  is_active: boolean;
+  speaker_info: {
+    exhibitors_setting: boolean;
+    show_bio: boolean;
+    show_carusole: boolean;
+    show_home_title: boolean;
+    show_linkedin_badge: boolean;
+    show_no_of_sessions: boolean;
+    show_short_name: boolean;
+    show_speaker_fullname: boolean;
+  };
   category_filter: boolean;
   category_labels: string[];
   exhibitor_settings: {
-    exhibitors_category_list: string[];
-    open_link_new_tab: boolean;
     allow_email_exposure: boolean;
     booth_location: boolean;
+    exhibitors_category_list: string[];
+    open_link_new_tab: boolean;
   };
 };
 
@@ -267,6 +294,29 @@ declare type SpeakerSettingResponse = {
   header: ResponseHeader;
   response: SpeakerSetting;
 };
+
+// declare type Programme = {
+//   id: string;
+//   title: string;
+//   location: string;
+//   start_date: string;
+//   end_date: string;
+//   start_time: string;
+//   end_time: string;
+//   speakers: {
+//     speaker_id: string;
+//     fullname: string;
+//     designation: string;
+//     company: string;
+//     bio: string;
+//     external_link: string;
+//     keyNote: boolean;
+//   }[];
+//   categories: Record<string, Record<string, string>>;
+//   external_link: string;
+//   description: string;
+//   bg_img: string;
+// };
 
 declare type Programme = {
   title: string;

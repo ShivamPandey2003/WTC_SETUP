@@ -8,28 +8,7 @@ type ProgrammeDesignStateType = Omit<
     speaker_id: string;
     created_on: string;
   })[];
-  SpeakerSettings: {
-    conference_title: string;
-    conference_start_date: string;
-    conference_end_date: string;
-    conference_start_time: string;
-    conference_end_time: string;
-    conference_location: string;
-    show_speaker_fullname: boolean;
-    show_short_name: boolean;
-    show_linkedin_badge: boolean;
-    show_no_of_sessions: boolean;
-    show_bio: boolean;
-    is_active: boolean;
-    category_filter: boolean;
-    category_labels: string[];
-    exhibitor_settings: {
-      exhibitors_category_list: string[];
-      open_link_new_tab: boolean;
-      allow_email_exposure: boolean;
-      booth_location: boolean;
-    };
-  };
+  SpeakerSettings: SpeakerSetting;
 };
 
 const initialState: ProgrammeDesignStateType = {
@@ -38,26 +17,31 @@ const initialState: ProgrammeDesignStateType = {
   isDeleting: null,
   isCreating: false,
   SpeakerSettings: {
+    carusole_display:[],
     conference_title: "",
     conference_start_date: "",
     conference_end_date: "",
     conference_start_time: "",
     conference_end_time: "",
     conference_location: "",
-    show_speaker_fullname: false,
-    show_short_name: false,
-    show_linkedin_badge: false,
-    show_no_of_sessions: false,
-    show_bio: false,
-    is_active: false,
+    speaker_info: {
+      show_speaker_fullname: false,
+      show_short_name: false,
+      show_linkedin_badge: false,
+      show_no_of_sessions: false,
+      show_bio: false,
+      exhibitors_setting: false,
+      show_home_title: false,
+      show_carusole: false,
+    },
     category_filter: false,
     category_labels: [],
-     exhibitor_settings: {
-      exhibitors_category_list:[],
+    exhibitor_settings: {
+      exhibitors_category_list: [],
       open_link_new_tab: false,
       allow_email_exposure: false,
       booth_location: false,
-    }
+    },
   },
 };
 

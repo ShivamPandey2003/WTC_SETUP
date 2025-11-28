@@ -109,7 +109,7 @@ export const tabTriggerVariants = cva(
       },
       active: {
         true: "",
-        false: "",
+        false: "text-gray-300",
       },
     },
     compoundVariants: [

@@ -1,4 +1,5 @@
 import { useGetProgrammeList } from "@/api/global_api/global_api";
+// import Extra from "@/components/common/Programme/Extra";
 import ProgrammeTitlabar from "@/components/common/Programme/ProgrammeTitleBar";
 import TimelineGrid from "@/components/common/Programme/TimelineGrid";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
@@ -6,7 +7,6 @@ import NoData from "@/components/global/NoData";
 import { setFilterData } from "@/redux/GlobalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { Check, Loader, Search } from "lucide-react";
-
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -79,7 +79,10 @@ const Programme_page = () => {
   return (
     <div className="mx-[7.5%]">
       <ProgrammeTitlabar className="mb-8" />
-      <div className="flex items-center justify-between mb-6">
+      {/* <div className="flex items-center justify-center">
+      <Extra/>
+      </div> */}
+       <div className="flex items-center justify-between mb-6">
         <div className="flex gap-4">
           <span>Category</span>
           <div className="flex gap-2">

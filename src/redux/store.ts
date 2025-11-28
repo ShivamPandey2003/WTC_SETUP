@@ -10,6 +10,7 @@ import Global_Slice from './GlobalSlice'
 import Profile_Slice from './ProfileSlice'
 import AuthSlice from './AuthSlice'
 import ExhibitorSlice from './ExhibitorSlice'
+import ExtraSlice from './ExtraSlice'
 
 const persistConfig = {
   key: "root",
@@ -26,7 +27,8 @@ const rootReducer = combineReducers({
   Global_Slice:Global_Slice,
   Profile_Slice:Profile_Slice,
   AuthSlice:AuthSlice,
-  ExhibitorSlice:ExhibitorSlice
+  ExhibitorSlice:ExhibitorSlice,
+  ExtraSlice:ExtraSlice
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

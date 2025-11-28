@@ -21,7 +21,15 @@ const initialState: initialStateType = {
     logo: {
       url: "",
       name: "",
-      logo_img:""
+      logo_img: "",
+    },
+    home_design: {
+      home_title: "",
+      upcoming_session: false,
+      gold_exhibitors_session: false,
+      keynote_speaker_session: false,
+      advertisements: false,
+      exhibitors_with_ad: false,
     },
   },
 };
@@ -36,5 +44,5 @@ const Global_DesignSlice = createSlice({
   },
 });
 
-export const {setAppConfig} = Global_DesignSlice.actions;
+export const { setAppConfig } = Global_DesignSlice.actions;
 export default Global_DesignSlice.reducer;
