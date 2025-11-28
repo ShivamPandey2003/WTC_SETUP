@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/Button";
+// import { Button } from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
-import dummy from "@/assets/Images/Dummy.png";
-import type { RootState } from "@/redux/store";
-import { FileText, X } from "lucide-react";
+// import dummy from "@/assets/Images/Dummy.png";
+// import type { RootState } from "@/redux/store";
+// import { FileText, X } from "lucide-react";
 import React from "react";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 
 type ModalProps = {
   isOpen: boolean;
@@ -12,12 +12,12 @@ type ModalProps = {
   id: string;
 };
 
-const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
-  const { Session } = useSelector((state: RootState) => state.Global_Slice);
+const EventModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+  // const { Session } = useSelector((state: RootState) => state.Global_Slice);
 
-  const selectedValue = Session.find((pre) => pre.id === id);
+  // const selectedValue = Session.find((pre) => pre.id === id);
 
-  console.log(selectedValue);
+  // console.log(selectedValue);
 
   return (
     <Modal
@@ -27,11 +27,11 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
       size="lg"
       showCloseButton
     >
-      {!selectedValue ? (
+      <div></div>
+      {/* {!selectedValue ? (
         <div>No such data found</div>
       ) : (
         <div className="w-full">
-          {/* Header Image */}
           <div className="flex items-start gap-4">
             <img
               src={selectedValue.bg_img?`data:image/png;base64,${selectedValue.bg_img}`:dummy}
@@ -65,8 +65,6 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
               </div>
             </div>
           </div>
-
-          {/* Content */}
           <div className="relative">
             <p className="text-sm text-gray-600 leading-relaxed mb-4">
               {selectedValue.description}
@@ -105,7 +103,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </Modal>
   );
 };
