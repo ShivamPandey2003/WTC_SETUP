@@ -12,8 +12,17 @@ import TextStyleRow from "@/components/global/TextStyleRow";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
-import { cn, getDatesInRangeFormatted, normalizeLabel } from "@/lib/utils";
-import { setCategoryModal, setIsCreating, setSelectedDate } from "@/redux/ProgrammeDesignSlice";
+import {
+  cn,
+  formatDate,
+  getDatesInRangeFormatted,
+  normalizeLabel,
+} from "@/lib/utils";
+import {
+  setCategoryModal,
+  setIsCreating,
+  setSelectedDate,
+} from "@/redux/ProgrammeDesignSlice";
 import { setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import {
@@ -25,13 +34,14 @@ import {
   SquareArrowOutUpRight,
   X,
 } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const ProgrammeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   // const {DeleteCategory, isDeleteCategoryPending} = useDeleteCategory()
-  const {UpdateProgrammeDesign, isUpdateProgrammeDesignPending} = useProgrameDesignUpdate()
+  const { UpdateProgrammeDesign, isUpdateProgrammeDesignPending } =
+    useProgrameDesignUpdate();
   const { isCreating, slectedDate } = useSelector(
     (state: RootState) => state.Programme_Design
   );
@@ -39,20 +49,44 @@ const ProgrammeDesign_page = () => {
     (state: RootState) => state.Speaker_DesignSlice
   );
   const dispatch = useDispatch<AppDispatch>();
-  const {SpeakerSettings:SettingsValue, isPending, error} = useGetSpeakerSetting();
-   const Dates = getDatesInRangeFormatted(SpeakerSettings.conference_start_date, SpeakerSettings.conference_end_date);
+  const {
+    SpeakerSettings: SettingsValue,
+    isPending,
+    error,
+  } = useGetSpeakerSetting();
+  const Dates = getDatesInRangeFormatted(
+    SpeakerSettings.conference_start_date,
+    SpeakerSettings.conference_end_date
+  );
 
-   if (isPending) {
-    return <div className="w-full h-screen flex flex-col items-center justify-center">
-      <Loader className="text-primary animate-spin" size={30}/>
-      <p className="text-primary font-semibold text-lg">Please wait data is loading...</p>
-    </div>;
+  useEffect(() => {
+    const end = new Date(formatDate(SpeakerSettings.conference_end_date));
+    const sel = new Date(slectedDate);
+
+    if (end < sel) {
+      dispatch(
+        setSelectedDate(formatDate(SpeakerSettings.conference_end_date))
+      );
+    }
+  }, [SpeakerSettings.conference_end_date, slectedDate, dispatch]);
+
+  if (isPending) {
+    return (
+      <div className="w-full h-screen flex flex-col items-center justify-center">
+        <Loader className="text-primary animate-spin" size={30} />
+        <p className="text-primary font-semibold text-lg">
+          Please wait data is loading...
+        </p>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="flex items-center justify-center h-screen">
-      <ErrorDisplay title="News Feed Error" message={error.message}/>
-    </div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <ErrorDisplay title="News Feed Error" message={error.message} />
+      </div>
+    );
   }
 
   if (!SettingsValue || !SettingsValue.response) {
@@ -186,7 +220,10 @@ const ProgrammeDesign_page = () => {
                       </div>
                     ))}
                   </div>
-                  <Button variant={"link"} onClick={() => dispatch(setCategoryModal(true))}>
+                  <Button
+                    variant={"link"}
+                    onClick={() => dispatch(setCategoryModal(true))}
+                  >
                     <Plus />
                     Add New
                   </Button>
@@ -216,7 +253,7 @@ const ProgrammeDesign_page = () => {
         isOpen={isCreating}
         onClose={() => dispatch(setIsCreating(false))}
       />
-      <AddCategoryModel/>
+      <AddCategoryModel />
     </div>
   );
 };

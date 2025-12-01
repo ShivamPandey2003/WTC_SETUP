@@ -26,7 +26,7 @@ export const getDateRange = (start: string, end: string): string[] => {
 };
 
 export interface Session {
-  session_id:string;
+  session_id: string;
   id: string;
   title: string;
   color: string;
@@ -42,7 +42,17 @@ export interface NormalItem {
   start: string;
   end: string;
   color: string;
-  type: "normal";
+  type: "normal" | "extra";
+}
+
+export interface MergeItem {
+  session_id: string[];
+  id: string;
+  title: string;
+  start: string;
+  end: string;
+  color: string;
+  type: "merge";
 }
 
 export interface GroupItem {
@@ -60,34 +70,70 @@ export interface GroupItem {
   }[];
 }
 
-export type OutputItem = NormalItem | GroupItem;
+const toMinutes = (time: string) => {
+  const [h, m, s] = time.split(":").map(Number);
+  return h * 60 + m + (s ? s / 60 : 0);
+};
+
+export type OutputItem = NormalItem | GroupItem | MergeItem;
 
 export const transformSessions = (sessions: Session[]): OutputItem[] => {
-  const groups: Record<string, Session[]> = {};
-
-  sessions.forEach((session) => {
-    const key = `${session.start_time}-${session.end_time}`;
-    if (!groups[key]) groups[key] = [];
-    groups[key].push(session);
-  });
-
   const result: OutputItem[] = [];
 
-  Object.values(groups).forEach((group) => {
-    if (group.length === 1) {
-      // Unique timing → normal object
-      const s = group[0];
+  const durationType = (s: Session) => {
+    const diff = toMinutes(s.end_time) - toMinutes(s.start_time);
+    return diff > 210 ? "extra" : "normal";
+  };
 
-      result.push({
-        session_id: s.session_id,
-        id: s.id,
-        title: s.title,
-        start: s.start_time,
-        end: s.end_time,
-        color: s.color,
-        type: "normal",
-      });
-    } else {
+  const isIntersect = (a: Session, b: Session) => {
+    const aStart = toMinutes(a.start_time);
+    const aEnd = toMinutes(a.end_time);
+    const bStart = toMinutes(b.start_time);
+    const bEnd = toMinutes(b.end_time);
+    return aStart < bEnd && bStart < aEnd;
+  };
+
+  const findClusters = (items: Session[]) => {
+    const clusters: Session[][] = [];
+
+    items.forEach((session) => {
+      let added = false;
+
+      for (const cluster of clusters) {
+        if (cluster.some((s) => isIntersect(s, session))) {
+          cluster.push(session);
+          added = true;
+          break;
+        }
+      }
+
+      if (!added) {
+        clusters.push([session]);
+      }
+    });
+
+    return clusters;
+  };
+
+  // ---------------------------------------------------------
+  // 1️⃣ FIRST: GROUP BY TIME (start + end) TO FIND ARRAY TYPE
+  // ---------------------------------------------------------
+  const timeGroups: Record<string, Session[]> = {};
+
+  sessions.forEach((s) => {
+    const start = s.start_time;
+    const end = s.end_time;
+
+    const key = `${start}-${end}`;
+    if (!timeGroups[key]) timeGroups[key] = [];
+    timeGroups[key].push(s);
+  });
+
+  const leftover: Session[] = [];
+
+  Object.values(timeGroups).forEach((group) => {
+    if (group.length > 1) {
+      // ARRAY TYPE
       result.push({
         id: nanoid(),
         type: "array",
@@ -102,7 +148,62 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
           color: s.color,
         })),
       });
+    } else {
+      leftover.push(group[0]); // keep for merge/normal
     }
+  });
+
+  if (leftover.length === 0) return result;
+
+  // ---------------------------------------------------------
+  // 2️⃣ SECOND: GROUP LEFTOVER BY TITLE
+  // ---------------------------------------------------------
+  const byTitle = leftover.reduce((acc, s) => {
+    if (!acc[s.title]) acc[s.title] = [];
+    acc[s.title].push(s);
+    return acc;
+  }, {} as Record<string, Session[]>);
+
+  // ---------------------------------------------------------
+  // 3️⃣ THIRD: PROCESS MERGE + NORMAL + EXTRA
+  // ---------------------------------------------------------
+  Object.values(byTitle).forEach((titleGroup) => {
+    const clusters = findClusters(titleGroup);
+
+    clusters.forEach((cluster) => {
+      if (cluster.length > 1) {
+        // MERGE TYPE
+        const earliest = cluster.reduce((a, b) =>
+          toMinutes(a.start_time) < toMinutes(b.start_time) ? a : b
+        );
+
+        const latest = cluster.reduce((a, b) =>
+          toMinutes(a.end_time) > toMinutes(b.end_time) ? a : b
+        );
+
+        result.push({
+          id: nanoid(),
+          type: "merge",
+          title: cluster[0].title,
+          color: cluster[0].color,
+          start: earliest.start_time,
+          end: latest.end_time,
+          session_id: cluster.map((s) => s.session_id),
+        });
+      } else {
+        // NORMAL / EXTRA TYPE
+        const s = cluster[0];
+        result.push({
+          session_id: s.session_id,
+          id: s.id,
+          title: s.title,
+          start: s.start_time,
+          end: s.end_time,
+          color: s.color,
+          type: durationType(s),
+        });
+      }
+    });
   });
 
   return result;

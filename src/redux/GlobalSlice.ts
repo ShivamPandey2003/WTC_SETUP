@@ -1,8 +1,8 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-type sessionType = {
-  programme: Record<string, Programme[]>;
-};
+// type sessionType = {
+//   programme: Record<string, Programme[]>;
+// };
 
 type initialStateType = {
   conference_title: string;
@@ -11,7 +11,7 @@ type initialStateType = {
   conference_start_time: string;
   conference_end_time: string;
   conference_location: string;
-  Session: sessionType;
+  Session: Programme[];
   Venue: GlobalVenue;
   selectedDate: string;
   filterData: Record<string, Programme[]>;
@@ -30,9 +30,7 @@ const initialState: initialStateType = {
   conference_start_time: "",
   conference_end_time: "",
   conference_location: "",
-  Session: {
-    programme:{}
-  },
+  Session: [],
   Venue: {
     getting_there: {
       sub_title: "",
@@ -59,9 +57,9 @@ const Global_Slice = createSlice({
   name: "Global_Design",
   initialState,
   reducers: {
-    setProgramme: (state, payload: PayloadAction<sessionType>) => {
+    setProgramme: (state, payload: PayloadAction<Programme[]>) => {
       state.Session = payload.payload;
-      state.filterData = payload.payload.programme;
+      // state.filterData = payload.payload.programme;
       return state;
     },
     setVenue: (state, payload: PayloadAction<GlobalVenue>) => {

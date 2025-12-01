@@ -22,8 +22,6 @@ const NewFrom = () => {
     resolver: zodResolver(speakerSchema),
     defaultValues: selected && value ? value : ({} as any),
   });
-
-  console.log(value)
   const dispatch = useDispatch<AppDispatch>();
   const {CreateSpeaker, isPending:isCreateSpeakerPending} = useCreateSpeaker()
   const {EditSpeaker, isPending:isEditSpeakerPending} = useEditSpeaker()

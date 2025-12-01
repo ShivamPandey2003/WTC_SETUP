@@ -110,6 +110,8 @@ const CustomForm = <T extends Record<string, any>>({
         });
       });
 
+      console.log(formData)
+
     onSubmit(e);
   };
 
@@ -234,6 +236,7 @@ const CustomForm = <T extends Record<string, any>>({
             ) : field.type === "select" ? (
               <select
                 {...register(field.name)}
+                // defaultValue={""}
                 className="w-full rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary"
               >
                 <option value="" disabled>
