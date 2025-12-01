@@ -19,7 +19,7 @@ export const useCreateNews = () => {
     mutate: CreateNews,
     isPending,
     error,
-  } = useMutation<NewsCreateResponse, AxiosError, NewCreateRequest>({
+  } = useMutation<NewsCreateResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
       const res = await apiRequest("post", "news/create", data);
       return res.response;
@@ -46,11 +46,11 @@ export const useEditNews = () => {
   } = useMutation<
     NewsCreateResponse,
     AxiosError,
-    NewCreateRequest & { id: string }
+    FormData
   >({
     mutationFn: async (data) => {
-      const { id, ...rest } = data;
-      const res = await apiRequest("post", `news/edit/${id}`, rest);
+      const id = data.get("id");
+      const res = await apiRequest("post", `news/edit/${id}`, data);
       return res.response;
     },
     onSuccess: () => {
