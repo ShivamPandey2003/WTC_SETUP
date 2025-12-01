@@ -9,8 +9,6 @@ export const SessionSchema = z.object({
   speakers: z.string().min(1, "Speakers are required"),
   description: z.string().min(1, "Description is required"),
   external_link: z.string().url("Invalid URL").optional().or(z.literal("")),
-
-  // attachments = FileList (not File[])
   attachments: z
     .instanceof(FileList)
     .optional()

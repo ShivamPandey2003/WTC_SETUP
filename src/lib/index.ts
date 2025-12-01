@@ -26,7 +26,8 @@ export const toMin = (t: string): number => {
 
 function groupByTime(events: Programme[]): Record<number, Programme[]> {
   const groups: Record<number, Programme[]> = {};
-  if (events.length === 0) return groups;
+  // console.log(events)
+  if (!events || events.length === 0) return groups;
 
   const sorted = [...events].sort(
     (a, b) =>
@@ -72,6 +73,7 @@ function alignGroup(events: Programme[], nextEvents: (Programme | Placeholder)[]
 }
 
 export function buildTimeline(events: Programme[]): TimelineOutput {
+  // console.log(events)
   const groups = groupByTime(events);
   const output: TimelineOutput = {};
 
@@ -120,4 +122,16 @@ export function formatDuration(period: string): string {
   }
 
   return output || "0 minutes";
+}
+
+export const CompareDates = (date1:string, date2:string)=>{
+
+const d1 = new Date(date1);
+const d2 = new Date(date2);
+
+  if(d1 < d2){
+    return true
+  }
+
+  return false
 }

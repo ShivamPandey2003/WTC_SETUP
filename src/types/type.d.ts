@@ -295,56 +295,57 @@ declare type SpeakerSettingResponse = {
   response: SpeakerSetting;
 };
 
-// declare type Programme = {
-//   id: string;
-//   title: string;
-//   location: string;
-//   start_date: string;
-//   end_date: string;
-//   start_time: string;
-//   end_time: string;
-//   speakers: {
-//     speaker_id: string;
-//     fullname: string;
-//     designation: string;
-//     company: string;
-//     bio: string;
-//     external_link: string;
-//     keyNote: boolean;
-//   }[];
-//   categories: Record<string, Record<string, string>>;
-//   external_link: string;
-//   description: string;
-//   bg_img: string;
-// };
-
 declare type Programme = {
+  id: string;
   title: string;
-  categories: { name: string; color: string }[];
   location: string;
-  start_time: string;
-  end_time: string;
-  speakers: string[];
-  attachments: string[];
-  external_link: string;
-  description: string;
   start_date: string;
   end_date: string;
+  start_time: string;
+  end_time: string;
+  speakers: {
+    speaker_id: string;
+    fullname: string;
+    designation: string;
+    company: string;
+    bio: string;
+    external_link: string;
+    keyNote: boolean;
+  }[];
+  categories: Record<string, Record<string, string>>;
+  external_link: string;
+  description: string;
+  bg_img: string;
 };
+
+// declare type Programme = {
+//   title: string;
+//   categories: { name: string; color: string }[];
+//   location: string;
+//   start_time: string;
+//   end_time: string;
+//   speakers: string[];
+//   attachments: string[];
+//   external_link: string;
+//   description: string;
+//   start_date: string;
+//   end_date: string;
+// };
 
 declare type GlobalProgrammeListResponse = {
   header: ResponseHeader;
   response: {
-    conference_title: string;
-    conference_start_date: string;
-    conference_end_date: string;
-    conference_start_time: sring;
-    conference_end_time: string;
-    conference_location: string;
-    programme: {
-      [date: string]: Programme[];
-    };
-    seq: string[];
+    // conference_title: string;
+    // conference_start_date: string;
+    // conference_end_date: string;
+    // conference_start_time: sring;
+    // conference_end_time: string;
+    // conference_location: string;
+    // programme: {
+    //   [date: string]: Programme[];
+    // };
+    // seq: string[];
+    programme:Programme[]
   };
 };
 

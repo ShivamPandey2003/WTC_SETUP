@@ -1,14 +1,22 @@
 import clsx from "clsx";
 import SessionCard from "./SessionCard";
-import { buildTimeline, toMin, type Placeholder } from "@/lib";
+import { buildTimeline, CompareDates, toMin, type Placeholder } from "@/lib";
 import type { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import NoData from "@/components/global/NoData";
+import { formatDate } from "@/lib/utils";
 
 export default function TimelineGrid() {
-  const { selectedDate, filterData } = useSelector(
+  const { selectedDate, filterData, conference_end_date } = useSelector(
     (state: RootState) => state.Global_Slice
   );
+
+  const endDate = formatDate(conference_end_date);
+
+const finalDate = !CompareDates(selectedDate, endDate) 
+  ? endDate        // selectedDate > endDate
+  : selectedDate;
+
   const timeSlots = Array.from({ length: 12 }, (_, i) => {
     const hour = i + 9;
     return {
@@ -19,25 +27,24 @@ export default function TimelineGrid() {
     };
   });
 
-  // console.log(filterData[selectedDate])
-
-  const Data = buildTimeline(filterData[selectedDate]);
+  const Data = buildTimeline(
+    filterData[finalDate]
+  );
 
   function isSession(item: Programme | Placeholder): item is Programme {
     return "start_time" in item;
   }
 
-  const filtered = timeSlots.filter((slot) =>
-    filterData[selectedDate].some((event) => {
-      const eventHour = parseInt(
-        event.start_time.split(":")[0],
-        10
-      );
-      return eventHour === slot.startHour;
-    })
+  const filtered = timeSlots.filter(
+    (slot) =>
+      filterData[finalDate] &&
+      filterData[finalDate].some((event) => {
+        const eventHour = parseInt(event.start_time.split(":")[0], 10);
+        return eventHour === slot.startHour;
+      })
   );
 
-  if (Object.keys(Data).length === 0) {
+  if (Object.keys(Data).length === 0 || !Data) {
     return (
       <div className="flex items-center justify-center">
         <NoData />

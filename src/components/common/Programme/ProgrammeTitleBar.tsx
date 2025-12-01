@@ -25,6 +25,7 @@ const ProgrammeTitlabar: React.FC<props> = ({ className }) => {
     conference_location,
   } = useSelector((state: RootState) => state.Global_Slice);
   const dispatch = useDispatch<AppDispatch>();
+  
   const todayDate = new Date().toLocaleDateString("en-US", {
     month: "short",
     day: "2-digit",

@@ -27,7 +27,11 @@ const NewFrom = () => {
     formState: { errors },
   } = useForm<SessionForm>({
     resolver: zodResolver(SessionSchema),
-    defaultValues: selected && value ? value : ({} as any),
+    defaultValues: selected && value ? {
+      ...value,
+      speakers: value.speakers[0],
+      category: value.category[0]
+    } : ({} as any),
   });
   const dispatch = useDispatch<AppDispatch>();
   const { CreateSession, isPending: isCreateSessionPending } =
