@@ -110,8 +110,6 @@ const CustomForm = <T extends Record<string, any>>({
         });
       });
 
-      console.log(formData)
-
     onSubmit(e);
   };
 

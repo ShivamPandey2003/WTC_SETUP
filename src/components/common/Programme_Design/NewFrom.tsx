@@ -67,8 +67,6 @@ const NewFrom = () => {
     formData.append("speakers", newData.speakers);
     formData.append("attachments", newData.attachments?.[0] as Blob);
 
-    console.log(newData.category)
-
     if (value) {
       formData.append("id", selected as string);
       EditSession(formData);
