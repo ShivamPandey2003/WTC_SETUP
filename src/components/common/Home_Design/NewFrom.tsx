@@ -40,18 +40,17 @@ const NewFrom = () => {
   });
 
   const onSubmit = (newData: FormData) => {
+     const formData = new FormData();
+
+     formData.append("title", newData.title)
+     formData.append("description", newData.description as string)
+     formData.append("tile_space", newData.tile_space as string)
+
     if (selected && data) {
-      EditNews({
-        ...data,
-        ...newData,
-        id: `${selected}`,
-      } as NewCreateRequest & { id: string });
+      formData.append("id", selected)
+      EditNews(formData);
     } else {
-      CreateNews({
-        ...newData,
-        is_active: true,
-        is_published: false,
-      } as NewCreateRequest);
+      CreateNews(formData);
     }
   };
 
