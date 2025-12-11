@@ -37,6 +37,8 @@ const NewFrom = () => {
   const { CreateSession, isPending: isCreateSessionPending } =
     useCreateSession();
 
+    // console.log(selected && value?value:{})
+
   const { EditSession, isPending: isEditSessionPending } = useEditSession();
 
   const onClose =

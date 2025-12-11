@@ -36,7 +36,10 @@ const Extra = () => {
 
     Dates.forEach((date) => {
       Programmes.data[date].forEach((event) => {
-        if (event.type === "normal" || event.type === "extra" && event.start) {
+        if (
+          event.type === "normal" ||
+          (event.type === "extra" && event.start)
+        ) {
           const height =
             getPxDistance(event.start.slice(0, 5), event.end.slice(0, 5)) ?? 0;
           const top =
@@ -116,7 +119,7 @@ const Extra = () => {
                               "text-white p-1 rounded flex items-center justify-center text-center text-sm absolute w-[150px] cursor-pointer"
                             )}
                             style={{
-                              top: `${(positions[event.id]?.top + i * 4) || 0}px`,
+                              top: `${positions[event.id]?.top + i * 4 || 0}px`,
                               height: `${positions[event.id]?.height || 0}px`,
                               backgroundColor: event.color,
                             }}
@@ -131,7 +134,7 @@ const Extra = () => {
                             key={event.id}
                             className="flex gap-1 absolute"
                             style={{
-                              top: `${(positions[event.id]?.top + i * 2) || 0}px`,
+                              top: `${positions[event.id]?.top + i * 2 || 0}px`,
                             }}
                           >
                             {event.Item.map((row) => (
@@ -139,7 +142,7 @@ const Extra = () => {
                                 key={row.id}
                                 className={cn(
                                   "text-white p-1 rounded flex items-center justify-center text-center text-[9px] cursor-pointer",
-                                  `w-[${100/event.Item.length}%]`
+                                  `w-[${100 / event.Item.length}%]`
                                 )}
                                 style={{
                                   height: `${
@@ -162,7 +165,7 @@ const Extra = () => {
                               "text-white p-1 rounded flex items-center justify-center text-center text-sm absolute w-[150px] cursor-pointer"
                             )}
                             style={{
-                              top: `${(positions[event.id]?.top + i*4) || 0}px`,
+                              top: `${positions[event.id]?.top + i * 4 || 0}px`,
                               height: `${positions[event.id]?.height || 0}px`,
                               backgroundColor: event.color,
                             }}
@@ -175,28 +178,30 @@ const Extra = () => {
                     })}
                 </div>
                 {[...Programmes.data[item]]
-                    .sort((a, b) => a.start.localeCompare(b.start))
-                    .map((item) => {
-                  if (item.type === "extra") {
-                    return (
-                      <div
-                        className={cn(
-                          "rounded flex w-[30px] items-center justify-center text-white cursor-pointer",
-                        )}
-                        style={{
-                          marginTop: `${(positions[item.id]?.top + i*4)  || 0}px`,
-                          height: `${positions[item.id]?.height || 0}px`,
-                          backgroundColor: item.color,
-                        }}
-                        onClick={() => setSelected(item.session_id)}
-                      >
-                        <span className="rotate-90 inline-block text-xs">
-                          {item.title}
-                        </span>
-                      </div>
-                    );
-                  }
-                })}
+                  .sort((a, b) => a.start.localeCompare(b.start))
+                  .map((item) => {
+                    if (item.type === "extra") {
+                      return (
+                        <div
+                          className={cn(
+                            "rounded flex w-[30px] items-center justify-center text-white cursor-pointer"
+                          )}
+                          style={{
+                            marginTop: `${
+                              positions[item.id]?.top + i * 4 || 0
+                            }px`,
+                            height: `${positions[item.id]?.height || 0}px`,
+                            backgroundColor: item.color,
+                          }}
+                          onClick={() => setSelected(item.session_id)}
+                        >
+                          <span className="rotate-90 inline-block text-xs">
+                            {item.title}
+                          </span>
+                        </div>
+                      );
+                    }
+                  })}
               </div>
             </div>
           </React.Fragment>

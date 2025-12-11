@@ -26,6 +26,8 @@ const NewFrom = () => {
   const {CreateSpeaker, isPending:isCreateSpeakerPending} = useCreateSpeaker()
   const {EditSpeaker, isPending:isEditSpeakerPending} = useEditSpeaker()
 
+  console.log(selected && value ? value : ({} as any))
+
   const onSubmit = (newData: SpeakerForm) => {
     const formData = new FormData();
 
