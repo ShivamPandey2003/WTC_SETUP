@@ -30,6 +30,7 @@ declare type News = {
   is_active: boolean;
   is_published: boolean;
   tile_space: string;
+  bg_img: null | string;
 };
 
 declare type ResponseHeader = {
@@ -345,7 +346,7 @@ declare type GlobalProgrammeListResponse = {
     //   [date: string]: Programme[];
     // };
     // seq: string[];
-    programme:Programme[]
+    programme: Programme[];
   };
 };
 

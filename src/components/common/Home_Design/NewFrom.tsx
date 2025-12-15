@@ -42,8 +42,6 @@ const NewFrom = () => {
   const onSubmit = (newData: FormData) => {
      const formData = new FormData();
 
-     console.log(newData)
-
      formData.append("title", newData.title)
      formData.append("description", newData.description as string)
      formData.append("tile_space", newData.tile_space as string)

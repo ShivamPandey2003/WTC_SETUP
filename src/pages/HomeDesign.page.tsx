@@ -1,6 +1,7 @@
 import { useHomeDesignUpdate } from "@/api/global_api/global_api";
-import BannerPreview from "@/components/common/Home_Design/BannerPreview";
+// import BannerPreview from "@/components/common/Home_Design/BannerPreview";
 import CreateModal from "@/components/common/Home_Design/CreateModal";
+import MiniSmallCarousel from "@/components/common/Home_Design/MiniCarousel";
 import CustomTable from "@/components/common/Home_Design/Table";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
 import Section from "@/components/global/Section";
@@ -21,7 +22,7 @@ const HomeDesign_page = () => {
   const { appConfig } = useSelector(
     (state: RootState) => state.Global_DesignSlice
   );
-  const {UpdateHomeDesign, isUpdateHomeDesignPending} = useHomeDesignUpdate()
+  const { UpdateHomeDesign, isUpdateHomeDesignPending } = useHomeDesignUpdate();
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -61,7 +62,7 @@ const HomeDesign_page = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="General Settings">
-            <Section title="Tab Title">
+            <Section title="Tab Title" ClassName="w-[35rem]">
               <input
                 type="text"
                 value={appConfig.home_design.home_title}
@@ -76,62 +77,53 @@ const HomeDesign_page = () => {
                     })
                   )
                 }
-                className="bg-[#1111110D] font-semibold px-5 py-1 text-sm text-black rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
+                className="bg-[#1111110D] w-[23rem] font-semibold px-5 py-1 text-sm text-black rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
               />
             </Section>
-            <Section title="Carousel Display">
-              <div className="flex items-center justify-between">
-                <div className="w-3/7 flex flex-wrap gap-3">
-                  {Object.keys(appConfig.home_design)
-                    .filter((pre) => pre !== "home_title")
-                    .map((value) => (
-                      <div
-                        key={value}
-                        className={cn(
-                          "flex items-center gap-2 bg-[#1111110D] px-3 py-1 text-sm text-black font-semibold rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors cursor-pointer",
-                          appConfig.home_design[
+            <div className="flex items-start gap-4">
+              <Section title="Carousel Display" ClassName="w-[35rem] h-[210px]">
+                <div className="flex items-center justify-between">
+                  <div className="w-full flex flex-wrap gap-3">
+                    {Object.keys(appConfig.home_design)
+                      .filter((pre) => pre !== "home_title")
+                      .map((value) => (
+                        <div
+                          key={value}
+                          className={cn(
+                            "flex items-center gap-2 bg-[#1111110D] px-3 py-1 text-sm text-black font-semibold rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors cursor-pointer",
+                            appConfig.home_design[
+                              value as keyof typeof appConfig.home_design
+                            ] && "text-primary"
+                          )}
+                          onClick={() =>
+                            dispatch(
+                              setAppConfig({
+                                ...appConfig,
+                                home_design: {
+                                  ...appConfig.home_design,
+                                  [value]:
+                                    !appConfig.home_design[
+                                      value as keyof typeof appConfig.home_design
+                                    ],
+                                },
+                              })
+                            )
+                          }
+                        >
+                          {appConfig.home_design[
                             value as keyof typeof appConfig.home_design
-                          ] && "text-primary"
-                        )}
-                        onClick={() =>
-                          dispatch(
-                            setAppConfig({
-                              ...appConfig,
-                              home_design: {
-                                ...appConfig.home_design,
-                                [value]:
-                                  !appConfig.home_design[
-                                    value as keyof typeof appConfig.home_design
-                                  ],
-                              },
-                            })
-                          )
-                        }
-                      >
-                        {appConfig.home_design[
-                          value as keyof typeof appConfig.home_design
-                        ] && <Check  size={20}/>}
-                        {value}
-                      </div>
-                    ))}
-                </div>
-                <div className="w-1/2">
-                  <h3 className="text-[12px] font-medium leading-[15px] mb-2">
-                    Carousel Preview
-                  </h3>
-                  <div className="flex gap-2">
-                    {[1, 2].map((value) =>
-                      value === 1 ? (
-                        <BannerPreview key={value} img="1234" />
-                      ) : (
-                        <BannerPreview key={value} />
-                      )
-                    )}
+                          ] && <Check size={20} />}
+                          {value}
+                        </div>
+                      ))}
                   </div>
                 </div>
-              </div>
-            </Section>
-            <Section title="Info Cards">
+              </Section>
+              <Section title="Carousel Preview">
+                <MiniSmallCarousel />
+              </Section>
+            </div>
+            <Section title="Info Cards" ClassName="w-[35rem]">
               <p className="text-sm text-gray-700 flex gap-1">
                 Data for info cards will be fetched from{" "}
                 <a

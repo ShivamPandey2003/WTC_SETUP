@@ -15,7 +15,7 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
   classname
 }) => {
   return (
-    <div className={cn("flex items-center gap-2 my-2", classname)}>
+    <div className={cn("flex items-center gap-4 my-2", classname)}>
       <div>{index}.</div>
       <div className="w-[200px] h-[30px] rounded-[7px] bg-[#1111110D] flex items-center justify-center mr-2">
         {value}

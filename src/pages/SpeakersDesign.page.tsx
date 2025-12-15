@@ -90,10 +90,10 @@ const SpeakersDesign_page = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="General Settings">
-            <Section title="Basic info">
+            <Section title="Basic info" ClassName="w-[27rem]">
               {Object.entries(SpeakerSettings.speaker_info)
                 .map(([key, value], i) => (
-                  <div className="flex items-center py-2" key={i}>
+                  <div className="flex items-center py-2 justify-between" key={i}>
                     <div className="w-40 text-sm font-medium">
                       {normalizeLabel(key)}
                     </div>

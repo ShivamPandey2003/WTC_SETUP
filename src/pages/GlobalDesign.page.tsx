@@ -76,6 +76,7 @@ const GlobalDesign_page = () => {
             />
           ))}
         </Section>
+        <div className="flex gap-4">
         <Section title="Logo">
           <LogoUpload
             logoUrl={`data:image/png;base64,${appConfig.logo.logo_img}`}
@@ -99,6 +100,7 @@ const GlobalDesign_page = () => {
             />
           ))}
         </Section>
+        </div>
       </div>
     </div>
   );

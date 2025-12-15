@@ -150,7 +150,7 @@ const ProgrammeDesign_page = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="General Settings">
-            <Section title="Basic info">
+            <Section title="Basic info" ClassName="w-[80%]">
               <div className="grid sm:grid-cols-2 items-center">
                 {Object.entries(SpeakerSettings)
                   .filter(([key]) => key.includes("conference"))
@@ -179,7 +179,8 @@ const ProgrammeDesign_page = () => {
                   ))}
               </div>
             </Section>
-            <Section title="Session Configuration">
+            <div className="flex items-start gap-4">
+            <Section title="Session Configuration" ClassName="w-[38rem]">
               <div className="flex items-center py-2">
                 <div className="w-40 text-sm font-medium">
                   {"Category Filters"}
@@ -232,17 +233,18 @@ const ProgrammeDesign_page = () => {
             </Section>
             <Section title="Session Data">
               <p className="text-sm text-gray-700 flex gap-1">
-                Data for info cards will be fetched from{" "}
+                Data for info cards will be fetched from
                 <a
                   href="#"
                   className="text-primary hover:underline font-medium flex items-center"
                 >
                   Session Data
                   <SquareArrowOutUpRight size={13} />
-                </a>{" "}
+                </a>
                 database.
               </p>
             </Section>
+            </div>
           </TabsContent>
           <TabsContent value="Session Data">
             <CustomTable />

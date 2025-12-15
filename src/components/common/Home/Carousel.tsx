@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+// import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Slide {
   id: number;
@@ -41,7 +41,7 @@ const slides: Slide[] = [
     image:
       "https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200",
     color: "from-blue-600 to-blue-800",
-  },
+  }
 ];
 
 export default function Carousel() {
@@ -97,19 +97,19 @@ export default function Carousel() {
 
     if (isActive) {
       return {
-        transform: "translateX(0%) scale(1)",
+        transform: "translateX(0%) scale(0.85)",
         opacity: 1,
         zIndex: 30,
       };
     } else if (isPrev) {
       return {
-        transform: "translateX(-20%) scale(0.85)",
+        transform: "translateX(-20%) scale(0.70)",
         opacity: 0.5,
         zIndex: 10,
       };
     } else if (isNext) {
       return {
-        transform: "translateX(20%) scale(0.85)",
+        transform: "translateX(20%) scale(0.70)",
         opacity: 0.5,
         zIndex: 10,
       };
@@ -128,7 +128,7 @@ export default function Carousel() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <div className="relative h-[400px]">
+      <div className="relative h-[300px] mb-4">
         <div className="absolute inset-0 flex items-center justify-center">
           {slides.map((slide, index) => {
             const styles = getSlideStyles(index);
@@ -137,7 +137,7 @@ export default function Carousel() {
             return (
               <div
                 key={slide.id}
-                className="absolute w-full max-w-5xl transition-all duration-500 ease-out"
+                className="absolute w-full max-w-6xl transition-all duration-500 ease-out"
                 style={styles}
               >
                 <div
