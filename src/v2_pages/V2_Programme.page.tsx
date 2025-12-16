@@ -5,7 +5,7 @@ import { Check } from "lucide-react";
 const V2_Programme_page = () => {
   return (
     <div className="px-4 mx-auto">
-      <div className="hidden sm:flex gap-4 items-center ml-16 mt-4 mb-24">
+      <div className="hidden sm:flex gap-4 items-center ml-16 mt-4 mb-12">
         {[
           { name: "Technical", bgColor: "#E9C5FF", borderColor: "#7064CE" },
           { name: "Activity", bgColor: "#98EEB6", borderColor: "#316C39" },

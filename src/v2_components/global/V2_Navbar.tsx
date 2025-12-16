@@ -42,7 +42,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
           {pathname.split("_")[0].slice(1)}
         </h2>
       </div>
-      <Button className="px-8 py-4 rounded-full cursor-pointer">Login</Button>
+      <Button className="px-8 py-4 rounded-full bg-[#318061] cursor-pointer">Login</Button>
     </header>
   );
 };
