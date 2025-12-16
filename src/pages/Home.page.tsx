@@ -1,6 +1,6 @@
 import { useGetNewsList } from "@/api/global_api/global_api";
 import Carousel from "@/components/common/Home/Carousel";
-import HeroCard from "@/components/common/Home/HeroCard";
+// import HeroCard from "@/components/common/Home/HeroCard";
 import OtherCard from "@/components/common/Home/OtherCard";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
