@@ -17,6 +17,12 @@ import Profile_page from "@/pages/Profile.page";
 import UsersProfile_page from "@/pages/UsersProfile.page";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
+import V2_rootlayout from "@/layouts/v2_rootlayout";
+import V2_Home_page from "@/v2_pages/V2_Home.page";
+import V2_Speakers_page from "@/v2_pages/V2_Speakers.page";
+import V2_exhibitors_page from "@/v2_pages/V2_exhibitors.page";
+import V2_Venue_page from "@/v2_pages/V2_Venue.page";
+import V2_Programme_page from "@/v2_pages/V2_Programme.page";
 
 const Router = createBrowserRouter(
   [
@@ -109,6 +115,32 @@ const Router = createBrowserRouter(
         {
           path: "wtc-profile",
           element: <Profile_page />,
+        },
+      ],
+    },
+    {
+      path: "/",
+      element: <V2_rootlayout />,
+      children: [
+        {
+          path: "Home_v2",
+          element: <V2_Home_page />,
+        },
+        {
+          path: "speakers_v2",
+          element: <V2_Speakers_page />,
+        },
+        {
+          path: "exhibitors_v2",
+          element: <V2_exhibitors_page />,
+        },
+        {
+          path: "venue_v2",
+          element: <V2_Venue_page />,
+        },
+        {
+          path: "programme_v2",
+          element: <V2_Programme_page />,
         },
       ],
     },

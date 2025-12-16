@@ -1,0 +1,52 @@
+export default {
+  "Diamond Partners": [
+    {
+      logo: "https://upload.wikimedia.org/wikipedia/commons/7/79/Epiroc_Logo.png",
+      companyName: "Epiroc",
+      boothNumber: "Hall A · Booth 12",
+      websiteUrl: "https://www.epiroc.com",
+      backgroundColor: "#F3F4F6",
+      borderColor: "#0F766E",
+    },
+    {
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Herrenknecht_logo.svg/330px-Herrenknecht_logo.svg.png",
+      companyName: "Herrenknecht",
+      boothNumber: "Hall B · Booth 34",
+      websiteUrl: "https://www.herrenknecht.com",
+      backgroundColor: "#FFFFFF",
+      borderColor: "#DC2626",
+    },
+    {
+      logo: "https://upload.wikimedia.org/wikipedia/en/thumb/d/dd/Trimble_logo.svg/500px-Trimble_logo.svg.png",
+      companyName: "Trimble",
+      boothNumber: "Hall C · Booth 21",
+      websiteUrl: "https://www.trimble.com",
+      backgroundColor: "#F9FAFB",
+      borderColor: "#2563EB",
+    },
+    {
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Bentley_Systems_wordmark.svg/500px-Bentley_Systems_wordmark.svg.png",
+      companyName: "Bentley Systems",
+      boothNumber: "Hall A · Booth 07",
+      websiteUrl: "https://www.bentley.com",
+      backgroundColor: "#EFF6FF",
+      borderColor: "#1D4ED8",
+    },
+    {
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Liebherr-Logo.svg/500px-Liebherr-Logo.svg.png",
+      companyName: "Liebherr",
+      boothNumber: "Hall D · Booth 15",
+      backgroundColor: "#FFFFFF",
+      websiteUrl:"https://www.liebherr.com/",
+      borderColor: "#FACC15",
+    },
+    {
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Komatsu_company_logos.svg/500px-Komatsu_company_logos.svg.png",
+      companyName: "Komatsu",
+      boothNumber: "Hall B · Booth 09",
+      websiteUrl: "https://www.komatsu.com",
+      backgroundColor: "#F8FAFC",
+      borderColor: "#F97316",
+    },
+  ],
+};

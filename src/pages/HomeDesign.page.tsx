@@ -62,7 +62,7 @@ const HomeDesign_page = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="General Settings">
-            <Section title="Tab Title" ClassName="w-[35rem]">
+            <Section title="Tab Title" ClassName="w-full">
               <input
                 type="text"
                 value={appConfig.home_design.home_title}
@@ -81,7 +81,7 @@ const HomeDesign_page = () => {
               />
             </Section>
             <div className="flex items-start gap-4">
-              <Section title="Carousel Display" ClassName="w-[35rem] h-[210px]">
+              <Section title="Carousel Display" ClassName="w-full h-[210px]">
                 <div className="flex items-center justify-between">
                   <div className="w-full flex flex-wrap gap-3">
                     {Object.keys(appConfig.home_design)
@@ -123,7 +123,7 @@ const HomeDesign_page = () => {
                 <MiniSmallCarousel />
               </Section>
             </div>
-            <Section title="Info Cards" ClassName="w-[35rem]">
+            <Section title="Info Cards" ClassName="w-full">
               <p className="text-sm text-gray-700 flex gap-1">
                 Data for info cards will be fetched from{" "}
                 <a

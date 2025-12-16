@@ -1,0 +1,221 @@
+import React from "react";
+import Programmes from "@/data/Programmes";
+import { generateTimeArray, getDateRange } from "@/lib/extra";
+import { cn } from "@/lib/utils";
+import { formatDates_V2 } from "@/lib";
+
+const EventGrid = () => {
+  const Dates = getDateRange(Programmes.start_date, Programmes.end_date);
+  const Times = generateTimeArray(Programmes.start_time, Programmes.end_time);
+  const timeRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
+  const [positions, setPositions] = React.useState<
+    Record<string, { top: number; height: number }>
+  >({});
+  const DateList = formatDates_V2(Dates);
+
+  function getPxDistance(start: string, end: string) {
+    const startEl = timeRefs.current[start];
+    const endEl = timeRefs.current[end];
+    if (!startEl || !endEl) return null;
+
+    const r1 = startEl.getBoundingClientRect();
+    const r2 = endEl.getBoundingClientRect();
+
+    return r2.top - r1.top;
+  }
+
+  console.log(DateList);
+
+  React.useEffect(() => {
+    const pos: Record<string, { top: number; height: number }> = {};
+
+    Dates.forEach((date) => {
+      Programmes.data[date as keyof typeof Programmes.data].forEach((event) => {
+        if (
+          event.type === "normal" ||
+          (event.type === "extra" && event.start)
+        ) {
+          const height =
+            getPxDistance(event.start.slice(0, 5), event.end.slice(0, 5)) ?? 0;
+          const top =
+            getPxDistance(
+              Programmes.start_time.slice(0, 5),
+              event.start.slice(0, 5)
+            ) ?? 0;
+          pos[event.id] = { top: top, height };
+        } else if (event.type === "array" && event.Item) {
+          event.Item.forEach((Combine) => {
+            const height =
+              getPxDistance(
+                Combine?.start.slice(0, 5),
+                Combine?.end.slice(0, 5)
+              ) ?? 0;
+            const top =
+              getPxDistance(
+                Programmes.start_time.slice(0, 5),
+                Combine?.start.slice(0, 5)
+              ) ?? 0;
+
+            pos[event.id] = { top: top, height };
+          });
+        } else if (event.type === "merge" && event.start) {
+          const height =
+            getPxDistance(event.start.slice(0, 5), event.end.slice(0, 5)) ?? 0;
+          const top =
+            getPxDistance(
+              Programmes.start_time.slice(0, 5),
+              event.start.slice(0, 5)
+            ) ?? 0;
+          pos[event.id] = { top: top, height };
+        }
+        //   else if (event.type === "extra" && event.start) {
+        //     const top = getPxDistance(Dates[0], event.start) ?? 0;
+        //     const height = getPxDistance(event.start, event.end) ?? 0;
+
+        //     pos[event.id] = { top, height };
+        //   }
+      });
+    });
+
+    setPositions(pos);
+  }, []);
+
+  return (
+    <div className="relative">
+      <div className="absolute left-0 top-0 z-50 flex flex-col space-y-4 px-4 border-r border-border bg-[#F2F2F2]">
+        <div className="mb-14"/>
+        {Times.map((item) => (
+          <div
+            key={item}
+            className="text-center text-gray-400"
+            ref={(el) => {
+              timeRefs.current[item] = el;
+            }}
+          >
+            {item}
+          </div>
+        ))}
+      </div>
+      <div className="overflow-x-auto pl-20">
+        <div className="flex gap-2 mb-4">
+          {DateList.map((item, i) => (
+            <div key={i} className="min-w-[190px] text-center">
+              <h3>{item.weekday}</h3>
+              <h3>{item.dayMonth}</h3>
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-2">
+          {Dates.map((item, i) => (
+            <React.Fragment key={i}>
+              <div key={item} className="min-w-[190px] w-fit relative">
+                <div className="flex gap-1">
+                  <div className="flex flex-col gap-0.5 w-full relative">
+                    {[...Programmes.data[item]]
+                      .sort((a, b) => a.start.localeCompare(b.start))
+                      .map((event, i) => {
+                        if (event.type === "normal") {
+                          return (
+                            <div
+                              key={event.id}
+                              className={cn(
+                                "text-black p-1 rounded-xl flex items-center justify-center text-center text-sm absolute w-[150px] cursor-pointer"
+                              )}
+                              style={{
+                                top: `${
+                                  positions[event.id]?.top + i * 4 || 0
+                                }px`,
+                                height: `${positions[event.id]?.height || 0}px`,
+                                backgroundColor: event.color,
+                              }}
+                            >
+                              {event.title}
+                            </div>
+                          );
+                        } else if (event.type === "array" && event.Item) {
+                          return (
+                            <div
+                              key={event.id}
+                              className="flex gap-1 absolute"
+                              style={{
+                                top: `${
+                                  positions[event.id]?.top + i * 2 || 0
+                                }px`,
+                              }}
+                            >
+                              {event.Item.map((row) => (
+                                <div
+                                  key={row.id}
+                                  className={cn(
+                                    "text-black p-1 rounded-xl flex items-center justify-center text-center text-[9px] cursor-pointer",
+                                    `w-[${100 / event.Item.length}%]`
+                                  )}
+                                  style={{
+                                    height: `${
+                                      positions[event.id]?.height || 0
+                                    }px`,
+                                    backgroundColor: row.color,
+                                  }}
+                                >
+                                  {row.title}
+                                </div>
+                              ))}
+                            </div>
+                          );
+                        } else if (event.type === "merge") {
+                          return (
+                            <div
+                              key={event.id}
+                              className={cn(
+                                "text-black p-1 rounded-xl flex items-center justify-center text-center text-sm absolute w-[150px] cursor-pointer"
+                              )}
+                              style={{
+                                top: `${
+                                  positions[event.id]?.top + i * 4 || 0
+                                }px`,
+                                height: `${positions[event.id]?.height || 0}px`,
+                                backgroundColor: event.color,
+                              }}
+                            >
+                              {event.title}
+                            </div>
+                          );
+                        }
+                      })}
+                  </div>
+                  {[...Programmes.data[item]]
+                    .sort((a, b) => a.start.localeCompare(b.start))
+                    .map((item) => {
+                      if (item.type === "extra") {
+                        return (
+                          <div
+                            key={item.id}
+                            className={cn(
+                              "rounded-xl flex w-[30px] items-center justify-center text-black cursor-pointer"
+                            )}
+                            style={{
+                              marginTop: `${
+                                positions[item.id]?.top + i * 4 || 0
+                              }px`,
+                              height: `${positions[item.id]?.height || 0}px`,
+                              backgroundColor: item.color,
+                            }}
+                          >
+                            <span className="rotate-90 inline-block text-xs">
+                              {item.title}
+                            </span>
+                          </div>
+                        );
+                      }
+                    })}
+                </div>
+              </div>
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default EventGrid;

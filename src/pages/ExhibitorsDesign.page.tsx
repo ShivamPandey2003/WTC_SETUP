@@ -99,7 +99,7 @@ const ExhibitorsDesign_page = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="General Settings">
-            <Section title="Basic info">
+            <Section title="Basic info" ClassName="w-full">
               <div className="mb-16">
                 <h2 className="text-[14px] font-medium leading-[15px]">
                   Exhibitor Categories & Order

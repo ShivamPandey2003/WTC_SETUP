@@ -33,3 +33,86 @@ export default [
       "attachments": [Avatar2]
     },
 ];
+
+export const teamMembers = [
+  {
+    name: "Amit Verma",
+    title: "Project Manager",
+    description:
+      "Leads cross-functional teams to deliver complex infrastructure projects on time and within scope.",
+    image:
+      "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=600",
+    connections: 540,
+    interactions: 1240,
+    isVerified: true,
+    linkedinUrl: "https://www.linkedin.com/in/amit-verma",
+  },
+  {
+    name: "Neha Sharma",
+    title: "Senior Civil Engineer",
+    description:
+      "Specializes in tunnel design and geotechnical analysis with over 8 years of industry experience.",
+    image:
+      "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=600",
+    connections: 420,
+    interactions: 980,
+    isVerified: true,
+    linkedinUrl: "https://www.linkedin.com/in/neha-sharma",
+  },
+  {
+    name: "Rahul Mehta",
+    title: "AI & Automation Specialist",
+    description:
+      "Works on applying AI and automation to improve construction safety and operational efficiency.",
+    image:
+      "https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=600",
+    connections: 310,
+    interactions: 670,
+    linkedinUrl: "https://www.linkedin.com/in/rahul-mehta",
+  },
+  {
+    name: "Priya Nair",
+    title: "Marketing & Partnerships Lead",
+    description:
+      "Builds strategic partnerships and drives global outreach for events and industry collaborations.",
+    image:
+      "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=600",
+    connections: 760,
+    interactions: 1890,
+    isVerified: true,
+    linkedinUrl: "https://www.linkedin.com/in/priya-nair",
+  },
+  {
+    name: "Karan Singh",
+    title: "Operations Coordinator",
+    description:
+      "Ensures smooth execution of day-to-day operations and coordination between multiple stakeholders.",
+    image:
+      "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=600",
+    connections: 190,
+    interactions: 410,
+  },
+  {
+    name: "Priya Nair",
+    title: "Marketing & Partnerships Lead",
+    description:
+      "Builds strategic partnerships and drives global outreach for events and industry collaborations.",
+    image:
+      "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=600",
+    connections: 760,
+    interactions: 1890,
+    isVerified: true,
+    linkedinUrl: "https://www.linkedin.com/in/priya-nair",
+  },
+  {
+    name: "Karan Singh",
+    title: "Operations Coordinator",
+    description:
+      "Ensures smooth execution of day-to-day operations and coordination between multiple stakeholders.",
+    image:
+      "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=600",
+    connections: 190,
+    interactions: 410,
+  },
+];
+

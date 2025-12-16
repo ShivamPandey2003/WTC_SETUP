@@ -58,7 +58,7 @@ const GlobalDesign_page = () => {
           onSave={() => updateAppConfig()}
           loading={isUpdateAppConfigPending}
         />
-        <Section title="Color Scheme">
+        <Section title="Color Scheme" ClassName="w-full">
           {Object.entries(appConfig.color_schema).map(([key, value], i) => (
             <ColorPicker
               key={i}
@@ -77,13 +77,13 @@ const GlobalDesign_page = () => {
           ))}
         </Section>
         <div className="flex gap-4">
-        <Section title="Logo">
+        <Section title="Logo" ClassName="w-1/2">
           <LogoUpload
             logoUrl={`data:image/png;base64,${appConfig.logo.logo_img}`}
             fileName={appConfig.logo.name}
           />
         </Section>
-        <Section title="Text and styles">
+        <Section title="Text and styles" ClassName="w-1/2">
           {Object.entries(appConfig.text_style).map(([key, value], i) => (
             <TextStyleRow
               key={i}

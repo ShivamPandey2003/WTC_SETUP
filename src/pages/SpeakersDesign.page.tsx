@@ -90,10 +90,10 @@ const SpeakersDesign_page = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="General Settings">
-            <Section title="Basic info" ClassName="w-[27rem]">
+            <Section title="Basic info" ClassName="w-full">
               {Object.entries(SpeakerSettings.speaker_info)
                 .map(([key, value], i) => (
-                  <div className="flex items-center py-2 justify-between" key={i}>
+                  <div className="flex items-center py-2 gap-8" key={i}>
                     <div className="w-40 text-sm font-medium">
                       {normalizeLabel(key)}
                     </div>
@@ -111,7 +111,7 @@ const SpeakersDesign_page = () => {
                   </div>
                 ))}
             </Section>
-            <Section title="Speaker Data">
+            <Section title="Speaker Data" ClassName="w-full">
               <p className="text-sm text-gray-700 flex gap-1">
                 Data for info cards will be fetched from{" "}
                 <a
