@@ -23,6 +23,9 @@ const initialState: initialStateType = {
       name: "",
       logo_img: "",
     },
+    sponsors:{
+      logo: "",
+    },
     home_design: {
       home_title: "",
       upcoming_session: false,

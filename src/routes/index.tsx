@@ -1,9 +1,9 @@
 import { createBrowserRouter } from "react-router";
-import Home_page from "@/pages/Home.page";
+// import Home_page from "@/pages/Home.page";
 import RootLayout from "@/layouts/rootlayout";
-import Speaker_page from "@/pages/Speaker.page";
-import Programme_page from "@/pages/Programme.page";
-import Venue_page from "@/pages/Venue.page";
+// import Speaker_page from "@/pages/Speaker.page";
+// import Programme_page from "@/pages/Programme.page";
+// import Venue_page from "@/pages/Venue.page";
 import AdminLayout from "@/layouts/adminlayout";
 import GlobalDesign_page from "@/pages/GlobalDesign.page";
 import HomeDesign_page from "@/pages/HomeDesign.page";
@@ -11,26 +11,32 @@ import ProgrammeDesign_page from "@/pages/ProgrammeDesign.page";
 import SpeakersDesign_page from "@/pages/SpeakersDesign.page";
 import VenueDesign_page from "@/pages/VenueDesign.page";
 import ExhibitorsDesign_page from "@/pages/ExhibitorsDesign.page";
-import Exhibitors_page from "@/pages/Exhibitors.page";
+// import Exhibitors_page from "@/pages/Exhibitors.page";
 import ProtectedRoute from "./ProtectedRoute";
 import Profile_page from "@/pages/Profile.page";
 import UsersProfile_page from "@/pages/UsersProfile.page";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
+import V2_rootlayout from "@/layouts/v2_rootlayout";
+import V2_Home_page from "@/v2_pages/V2_Home.page";
+import V2_Speakers_page from "@/v2_pages/V2_Speakers.page";
+import V2_exhibitors_page from "@/v2_pages/V2_exhibitors.page";
+import V2_Venue_page from "@/v2_pages/V2_Venue.page";
+import V2_Programme_page from "@/v2_pages/V2_Programme.page";
 
 const Router = createBrowserRouter(
   [
     {
       path: "/",
-      element: <RootLayout />,
+      element: <V2_rootlayout />,
       children: [
         {
           index: true,
-          element: <Home_page />,
+          element: <V2_Home_page />,
         },
         {
           path: "speaker",
-          element: <Speaker_page />,
+          element: <V2_Speakers_page />,
         },
         {
           path: "programme",
@@ -43,17 +49,17 @@ const Router = createBrowserRouter(
                 />
               }
             >
-              <Programme_page />
+              <V2_Programme_page />
             </ErrorBoundary>
           ),
         },
         {
           path: "venue",
-          element: <Venue_page />,
+          element: <V2_Venue_page />,
         },
         {
           path: "exhibitors",
-          element: <Exhibitors_page />,
+          element: <V2_exhibitors_page />,
         },
         {
           path: "profile",
@@ -112,6 +118,32 @@ const Router = createBrowserRouter(
         },
       ],
     },
+    // {
+    //   path: "/",
+    //   element: <V2_rootlayout />,
+    //   children: [
+    //     {
+    //       path: "Home_v2",
+    //       element: <V2_Home_page />,
+    //     },
+    //     {
+    //       path: "speakers_v2",
+    //       element: <V2_Speakers_page />,
+    //     },
+    //     {
+    //       path: "exhibitors_v2",
+    //       element: <V2_exhibitors_page />,
+    //     },
+    //     {
+    //       path: "venue_v2",
+    //       element: <V2_Venue_page />,
+    //     },
+    //     {
+    //       path: "programme_v2",
+    //       element: <V2_Programme_page />,
+    //     },
+    //   ],
+    // },
   ]
   // {
   //   basename: "/wtc/",

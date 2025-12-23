@@ -53,7 +53,7 @@ const CustomTable = () => {
   }
 
   return (
-    <div className="bg-white rounded-lg overflow-hidden">
+    <div className="overflow-hidden">
       <div className="overflow-x-auto">
         <table
           className="min-w-full border-separate"
@@ -86,8 +86,8 @@ const CustomTable = () => {
           </thead>
           <tbody>
             {SpeakerList?.response.map((item, index) => (
-              <tr key={index} className="bg-gray-50 border">
-                <td className="px-6 py-2 rounded-lg">{index + 1}</td>
+              <tr key={index} className="bg-white border">
+                <td className="px-6 py-2">{index + 1}</td>
                 <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">
                   {`${item.prefix} ${item.firstname} ${item.lastname}`}
                 </td>
@@ -106,7 +106,7 @@ const CustomTable = () => {
                 <td className="pl-12 py-2">
                   {item.keyNote?<Keynote size={20} className="text-primary" />:<X size={20} className="text-red-400"/>}
                 </td>
-                <td className="px-6 py-2 flex gap-2 rounded-lg">
+                <td className="px-6 py-2 flex gap-2">
                   <Pencil
                     onClick={() => dispatch(setSelected(item.speaker_id))}
                     color="#425EBC"

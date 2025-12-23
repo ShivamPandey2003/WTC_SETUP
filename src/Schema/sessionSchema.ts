@@ -12,7 +12,7 @@ export const SessionSchema = z.object({
   attachments: z
     .instanceof(FileList)
     .optional()
-    .refine((files) => !files || files.length > 0, "At least one file is required"),
+    // .refine((files) => !files || files.length > 0, "At least one file is required"),
 });
 
 // Infer the form type:

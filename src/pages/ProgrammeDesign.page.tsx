@@ -36,6 +36,8 @@ import {
 } from "lucide-react";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import SpeakerCreateModal from "@/components/common/Speaker_Design/CreateModal";
+import { setIsCreating as SetisSpeakerCreating } from "@/redux/SpeakerDesignSlice";
 
 const ProgrammeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
@@ -44,6 +46,9 @@ const ProgrammeDesign_page = () => {
     useProgrameDesignUpdate();
   const { isCreating, slectedDate } = useSelector(
     (state: RootState) => state.Programme_Design
+  );
+  const { isCreating: isSpeakerCreating } = useSelector(
+    (state: RootState) => state.Speaker_DesignSlice
   );
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice
@@ -150,7 +155,7 @@ const ProgrammeDesign_page = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="General Settings">
-            <Section title="Basic info">
+            <Section title="Basic info" ClassName="w-full">
               <div className="grid sm:grid-cols-2 items-center">
                 {Object.entries(SpeakerSettings)
                   .filter(([key]) => key.includes("conference"))
@@ -179,70 +184,72 @@ const ProgrammeDesign_page = () => {
                   ))}
               </div>
             </Section>
-            <Section title="Session Configuration">
-              <div className="flex items-center py-2">
-                <div className="w-40 text-sm font-medium">
-                  {"Category Filters"}
-                </div>
-                <div className="flex items-center gap-4">
-                  <p>Disabled</p>
-                  <ToggleSwitch
-                    isOpen={SpeakerSettings.category_filter}
-                    setIsOn={() =>
-                      dispatch(
-                        setSpeakerSettings({
-                          ...SpeakerSettings,
-                          category_filter: !SpeakerSettings.category_filter,
-                        })
-                      )
-                    }
-                  />
-                  <p>Enabled</p>
-                </div>
-              </div>
-              <div className="flex items-center py-2">
-                <div className="w-40 text-sm font-medium">
-                  {"Category Filters"}
-                </div>
-                <div className="flex">
-                  <div
-                    className={cn(
-                      "relative flex w-fit items-center gap-3 bg-[#1111110D] px-3 py-1 text-sm text-gray-600 rounded-[7px] text-center focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
-                    )}
-                  >
-                    {SpeakerSettings.category_labels.map((str) => (
-                      <div
-                        key={str}
-                        className="flex items-center gap-2 px-3 bg-white rounded-lg border border-transparent hover:border-gray-300"
-                      >
-                        {str}
-                        <X size={18} />
-                      </div>
-                    ))}
+            <div className="flex items-start gap-4">
+              <Section title="Session Configuration" ClassName="w-1/2">
+                <div className="flex items-center py-2">
+                  <div className="w-40 text-sm font-medium">
+                    {"Category Filters"}
                   </div>
-                  <Button
-                    variant={"link"}
-                    onClick={() => dispatch(setCategoryModal(true))}
-                  >
-                    <Plus />
-                    Add New
-                  </Button>
+                  <div className="flex items-center gap-4">
+                    <p>Disabled</p>
+                    <ToggleSwitch
+                      isOpen={SpeakerSettings.category_filter}
+                      setIsOn={() =>
+                        dispatch(
+                          setSpeakerSettings({
+                            ...SpeakerSettings,
+                            category_filter: !SpeakerSettings.category_filter,
+                          })
+                        )
+                      }
+                    />
+                    <p>Enabled</p>
+                  </div>
                 </div>
-              </div>
-            </Section>
-            <Section title="Session Data">
-              <p className="text-sm text-gray-700 flex gap-1">
-                Data for info cards will be fetched from{" "}
-                <a
-                  href="#"
-                  className="text-primary hover:underline font-medium flex items-center"
-                >
-                  Session Data
-                  <SquareArrowOutUpRight size={13} />
-                </a>{" "}
-                database.
-              </p>
-            </Section>
+                <div className="flex items-center py-2">
+                  <div className="w-40 text-sm font-medium">
+                    {"Category Filters"}
+                  </div>
+                  <div className="flex">
+                    <div
+                      className={cn(
+                        "relative flex w-fit items-center gap-3 bg-[#1111110D] px-3 py-1 text-sm text-gray-600 rounded-[7px] text-center focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
+                      )}
+                    >
+                      {SpeakerSettings.category_labels.map((str) => (
+                        <div
+                          key={str}
+                          className="flex items-center gap-2 px-3 bg-white rounded-lg border border-transparent hover:border-gray-300"
+                        >
+                          {str}
+                          <X size={18} />
+                        </div>
+                      ))}
+                    </div>
+                    <Button
+                      variant={"link"}
+                      onClick={() => dispatch(setCategoryModal(true))}
+                    >
+                      <Plus />
+                      Add New
+                    </Button>
+                  </div>
+                </div>
+              </Section>
+              <Section title="Session Data" ClassName="w-1/2 h-[172px]">
+                <p className="text-sm text-gray-700 flex gap-1">
+                  Data for info cards will be fetched from
+                  <a
+                    href="#"
+                    className="text-primary hover:underline font-medium flex items-center"
+                  >
+                    Session Data
+                    <SquareArrowOutUpRight size={13} />
+                  </a>
+                  database.
+                </p>
+              </Section>
+            </div>
           </TabsContent>
           <TabsContent value="Session Data">
             <CustomTable />
@@ -252,6 +259,10 @@ const ProgrammeDesign_page = () => {
       <CreateModal
         isOpen={isCreating}
         onClose={() => dispatch(setIsCreating(false))}
+      />
+      <SpeakerCreateModal
+        isOpen={isSpeakerCreating}
+        onClose={() => dispatch(SetisSpeakerCreating(false))}
       />
       <AddCategoryModel />
     </div>

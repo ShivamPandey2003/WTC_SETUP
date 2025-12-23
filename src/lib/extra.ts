@@ -115,9 +115,6 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
     return clusters;
   };
 
-  // ---------------------------------------------------------
-  // 1️⃣ FIRST: GROUP BY TIME (start + end) TO FIND ARRAY TYPE
-  // ---------------------------------------------------------
   const timeGroups: Record<string, Session[]> = {};
 
   sessions.forEach((s) => {
@@ -155,18 +152,12 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
 
   if (leftover.length === 0) return result;
 
-  // ---------------------------------------------------------
-  // 2️⃣ SECOND: GROUP LEFTOVER BY TITLE
-  // ---------------------------------------------------------
   const byTitle = leftover.reduce((acc, s) => {
     if (!acc[s.title]) acc[s.title] = [];
     acc[s.title].push(s);
     return acc;
   }, {} as Record<string, Session[]>);
 
-  // ---------------------------------------------------------
-  // 3️⃣ THIRD: PROCESS MERGE + NORMAL + EXTRA
-  // ---------------------------------------------------------
   Object.values(byTitle).forEach((titleGroup) => {
     const clusters = findClusters(titleGroup);
 

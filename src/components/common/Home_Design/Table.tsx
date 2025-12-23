@@ -47,7 +47,7 @@ const CustomTable = () => {
     );
   }
 
-   if (!NewsList || !NewsList.response) {
+  if (!NewsList || !NewsList.response) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />
@@ -56,7 +56,7 @@ const CustomTable = () => {
   }
 
   return (
-    <div className="bg-white rounded-lg overflow-hidden">
+    <div className="overflow-hidden">
       <div className="overflow-x-auto">
         <table
           className="min-w-full border-separate"
@@ -77,6 +77,9 @@ const CustomTable = () => {
                 Created On
               </th>
               <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Background
+              </th>
+              <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Created By
               </th>
               <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -89,8 +92,8 @@ const CustomTable = () => {
           </thead>
           <tbody>
             {NewsList.response.map((item, index) => (
-              <tr key={item.id} className="bg-gray-50 border">
-                <td className="px-6 py-2 rounded-lg">{index + 1}</td>
+              <tr key={item.id} className="bg-white border">
+                <td className="px-6 py-2">{index + 1}</td>
                 <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">
                   {item.title}
                 </td>
@@ -100,12 +103,22 @@ const CustomTable = () => {
                 <td className="px-6 py-2">{"Oct 12, 2025"}</td>
                 {/* <td className="px-6 py-2">{item["Created On"]}</td> */}
                 <td className="px-6 py-2">
+                  <div
+                    className="bg-cover bg-center w-20 h-7"
+                    style={{
+                      backgroundImage:
+                        item.bg_img ??
+                        "url('https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200')",
+                    }}
+                  />
+                </td>
+                <td className="px-6 py-2">
                   <CircleUserRound className="ml-[1.4rem]" />
                 </td>
                 <td className="px-6 py-2">
                   <div className="ml-[1.4rem]">{item.tile_space}</div>
                 </td>
-                <td className="px-6 py-2 flex gap-3 rounded-lg">
+                <td className="px-6 py-2 flex gap-3">
                   <Pencil
                     onClick={() => dispatch(setSelected(item.id))}
                     color="#425EBC"

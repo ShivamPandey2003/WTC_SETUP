@@ -7,7 +7,7 @@ const AdminLayout = () => {
   const active = getPrefix(pathname);
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-[#f5f5f5]">
       <Sidebar activeItem={active} />
       <Outlet />
     </div>

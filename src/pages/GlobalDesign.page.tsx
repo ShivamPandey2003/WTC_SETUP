@@ -58,7 +58,7 @@ const GlobalDesign_page = () => {
           onSave={() => updateAppConfig()}
           loading={isUpdateAppConfigPending}
         />
-        <Section title="Color Scheme">
+        <Section title="Color Scheme" ClassName="w-full">
           {Object.entries(appConfig.color_schema).map(([key, value], i) => (
             <ColorPicker
               key={i}
@@ -76,29 +76,39 @@ const GlobalDesign_page = () => {
             />
           ))}
         </Section>
-        <Section title="Logo">
-          <LogoUpload
-            logoUrl={`data:image/png;base64,${appConfig.logo.logo_img}`}
-            fileName={appConfig.logo.name}
-          />
-        </Section>
-        <Section title="Text and styles">
-          {Object.entries(appConfig.text_style).map(([key, value], i) => (
-            <TextStyleRow
-              key={i}
-              label={normalizeLabel(key)}
-              value={value}
-              onChange={(e) =>
-                dispatch(
-                  setAppConfig({
-                    ...appConfig,
-                    text_style: { ...appConfig.text_style, [key]: e },
-                  })
-                )
-              }
-            />
-          ))}
-        </Section>
+        <div className="flex gap-4">
+          <Section title="Logo" ClassName="w-1/2">
+            <div className="flex justify-between mx-[2rem]">
+              <LogoUpload
+                logoUrl={`data:image/png;base64,${appConfig.logo.logo_img}`}
+                fileName={appConfig.logo.name}
+              />
+              <LogoUpload
+                logoUrl={`data:image/png;base64,${appConfig.sponsors.logo}`}
+                fileName={"Sponsor_Logo"}
+                type={0}
+                title="Sponsor Logo"
+              />
+            </div>
+          </Section>
+          <Section title="Text and styles" ClassName="w-1/2">
+            {Object.entries(appConfig.text_style).map(([key, value], i) => (
+              <TextStyleRow
+                key={i}
+                label={normalizeLabel(key)}
+                value={value}
+                onChange={(e) =>
+                  dispatch(
+                    setAppConfig({
+                      ...appConfig,
+                      text_style: { ...appConfig.text_style, [key]: e },
+                    })
+                  )
+                }
+              />
+            ))}
+          </Section>
+        </div>
       </div>
     </div>
   );

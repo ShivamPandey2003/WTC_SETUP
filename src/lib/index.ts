@@ -135,3 +135,24 @@ const d2 = new Date(date2);
 
   return false
 }
+
+type FormattedDate = {
+  weekday: string;
+  dayMonth: string;
+};
+
+export function formatDates_V2(dates: string[]): FormattedDate[] {
+  return dates.map((dateStr) => {
+    const date = new Date(dateStr);
+
+    return {
+      weekday: date.toLocaleDateString("en-US", {
+        weekday: "short",
+      }),
+      dayMonth: date.toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "short",
+      }),
+    };
+  });
+}

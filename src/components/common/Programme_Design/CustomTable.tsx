@@ -62,7 +62,7 @@ const CustomTable = () => {
   }
 
   return (
-    <div className="bg-white rounded-lg overflow-hidden">
+    <div className="overflow-hidden">
       <div className="overflow-x-auto">
         <table
           className="min-w-full border-separate"
@@ -97,8 +97,8 @@ const CustomTable = () => {
             {SessionList.response
               .filter((item) => formatDate(item.start_date) === slectedDate)
               .map((item, index) => (
-                <tr key={item.session_id} className="bg-gray-50 border">
-                  <td className="px-6 py-2 rounded-lg">{index + 1}</td>
+                <tr key={item.session_id} className="bg-white border">
+                  <td className="px-6 py-2">{index + 1}</td>
                   <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">
                     {item.title}
                   </td>
@@ -115,7 +115,7 @@ const CustomTable = () => {
                       return Aray.get(id).name;
                     })}
                   </td>
-                  <td className="px-6 py-2 flex gap-2 rounded-lg">
+                  <td className="px-6 py-2 flex gap-2">
                     <Pencil
                       onClick={() => dispatch(setSelected(item.session_id))}
                       color="#425EBC"

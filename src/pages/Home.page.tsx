@@ -1,5 +1,6 @@
 import { useGetNewsList } from "@/api/global_api/global_api";
-import HeroCard from "@/components/common/Home/HeroCard";
+import Carousel from "@/components/common/Home/Carousel";
+// import HeroCard from "@/components/common/Home/HeroCard";
 import OtherCard from "@/components/common/Home/OtherCard";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
@@ -39,10 +40,11 @@ const Home_page = () => {
 
   return (
     <div className="mx-[7.5%]">
-      <div className="grid grid-cols-1 sm:grid-cols-2 justify-center gap-6 md:gap-8">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 justify-center gap-6 md:gap-8">
         <HeroCard img={"1234"} />
         <HeroCard />
-      </div>
+      </div> */}
+      <Carousel/>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 my-4">
         {NewsList.response.map((item) => (
           <OtherCard

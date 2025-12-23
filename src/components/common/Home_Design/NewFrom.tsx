@@ -45,6 +45,7 @@ const NewFrom = () => {
      formData.append("title", newData.title)
      formData.append("description", newData.description as string)
      formData.append("tile_space", newData.tile_space as string)
+     formData.append("attachments", newData.attachments?.[0] as Blob);
 
     if (selected && data) {
       formData.append("id", selected)

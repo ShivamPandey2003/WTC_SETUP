@@ -52,7 +52,7 @@ const CustomTable = () => {
   }
 
   return (
-    <div className="bg-white rounded-lg overflow-hidden">
+    <div className="overflow-hidden">
       <div className="overflow-x-auto">
         <table
           className="min-w-full border-separate"
@@ -89,8 +89,8 @@ const CustomTable = () => {
           <tbody>
             {/* {!Exhibitors.length && <td className="text-center">No date</td>} */}
             {Boolean(Exhibitors.length) && Exhibitors.map((item, index) => (
-              <tr key={index} className="bg-gray-50 border">
-                <td className="pl-3 py-2 rounded-lg">{index + 1}</td>
+              <tr key={index} className="bg-white border w-fit">
+                <td className="pl-3 py-2">{index + 1}</td>
                 <td className="pl-6 py-2">{item.full_name}</td>
                 <td className="pl-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
                   {item.url}
@@ -131,17 +131,17 @@ const CustomTable = () => {
                     />
                   )}
                 </td>
-                <td className="px-6 py-2 flex gap-2 rounded-lg">
+                <td className="px-6 py-2 pt-3 flex gap-2 items-center rounded-lg">
                   <Pencil
                     color="#425EBC"
                     onClick={() => dispatch(setSelected(item.id))}
-                    size={18}
+                    size={20}
                     className="cursor-pointer"
                   />
                   <Trash2
                     color="#B85555"
                     onClick={() => dispatch(setIsDeleting(item.id))}
-                    size={18}
+                    size={20}
                     className="cursor-pointer"
                   />
                 </td>

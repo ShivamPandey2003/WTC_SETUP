@@ -250,9 +250,9 @@ export const useUploadLogo = () => {
     mutate: UploadLogo,
     isPending,
     error,
-  } = useMutation<LogoUpdateResponse, AxiosError, FormData>({
+  } = useMutation<LogoUpdateResponse, AxiosError, {form:FormData, type:number}>({
     mutationFn: async (data) => {
-      const res = await apiRequest("post", "global/settings/logo/update", data);
+      const res = await apiRequest("post", `global/settings/logo/update?main=${data.type}`, data.form);
       return res.response;
     },
     onSuccess: (data) => {
@@ -490,4 +490,27 @@ export const useHomeDesignUpdate = () => {
     isUpdateHomeDesignPending,
     errorInUpdateHomeDesign,
   };
+};
+
+export const useGetProgrammeList2 = ()=>{
+  const dispatch = useDispatch<AppDispatch>()
+  const {
+    data: ProgrammeList,
+    isPending,
+    error,
+  } = useQuery<Record<string, any>, AxiosError>({
+    queryKey: ["global-programme"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "program/lists");
+      return res.response;
+    },
+    select: (data) => {
+      dispatch(setProgramme(data.response.programme))
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    retry:1
+  });
+
+  return { ProgrammeList, isPending, error };
 };
