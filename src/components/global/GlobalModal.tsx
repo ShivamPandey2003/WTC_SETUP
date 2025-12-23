@@ -65,7 +65,7 @@ const GlobalModal: React.FC<GlobalModalProp> = ({
       onClose={onClose}
       size={size}
       showCloseButton
-      classname="p-0"
+      classname="p-0 max-h-screen"
     >
       <div className="bg-primary w-full rounded-t-lg px-8 text-white py-3 text-xl font-[600]">
         {Title}

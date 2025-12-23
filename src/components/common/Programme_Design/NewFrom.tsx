@@ -123,7 +123,7 @@ const NewFrom = () => {
       name: "category",
       label: "Category",
       type: "select",
-      placeholder: "select one value",
+      placeholder: "Select a category",
       options: AllCategory.response
         .filter((pre: any) => !Boolean(pre.type))
         .map((item: any) => {
@@ -135,7 +135,7 @@ const NewFrom = () => {
       name: "speakers",
       label: "Speaker",
       type: "select",
-      placeholder: "select one value",
+      placeholder: "Select a speaker",
       options: SpeakerList?.response.map((item) => {
         return {
           label: `${item.prefix} ${item.firstname} ${item.lastname}`,

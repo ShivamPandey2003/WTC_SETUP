@@ -75,7 +75,7 @@ export default function Modal({
     >
       <div
         ref={modalRef}
-        className={`bg-white rounded-lg shadow-xl w-full ${sizeClasses[size]} transform transition-all duration-300 scale-100 opacity-100`}
+        className={`bg-white rounded-lg shadow-xl w-full ${sizeClasses[size]} transform transition-all duration-300 scale-100 opacity-100 max-h-screen overflow-y-auto`}
       >
         {showHeader && (header || title || showCloseButton) && (
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
