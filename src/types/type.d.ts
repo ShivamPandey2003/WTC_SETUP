@@ -176,6 +176,9 @@ declare type AppConfig = {
     font_family: string;
     all_other_text: string;
   };
+  sponsors: {
+    logo: string;
+  };
   home_design: {
     home_title: string;
     upcoming_session: boolean;

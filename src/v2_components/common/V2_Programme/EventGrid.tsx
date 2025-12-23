@@ -1,10 +1,13 @@
 import React from "react";
-import Programmes from "@/data/Programmes";
+// import Programmes from "@/data/Programmes";
 import { generateTimeArray, getDateRange } from "@/lib/extra";
 import { cn } from "@/lib/utils";
 import { formatDates_V2 } from "@/lib";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/redux/store";
 
 const EventGrid = () => {
+  const { Programmes } = useSelector((state: RootState) => state.ExtraSlice);
   const Dates = getDateRange(Programmes.start_date, Programmes.end_date);
   const Times = generateTimeArray(Programmes.start_time, Programmes.end_time);
   const timeRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
@@ -23,8 +26,6 @@ const EventGrid = () => {
 
     return r2.top - r1.top;
   }
-
-  console.log(DateList);
 
   React.useEffect(() => {
     const pos: Record<string, { top: number; height: number }> = {};
@@ -119,7 +120,7 @@ const EventGrid = () => {
                             <div
                               key={event.id}
                               className={cn(
-                                "text-black p-1 rounded-xl flex items-center justify-center text-center text-sm absolute w-[150px] cursor-pointer"
+                                "text-white p-1 rounded-xl flex items-center justify-center text-center text-sm absolute w-[150px] cursor-pointer"
                               )}
                               style={{
                                 top: `${
@@ -147,7 +148,7 @@ const EventGrid = () => {
                                 <div
                                   key={row.id}
                                   className={cn(
-                                    "text-black p-1 rounded-xl flex items-center justify-center text-center text-[9px] cursor-pointer",
+                                    "text-white p-1 rounded-xl flex items-center justify-center text-center text-[9px] cursor-pointer",
                                     `w-[${100 / event.Item.length}%]`
                                   )}
                                   style={{
@@ -167,7 +168,7 @@ const EventGrid = () => {
                             <div
                               key={event.id}
                               className={cn(
-                                "text-black p-1 rounded-xl flex items-center justify-center text-center text-sm absolute w-[150px] cursor-pointer"
+                                "text-white p-1 rounded-xl flex items-center justify-center text-center text-sm absolute w-[150px] cursor-pointer"
                               )}
                               style={{
                                 top: `${
@@ -191,7 +192,7 @@ const EventGrid = () => {
                           <div
                             key={item.id}
                             className={cn(
-                              "rounded-xl flex w-[30px] items-center justify-center text-black cursor-pointer"
+                              "rounded-xl flex w-[30px] items-center justify-center text-white cursor-pointer"
                             )}
                             style={{
                               marginTop: `${

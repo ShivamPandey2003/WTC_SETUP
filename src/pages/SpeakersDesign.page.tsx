@@ -21,9 +21,14 @@ const SpeakersDesign_page = () => {
   const { isCreating, SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice
   );
-  const {SpeakerSettings:SpeakerSettingValues, isPending, error} = useGetSpeakerSetting();
+  const {
+    SpeakerSettings: SpeakerSettingValues,
+    isPending,
+    error,
+  } = useGetSpeakerSetting();
   const dispatch = useDispatch<AppDispatch>();
-  const {UpdateSpeakerDesign, isUpdateSpeakerDesignPending} = useSpeakerDesignUpdate();
+  const { UpdateSpeakerDesign, isUpdateSpeakerDesignPending } =
+    useSpeakerDesignUpdate();
 
   if (isPending) {
     return (
@@ -91,8 +96,8 @@ const SpeakersDesign_page = () => {
           </TabsList>
           <TabsContent value="General Settings">
             <Section title="Basic info" ClassName="w-full">
-              {Object.entries(SpeakerSettings.speaker_info)
-                .map(([key, value], i) => (
+              {Object.entries(SpeakerSettings.speaker_info).map(
+                ([key, value], i) => (
                   <div className="flex items-center py-2 gap-8" key={i}>
                     <div className="w-40 text-sm font-medium">
                       {normalizeLabel(key)}
@@ -103,13 +108,17 @@ const SpeakersDesign_page = () => {
                         dispatch(
                           setSpeakerSettings({
                             ...SpeakerSettings,
-                            [key]: !value,
+                            speaker_info: {
+                              ...SpeakerSettings.speaker_info,
+                              [key]: !value,
+                            },
                           })
                         )
                       }
                     />
                   </div>
-                ))}
+                )
+              )}
             </Section>
             <Section title="Speaker Data" ClassName="w-full">
               <p className="text-sm text-gray-700 flex gap-1">

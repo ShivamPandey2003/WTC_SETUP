@@ -6,12 +6,13 @@ import {
 import { useGetSpeakerList } from "@/api/speaker_design_api/speaker_design_api";
 import CustomForm from "@/components/global/CustomForm";
 import { setIsCreating } from "@/redux/HomeDesignSlice";
-import { setSelected } from "@/redux/ProgrammeDesignSlice";
+import { setCategoryModal, setSelected } from "@/redux/ProgrammeDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { SessionSchema, type SessionForm } from "@/Schema/sessionSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import { setIsCreating as CreateSpeaker } from "@/redux/SpeakerDesignSlice";
 
 const NewFrom = () => {
   const { AllCategory, isPending } = useGetCategoryAll();
@@ -27,11 +28,14 @@ const NewFrom = () => {
     formState: { errors },
   } = useForm<SessionForm>({
     resolver: zodResolver(SessionSchema),
-    defaultValues: selected && value ? {
-      ...value,
-      speakers: value.speakers[0],
-      category: value.category[0]
-    } : ({} as any),
+    defaultValues:
+      selected && value
+        ? {
+            ...value,
+            speakers: value.speakers[0],
+            category: value.category[0],
+          }
+        : ({} as any),
   });
   const dispatch = useDispatch<AppDispatch>();
   const { CreateSession, isPending: isCreateSessionPending } =
@@ -96,6 +100,7 @@ const NewFrom = () => {
     placeholder?: string;
     accept?: string;
     options?: { label: string; value: string }[];
+    addMoreHandler?: () => void;
   }[] = [
     { name: "title", label: "Title", placeholder: "Enter title here" },
     {
@@ -124,6 +129,7 @@ const NewFrom = () => {
         .map((item: any) => {
           return { label: item.name, value: item.id };
         }),
+      addMoreHandler: () => dispatch(setCategoryModal(true)),
     },
     {
       name: "speakers",
@@ -136,6 +142,7 @@ const NewFrom = () => {
           value: item.speaker_id,
         };
       }),
+      addMoreHandler: () => dispatch(CreateSpeaker(true)),
     },
   ];
 

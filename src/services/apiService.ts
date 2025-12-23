@@ -38,7 +38,7 @@ apiClient.interceptors.response.use(
 const handleSessionExpiration = (): void => {
   sessionStorage.clear();
   localStorage.clear();
-  window.location.href = "/login"; // Redirect to login page
+  window.location.href = "/"; // Redirect to login page
 };
 
 export const apiRequest = async (

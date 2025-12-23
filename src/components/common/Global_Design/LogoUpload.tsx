@@ -5,11 +5,15 @@ import React from "react";
 interface LogoUploadProps {
   logoUrl: string;
   fileName?: string;
+  type?: number;
+  title?: string;
 }
 
 export default function LogoUpload({
   logoUrl,
   fileName = "ita-montreal.png",
+  type = 1,
+  title = "App Logo",
 }: LogoUploadProps) {
   const [image, setImage] = React.useState<string | null>(logoUrl);
   const { UploadLogo, isPending } = useUploadLogo();
@@ -22,7 +26,7 @@ export default function LogoUpload({
       const reader = new FileReader();
       reader.onloadend = () => setImage(reader.result as string);
       reader.readAsDataURL(file);
-      UploadLogo(newForm);
+      UploadLogo({ form: newForm, type });
     }
   };
 
@@ -30,8 +34,8 @@ export default function LogoUpload({
 
   return (
     <div className="mb-8">
-      <h3 className="text-sm font-semibold text-gray-800 mb-3">App Logo</h3>
-      <div className="bg-white p-4 rounded border border-gray-200 inline-block">
+      <h3 className="text-sm font-semibold text-gray-800 mb-3">{title}</h3>
+      <div className="bg-white p-4 rounded border border-gray-200 inline-block w-[180px]">
         {isPending ? (
           <div className="flex items-center justify-center">
             <LoaderCircle className="animate-spin text-primary" />

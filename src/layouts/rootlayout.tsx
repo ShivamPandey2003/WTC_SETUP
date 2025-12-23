@@ -1,4 +1,7 @@
-import { useGetConferenceDetails, useGlobalDesign } from "@/api/global_api/global_api";
+import {
+  useGetConferenceDetails,
+  useGlobalDesign,
+} from "@/api/global_api/global_api";
 import LoginModal2 from "@/components/common/Auth/LoginModal";
 // import LoginModal from "@/components/global/LoginModal";
 import Navbar from "@/components/global/Navbar";
@@ -10,24 +13,23 @@ import { Outlet } from "react-router";
 
 const RootLayout = () => {
   const { loginModel } = useSelector((state: RootState) => state.model);
-  const dispatch = useDispatch<AppDispatch>()
-    const {} = useGlobalDesign();
+  const dispatch = useDispatch<AppDispatch>();
+  const {} = useGlobalDesign();
 
-  const {} = useGetConferenceDetails()
+  const {} = useGetConferenceDetails();
 
-
-  const onClose = ()=>{
-    dispatch(setLoginModel(false))
-    dispatch(setStep("email"))
-    dispatch(setEmail(""))
-    dispatch(setOtp(["", "", "", "", "", ""]))
-  }
+  const onClose = () => {
+    dispatch(setLoginModel(false));
+    dispatch(setStep("email"));
+    dispatch(setEmail(""));
+    dispatch(setOtp(["", "", "", "", "", ""]));
+  };
 
   return (
     <div>
       <Navbar />
       <Outlet />
-      <LoginModal2 isOpen={loginModel} onClose={()=>onClose()} />
+      <LoginModal2 isOpen={loginModel} onClose={() => onClose()} />
     </div>
   );
 };

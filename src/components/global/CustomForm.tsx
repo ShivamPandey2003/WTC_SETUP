@@ -24,6 +24,7 @@ type FieldConfig<T extends Record<string, any>> = {
   placeholder?: string;
   accept?: string;
   options?: { label: string; value: string }[];
+  addMoreHandler?: () => void;
 };
 
 type Props<T extends Record<string, any>> = {
@@ -232,20 +233,28 @@ const CustomForm = <T extends Record<string, any>>({
                 />
               </div>
             ) : field.type === "select" ? (
-              <select
-                {...register(field.name)}
-                // defaultValue={""}
-                className="w-full rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary"
-              >
-                <option value="" disabled>
-                  {field.placeholder || "Select an option"}
-                </option>
-                {field.options?.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
+              <div className="flex flex-col">
+                <select
+                  {...register(field.name)}
+                  // defaultValue={""}
+                  className="w-full rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary mb-1"
+                >
+                  <option value="" disabled>
+                    {field.placeholder || "Select an option"}
                   </option>
-                ))}
-              </select>
+                  {field.options?.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+                {field.addMoreHandler && (
+                  <div className="flex items-center self-end text-primary cursor-pointer hover:underline text-sm" onClick={field.addMoreHandler}>
+                    <Plus size={16} />
+                    Add more
+                  </div>
+                )}
+              </div>
             ) : (
               <input
                 type={field.type ?? "text"}
