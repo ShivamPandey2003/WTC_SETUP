@@ -18,7 +18,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
     <>
       <div
         className="absolute top-2 cursor-pointer"
-        onClick={() => navigate("/home_v2")}
+        onClick={() => navigate("/")}
       >
         <img src={`data:image/png;base64,${appConfig.logo.logo_img}`} className="w-[128px] h-[68px] object-contain" />
         <span className="text-[10px] font-bold">Sponsored by</span>
