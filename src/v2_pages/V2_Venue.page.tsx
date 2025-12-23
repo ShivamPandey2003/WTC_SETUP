@@ -162,7 +162,7 @@ const V2_Venue_page = () => {
             alt="Stage"
             className="object-contain w-full h-[70vh]"
           />
-          <a href="/FloorPlan.pdf" target="_blank" className="flex items-center text-blue-600"><Link size={18}/> Floor Plan</a>
+          <a href="/FloorPlan.pdf" target="_blank" className="flex items-center text-blue-600 gap-1"><Link size={18}/> Floor Plan</a>
         </div>
       )}
     </div>

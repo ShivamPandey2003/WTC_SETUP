@@ -114,7 +114,7 @@ const V2_Home_page = () => {
         </div>
         <div className="space-y-4">
           {NewsList.response.slice(0, 2).map((item, index) => (
-            <NewsCard key={index} {...item} />
+            <NewsCard key={index} {...item} className="h-[12.5rem]"/>
           ))}
         </div>
       </div>

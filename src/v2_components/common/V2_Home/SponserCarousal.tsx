@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+// import { cn } from "@/lib/utils";
 
 interface HeroCarouselProps {
   slides: {
@@ -37,27 +37,27 @@ const SponserCarousal = ({
     <div
       className={`relative rounded-2xl overflow-hidden w-full min-h-[200px] h-full md:h-[200px] border border-gray-300 bg-white`}
     >
-      {slides.map((slide, index) => (
-        <div
-          key={slide.id}
-          className={`absolute inset-0 transition-opacity duration-700 ${
-            index === currentSlide ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <a href={slide.url} target="_blank">
-            <div
-              className="w-full h-full bg-contain bg-no-repeat bg-center"
-              style={{ backgroundImage: `url(${slide.image})` }}
-            >
-              <div className="w-full h-full flex flex-col justify-end py-4 px-2 md:px-4">
-                <h1 className={cn("text-lg font-bold text-primary mb-1")}>
-                  {slide.title}
-                </h1>
+      {slides.map((slide, index) =>
+        index === currentSlide ? (
+          <div
+            key={slide.id}
+            className="absolute inset-0 transition-opacity duration-700 px-2"
+          >
+            <a href={slide.url} target="_blank" rel="noopener noreferrer">
+              <div
+                className="w-full h-full bg-contain bg-no-repeat bg-center"
+                style={{ backgroundImage: `url(${slide.image})` }}
+              >
+                <div className="w-full h-full flex flex-col justify-end py-4 px-2 md:px-4">
+                  <h1 className="text-base font-bold text-primary mb-1">
+                    {slide.title} Sponsor
+                  </h1>
+                </div>
               </div>
-            </div>
-          </a>
-        </div>
-      ))}
+            </a>
+          </div>
+        ) : null
+      )}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
         {slides.map((_, index) => (
           <button
