@@ -41,10 +41,12 @@ const V2_Speakers_page = () => {
   return (
     // flex gap-4 flex-wrap items-start justify-center
     // grid-cols-5 gap-6
-    <div className="px-4 mx-auto flex gap-4 flex-wrap items-start justify-center">
-      {SpeakersList.response.map((item, i) => (
-        <SpeakerCard key={i} {...item} />
-      ))}
+    <div className="w-full mx-auto">
+      <div className="px-4 flex gap-4 flex-wrap items-start justify-center sm:justify-start">
+        {SpeakersList.response.map((item, i) => (
+          <SpeakerCard key={i} {...item} />
+        ))}
+      </div>
     </div>
   );
 };

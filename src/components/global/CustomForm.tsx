@@ -129,7 +129,7 @@ const CustomForm = <T extends Record<string, any>>({
                 {...register(field.name)}
                 placeholder={field.placeholder}
                 className="w-full rounded outline-0 border-[1px] border-gray-200 px-2 py-1 focus:border-primary"
-                rows={4}
+                rows={1}
               />
             ) : field.type === "checkbox" ? (
               <div className="flex items-center gap-2 pt-1.5">
