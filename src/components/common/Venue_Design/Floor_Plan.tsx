@@ -1,25 +1,28 @@
 import React, { useState } from "react";
 import Stage from "@/assets/Images/FloorPlan.png";
 import { Link } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { useNavigate } from "react-router";
 
 const Floor_Plan = () => {
-  const [floorPlan, setFloorPlan] = useState<string>(Stage);
+  //   const [floorPlan, setFloorPlan] = useState<string>(Stage);
   const [attachment, setAttachment] = useState<string | File>("/FloorPlan.pdf");
+  const Navigate = useNavigate();
 
-  const onFloorPlanChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  //   const onFloorPlanChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //     const file = e.target.files?.[0];
+  //     if (!file) return;
 
-    const fileReader = new FileReader();
+  //     const fileReader = new FileReader();
 
-    fileReader.onload = () => {
-      if (fileReader.result) {
-        setFloorPlan(fileReader.result as string);
-      }
-    };
+  //     fileReader.onload = () => {
+  //       if (fileReader.result) {
+  //         setFloorPlan(fileReader.result as string);
+  //       }
+  //     };
 
-    fileReader.readAsDataURL(file); // 👈 this was missing
-  };
+  //     fileReader.readAsDataURL(file); // 👈 this was missing
+  //   };
 
   const onAttachmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -31,7 +34,10 @@ const Floor_Plan = () => {
   return (
     <div className="w-full rounded-xl bg-white h-[78vh] p-4">
       <div className="mb-10">
-        <label
+        <Button onClick={() => Navigate("/design-floor-plan")}>
+          Go To Design Floor Plan
+        </Button>
+        {/* <label
           className="text-sm font-medium text-blue-500 cursor-pointer"
           htmlFor="floorfile"
         >
@@ -43,9 +49,9 @@ const Floor_Plan = () => {
             onChange={onFloorPlanChange}
             accept="image/png, image/jpeg"
           />
-        </label>
+        </label> */}
         <img
-          src={floorPlan}
+          src={Stage}
           alt="Stage"
           className="object-contain w-full h-[60vh]"
         />

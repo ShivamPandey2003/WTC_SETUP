@@ -23,6 +23,7 @@ import V2_Speakers_page from "@/v2_pages/V2_Speakers.page";
 import V2_exhibitors_page from "@/v2_pages/V2_exhibitors.page";
 import V2_Venue_page from "@/v2_pages/V2_Venue.page";
 import V2_Programme_page from "@/v2_pages/V2_Programme.page";
+import V2_VenueDesign_page from "@/v2_pages/V2_VenueDesign.page";
 
 const Router = createBrowserRouter(
   [
@@ -106,6 +107,10 @@ const Router = createBrowserRouter(
           path: "exhibitors-design",
           element: <ExhibitorsDesign_page />,
         },
+        {
+          path:"design-floor-plan",
+          element:<V2_VenueDesign_page/>
+        }
       ],
     },
     {

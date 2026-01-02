@@ -68,14 +68,14 @@ const V2_Venue_page = () => {
       <div className="p-1 bg-white w-fit rounded-full flex gap-2 mb-4">
         <Button
           variant={currentTab === "getting there" ? "default" : "ghost"}
-          className={cn("capitalize rounded-full p-2 w-[7rem]")}
+          className={cn("capitalize rounded-full p-2 w-28")}
           onClick={() => setCurrentTab("getting there")}
         >
           Getting There
         </Button>
         <Button
           variant={currentTab === "floor plan" ? "default" : "ghost"}
-          className={cn("capitalize rounded-full p-2 w-[7rem]")}
+          className={cn("capitalize rounded-full p-2 w-28")}
           onClick={() => setCurrentTab("floor plan")}
         >
           floor Plan
@@ -92,7 +92,7 @@ const V2_Venue_page = () => {
           <div className="bg-white rounded-3xl overflow-hidden shadow-sm p-6">
             <LoadScriptNext
               loadingElement={
-                <Skeleton className="w-full h-[20rem] mb-8" />
+                <Skeleton className="w-full h-80 mb-8" />
               }
               googleMapsApiKey={apiKey}
             >
@@ -126,12 +126,12 @@ const V2_Venue_page = () => {
                   <Navigation strokeWidth={"1px"} />
                   <div>
                     <h3 className="text-lg font-bold">{conference_location}</h3>
-                    <p className="w-[15rem] text-sm">
+                    <p className="w-60 text-sm">
                       1001 Pl. Jean-Paul-Riopelle, Montréal, QC H2Y 0A3, Canada
                     </p>
                   </div>
                 </div>
-                <Button className="rounded-full bg-[#E5F6DD] text-[#666666] hover:bg-[#c9fcb0] hover:text-[#555555] text-sm w-[9rem]">
+                <Button className="rounded-full bg-[#E5F6DD] text-[#666666] hover:bg-[#c9fcb0] hover:text-[#555555] text-sm w-36">
                   Open in Maps
                 </Button>
               </div>
@@ -144,10 +144,10 @@ const V2_Venue_page = () => {
                         conference_end_date
                       )}`}
                     </h3>
-                    <p className="w-[15rem] text-sm">07:30 AM - 17:30 PM</p>
+                    <p className="w-60 text-sm">07:30 AM - 17:30 PM</p>
                   </div>
                 </div>
-                <Button className="rounded-full bg-[#E5F6DD] text-[#666666] hover:bg-[#c9fcb0] hover:text-[#555555] text-sm w-[9rem]">
+                <Button className="rounded-full bg-[#E5F6DD] text-[#666666] hover:bg-[#c9fcb0] hover:text-[#555555] text-sm w-36">
                   Add to calendar
                 </Button>
               </div>
