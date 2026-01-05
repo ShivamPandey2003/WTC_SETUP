@@ -6,9 +6,17 @@ type ShapesProps = {
   shape: Shape;
   isDraggable: boolean;
   click: (e: KonvaEventObject<MouseEvent, Node<NodeConfig>>) => void;
+  dragEnd: (e: KonvaEventObject<MouseEvent, Node<NodeConfig>>) => void;
+  transformEnd: (e: KonvaEventObject<MouseEvent, Node<NodeConfig>>) => void;
 };
 
-const ShapesElement = ({ shape, isDraggable, click }: ShapesProps) => {
+const ShapesElement = ({
+  shape,
+  isDraggable,
+  click,
+  dragEnd,
+  transformEnd,
+}: ShapesProps) => {
   switch (shape.type) {
     case ACTIONS.RECTANGLE: {
       const rect = shape as RectangleShape;
@@ -24,6 +32,8 @@ const ShapesElement = ({ shape, isDraggable, click }: ShapesProps) => {
           draggable={isDraggable}
           onClick={click}
           type={ACTIONS.RECTANGLE}
+          onDragEnd={dragEnd}
+          onTransformEnd={transformEnd}
         />
       );
     }
@@ -40,6 +50,8 @@ const ShapesElement = ({ shape, isDraggable, click }: ShapesProps) => {
           draggable={isDraggable}
           onClick={click}
           type={ACTIONS.CIRCLE}
+          onDragEnd={dragEnd}
+          onTransformEnd={transformEnd}
         />
       );
     }
@@ -54,6 +66,8 @@ const ShapesElement = ({ shape, isDraggable, click }: ShapesProps) => {
           draggable={isDraggable}
           onClick={click}
           type={ACTIONS.ARROW}
+          onDragEnd={dragEnd}
+          onTransformEnd={transformEnd}
         />
       );
     }
@@ -68,6 +82,8 @@ const ShapesElement = ({ shape, isDraggable, click }: ShapesProps) => {
           strokeWidth={line.strokeWidth !== null ? line.strokeWidth : 2}
           fill={line.fillColor}
           type={ACTIONS.LINE}
+          onDragEnd={dragEnd}
+          onTransformEnd={transformEnd}
         />
       );
     }
@@ -86,6 +102,8 @@ const ShapesElement = ({ shape, isDraggable, click }: ShapesProps) => {
           draggable={isDraggable}
           onClick={click}
           type={ACTIONS.STAR}
+          onDragEnd={dragEnd}
+          onTransformEnd={transformEnd}
         />
       );
     }
@@ -103,6 +121,8 @@ const ShapesElement = ({ shape, isDraggable, click }: ShapesProps) => {
           draggable={isDraggable}
           onClick={click}
           type={ACTIONS.POLYGON}
+          onDragEnd={dragEnd}
+          onTransformEnd={transformEnd}
         />
       );
     }
@@ -132,6 +152,8 @@ const ShapesElement = ({ shape, isDraggable, click }: ShapesProps) => {
           lineJoin="round"
           draggable={isDraggable && !pointShape.isErasing}
           onClick={click}
+          onDragEnd={dragEnd}
+          onTransformEnd={transformEnd}
         />
       );
     }

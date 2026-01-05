@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
 import { GoogleMap, LoadScriptNext, Marker } from "@react-google-maps/api";
 import { Skeleton } from "@/components/ui/skeleton";
+import Map_V2 from "@/v2_components/common/V2_Venue/Map_V2";
 
 const apiKey = import.meta.env.VITE_REACT_GOOGLE_MAPS_API_KEY;
 
@@ -91,9 +92,7 @@ const V2_Venue_page = () => {
           </div>
           <div className="bg-white rounded-3xl overflow-hidden shadow-sm p-6">
             <LoadScriptNext
-              loadingElement={
-                <Skeleton className="w-full h-80 mb-8" />
-              }
+              loadingElement={<Skeleton className="w-full h-80 mb-8" />}
               googleMapsApiKey={apiKey}
             >
               <GoogleMap
@@ -156,13 +155,22 @@ const V2_Venue_page = () => {
         </div>
       )}
       {currentTab === "floor plan" && (
-        <div className="w-full rounded-xl p-6 bg-white">
-          <img
+        <div className="w-full rounded-xl p-6 bg-white h-fit">
+          {/* <img
             src={Stage}
             alt="Stage"
             className="object-contain w-full h-[70vh]"
-          />
-          <a href="/FloorPlan.pdf" target="_blank" className="flex items-center text-blue-600 gap-1"><Link size={18}/> Floor Plan</a>
+          /> */}
+          <div className="w-full">
+            <Map_V2 />
+          </div>
+          <a
+            href="/FloorPlan.pdf"
+            target="_blank"
+            className="flex items-center text-blue-600 gap-1"
+          >
+            <Link size={18} /> Floor Plan
+          </a>
         </div>
       )}
     </div>

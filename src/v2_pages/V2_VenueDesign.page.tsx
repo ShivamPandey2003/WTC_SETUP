@@ -68,6 +68,10 @@ const V2_VenueDesign_page = () => {
     });
   }, [Shapes]);
 
+  useEffect(() => {
+    console.log(Shapes);
+  }, [Shapes]);
+
   function onPointerUp() {
     isPaining.current = false;
   }
@@ -241,6 +245,56 @@ const V2_VenueDesign_page = () => {
     }
   }
 
+  function OnDragEnd(
+    e: KonvaEventObject<MouseEvent, Node<NodeConfig>>,
+    id: string
+  ) {
+    const node = e.target;
+
+    dispatch(
+      setShapes(
+        Shapes.map((s) =>
+          s.id === id
+            ? {
+                ...s,
+                x: node.x(),
+                y: node.y(),
+              }
+            : s
+        )
+      )
+    );
+  }
+
+  function OnTransformEnd(
+    e: KonvaEventObject<Event, Node<NodeConfig>>,
+    id: string
+  ) {
+    const node = e.target;
+    const scaleX = node.scaleX();
+    const scaleY = node.scaleY();
+
+    // reset scale back to 1
+    node.scaleX(1);
+    node.scaleY(1);
+
+    dispatch(
+      setShapes(
+        Shapes.map((s) =>
+          s.id === id
+            ? {
+                ...s,
+                x: node.x(),
+                y: node.y(),
+                width: Math.max(20, node.width() * scaleX),
+                height: Math.max(20, node.height() * scaleY),
+              }
+            : s
+        )
+      )
+    );
+  }
+
   return (
     <div className="relative w-full h-screen bg-white overflow-hidden">
       {/*Controls */}
@@ -340,6 +394,8 @@ const V2_VenueDesign_page = () => {
                     draggable={isDraggable}
                     onClick={(e) => onClick(e, imgShape.id)}
                     listening={true}
+                    onDragEnd={(e) => OnDragEnd(e, imgShape.id)}
+                    onTransformEnd={(e) => OnTransformEnd(e, imgShape.id)}
                   />
                 );
               }
@@ -362,6 +418,7 @@ const V2_VenueDesign_page = () => {
                     onDblClick={(e) => handleTextDblClick(text.id, e)}
                     onDblTap={(e) => handleTextDblClick(text.id, e)}
                     onTransform={handleTransform}
+                    onDragEnd={(e) => OnDragEnd(e, text.id)}
                     visible={editingTextId !== text.id}
                   />
                 );
@@ -373,6 +430,8 @@ const V2_VenueDesign_page = () => {
                     shape={shape}
                     isDraggable={isDraggable}
                     click={(e) => onClick(e, shape.id)}
+                    dragEnd={(e) => OnDragEnd(e, shape.id)}
+                    transformEnd={(e) => OnTransformEnd(e, shape.id)}
                   />
                 );
             }
