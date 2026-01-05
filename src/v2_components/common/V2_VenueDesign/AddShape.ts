@@ -34,6 +34,8 @@ const onPointerDownSwitch = ({
             height: 20,
             width: 20,
             fillColor,
+            strokeColor:"#000000",
+            strokeWidth:2
           },
         ])
       );
@@ -49,6 +51,8 @@ const onPointerDownSwitch = ({
             y,
             radius: 20,
             fillColor,
+            strokeColor:"#000000",
+            strokeWidth:2
           },
         ])
       );
@@ -63,6 +67,8 @@ const onPointerDownSwitch = ({
             id,
             points: [x, y, x + 20, y + 20],
             fillColor,
+            strokeColor:"#000000",
+            strokeWidth:2
           },
         ])
       );
@@ -76,6 +82,8 @@ const onPointerDownSwitch = ({
             id,
             points: [x, y],
             fillColor,
+            strokeColor:"#000000",
+            strokeWidth:2
           },
         ])
       );
@@ -105,7 +113,7 @@ const onPointerDownSwitch = ({
             y,
             width: 200,
             fontSize: 20,
-            fillColor: fillColor === "#0000" ? "#000000" : fillColor,
+            fillColor: fillColor === "#00000000" ? "#000000" : fillColor,
             isErasing: true, // 🔥 mark as eraser stroke
           },
         ])
@@ -120,6 +128,8 @@ const onPointerDownSwitch = ({
             id,
             points: [x, y, x + 20, y + 20],
             fillColor,
+            strokeColor:"#000000",
+            strokeWidth:2
           },
         ])
       );
@@ -137,6 +147,8 @@ const onPointerDownSwitch = ({
             outerRadius: 70,
             numPoints: 5,
             fillColor,
+            strokeColor:"#000000",
+            strokeWidth:2
           },
         ])
       );
@@ -153,7 +165,8 @@ const onPointerDownSwitch = ({
             sides: 6,
             radius: 70,
             fillColor,
-            strokeWidth: 4,
+            strokeWidth: 2,
+            strokeColor:"#000000"
           },
         ])
       );

@@ -19,8 +19,8 @@ const ShapesElement = ({ shape, isDraggable, click }: ShapesProps) => {
           width={rect.width}
           height={rect.height}
           fill={rect.fillColor}
-          stroke={"#000000"}
-          strokeWidth={2}
+          stroke={rect.strokeColor ? rect.strokeColor : "#000000"}
+          strokeWidth={rect.strokeWidth !== null ? rect.strokeWidth : 2}
           draggable={isDraggable}
           onClick={click}
           type={ACTIONS.RECTANGLE}
@@ -35,8 +35,8 @@ const ShapesElement = ({ shape, isDraggable, click }: ShapesProps) => {
           y={circle.y}
           radius={circle.radius}
           fill={circle.fillColor}
-          stroke={"#000000"}
-          strokeWidth={2}
+          stroke={circle.strokeColor ? circle.strokeColor : "#000000"}
+          strokeWidth={circle.strokeWidth !== null ? circle.strokeWidth : 2}
           draggable={isDraggable}
           onClick={click}
           type={ACTIONS.CIRCLE}
@@ -61,11 +61,11 @@ const ShapesElement = ({ shape, isDraggable, click }: ShapesProps) => {
       const line = shape as LineShape;
       return (
         <Line
-          stroke={"#000000"}
+          stroke={line.strokeColor ? line.strokeColor : "#000000"}
           points={line.points}
           draggable={isDraggable}
           onClick={click}
-          strokeWidth={2}
+          strokeWidth={line.strokeWidth !== null ? line.strokeWidth : 2}
           fill={line.fillColor}
           type={ACTIONS.LINE}
         />
@@ -81,8 +81,8 @@ const ShapesElement = ({ shape, isDraggable, click }: ShapesProps) => {
           innerRadius={star.innerRadius}
           outerRadius={star.outerRadius}
           fill={star.fillColor}
-          stroke={"#000000"}
-          strokeWidth={2}
+          stroke={star.strokeColor ? star.strokeColor : "#000000"}
+          strokeWidth={star.strokeWidth !== null ? star.strokeWidth : 2}
           draggable={isDraggable}
           onClick={click}
           type={ACTIONS.STAR}
@@ -98,8 +98,8 @@ const ShapesElement = ({ shape, isDraggable, click }: ShapesProps) => {
           sides={polygon.sides}
           radius={polygon.radius}
           fill={polygon.fillColor}
-          stroke={"#000000"}
-          strokeWidth={2}
+          stroke={polygon.strokeColor ? polygon.strokeColor : "#000000"}
+          strokeWidth={polygon.strokeWidth !== null ? polygon.strokeWidth : 2}
           draggable={isDraggable}
           onClick={click}
           type={ACTIONS.POLYGON}
@@ -111,8 +111,20 @@ const ShapesElement = ({ shape, isDraggable, click }: ShapesProps) => {
       return (
         <Line
           points={pointShape.points}
-          stroke={!pointShape.isErasing ? "#000000" : "#ffff"}
-          strokeWidth={pointShape.isErasing ? 30 : 2} // 🔥 bigger width as eraser
+          stroke={
+            pointShape.isErasing
+              ? "#ffff"
+              : pointShape.strokeColor
+              ? pointShape.strokeColor
+              : "#000000"
+          }
+          strokeWidth={
+            pointShape.isErasing
+              ? 30
+              : pointShape.strokeWidth !== null
+              ? pointShape.strokeWidth
+              : 2
+          } // 🔥 bigger width as eraser
           globalCompositeOperation={
             pointShape.isErasing ? "destination-out" : "source-over"
           }

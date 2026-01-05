@@ -52,8 +52,6 @@ const V2_VenueDesign_page = () => {
   const isDraggable = action === ACTIONS.SELECT;
   const isDrawing = action !== ACTIONS.SELECT;
 
-  console.log(Shapes)
-
   useEffect(() => {
     Shapes.forEach((shape) => {
       if (shape.type !== ACTIONS.IMAGE) return;
@@ -339,9 +337,9 @@ const V2_VenueDesign_page = () => {
                     y={imgShape.y}
                     width={imgShape.width}
                     height={imgShape.height}
-                    draggable={false}
+                    draggable={isDraggable}
                     onClick={(e) => onClick(e, imgShape.id)}
-                    listening={false}
+                    listening={true}
                   />
                 );
               }
@@ -354,7 +352,10 @@ const V2_VenueDesign_page = () => {
                     text={text.text}
                     x={text.x}
                     y={text.y}
-                    fontSize={20}
+                    fontSize={text.fontSize}
+                    stroke={text.strokeColor}
+                    strokeWidth={text.strokeWidth}
+                    fill={text.fillColor}
                     onClick={(e) => onClick(e, text.id)}
                     draggable={isDraggable}
                     width={textWidth}
@@ -411,7 +412,7 @@ const V2_VenueDesign_page = () => {
           )}
         </Layer>
       </Stage>
-      {selectId ? <CanvaShapeEditor /> : null}
+      {selectId ? <CanvaShapeEditor id={selectId} /> : null}
     </div>
   );
 };

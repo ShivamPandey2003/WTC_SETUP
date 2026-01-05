@@ -1,87 +1,175 @@
+import ColorSize from "@/data/Color&Size";
+import { cn } from "@/lib/utils";
+import type { AppDispatch, RootState } from "@/redux/store";
+import { setShapes } from "@/redux/venueDesignV2Slice";
+import { useDispatch, useSelector } from "react-redux";
 
-const CanvaShapeEditor = () => {
+type prop = {
+  id: string;
+};
+
+const CanvaShapeEditor = ({ id }: prop) => {
+  const { Shapes } = useSelector((state: RootState) => state.Venue_Design_V2);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const Shape = Shapes.find((pre) => pre.id === id);
+
   return (
     <div className="absolute top-2/6 left-1 px-2">
-      <div className="py-2 px-3 w-fit mx-auto border border-border shadow-lg rounded-lg bg-white">
-        <div className="flex flex-col mb-6">
-          <label htmlFor="color" className="text-xs mb-2 capitalize">
-            Stroke
-          </label>
-          <div className="flex items-center gap-2">
-            <span className="bg-[#e74c3c] w-5 h-5 inline-block rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary"></span>
-            <span className="bg-[#e74c3c] w-5 h-5 inline-block rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary"></span>
-            <span className="bg-[#e74c3c] w-5 h-5 inline-block rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary"></span>
-            <span className="bg-[#e74c3c] w-5 h-5 inline-block rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary"></span>
+      <div className="py-4 px-4 w-fit mx-auto border border-border shadow-lg rounded-lg bg-white">
+        {!Shape ? (
+          <div>Something is wrong</div>
+        ) : Shape.type === "IMAGE" ? (
+          <div>Image Don't Have Styles</div>
+        ) : (
+          <>
+            <div className="flex flex-col mb-6">
+              <label htmlFor="color" className="text-xs mb-2 capitalize">
+                Stroke
+              </label>
+              <div className="flex items-center gap-2">
+                {ColorSize.Stroke.display.map((color) => (
+                  <span
+                    key={color}
+                    className={`w-5 h-5 inline-block rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary`}
+                    style={{ backgroundColor: color }}
+                    onClick={() =>
+                      dispatch(
+                        setShapes(
+                          Shapes.map((pre) =>
+                            pre.id === id ? { ...pre, strokeColor: color } : pre
+                          )
+                        )
+                      )
+                    }
+                  />
+                ))}
+                <input
+                  type="color"
+                  id="color"
+                  name="color"
+                  list="color-presets"
+                  value={Shape.strokeColor}
+                  onChange={(e) =>
+                    dispatch(
+                      setShapes(
+                        Shapes.map((pre) =>
+                          pre.id === id
+                            ? { ...pre, strokeColor: e.target.value }
+                            : pre
+                        )
+                      )
+                    )
+                  }
+                />
+              </div>
+              <datalist id="color-presets">
+                {ColorSize.Stroke.list.map((color) => (
+                  <option key={color} value={color} />
+                ))}
+              </datalist>
+            </div>
+            <div className="flex flex-col mb-6">
+              <label htmlFor="color" className="text-xs mb-2 capitalize">
+                Background
+              </label>
+              <div className="flex items-center gap-2">
+                {ColorSize.Background.display.map((color) => (
+                  <span
+                    key={color}
+                    className={cn(
+                      `w-5 h-5 inline-block rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary`,
+                      color === "#00000000" && "border border-border"
+                    )}
+                    style={{ backgroundColor: color }}
+                    onClick={() =>
+                      dispatch(
+                        setShapes(
+                          Shapes.map((pre) =>
+                            pre.id === id ? { ...pre, fillColor: color } : pre
+                          )
+                        )
+                      )
+                    }
+                  />
+                ))}
+                <input
+                  type="color"
+                  id="color"
+                  name="color"
+                  list="color-presets"
+                  value={Shape.fillColor}
+                  onChange={(e) =>
+                    dispatch(
+                      setShapes(
+                        Shapes.map((pre) =>
+                          pre.id === id
+                            ? { ...pre, fillColor: e.target.value }
+                            : pre
+                        )
+                      )
+                    )
+                  }
+                />
+              </div>
+              <datalist id="color-presets">
+                {ColorSize.Background.list.map((color) => (
+                  <option key={color} value={color} />
+                ))}
+              </datalist>
+            </div>
+            <div className="mb-6">
+              <p className="text-xs mb-2 capitalize">Stroke Width</p>
+              <div className="flex items-center gap-2">
+                {Object.entries(ColorSize.Stroke_Width).map(([key, value]) => (
+                  <p
+                    key={key}
+                    onClick={() =>
+                      dispatch(
+                        setShapes(
+                          Shapes.map((pre) =>
+                            pre.id === id ? { ...pre, strokeWidth: value } : pre
+                          )
+                        )
+                      )
+                    }
+                    className=" cursor-pointer text-sm bg-white w-8 h-6 border border-border text-center rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary uppercase"
+                  >
+                    {key}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+        {Shape && Shape.type === "TEXT" && (
+          <div className="flex flex-col">
+            <label htmlFor="" className="text-xs mb-2 capitalize">
+              Text Size
+            </label>
             <input
-              type="color"
-              id="color"
-              name="color"
-              list="color-presets"
-              value="#000000"
+              type="Text"
+              pattern="[0-9]{0,2}"
+              inputMode="numeric"
+              value={(Shape as TextShape).fontSize}
+              className="px-2 outline-none border border-border rounded-md bg-gray-200"
+              onChange={(e) =>
+                dispatch(
+                  setShapes(
+                    Shapes.map((pre) =>
+                      pre.id === id
+                        ? ({
+                            ...pre,
+                            fontSize: Number(e.target.value),
+                          } as TextShape)
+                        : pre
+                    )
+                  )
+                )
+              }
             />
           </div>
-          <datalist id="color-presets">
-            <option value="#000000"></option>
-            <option value="#ffffff"></option>
-            <option value="#ff0000"></option>
-            <option value="#00ff00"></option>
-            <option value="#0000ff"></option>
-            <option value="#ffff00"></option>
-            <option value="#ff00ff"></option>
-            <option value="#00ffff"></option>
-          </datalist>
-        </div>
-        <div className="flex flex-col mb-6">
-          <label htmlFor="color" className="text-xs mb-2 capitalize">
-            Background
-          </label>
-          <div className="flex items-center gap-2">
-            <span className="bg-[#e74c3c] w-5 h-5 inline-block rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary"></span>
-            <span className="bg-[#e74c3c] w-5 h-5 inline-block rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary"></span>
-            <span className="bg-[#e74c3c] w-5 h-5 inline-block rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary"></span>
-            <span className="bg-[#e74c3c] w-5 h-5 inline-block rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary"></span>
-            <input
-              type="color"
-              id="color"
-              name="color"
-              list="color-presets"
-              value="#000000"
-            />
-          </div>
-          <datalist id="color-presets">
-            <option value="#000000"></option>
-            <option value="#ffffff"></option>
-            <option value="#ff0000"></option>
-            <option value="#00ff00"></option>
-            <option value="#0000ff"></option>
-            <option value="#ffff00"></option>
-            <option value="#ff00ff"></option>
-            <option value="#00ffff"></option>
-          </datalist>
-        </div>
-        <div>
-          <p className="text-xs mb-2 capitalize">stroke Width</p>
-          <div className="flex items-center gap-2">
-            <p
-              onClick={() => {}}
-              className=" cursor-pointer bg-white w-8 h-6 border border-border text-center rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary uppercase"
-            >
-              xs
-            </p>
-            <p className=" cursor-pointer bg-white w-8 h-6 border border-border text-center rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary uppercase">
-              sm
-            </p>
-            <p className=" cursor-pointer bg-white w-8 h-6 border border-border text-center rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary uppercase">
-              md
-            </p>
-            <p className=" cursor-pointer bg-white w-8 h-6 border border-border text-center rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary uppercase">
-              lg
-            </p>
-            <p className=" cursor-pointer bg-white w-8 h-6 border border-border text-center rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary uppercase">
-              xl
-            </p>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
