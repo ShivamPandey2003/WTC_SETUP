@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 
 interface HeroCarouselProps {
   slides: {
-    id: number;
-    title: string;
+    id: string;
+    full_name: string;
     url: string;
-    image: string;
+    logo: string;
   }[];
   intervalTime?: number;
 }
@@ -46,11 +46,11 @@ const SponserCarousal = ({
             <a href={slide.url} target="_blank" rel="noopener noreferrer">
               <div
                 className="w-full h-full bg-contain bg-no-repeat bg-center"
-                style={{ backgroundImage: `url(${slide.image})` }}
+                style={{ backgroundImage: `url(${slide.logo})` }}
               >
                 <div className="w-full h-full flex flex-col justify-end py-4 px-2 md:px-4">
                   <h1 className="text-base font-bold text-primary mb-1">
-                    {slide.title} Sponsor
+                    {slide.full_name} Sponsor
                   </h1>
                 </div>
               </div>

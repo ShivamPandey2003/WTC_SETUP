@@ -108,7 +108,7 @@ const Router = createBrowserRouter(
           element: <ExhibitorsDesign_page />,
         },
         {
-          path:"design-floor-plan",
+          path:"venue-design/design-floor-plan",
           element:<V2_VenueDesign_page/>
         }
       ],

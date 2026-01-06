@@ -5,7 +5,6 @@ import { useState } from "react";
 import BG from "@/assets/Images/BG.jpg";
 // import MapText from "@/assets/Images/MapText.png";
 import { Calendar, Link, Loader, Navigation } from "lucide-react";
-import Stage from "@/assets/Images/FloorPlan.png";
 import { useGetVenue } from "@/api/global_api/global_api";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";

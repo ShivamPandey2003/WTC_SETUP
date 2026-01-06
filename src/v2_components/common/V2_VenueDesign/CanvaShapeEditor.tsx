@@ -2,6 +2,7 @@ import ColorSize from "@/data/Color&Size";
 import { cn } from "@/lib/utils";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { setShapes } from "@/redux/venueDesignV2Slice";
+import { Lock, LockOpen } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
 type prop = {
@@ -138,6 +139,26 @@ const CanvaShapeEditor = ({ id }: prop) => {
                     {key}
                   </p>
                 ))}
+              </div>
+            </div>
+            <div className="mb-6">
+              <p className="text-xs mb-2 capitalize">Lock</p>
+              <div
+                onClick={() =>
+                  dispatch(
+                    setShapes(
+                      Shapes.map((pre) =>
+                        pre.id === id ? { ...pre, locked: !pre.locked } : pre
+                      )
+                    )
+                  )
+                }
+              >
+                {Shapes.find((pre) => pre.id === id)?.locked ? (
+                  <Lock />
+                ) : (
+                  <LockOpen />
+                )}
               </div>
             </div>
           </>

@@ -24,8 +24,10 @@ import onPointerMoveSwitch from "@/v2_components/common/V2_VenueDesign/EditShape
 import ShapesElement from "@/v2_components/common/V2_VenueDesign/Shapes";
 import TextEditor from "@/v2_components/common/V2_VenueDesign/TextArea";
 import { Text as TextInstance } from "konva/lib/shapes/Text";
-import { Lock, LockOpen } from "lucide-react";
+import { Check, LoaderCircle, Lock, LockOpen } from "lucide-react";
 import CanvaShapeEditor from "@/v2_components/common/V2_VenueDesign/CanvaShapeEditor";
+import { useSaveFloorPlanData } from "@/api/Venue_api/Venue_Design_api";
+import { Button } from "@/components/ui/Button";
 
 const V2_VenueDesign_page = () => {
   const stageRef = useRef<Konva.Stage | null>(null);
@@ -48,6 +50,7 @@ const V2_VenueDesign_page = () => {
     null
   );
   const [screenDrag, setScreenDrag] = useState<false | null>(null);
+  const { SaveFloorPlanData, isPending } = useSaveFloorPlanData();
 
   const isDraggable = action === ACTIONS.SELECT;
   const isDrawing = action !== ACTIONS.SELECT;
@@ -66,10 +69,6 @@ const V2_VenueDesign_page = () => {
         };
       }
     });
-  }, [Shapes]);
-
-  useEffect(() => {
-    console.log(Shapes);
   }, [Shapes]);
 
   function onPointerUp() {
@@ -350,6 +349,18 @@ const V2_VenueDesign_page = () => {
           >
             {screenDrag === null ? <LockOpen /> : <Lock />}
           </button>
+          <Button
+            size={"icon-sm"}
+            title="Save your progress"
+            onClick={() => SaveFloorPlanData({ floor_map_list: Shapes })}
+            disabled={isPending}
+          >
+            {isPending ? (
+              <LoaderCircle className="text-white animate-spin" />
+            ) : (
+              <Check />
+            )}
+          </Button>
         </div>
       </div>
       {/* Canvas */}
@@ -391,7 +402,7 @@ const V2_VenueDesign_page = () => {
                     y={imgShape.y}
                     width={imgShape.width}
                     height={imgShape.height}
-                    draggable={isDraggable}
+                    draggable={imgShape.locked ? !imgShape.locked : isDraggable}
                     onClick={(e) => onClick(e, imgShape.id)}
                     listening={true}
                     onDragEnd={(e) => OnDragEnd(e, imgShape.id)}
@@ -413,7 +424,7 @@ const V2_VenueDesign_page = () => {
                     strokeWidth={text.strokeWidth}
                     fill={text.fillColor}
                     onClick={(e) => onClick(e, text.id)}
-                    draggable={isDraggable}
+                    draggable={text.locked ? !text.locked : isDraggable}
                     width={textWidth}
                     onDblClick={(e) => handleTextDblClick(text.id, e)}
                     onDblTap={(e) => handleTextDblClick(text.id, e)}
@@ -428,7 +439,7 @@ const V2_VenueDesign_page = () => {
                   <ShapesElement
                     key={shape.id}
                     shape={shape}
-                    isDraggable={isDraggable}
+                    isDraggable={shape.locked ? !shape.locked : isDraggable}
                     click={(e) => onClick(e, shape.id)}
                     dragEnd={(e) => OnDragEnd(e, shape.id)}
                     transformEnd={(e) => OnTransformEnd(e, shape.id)}

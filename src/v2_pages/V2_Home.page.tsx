@@ -1,4 +1,7 @@
-import { useGetNewsList } from "@/api/global_api/global_api";
+import {
+  useGetExhibitorsList,
+  useGetNewsList,
+} from "@/api/global_api/global_api";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -38,32 +41,37 @@ const slides: Slide[] = [
     buttonText: "Explore",
   },
 ];
-const slides2 = [
-  {
-    id: 1,
-    title: "Diamond",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/7/79/Epiroc_Logo.png",
-    url: "https://www.epiroc.com",
-  },
-  {
-    id: 2,
-    title: "Diamond",
-    image:
-      "https://upload.wikimedia.org/wikipedia/en/thumb/d/dd/Trimble_logo.svg/500px-Trimble_logo.svg.png",
-    url: "https://www.trimble.com",
-  },
-  {
-    id: 3,
-    title: "Diamond",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Bentley_Systems_wordmark.svg/500px-Bentley_Systems_wordmark.svg.png",
-    url: "https://www.bentley.com",
-  },
-];
+// const slides2 = [
+//   {
+//     id: 1,
+//     title: "Diamond",
+//     image:
+//       "https://upload.wikimedia.org/wikipedia/commons/7/79/Epiroc_Logo.png",
+//     url: "https://www.epiroc.com",
+//   },
+//   {
+//     id: 2,
+//     title: "Diamond",
+//     image:
+//       "https://upload.wikimedia.org/wikipedia/en/thumb/d/dd/Trimble_logo.svg/500px-Trimble_logo.svg.png",
+//     url: "https://www.trimble.com",
+//   },
+//   {
+//     id: 3,
+//     title: "Diamond",
+//     image:
+//       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Bentley_Systems_wordmark.svg/500px-Bentley_Systems_wordmark.svg.png",
+//     url: "https://www.bentley.com",
+//   },
+// ];
 
 const V2_Home_page = () => {
   const { NewsList, isPending, error } = useGetNewsList();
+  const {
+    ExhibitorList,
+    isPending: isExhibitorsListLoading,
+    error: ExhibitorListError,
+  } = useGetExhibitorsList();
   // const {
   //   ProgrammeList,
   //   isPending: isProgrammePending,
@@ -71,7 +79,8 @@ const V2_Home_page = () => {
   // } = useGetProgrammeList2();
 
   if (
-    isPending
+    isPending ||
+    isExhibitorsListLoading
     // isProgrammePending ||
     // !ProgrammeList ||
     // !ProgrammeList.response.programme["Nov 30, 2025"]
@@ -91,15 +100,24 @@ const V2_Home_page = () => {
     );
   }
 
-  if (error) {
+  if (error || ExhibitorListError) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
-        <ErrorDisplay title="News Feed Error" message={error.message} />
+        <ErrorDisplay
+          title="News Feed Error"
+          message={String(error?.message ?? ExhibitorListError?.message)}
+        />
       </div>
     );
   }
 
-  if (!NewsList || !NewsList.response || !NewsList.response.length) {
+  if (
+    !NewsList ||
+    !NewsList.response ||
+    !NewsList.response.length ||
+    !ExhibitorList ||
+    !ExhibitorList.response
+  ) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />
@@ -114,7 +132,7 @@ const V2_Home_page = () => {
         </div>
         <div className="space-y-4">
           {NewsList.response.slice(0, 2).map((item, index) => (
-            <NewsCard key={index} {...item} className="h-[12.5rem]"/>
+            <NewsCard key={index} {...item} className="h-50" />
           ))}
         </div>
       </div>
@@ -132,7 +150,7 @@ const V2_Home_page = () => {
             buttonText="More info"
             onButtonClick={() => console.log("Ad clicked")}
           /> */}
-          <SponserCarousal slides={slides2} intervalTime={7000} />
+          <SponserCarousal slides={ExhibitorList.response["Diamond"].slice(0,4)} intervalTime={7000} />
         </div>
       </div>
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6 mb-2">

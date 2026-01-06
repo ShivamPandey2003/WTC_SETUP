@@ -4,6 +4,7 @@ declare type BaseShape = {
   fillColor?: string;
   strokeWidth?: number;
   strokeColor?:string
+  locked?:boolean
 };
 
 declare type RectangleShape = BaseShape & {
