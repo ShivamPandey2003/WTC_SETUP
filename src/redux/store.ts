@@ -11,6 +11,7 @@ import Profile_Slice from './ProfileSlice'
 import AuthSlice from './AuthSlice'
 import ExhibitorSlice from './ExhibitorSlice'
 import ExtraSlice from './ExtraSlice'
+import venueDesignV2Slice from './venueDesignV2Slice'
 
 const persistConfig = {
   key: "root",
@@ -28,7 +29,8 @@ const rootReducer = combineReducers({
   Profile_Slice:Profile_Slice,
   AuthSlice:AuthSlice,
   ExhibitorSlice:ExhibitorSlice,
-  ExtraSlice:ExtraSlice
+  ExtraSlice:ExtraSlice,
+  Venue_Design_V2: venueDesignV2Slice
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

@@ -144,7 +144,7 @@ export const useGetProgrammeList = () => {
               };
             });
             return {
-              session_id:Datas.id,
+              session_id: Datas.id,
               id: nanoid(),
               title: detail[0].name,
               color: detail[0].color,
@@ -161,7 +161,7 @@ export const useGetProgrammeList = () => {
 
       dispatch(setProgrammes(value));
       dispatch(setProgramme(data.response.programme));
-      
+
       return data;
     },
     refetchOnWindowFocus: false,
@@ -250,9 +250,17 @@ export const useUploadLogo = () => {
     mutate: UploadLogo,
     isPending,
     error,
-  } = useMutation<LogoUpdateResponse, AxiosError, {form:FormData, type:number}>({
+  } = useMutation<
+    LogoUpdateResponse,
+    AxiosError,
+    { form: FormData; type: number }
+  >({
     mutationFn: async (data) => {
-      const res = await apiRequest("post", `global/settings/logo/update?main=${data.type}`, data.form);
+      const res = await apiRequest(
+        "post",
+        `global/settings/logo/update?main=${data.type}`,
+        data.form
+      );
       return res.response;
     },
     onSuccess: (data) => {
@@ -492,8 +500,8 @@ export const useHomeDesignUpdate = () => {
   };
 };
 
-export const useGetProgrammeList2 = ()=>{
-  const dispatch = useDispatch<AppDispatch>()
+export const useGetProgrammeList2 = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const {
     data: ProgrammeList,
     isPending,
@@ -505,12 +513,37 @@ export const useGetProgrammeList2 = ()=>{
       return res.response;
     },
     select: (data) => {
-      dispatch(setProgramme(data.response.programme))
+      dispatch(setProgramme(data.response.programme));
       return data;
     },
     refetchOnWindowFocus: false,
-    retry:1
+    retry: 1,
   });
 
   return { ProgrammeList, isPending, error };
+};
+
+export const useGetFloorPlanV2 = () => {
+  const {
+    data: FloorPlan,
+    isPending,
+    error,
+  } = useQuery<Global_Floor_Plan_Response, AxiosError>({
+    queryKey: ["global_FloorPlan"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "floor-plan");
+      return res.response;
+    },
+    select: (data) => {
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  return {
+    FloorPlan,
+    isPending,
+    error,
+  };
 };

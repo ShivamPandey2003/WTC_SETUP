@@ -350,6 +350,11 @@ declare type GlobalProgrammeListResponse = {
     // };
     // seq: string[];
     programme: Programme[];
+    all_categories: {
+      id: string;
+      name: string;
+      color: string;
+    }[];
   };
 };
 
@@ -476,5 +481,20 @@ declare type GlobalUsersProfile = {
     linkedin_url: string;
     phone_number: string;
     profile_image: string;
+  };
+};
+
+declare type Floor_Plan_Response = {
+  header: ResponseHeader;
+  response: {
+    floor_plan: string;
+  };
+};
+
+declare type Global_Floor_Plan_Response = {
+  header: ResponseHeader;
+  response: {
+    floor_plan: string;
+    floor_map_list: Shape[];
   };
 };

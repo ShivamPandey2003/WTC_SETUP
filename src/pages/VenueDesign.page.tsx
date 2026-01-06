@@ -1,3 +1,4 @@
+import Floor_Plan from "@/components/common/Venue_Design/Floor_Plan";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
 import Section from "@/components/global/Section";
 import { Button } from "@/components/ui/Button";
@@ -29,16 +30,16 @@ const VenueDesign_page = () => {
             <TabsTrigger
               variant={"link"}
               value={"General Settings"}
-              className="text-[15px] font-[600] leading-[15px] px-0 mr-6"
+              className="text-[15px] font-semibold leading-[15px] px-0 mr-6"
             >
               General Settings
             </TabsTrigger>
             <TabsTrigger
               variant={"link"}
-              value={"Session Data"}
-              className="text-[15px] font-[600] leading-[15px] px-0"
+              value={"Floor Plan"}
+              className="text-[15px] font-semibold leading-[15px] px-0"
             >
-              Venue Data
+              Floor Plan
             </TabsTrigger>
           </TabsList>
           <TabsContent value="General Settings">
@@ -46,8 +47,8 @@ const VenueDesign_page = () => {
               <></>
             </Section>
           </TabsContent>
-          <TabsContent value="Venue Data">
-            <></>
+          <TabsContent value="Floor Plan">
+            <Floor_Plan />
           </TabsContent>
         </Tabs>
       </div>
