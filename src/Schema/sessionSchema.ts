@@ -6,6 +6,7 @@ export const SessionSchema = z.object({
   location: z.string().min(1, "Location is required"),
   start_time: z.string().min(1, "Start time is required"),
   end_time: z.string().min(1, "End time is required"),
+  venueID: z.string().min(1, "Venue is required"),
   speakers: z.string().min(1, "Speakers are required"),
   description: z.string().min(1, "Description is required"),
   external_link: z.string().url("Invalid URL").optional().or(z.literal("")),

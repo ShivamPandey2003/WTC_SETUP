@@ -15,10 +15,10 @@ const TestMode = ({ id, x, y, onClose }: prop) => {
 
   return (
     <div
-      className="absolute z-50 bg-white border border-border shadow-lg rounded-md px-3 py-2 text-sm"
+      className="fixed z-50 bg-white border border-border shadow-lg rounded-md px-3 py-2 text-sm"
       style={{
         left: x,
-        top: y + 20,
+        top: y,
         transform: "translate(-50%, -100%)",
       }}
     >

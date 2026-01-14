@@ -72,3 +72,28 @@ export const useSaveFloorPlanData = () => {
 
   return { SaveFloorPlanData, isPending, error };
 };
+
+export const useGetAdminFloorPlanV2 = () => {
+  const {
+    data: FloorPlan,
+    isPending,
+    error,
+  } = useQuery<Global_Floor_Plan_Response, AxiosError>({
+    queryKey: ["Admin_FloorPlan"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "map-lists");
+      return res.response;
+    },
+    select: (data) => {
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  return {
+    FloorPlan,
+    isPending,
+    error,
+  };
+};

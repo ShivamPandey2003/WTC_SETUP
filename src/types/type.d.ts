@@ -86,6 +86,7 @@ declare type Session = {
   description: string;
   bg_img: null | string;
   is_active: boolean;
+  venue:Shape
 };
 
 declare type CreateSessionRequest = Omit<

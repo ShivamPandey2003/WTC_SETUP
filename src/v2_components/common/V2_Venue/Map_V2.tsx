@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Layer, Rect, Stage, Text, Image as KonvaImage } from "react-konva";
+import {
+  Layer,
+  Rect,
+  Stage,
+  Text,
+  Image as KonvaImage,
+} from "react-konva";
 import { ACTIONS } from "@/data/Action";
 import ShapesElement from "../V2_VenueDesign/Shapes";
 import Konva from "konva";
@@ -40,18 +46,21 @@ const Map_V2 = () => {
     const stage = stageRef.current;
     if (!stage) return null;
 
-    const box = node.getClientRect();
-    const topCenter = {
+    // 1. Visual bounding box AFTER zoom & pan
+    const box = node.getClientRect({ relativeTo: stage });
+
+    // 2. Top-center of the shape
+    const point = {
       x: box.x + box.width / 2,
       y: box.y,
     };
 
-    const pos = stage.getAbsolutePosition();
-    const scale = stage.scaleX();
+    // 3. Canvas position in viewport
+    const containerRect = stage.container().getBoundingClientRect();
 
     return {
-      x: (pos.x + (topCenter.x /1.5) * scale),
-      y: pos.y + topCenter.y * scale, // ⬆ offset above shape
+      x: containerRect.left + point.x,
+      y: containerRect.top + point.y - 12, // offset above
     };
   };
 
@@ -236,7 +245,7 @@ const Map_V2 = () => {
       </Stage>
       <TestMode
         id={tooltip?.id as string}
-        x={(tooltip?.x as number)}
+        x={tooltip?.x as number}
         y={tooltip?.y as number}
         onClose={closeTooltip}
       />
