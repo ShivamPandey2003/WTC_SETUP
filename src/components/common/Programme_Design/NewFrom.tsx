@@ -13,10 +13,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsCreating as CreateSpeaker } from "@/redux/SpeakerDesignSlice";
+import { useGetAdminFloorPlanV2 } from "@/api/Venue_api/Venue_Design_api";
 
 const NewFrom = () => {
   const { AllCategory, isPending } = useGetCategoryAll();
   const { SpeakerList, isPending: isSpeakersListPenindg } = useGetSpeakerList();
+  const { FloorPlan, isPending: isFloorPlanPending } = useGetAdminFloorPlanV2();
   const { selected, session, slectedDate } = useSelector(
     (state: RootState) => state.Programme_Design
   );
@@ -33,7 +35,8 @@ const NewFrom = () => {
         ? {
             ...value,
             speakers: value.speakers[0],
-            category: value.category[0],
+            venueID: value.venue.id
+            // category: value.category[0],
           }
         : ({} as any),
   });
@@ -79,7 +82,7 @@ const NewFrom = () => {
     }
   };
 
-  if (isPending || isSpeakersListPenindg) {
+  if (isPending || isSpeakersListPenindg || isFloorPlanPending) {
     return;
   }
 
@@ -143,6 +146,20 @@ const NewFrom = () => {
         };
       }),
       addMoreHandler: () => dispatch(CreateSpeaker(true)),
+    },
+    {
+      name: "venueID",
+      label: "Venue",
+      type: "select",
+      placeholder: "Select location",
+      options: FloorPlan?.response.floor_map_list
+        .filter((i) => !["IMAGE", "TEXT"].includes(i.type))
+        .map((item) => {
+          return {
+            label: `${item.type}`,
+            value: item.id,
+          };
+        }),
     },
   ];
 
