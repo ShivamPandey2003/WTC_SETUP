@@ -9,6 +9,7 @@ type initialStateT = {
   open_link_new_tab: boolean;
   allow_email_exposure: boolean;
   booth_location: boolean;
+  uploadCSV: boolean;
 };
 
 const initialState: initialStateT = {
@@ -20,6 +21,7 @@ const initialState: initialStateT = {
   open_link_new_tab: false,
   allow_email_exposure: false,
   booth_location: false,
+  uploadCSV: false
 };
 
 const Exhibitor_DesignSlice = createSlice({
@@ -58,6 +60,10 @@ const Exhibitor_DesignSlice = createSlice({
       state.booth_location = payload.payload;
       return state;
     },
+    setUploadCSV: (state, payload: PayloadAction<boolean>) => {
+      state.uploadCSV = payload.payload;
+      return state;
+    },
   },
 });
 
@@ -70,5 +76,6 @@ export const {
   setOpenLinkNewTab,
   setAllowEmailExposure,
   setBoothLocation,
+  setUploadCSV
 } = Exhibitor_DesignSlice.actions;
 export default Exhibitor_DesignSlice.reducer;

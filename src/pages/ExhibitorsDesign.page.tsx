@@ -10,7 +10,7 @@ import React from "react";
 import CreateModal from "@/components/common/Exhibitors_Design/CreateModal";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
-import { setIsCreating } from "@/redux/ExhibitorSlice";
+import { setIsCreating, setUploadCSV } from "@/redux/ExhibitorSlice";
 import {
   useCategoryList,
   useGeneralExhibitorsUpdate,
@@ -19,16 +19,23 @@ import { useGetSpeakerSetting } from "@/api/speaker_design_api/speaker_design_ap
 import { setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
+import CSVModel from "@/components/global/CSVModel";
+import { useUploadExhibitorsCSV } from "@/api/exhibitor_design_api/exhibitor_design_api";
 
 const ExhibitorsDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
+  const {UploadExhibitorsCSV, isPending: isUploadPending} = useUploadExhibitorsCSV()
   const {} = useCategoryList();
-  const { SpeakerSettings:SettingValue ,isPending, error} = useGetSpeakerSetting();
-  const { isCreating, Categorys } = useSelector(
-    (state: RootState) => state.ExhibitorSlice
+  const {
+    SpeakerSettings: SettingValue,
+    isPending,
+    error,
+  } = useGetSpeakerSetting();
+  const { isCreating, Categorys, uploadCSV } = useSelector(
+    (state: RootState) => state.ExhibitorSlice,
   );
   const { SpeakerSettings } = useSelector(
-    (state: RootState) => state.Speaker_DesignSlice
+    (state: RootState) => state.Speaker_DesignSlice,
   );
   const dispatch = useDispatch();
   const { GeneralExhibitorsUpdate, isGeneralExhibitorsUpdatePending } =
@@ -72,6 +79,13 @@ const ExhibitorsDesign_page = () => {
         />
         {Boolean(value === "Session Data") && (
           <div className="absolute right-10 flex items-center gap-4">
+            <Button
+              onClick={() => dispatch(setUploadCSV(true))}
+              className="w-fit py-1 h-7"
+            >
+              <Plus />
+              import CSV
+            </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}
               className="w-[100px] py-1 h-7"
@@ -132,7 +146,7 @@ const ExhibitorsDesign_page = () => {
                               !SpeakerSettings.exhibitor_settings
                                 .open_link_new_tab,
                           },
-                        })
+                        }),
                       )
                     }
                   />
@@ -155,7 +169,7 @@ const ExhibitorsDesign_page = () => {
                               !SpeakerSettings.exhibitor_settings
                                 .allow_email_exposure,
                           },
-                        })
+                        }),
                       )
                     }
                   />
@@ -176,7 +190,7 @@ const ExhibitorsDesign_page = () => {
                               !SpeakerSettings.exhibitor_settings
                                 .booth_location,
                           },
-                        })
+                        }),
                       )
                     }
                   />
@@ -192,6 +206,15 @@ const ExhibitorsDesign_page = () => {
       <CreateModal
         isOpen={isCreating}
         onClose={() => dispatch(setIsCreating(false))}
+      />
+      <CSVModel
+        isOpen={uploadCSV}
+        onClose={() => dispatch(setUploadCSV(false))}
+        title="Exhibitors"
+        isLoading={isUploadPending}
+        onSubmit={UploadExhibitorsCSV}
+        description="Upload CSV file to create Exhibitor entries. CSV Columns: full_name, url, email, category, ads"
+        path="/exhibitors_listing.csv"
       />
     </div>
   );

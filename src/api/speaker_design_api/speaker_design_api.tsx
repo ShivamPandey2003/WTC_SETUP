@@ -5,6 +5,7 @@ import {
   setSelected,
   setSpeaker,
   setSpeakerSettings,
+  setUploadCSV,
 } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
@@ -130,4 +131,30 @@ export const useGetSpeakerSetting = () => {
   });
 
   return { SpeakerSettings, isPending, error };
+};
+
+export const useUploadSpeakerCSV = () => {
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const {
+    mutate: UploadSpeakerCSV,
+    isPending,
+    error,
+  } = useMutation<LogoUpdateResponse, AxiosError, FormData>({
+    mutationFn: async (data) => {
+      const res = await apiRequest("post", `/programme/upload/sessions`, data);
+      return res.response;
+    },
+    onSuccess: (data) => {
+      toast.success(data.header.message);
+      queryClient.invalidateQueries({ queryKey: ["speakerList"] });
+      dispatch(setUploadCSV(false));
+    },
+    onError: (err) => {
+      toast.error(`Error updating logo: ${err.message}`);
+    },
+  });
+
+  return { UploadSpeakerCSV, isPending, error };
 };

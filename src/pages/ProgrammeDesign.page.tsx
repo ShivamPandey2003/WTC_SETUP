@@ -22,6 +22,7 @@ import {
   setCategoryModal,
   setIsCreating,
   setSelectedDate,
+  setUploadCSV,
 } from "@/redux/ProgrammeDesignSlice";
 import { setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
@@ -38,20 +39,23 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SpeakerCreateModal from "@/components/common/Speaker_Design/CreateModal";
 import { setIsCreating as SetisSpeakerCreating } from "@/redux/SpeakerDesignSlice";
+import CSVModel from "@/components/global/CSVModel";
+import { useUploadSessionsCSV } from "@/api/programme_design_api/Programme_design_api";
 
 const ProgrammeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   // const {DeleteCategory, isDeleteCategoryPending} = useDeleteCategory()
   const { UpdateProgrammeDesign, isUpdateProgrammeDesignPending } =
     useProgrameDesignUpdate();
-  const { isCreating, slectedDate } = useSelector(
-    (state: RootState) => state.Programme_Design
+    const { UploadNewsCSV, isPending: isUploadSessionsCSV } = useUploadSessionsCSV();
+  const { isCreating, slectedDate, uploadCSV } = useSelector(
+    (state: RootState) => state.Programme_Design,
   );
   const { isCreating: isSpeakerCreating } = useSelector(
-    (state: RootState) => state.Speaker_DesignSlice
+    (state: RootState) => state.Speaker_DesignSlice,
   );
   const { SpeakerSettings } = useSelector(
-    (state: RootState) => state.Speaker_DesignSlice
+    (state: RootState) => state.Speaker_DesignSlice,
   );
   const dispatch = useDispatch<AppDispatch>();
   const {
@@ -61,7 +65,7 @@ const ProgrammeDesign_page = () => {
   } = useGetSpeakerSetting();
   const Dates = getDatesInRangeFormatted(
     SpeakerSettings.conference_start_date,
-    SpeakerSettings.conference_end_date
+    SpeakerSettings.conference_end_date,
   );
 
   useEffect(() => {
@@ -70,7 +74,7 @@ const ProgrammeDesign_page = () => {
 
     if (end < sel) {
       dispatch(
-        setSelectedDate(formatDate(SpeakerSettings.conference_end_date))
+        setSelectedDate(formatDate(SpeakerSettings.conference_end_date)),
       );
     }
   }, [SpeakerSettings.conference_end_date, slectedDate, dispatch]);
@@ -121,13 +125,20 @@ const ProgrammeDesign_page = () => {
                   variant={"ghost"}
                   className={cn(
                     "h-7",
-                    date === slectedDate && "bg-border text-primary"
+                    date === slectedDate && "bg-border text-primary",
                   )}
                 >
                   {date}
                 </Button>
               ))}
             </div>
+            <Button
+              onClick={() => dispatch(setUploadCSV(true))}
+              className="w-fit py-1 h-7"
+            >
+              <Plus />
+              import CSV
+            </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}
               className="w-[100px] py-1 h-7"
@@ -166,19 +177,19 @@ const ProgrammeDesign_page = () => {
                       value={String(value)}
                       onChange={(e) =>
                         dispatch(
-                          setSpeakerSettings({ ...SpeakerSettings, [key]: e })
+                          setSpeakerSettings({ ...SpeakerSettings, [key]: e }),
                         )
                       }
                       Icons={
                         key.includes("date")
                           ? CalendarDays
                           : key.includes("time")
-                          ? Clock
-                          : Navigation
+                            ? Clock
+                            : Navigation
                       }
                       classname={cn(key.includes("location") && "w-[400px]")}
                       containerClassname={cn(
-                        key.includes("location") ? "col-span-2" : "col-span-1"
+                        key.includes("location") ? "col-span-2" : "col-span-1",
                       )}
                     />
                   ))}
@@ -199,7 +210,7 @@ const ProgrammeDesign_page = () => {
                           setSpeakerSettings({
                             ...SpeakerSettings,
                             category_filter: !SpeakerSettings.category_filter,
-                          })
+                          }),
                         )
                       }
                     />
@@ -213,7 +224,7 @@ const ProgrammeDesign_page = () => {
                   <div className="flex">
                     <div
                       className={cn(
-                        "relative flex w-fit items-center gap-3 bg-[#1111110D] px-3 py-1 text-sm text-gray-600 rounded-[7px] text-center focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
+                        "relative flex w-fit items-center gap-3 bg-[#1111110D] px-3 py-1 text-sm text-gray-600 rounded-[7px] text-center focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors",
                       )}
                     >
                       {SpeakerSettings.category_labels.map((str) => (
@@ -265,6 +276,15 @@ const ProgrammeDesign_page = () => {
         onClose={() => dispatch(SetisSpeakerCreating(false))}
       />
       <AddCategoryModel />
+      <CSVModel
+        isOpen={uploadCSV}
+        onClose={() => dispatch(setUploadCSV(false))}
+        title="Sessions"
+        isLoading={isUploadSessionsCSV}
+        onSubmit={UploadNewsCSV}
+        description="Upload CSV file to create Sessions entries. CSV Columns: title, category, location, start_date, end_date, start_time, end_time, speakers, external_link, description"
+        path="/session_entry.csv"
+      />
     </div>
   );
 };

@@ -9,23 +9,33 @@ import React from "react";
 import CreateModal from "@/components/common/Speaker_Design/CreateModal";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { setIsCreating, setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
-import { useGetSpeakerSetting } from "@/api/speaker_design_api/speaker_design_api";
+import {
+  setIsCreating,
+  setSpeakerSettings,
+  setUploadCSV,
+} from "@/redux/SpeakerDesignSlice";
+import {
+  useGetSpeakerSetting,
+  useUploadSpeakerCSV,
+} from "@/api/speaker_design_api/speaker_design_api";
 import { normalizeLabel } from "@/lib/utils";
 import { useSpeakerDesignUpdate } from "@/api/global_api/global_api";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
+import CSVModel from "@/components/global/CSVModel";
 
 const SpeakersDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
-  const { isCreating, SpeakerSettings } = useSelector(
-    (state: RootState) => state.Speaker_DesignSlice
+  const { isCreating, SpeakerSettings, uploadCSV } = useSelector(
+    (state: RootState) => state.Speaker_DesignSlice,
   );
   const {
     SpeakerSettings: SpeakerSettingValues,
     isPending,
     error,
   } = useGetSpeakerSetting();
+  const { UploadSpeakerCSV, isPending: isUploadSpeakerCSV } =
+    useUploadSpeakerCSV();
   const dispatch = useDispatch<AppDispatch>();
   const { UpdateSpeakerDesign, isUpdateSpeakerDesignPending } =
     useSpeakerDesignUpdate();
@@ -68,6 +78,13 @@ const SpeakersDesign_page = () => {
         />
         {Boolean(value === "Session Data") && (
           <div className="absolute right-10 flex items-center gap-4">
+            <Button
+              onClick={() => dispatch(setUploadCSV(true))}
+              className="w-fit py-1 h-7"
+            >
+              <Plus />
+              import CSV
+            </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}
               className="w-[100px] py-1 h-7"
@@ -112,12 +129,12 @@ const SpeakersDesign_page = () => {
                               ...SpeakerSettings.speaker_info,
                               [key]: !value,
                             },
-                          })
+                          }),
                         )
                       }
                     />
                   </div>
-                )
+                ),
               )}
             </Section>
             <Section title="Speaker Data" ClassName="w-full">
@@ -142,6 +159,15 @@ const SpeakersDesign_page = () => {
       <CreateModal
         isOpen={isCreating}
         onClose={() => dispatch(setIsCreating(false))}
+      />
+      <CSVModel
+        isOpen={uploadCSV}
+        onClose={() => dispatch(setUploadCSV(false))}
+        title="Speakers"
+        isLoading={isUploadSpeakerCSV}
+        onSubmit={UploadSpeakerCSV}
+        description="Upload CSV file to create Speaker entries. CSV Columns: firstname, lastname, prefix, designation, company, bio, external_link, keyNote"
+        path="/speakers_list.csv"
       />
     </div>
   );

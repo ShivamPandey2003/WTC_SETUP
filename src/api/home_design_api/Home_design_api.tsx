@@ -5,6 +5,7 @@ import {
   setIsPublished,
   setNews,
   setSelected,
+  setUploadCSV,
 } from "@/redux/HomeDesignSlice";
 import type { AppDispatch } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
@@ -43,11 +44,7 @@ export const useEditNews = () => {
     mutate: EditNews,
     isPending,
     error,
-  } = useMutation<
-    NewsCreateResponse,
-    AxiosError,
-    FormData
-  >({
+  } = useMutation<NewsCreateResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
       const id = data.get("id");
       const res = await apiRequest("post", `news/edit/${id}`, data);
@@ -83,7 +80,7 @@ export const useGetNewsList = () => {
       return data;
     },
     refetchOnWindowFocus: false,
-    retry:1
+    retry: 1,
   });
 
   return { NewsList, isNewsListPending, errorInNewsList };
@@ -135,4 +132,30 @@ export const usePublishedNews = () => {
   });
 
   return { PulishedNew, isPending, error };
+};
+
+export const useUploadNewsCSV = () => {
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const {
+    mutate: UploadNewsCSV,
+    isPending,
+    error,
+  } = useMutation<LogoUpdateResponse, AxiosError, FormData>({
+    mutationFn: async (data) => {
+      const res = await apiRequest("post", `/news/upload/news_list`, data);
+      return res.response;
+    },
+    onSuccess: (data) => {
+      toast.success(data.header.message);
+      queryClient.invalidateQueries({ queryKey: ["newsList"] });
+      dispatch(setUploadCSV(false));
+    },
+    onError: (err) => {
+      toast.error(`Error updating logo: ${err.message}`);
+    },
+  });
+
+  return { UploadNewsCSV, isPending, error };
 };
