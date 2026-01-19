@@ -16,6 +16,7 @@ const initialState: ProgrammeDesignStateType = {
   speakers: [],
   isDeleting: null,
   isCreating: false,
+  uploadCSV: false,
   SpeakerSettings: {
     carusole_display:[],
     conference_title: "",
@@ -74,6 +75,11 @@ const Speakers_DesignSlice = createSlice({
       state.SpeakerSettings = payload.payload;
       return state;
     },
+    setUploadCSV: (state, payload: PayloadAction<boolean>) => {
+      state.uploadCSV = payload.payload;
+      return state;
+    },
+    
   },
 });
 
@@ -83,5 +89,6 @@ export const {
   setIsDeleting,
   setIsCreating,
   setSpeakerSettings,
+  setUploadCSV
 } = Speakers_DesignSlice.actions;
 export default Speakers_DesignSlice.reducer;

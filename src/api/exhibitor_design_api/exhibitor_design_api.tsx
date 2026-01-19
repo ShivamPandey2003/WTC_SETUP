@@ -8,6 +8,7 @@ import {
   setIsCreating,
   setIsDeleting,
   setSelected,
+  setUploadCSV,
 } from "@/redux/ExhibitorSlice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
@@ -115,4 +116,30 @@ export const useEditExhibitor = () => {
   });
 
   return { EditExhibitor, isEditPending, error };
+};
+
+export const useUploadExhibitorsCSV = () => {
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const {
+    mutate: UploadExhibitorsCSV,
+    isPending,
+    error,
+  } = useMutation<LogoUpdateResponse, AxiosError, FormData>({
+    mutationFn: async (data) => {
+      const res = await apiRequest("post", `/news/upload/news_list`, data);
+      return res.response;
+    },
+    onSuccess: (data) => {
+      toast.success(data.header.message);
+      queryClient.invalidateQueries({ queryKey: ["exhibitor-design-list"] });
+      dispatch(setUploadCSV(false));
+    },
+    onError: (err) => {
+      toast.error(`Error updating logo: ${err.message}`);
+    },
+  });
+
+  return { UploadExhibitorsCSV, isPending, error };
 };

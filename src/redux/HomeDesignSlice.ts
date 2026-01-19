@@ -5,7 +5,8 @@ const initialState: HomeDesignStateType = {
   news: [],
   isDeleting: null,
   isPublished: null,
-  isCreating:false
+  isCreating: false,
+  uploadCSV: false,
 };
 
 const Home_DesignSlice = createSlice({
@@ -28,12 +29,23 @@ const Home_DesignSlice = createSlice({
       state.isPublished = payload.payload;
       return state;
     },
-    setIsCreating:(state, payload: PayloadAction<boolean>)=>{
-        state.isCreating = payload.payload
-        return state;
-    }
+    setIsCreating: (state, payload: PayloadAction<boolean>) => {
+      state.isCreating = payload.payload;
+      return state;
+    },
+    setUploadCSV: (state, payload: PayloadAction<boolean>) => {
+      state.uploadCSV = payload.payload;
+      return state;
+    },
   },
 });
 
-export const { setSelected, setNews, setIsDeleting, setIsPublished, setIsCreating } = Home_DesignSlice.actions;
+export const {
+  setSelected,
+  setNews,
+  setIsDeleting,
+  setIsPublished,
+  setIsCreating,
+  setUploadCSV
+} = Home_DesignSlice.actions;
 export default Home_DesignSlice.reducer;

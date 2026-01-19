@@ -1,15 +1,17 @@
 import { useHomeDesignUpdate } from "@/api/global_api/global_api";
+import { useUploadNewsCSV } from "@/api/home_design_api/Home_design_api";
 // import BannerPreview from "@/components/common/Home_Design/BannerPreview";
 import CreateModal from "@/components/common/Home_Design/CreateModal";
 import MiniSmallCarousel from "@/components/common/Home_Design/MiniCarousel";
 import CustomTable from "@/components/common/Home_Design/Table";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
+import CSVModel from "@/components/global/CSVModel";
 import Section from "@/components/global/Section";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { cn } from "@/lib/utils";
 import { setAppConfig } from "@/redux/GlobalDesignSlice";
-import { setIsCreating } from "@/redux/HomeDesignSlice";
+import { setIsCreating, setUploadCSV } from "@/redux/HomeDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { Check, Plus, SquareArrowOutUpRight } from "lucide-react";
 import React from "react";
@@ -18,11 +20,12 @@ import { useDispatch, useSelector } from "react-redux";
 const HomeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   const dispatch = useDispatch<AppDispatch>();
-  const { isCreating } = useSelector((state: RootState) => state.Home_Design);
+  const { isCreating, uploadCSV } = useSelector((state: RootState) => state.Home_Design);
   const { appConfig } = useSelector(
-    (state: RootState) => state.Global_DesignSlice
+    (state: RootState) => state.Global_DesignSlice,
   );
   const { UpdateHomeDesign, isUpdateHomeDesignPending } = useHomeDesignUpdate();
+  const {UploadNewsCSV, isPending} = useUploadNewsCSV()
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -34,7 +37,11 @@ const HomeDesign_page = () => {
           loading={isUpdateHomeDesignPending}
         />
         {Boolean(value === "News") && (
-          <div className="absolute right-10">
+          <div className="absolute right-10 flex items-center gap-4">
+            <Button onClick={() => dispatch(setUploadCSV(true))} className="w-fit py-1 h-7">
+              <Plus />
+              import CSV
+            </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}
               className="w-20 py-1 h-7"
@@ -74,7 +81,7 @@ const HomeDesign_page = () => {
                         ...appConfig.home_design,
                         home_title: e.target.value,
                       },
-                    })
+                    }),
                   )
                 }
                 className="bg-[#1111110D] w-[23rem] font-semibold px-5 py-1 text-sm text-black rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
@@ -93,7 +100,7 @@ const HomeDesign_page = () => {
                             "flex items-center gap-2 bg-[#1111110D] px-3 py-1 text-sm text-black font-semibold rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors cursor-pointer",
                             appConfig.home_design[
                               value as keyof typeof appConfig.home_design
-                            ] && "text-primary"
+                            ] && "text-primary",
                           )}
                           onClick={() =>
                             dispatch(
@@ -106,7 +113,7 @@ const HomeDesign_page = () => {
                                       value as keyof typeof appConfig.home_design
                                     ],
                                 },
-                              })
+                              }),
                             )
                           }
                         >
@@ -145,6 +152,15 @@ const HomeDesign_page = () => {
       <CreateModal
         isOpen={isCreating}
         onClose={() => dispatch(setIsCreating(false))}
+      />
+      <CSVModel
+        isOpen={uploadCSV}
+        onClose={() => dispatch(setUploadCSV(false))}
+        title="News"
+        isLoading={isPending}
+        onSubmit={UploadNewsCSV}
+        description="Upload CSV file to create News entries. CSV Columns: title, description, tile_space"
+        path="/new-entry.csv"
       />
     </div>
   );

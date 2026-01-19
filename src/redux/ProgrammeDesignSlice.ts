@@ -4,7 +4,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 type ProgrammeDesignStateType = Omit<
   HomeDesignStateType,
   "selected" | "isPublished" | "news"
-> & { session: Session[], categoryModal:boolean,  selected: string | null, slectedDate:string };
+> & { session: Session[], categoryModal:boolean,  selected: string | null, slectedDate:string, uploadCSV:boolean };
 
 const initialState: ProgrammeDesignStateType = {
   session: [],
@@ -12,7 +12,8 @@ const initialState: ProgrammeDesignStateType = {
   isDeleting: null,
   isCreating: false,
   categoryModal: false,
-  slectedDate:`${formatDate(`${new Date()}`)}`
+  slectedDate:`${formatDate(`${new Date()}`)}`,
+  uploadCSV: false,
 };
 
 const Programme_DesignSlice = createSlice({
@@ -42,9 +43,13 @@ const Programme_DesignSlice = createSlice({
     setSelectedDate:(state, payload: PayloadAction<string>)=>{
       state.slectedDate = payload.payload;
       return state
-    }
+    },
+    setUploadCSV: (state, payload: PayloadAction<boolean>) => {
+      state.uploadCSV = payload.payload;
+      return state;
+    },
   },
 });
 
-export const { setIsDeleting, setIsCreating, setCategoryModal, setSelected, setSession, setSelectedDate } = Programme_DesignSlice.actions;
+export const { setIsDeleting, setIsCreating, setCategoryModal, setSelected, setSession, setSelectedDate, setUploadCSV } = Programme_DesignSlice.actions;
 export default Programme_DesignSlice.reducer;

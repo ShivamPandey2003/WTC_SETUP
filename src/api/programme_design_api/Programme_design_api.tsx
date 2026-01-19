@@ -5,6 +5,7 @@ import {
   setIsDeleting,
   setSelected,
   setSession,
+  setUploadCSV,
 } from "@/redux/ProgrammeDesignSlice";
 import type { AppDispatch } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
@@ -183,4 +184,30 @@ export const useEditSession = () => {
   });
 
   return { EditSession, isPending, error };
+};
+
+export const useUploadSessionsCSV = () => {
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const {
+    mutate: UploadNewsCSV,
+    isPending,
+    error,
+  } = useMutation<LogoUpdateResponse, AxiosError, FormData>({
+    mutationFn: async (data) => {
+      const res = await apiRequest("post", `/programme/upload/sessions`, data);
+      return res.response;
+    },
+    onSuccess: (data) => {
+      toast.success(data.header.message);
+      queryClient.invalidateQueries({ queryKey: ["sessionList"] });
+      dispatch(setUploadCSV(false));
+    },
+    onError: (err) => {
+      toast.error(`Error updating logo: ${err.message}`);
+    },
+  });
+
+  return { UploadNewsCSV, isPending, error };
 };

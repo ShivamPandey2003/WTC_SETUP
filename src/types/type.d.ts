@@ -8,6 +8,7 @@ declare type HomeDesignStateType = {
   isPublished: string | null;
   isCreating: boolean;
   news: News[];
+  uploadCSV:boolean
 };
 
 declare type LoginResponse = {
