@@ -1,11 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  Layer,
-  Rect,
-  Stage,
-  Text,
-  Image as KonvaImage,
-} from "react-konva";
+import { Layer, Rect, Stage, Text, Image as KonvaImage } from "react-konva";
 import { ACTIONS } from "@/data/Action";
 import ShapesElement from "../V2_VenueDesign/Shapes";
 import Konva from "konva";
@@ -13,6 +7,8 @@ import type { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
 import TestMode from "./TestMode";
 import { useGetFloorPlanV2 } from "@/api/global_api/global_api";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/redux/store";
 
 const Map_V2 = () => {
   const stageRef = useRef<Konva.Stage | null>(null);
@@ -25,6 +21,9 @@ const Map_V2 = () => {
     id: string | null;
   } | null>(null);
   const { FloorPlan, isPending, error } = useGetFloorPlanV2();
+  const { searchParams } = useSelector(
+    (state: RootState) => state.Global_Slice,
+  );
 
   useEffect(() => {
     FloorPlan?.response.floor_map_list.forEach((shape) => {
@@ -41,6 +40,19 @@ const Map_V2 = () => {
       }
     });
   }, [FloorPlan]);
+
+  useEffect(() => {
+    if (!searchParams) return;
+
+    const stage = stageRef.current;
+    if (!stage) return;
+    const node = stage.findOne(`#${searchParams}`) as Konva.Shape | null;
+    console.log(`#${searchParams}`)
+    console.log("Found node:", stage.findOne(`#${searchParams}`));
+    if (!node) return;
+
+    focusOnShape(node, searchParams);
+  }, [searchParams, stageRef.current]);
 
   const getTooltipPosition = (node: Konva.Node) => {
     const stage = stageRef.current;
@@ -62,6 +74,30 @@ const Map_V2 = () => {
       x: containerRect.left + point.x,
       y: containerRect.top + point.y - 12, // offset above
     };
+  };
+
+  const focusOnShape = (node: Konva.Shape, id: string) => {
+    if (activeNode && activeNode !== node) {
+      const prevColor = activeNode.getAttr("originalStroke");
+      if (prevColor) {
+        activeNode.stroke(prevColor);
+        activeNode.strokeWidth(2);
+      }
+    }
+
+    if (!node.getAttr("originalStroke")) {
+      node.setAttr("originalStroke", node.stroke());
+    }
+
+    node.stroke("#2563eb");
+    node.strokeWidth(2);
+
+    zoomToNode(node, 1.6, () => {
+      const pos = getTooltipPosition(node);
+      if (pos) setTooltip({ ...pos, id });
+    });
+
+    setActiveNode(node);
   };
 
   const zoomToNode = useCallback(
@@ -94,7 +130,7 @@ const Map_V2 = () => {
         onFinish,
       });
     },
-    []
+    [],
   );
 
   const resetZoom = useCallback(() => {
@@ -114,31 +150,10 @@ const Map_V2 = () => {
 
   function onClick(
     e: KonvaEventObject<MouseEvent, Node<NodeConfig>>,
-    id: string
+    id: string,
   ) {
     const node = e.target as Konva.Shape;
-
-    if (activeNode && activeNode !== node) {
-      const prevColor = activeNode.getAttr("originalStroke");
-      if (prevColor) {
-        activeNode.stroke(prevColor);
-        activeNode.strokeWidth(2);
-      }
-    }
-
-    if (!node.getAttr("originalStroke")) {
-      node.setAttr("originalStroke", node.stroke());
-    }
-
-    node.stroke("#2563eb");
-    node.strokeWidth(2);
-
-    zoomToNode(node, 1.6, () => {
-      const pos = getTooltipPosition(node);
-      if (pos) setTooltip({ ...pos, id });
-    });
-
-    setActiveNode(node);
+    focusOnShape(node, id);
   }
 
   const closeTooltip = () => {

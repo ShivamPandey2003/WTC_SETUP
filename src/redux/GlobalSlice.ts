@@ -15,6 +15,7 @@ type initialStateType = {
   Venue: GlobalVenue;
   selectedDate: string;
   filterData: Record<string, Programme[]>;
+  searchParams:string | null;
 };
 
 const todayDate = new Date().toLocaleDateString("en-US", {
@@ -51,6 +52,7 @@ const initialState: initialStateType = {
   },
   selectedDate: todayDate,
   filterData: {},
+  searchParams:null,
 };
 
 const Global_Slice = createSlice({
@@ -85,9 +87,13 @@ const Global_Slice = createSlice({
       state.conference_location = payload.payload.conference_location;
       state.conference_title = payload.payload.conference_title;
     },
+    setSearchParams: (state, payload: PayloadAction<string | null>) => {
+      state.searchParams = payload.payload;
+      return state;
+    }
   },
 });
 
-export const { setProgramme, setVenue, setSelectedDate, setConference_title, setFilterData } =
+export const { setProgramme, setVenue, setSelectedDate, setConference_title, setFilterData, setSearchParams } =
   Global_Slice.actions;
 export default Global_Slice.reducer;
