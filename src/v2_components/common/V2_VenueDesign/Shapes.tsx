@@ -22,6 +22,7 @@ const ShapesElement = ({
       const rect = shape as RectangleShape;
       return (
         <Rect
+          id={rect.id}
           x={rect.x}
           y={rect.y}
           width={rect.width}
@@ -41,6 +42,7 @@ const ShapesElement = ({
       const circle = shape as CircleShape;
       return (
         <Circle
+          id={circle.id}
           x={circle.x}
           y={circle.y}
           radius={circle.radius}
@@ -59,6 +61,7 @@ const ShapesElement = ({
       const arrow = shape as ArrowShape;
       return (
         <Arrow
+          id={arrow.id}
           points={arrow.points}
           stroke={"#000000"}
           strokeWidth={2}
@@ -75,6 +78,7 @@ const ShapesElement = ({
       const line = shape as LineShape;
       return (
         <Line
+          id={line.id}
           stroke={line.strokeColor ? line.strokeColor : "#000000"}
           points={line.points}
           draggable={isDraggable}
@@ -91,6 +95,7 @@ const ShapesElement = ({
       const star = shape as StarShape;
       return (
         <Star
+          id={star.id}
           x={star.x}
           y={star.y}
           numPoints={star.numPoints}
@@ -111,6 +116,7 @@ const ShapesElement = ({
       const polygon = shape as PolygonShape;
       return (
         <RegularPolygon
+          id={polygon.id}
           x={polygon.x}
           y={polygon.y}
           sides={polygon.sides}
@@ -130,20 +136,21 @@ const ShapesElement = ({
       const pointShape = shape as PointShape;
       return (
         <Line
+          id={pointShape.id}
           points={pointShape.points}
           stroke={
             pointShape.isErasing
               ? "#ffff"
               : pointShape.strokeColor
-              ? pointShape.strokeColor
-              : "#000000"
+                ? pointShape.strokeColor
+                : "#000000"
           }
           strokeWidth={
             pointShape.isErasing
               ? 30
               : pointShape.strokeWidth !== null
-              ? pointShape.strokeWidth
-              : 2
+                ? pointShape.strokeWidth
+                : 2
           } // 🔥 bigger width as eraser
           globalCompositeOperation={
             pointShape.isErasing ? "destination-out" : "source-over"

@@ -1,30 +1,42 @@
 import { Button } from "@/components/ui/Button";
 import { cn, formatDate } from "@/lib/utils";
 import TextCard from "@/v2_components/common/V2_Venue/TextCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BG from "@/assets/Images/BG.jpg";
 // import MapText from "@/assets/Images/MapText.png";
 import { Calendar, Link, Loader, Navigation } from "lucide-react";
 import { useGetVenue } from "@/api/global_api/global_api";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/redux/store";
 import { GoogleMap, LoadScriptNext, Marker } from "@react-google-maps/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import Map_V2 from "@/v2_components/common/V2_Venue/Map_V2";
+import { useSearchParams } from "react-router";
+import { setSearchParams } from "@/redux/GlobalSlice";
 
 const apiKey = import.meta.env.VITE_REACT_GOOGLE_MAPS_API_KEY;
 
 const V2_Venue_page = () => {
   const [currentTab, setCurrentTab] = useState<string>("getting there");
+  const [searchParams] = useSearchParams();
   const { Venue, isPending, error } = useGetVenue();
+  const dispatch = useDispatch<AppDispatch>();
   const {
     Venue: venue,
     conference_location,
     conference_end_date,
     conference_start_date,
   } = useSelector((state: RootState) => state.Global_Slice);
+
+  useEffect(()=>{
+    const venueId = searchParams.get("id");
+    if(venueId){
+      setCurrentTab("floor plan")
+      dispatch(setSearchParams(venueId))
+    }
+  },[searchParams])
 
   function parseCoordinate(value: string): number {
     const num = parseFloat(value); // get numeric part

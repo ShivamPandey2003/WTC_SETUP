@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const NewFrom = () => {
   const { selected, Exhibitors } = useSelector(
-    (state: RootState) => state.ExhibitorSlice
+    (state: RootState) => state.ExhibitorSlice,
   );
 
   const value = Exhibitors.find((pre) => pre.id === selected);
@@ -31,15 +31,32 @@ const NewFrom = () => {
     formState: { errors },
   } = useForm<ExhibitorSchemaType>({
     resolver: zodResolver(ExhibitorSchema),
-    defaultValues: selected && value ? {...value, category:value.categoryId} : ({} as any),
+    defaultValues:
+      selected && value
+        ? { ...value, category: value.categoryId }
+        : ({} as any),
   });
   const dispatch = useDispatch<AppDispatch>();
 
   const onSubmit = (newData: ExhibitorSchemaType) => {
     if (selected && value) {
-      EditExhibitor({ ...newData, id: `${selected}` });
+      const formData = new FormData();
+      formData.append("full_name", newData.full_name as string);
+      formData.append("url", newData.url as string);
+      formData.append("email", newData.email as string);
+      formData.append("category", newData.category as string);
+      formData.append("logo", newData.logo?.[0] as Blob);
+      formData.append("ads", String(newData?.ads));
+      EditExhibitor({ form:formData, id: `${selected}` });
     } else {
-      CreateExhibitor(newData);
+      const formData = new FormData();
+      formData.append("full_name", newData.full_name as string);
+      formData.append("url", newData.url as string);
+      formData.append("email", newData.email as string);
+      formData.append("category", newData.category as string);
+      formData.append("logo", newData.logo?.[0] as Blob);
+      formData.append("ads", String(newData?.ads));
+      CreateExhibitor(formData);
     }
   };
 
@@ -76,7 +93,7 @@ const NewFrom = () => {
       placeholder: "https://example.com",
     },
     { name: "email", label: "Email", placeholder: "example@mail.com" },
-    { name: "logo", label: "Logo" },
+    { name: "logo", label: "Logo", type: "file", accept: "image/*" },
     {
       name: "category",
       label: "Category",

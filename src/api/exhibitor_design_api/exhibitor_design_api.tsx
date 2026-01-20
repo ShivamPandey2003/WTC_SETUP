@@ -12,7 +12,6 @@ import {
 } from "@/redux/ExhibitorSlice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
-import type { ExhibitorSchemaType } from "@/Schema/exhibitorSchema";
 
 export const useGetExhibitorsList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -47,7 +46,7 @@ export const useCreateExhibitor = () => {
     mutate: CreateExhibitor,
     isPending: isCreatePending,
     error,
-  } = useMutation<ProfilePicResponse, AxiosError, ExhibitorSchemaType>({
+  } = useMutation<ProfilePicResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
       const res = await apiRequest("post", "/exhibitors/add", data);
       return res.response;
@@ -98,7 +97,7 @@ export const useEditExhibitor = () => {
   } = useMutation<
     ProfilePicResponse,
     AxiosError,
-    ExhibitorSchemaType & { id: string }
+    {form:FormData, id: string }
   >({
     mutationFn: async (data) => {
       const { id, ...rest } = data;
