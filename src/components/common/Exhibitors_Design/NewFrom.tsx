@@ -99,7 +99,7 @@ const NewFrom = () => {
       label: "Category",
       placeholder: "Enter category here",
       type: "select",
-      options: AllCategory.response
+      options: AllCategory?.response
         .filter((pre: any) => Boolean(pre.type))
         .map((item: any) => {
           return { label: item.name, value: item.id };

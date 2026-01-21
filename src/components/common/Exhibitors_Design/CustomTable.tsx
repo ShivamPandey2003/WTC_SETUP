@@ -113,7 +113,7 @@ const CustomTable = () => {
                       "w-[100px] h-5 rounded-[7px] flex items-center justify-center mr-2"
                     )}
                   >
-                    {AllCategory?.response.find((pre:any)=>pre.id === item.categoryId).name}
+                    {AllCategory?.response.find((pre)=>pre.id === item.categoryId)?.name ?? ""}
                   </div>
                 </td>
                 <td className="pl-6 py-2">
