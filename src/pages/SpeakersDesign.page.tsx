@@ -23,6 +23,7 @@ import { useSpeakerDesignUpdate } from "@/api/global_api/global_api";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import CSVModel from "@/components/global/CSVModel";
+import TextStyleRow from "@/components/global/TextStyleRow";
 
 const SpeakersDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
@@ -113,6 +114,19 @@ const SpeakersDesign_page = () => {
           </TabsList>
           <TabsContent value="General Settings">
             <Section title="Basic info" ClassName="w-full">
+              <TextStyleRow
+                label={"Tab Title"}
+                value={SpeakerSettings.speaker_tab}
+                onChange={(e) =>
+                  dispatch(
+                    setSpeakerSettings({
+                      ...SpeakerSettings,
+                      speaker_tab: e,
+                    }),
+                  )
+                }
+                containerClassname={"gap-16"}
+              />
               {Object.entries(SpeakerSettings.speaker_info).map(
                 ([key, value], i) => (
                   <div className="flex items-center py-2 gap-8" key={i}>

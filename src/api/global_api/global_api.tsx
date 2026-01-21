@@ -119,7 +119,7 @@ export const useGetProgrammeList = () => {
       };
 
       const dates = data.response.programme.map((item) =>
-        parseDate(item.start_date)
+        parseDate(item.start_date),
       );
 
       const earliest = new Date(Math.min(...dates.map((d) => d.getTime())));
@@ -217,7 +217,7 @@ export const useGetVenue = () => {
 
 export const useAppConfigUpdate = () => {
   const { appConfig } = useSelector(
-    (state: RootState) => state.Global_DesignSlice
+    (state: RootState) => state.Global_DesignSlice,
   );
 
   const cleanData = {
@@ -259,7 +259,7 @@ export const useUploadLogo = () => {
       const res = await apiRequest(
         "post",
         `global/settings/logo/update?main=${data.type}`,
-        data.form
+        data.form,
       );
       return res.response;
     },
@@ -276,9 +276,9 @@ export const useUploadLogo = () => {
 
 export const useSpeakerDesignUpdate = () => {
   const { SpeakerSettings } = useSelector(
-    (state: RootState) => state.Speaker_DesignSlice
+    (state: RootState) => state.Speaker_DesignSlice,
   );
-  const filtered = CustomPick(SpeakerSettings, ["speaker_info"]);
+  const filtered = CustomPick(SpeakerSettings, ["speaker_info", "speaker_tab"]);
 
   const {
     mutate: UpdateSpeakerDesign,
@@ -286,11 +286,10 @@ export const useSpeakerDesignUpdate = () => {
     error: errorInUpdateSpeakerDesign,
   } = useMutation<ProfilePicResponse, AxiosError>({
     mutationFn: async () => {
-      const res = await apiRequest(
-        "post",
-        "speaker/settings/save",
-        filtered.speaker_info
-      );
+      const res = await apiRequest("post", "speaker/settings/save", {
+        speaker_tab: filtered.speaker_tab,
+        ...filtered.speaker_info,
+      });
       return res.response;
     },
     onSuccess: (data) => {
@@ -308,9 +307,55 @@ export const useSpeakerDesignUpdate = () => {
   };
 };
 
+export const useVenueDesignUpdate = () => {
+  const { SpeakerSettings } = useSelector(
+    (state: RootState) => state.Speaker_DesignSlice,
+  );
+  const filtered = CustomPick(SpeakerSettings, [
+    "venue_tab",
+    "getting_there_sub_title",
+    "getting_there_description",
+    "latitude",
+    "longitude",
+  ]);
+
+  const data = {
+    ...filtered,
+    floor_plan: "",
+    visa_title: "",
+    visa_sub_title: "",
+    visa_description: "",
+    travel_title: "",
+    travel_description: "",
+  };
+
+  const {
+    mutate: UpdateVenueDesign,
+    isPending: isUpdateVenueDesignPending,
+    error: errorInUpdateVenueDesign,
+  } = useMutation<ProfilePicResponse, AxiosError>({
+    mutationFn: async () => {
+      const res = await apiRequest("post", "/venue/save", data);
+      return res.response;
+    },
+    onSuccess: (data) => {
+      toast.success(data.header.message);
+    },
+    onError: (err) => {
+      toast.error(`Error updating logo: ${err.message}`);
+    },
+  });
+
+  return {
+    UpdateVenueDesign,
+    isUpdateVenueDesignPending,
+    errorInUpdateVenueDesign,
+  };
+};
+
 export const useProgrameDesignUpdate = () => {
   const { SpeakerSettings } = useSelector(
-    (state: RootState) => state.Speaker_DesignSlice
+    (state: RootState) => state.Speaker_DesignSlice,
   );
   const filtered = CustomPick(SpeakerSettings, [
     "conference_title",
@@ -321,6 +366,7 @@ export const useProgrameDesignUpdate = () => {
     "conference_location",
     "category_filter",
     "category_labels",
+    "programme_tab",
   ]);
 
   const {
@@ -373,12 +419,16 @@ export const useCategoryList = () => {
 export const useGeneralExhibitorsUpdate = () => {
   const { open_link_new_tab, allow_email_exposure, booth_location, Categorys } =
     useSelector((state: RootState) => state.ExhibitorSlice);
+  const { SpeakerSettings } = useSelector(
+    (state: RootState) => state.Speaker_DesignSlice,
+  );
   const exhibitors_category_list = Categorys.map((item) => item.id);
   const Body = {
     exhibitors_category_list,
     open_link_new_tab,
     allow_email_exposure,
     booth_location,
+    exhibitors_tab: SpeakerSettings.exhibitors_tab,
   };
   const {
     mutate: GeneralExhibitorsUpdate,
@@ -467,7 +517,7 @@ export const useGetConferenceDetails = () => {
 
 export const useHomeDesignUpdate = () => {
   const { appConfig } = useSelector(
-    (state: RootState) => state.Global_DesignSlice
+    (state: RootState) => state.Global_DesignSlice,
   );
   const filtered = CustomPick(appConfig, ["home_design"]);
 
@@ -480,7 +530,7 @@ export const useHomeDesignUpdate = () => {
       const res = await apiRequest(
         "post",
         "/home/design/save",
-        filtered.home_design
+        filtered.home_design,
       );
       return res.response;
     },

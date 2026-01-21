@@ -21,10 +21,12 @@ import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import CSVModel from "@/components/global/CSVModel";
 import { useUploadExhibitorsCSV } from "@/api/exhibitor_design_api/exhibitor_design_api";
+import TextStyleRow from "@/components/global/TextStyleRow";
 
 const ExhibitorsDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
-  const {UploadExhibitorsCSV, isPending: isUploadPending} = useUploadExhibitorsCSV()
+  const { UploadExhibitorsCSV, isPending: isUploadPending } =
+    useUploadExhibitorsCSV();
   const {} = useCategoryList();
   const {
     SpeakerSettings: SettingValue,
@@ -114,6 +116,19 @@ const ExhibitorsDesign_page = () => {
           </TabsList>
           <TabsContent value="General Settings">
             <Section title="Basic info" ClassName="w-full">
+              <TextStyleRow
+                label={"Tab Title"}
+                value={SpeakerSettings.exhibitors_tab}
+                onChange={(e) =>
+                  dispatch(
+                    setSpeakerSettings({
+                      ...SpeakerSettings,
+                      exhibitors_tab: e,
+                    }),
+                  )
+                }
+                containerClassname="mb-8"
+              />
               <div className="mb-16">
                 <h2 className="text-[14px] font-medium leading-[15px]">
                   Exhibitor Categories & Order

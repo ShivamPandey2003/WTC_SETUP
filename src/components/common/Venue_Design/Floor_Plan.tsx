@@ -54,7 +54,6 @@ const Floor_Plan = () => {
       floorPlan &&
       Normalize(FloorPlan?.response.floor_plan as string) !== Normalize(floorPlan)
     ) {
-      console.log(FloorPlan?.response.floor_plan);
       dispatch(
         setShapes([
           {
