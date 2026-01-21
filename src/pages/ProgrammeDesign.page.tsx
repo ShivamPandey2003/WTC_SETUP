@@ -168,6 +168,15 @@ const ProgrammeDesign_page = () => {
           <TabsContent value="General Settings">
             <Section title="Basic info" ClassName="w-full">
               <div className="grid sm:grid-cols-2 items-center">
+                <TextStyleRow
+                      label={"Tab Title"}
+                      value={SpeakerSettings.programme_tab}
+                      onChange={(e) =>
+                        dispatch(
+                          setSpeakerSettings({ ...SpeakerSettings, programme_tab: e }),
+                        )
+                      }
+                    />
                 {Object.entries(SpeakerSettings)
                   .filter(([key]) => key.includes("conference"))
                   .map(([key, value], i) => (

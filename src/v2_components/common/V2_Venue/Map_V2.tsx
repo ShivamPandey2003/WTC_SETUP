@@ -47,8 +47,6 @@ const Map_V2 = () => {
     const stage = stageRef.current;
     if (!stage) return;
     const node = stage.findOne(`#${searchParams}`) as Konva.Shape | null;
-    console.log(`#${searchParams}`);
-    console.log("Found node:", stage.findOne(`#${searchParams}`));
     if (!node) return;
 
     focusOnShape(node, searchParams);

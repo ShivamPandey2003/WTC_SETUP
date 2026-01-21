@@ -1,5 +1,16 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
+export type payload = SpeakerSetting & {
+  programme_tab: string;
+  speaker_tab: string;
+  exhibitors_tab: string;
+  getting_there_sub_title: string;
+  getting_there_description: string;
+  latitude: string;
+  longitude: string;
+  venue_tab: string;
+};
+
 type ProgrammeDesignStateType = Omit<
   HomeDesignStateType,
   "isPublished" | "news"
@@ -8,7 +19,7 @@ type ProgrammeDesignStateType = Omit<
     speaker_id: string;
     created_on: string;
   })[];
-  SpeakerSettings: SpeakerSetting;
+  SpeakerSettings: payload;
 };
 
 const initialState: ProgrammeDesignStateType = {
@@ -18,13 +29,21 @@ const initialState: ProgrammeDesignStateType = {
   isCreating: false,
   uploadCSV: false,
   SpeakerSettings: {
-    carusole_display:[],
+    carusole_display: [],
     conference_title: "",
     conference_start_date: "",
     conference_end_date: "",
     conference_start_time: "",
     conference_end_time: "",
     conference_location: "",
+    programme_tab: "",
+    speaker_tab: "",
+    exhibitors_tab: "",
+    getting_there_sub_title: "",
+    getting_there_description: "",
+    latitude: "",
+    longitude: "",
+    venue_tab: "",
     speaker_info: {
       show_speaker_fullname: false,
       show_short_name: false,
@@ -58,7 +77,7 @@ const Speakers_DesignSlice = createSlice({
       state,
       payload: PayloadAction<
         (CreateSpeakerRequestT & { speaker_id: string; created_on: string })[]
-      >
+      >,
     ) => {
       state.speakers = payload.payload;
       return state;
@@ -71,7 +90,7 @@ const Speakers_DesignSlice = createSlice({
       state.isCreating = payload.payload;
       return state;
     },
-    setSpeakerSettings: (state, payload: PayloadAction<SpeakerSetting>) => {
+    setSpeakerSettings: (state, payload: PayloadAction<payload>) => {
       state.SpeakerSettings = payload.payload;
       return state;
     },
@@ -79,7 +98,6 @@ const Speakers_DesignSlice = createSlice({
       state.uploadCSV = payload.payload;
       return state;
     },
-    
   },
 });
 
@@ -89,6 +107,6 @@ export const {
   setIsDeleting,
   setIsCreating,
   setSpeakerSettings,
-  setUploadCSV
+  setUploadCSV,
 } = Speakers_DesignSlice.actions;
 export default Speakers_DesignSlice.reducer;

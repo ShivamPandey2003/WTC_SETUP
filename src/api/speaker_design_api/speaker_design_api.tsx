@@ -6,6 +6,7 @@ import {
   setSpeaker,
   setSpeakerSettings,
   setUploadCSV,
+  type payload,
 } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
@@ -123,7 +124,7 @@ export const useGetSpeakerSetting = () => {
       return res.response;
     },
     select: (data) => {
-      dispatch(setSpeakerSettings(data.response));
+      dispatch(setSpeakerSettings(data.response as payload));
       return data;
     },
     refetchOnWindowFocus: false,
