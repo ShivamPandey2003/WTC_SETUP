@@ -5,12 +5,12 @@ declare type BaseShape = {
   strokeWidth?: number;
   strokeColor?:string
   locked?:boolean
+  name?:string
 };
 
 declare type RectangleShape = BaseShape & {
   x: number;
   y: number;
-  
   width: number;
   height: number;
 };

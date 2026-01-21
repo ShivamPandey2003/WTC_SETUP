@@ -500,3 +500,8 @@ declare type Global_Floor_Plan_Response = {
     floor_map_list: Shape[];
   };
 };
+
+declare type AllCategories_Response = {
+  header: ResponseHeader;
+  response:Category[]
+}

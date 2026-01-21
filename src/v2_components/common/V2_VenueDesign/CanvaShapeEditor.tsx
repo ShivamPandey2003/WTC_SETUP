@@ -1,3 +1,4 @@
+import { Input } from "@/components/ui/Input";
 import ColorSize from "@/data/Color&Size";
 import { cn } from "@/lib/utils";
 import type { AppDispatch, RootState } from "@/redux/store";
@@ -24,6 +25,28 @@ const CanvaShapeEditor = ({ id }: prop) => {
           <div>Image Don't Have Styles</div>
         ) : (
           <>
+            {Shape.type !== "IMAGE" && Shape.type !== "TEXT" && (
+              <div className="mb-6">
+                <p className="text-xs mb-2 capitalize">Name</p>
+                <div className="flex items-center gap-2">
+                  <Input
+                    className="outline-none border border-gray-200"
+                    value={Shape.name ?? ""}
+                    onChange={(e) =>
+                      dispatch(
+                        setShapes(
+                          Shapes.map((pre) =>
+                            pre.id === id
+                              ? { ...pre, name: e.target.value }
+                              : pre,
+                          ),
+                        ),
+                      )
+                    }
+                  />
+                </div>
+              </div>
+            )}
             <div className="flex flex-col mb-6">
               <label htmlFor="color" className="text-xs mb-2 capitalize">
                 Stroke
@@ -38,9 +61,11 @@ const CanvaShapeEditor = ({ id }: prop) => {
                       dispatch(
                         setShapes(
                           Shapes.map((pre) =>
-                            pre.id === id ? { ...pre, strokeColor: color } : pre
-                          )
-                        )
+                            pre.id === id
+                              ? { ...pre, strokeColor: color }
+                              : pre,
+                          ),
+                        ),
                       )
                     }
                   />
@@ -57,9 +82,9 @@ const CanvaShapeEditor = ({ id }: prop) => {
                         Shapes.map((pre) =>
                           pre.id === id
                             ? { ...pre, strokeColor: e.target.value }
-                            : pre
-                        )
-                      )
+                            : pre,
+                        ),
+                      ),
                     )
                   }
                 />
@@ -80,16 +105,16 @@ const CanvaShapeEditor = ({ id }: prop) => {
                     key={color}
                     className={cn(
                       `w-5 h-5 inline-block rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary`,
-                      color === "#00000000" && "border border-border"
+                      color === "#00000000" && "border border-border",
                     )}
                     style={{ backgroundColor: color }}
                     onClick={() =>
                       dispatch(
                         setShapes(
                           Shapes.map((pre) =>
-                            pre.id === id ? { ...pre, fillColor: color } : pre
-                          )
-                        )
+                            pre.id === id ? { ...pre, fillColor: color } : pre,
+                          ),
+                        ),
                       )
                     }
                   />
@@ -106,9 +131,9 @@ const CanvaShapeEditor = ({ id }: prop) => {
                         Shapes.map((pre) =>
                           pre.id === id
                             ? { ...pre, fillColor: e.target.value }
-                            : pre
-                        )
-                      )
+                            : pre,
+                        ),
+                      ),
                     )
                   }
                 />
@@ -129,9 +154,11 @@ const CanvaShapeEditor = ({ id }: prop) => {
                       dispatch(
                         setShapes(
                           Shapes.map((pre) =>
-                            pre.id === id ? { ...pre, strokeWidth: value } : pre
-                          )
-                        )
+                            pre.id === id
+                              ? { ...pre, strokeWidth: value }
+                              : pre,
+                          ),
+                        ),
                       )
                     }
                     className=" cursor-pointer text-sm bg-white w-8 h-6 border border-border text-center rounded-sm hover:outline-1 hover:outline-offset-2 outline-primary uppercase"
@@ -148,9 +175,9 @@ const CanvaShapeEditor = ({ id }: prop) => {
                   dispatch(
                     setShapes(
                       Shapes.map((pre) =>
-                        pre.id === id ? { ...pre, locked: !pre.locked } : pre
-                      )
-                    )
+                        pre.id === id ? { ...pre, locked: !pre.locked } : pre,
+                      ),
+                    ),
                   )
                 }
               >
@@ -183,9 +210,9 @@ const CanvaShapeEditor = ({ id }: prop) => {
                             ...pre,
                             fontSize: Number(e.target.value),
                           } as TextShape)
-                        : pre
-                    )
-                  )
+                        : pre,
+                    ),
+                  ),
                 )
               }
             />

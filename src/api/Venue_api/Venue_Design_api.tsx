@@ -1,7 +1,10 @@
 import { queryClient } from "@/provider/TanstackProvider";
+import type { AppDispatch } from "@/redux/store";
+import { setShapes } from "@/redux/venueDesignV2Slice";
 import { apiRequest } from "@/services/apiService";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -50,7 +53,7 @@ export const useGetFloorPlan = (func: (e: string) => void) => {
 };
 
 export const useSaveFloorPlanData = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const {
     mutate: SaveFloorPlanData,
     isPending,
@@ -62,7 +65,7 @@ export const useSaveFloorPlanData = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-      navigate('/venue-design')
+      navigate("/venue-design");
       // queryClient.invalidateQueries({ queryKey: ["Floor-Plan"] });
     },
     onError: (err) => {
@@ -96,4 +99,23 @@ export const useGetAdminFloorPlanV2 = () => {
     isPending,
     error,
   };
+};
+
+export const useGetFloorMapList = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const {data:FloorMapList, isPending:isFloorMapListPending, error:FloorMapListError} = useQuery<Global_Floor_Plan_Response, AxiosError>({
+    queryKey: ["map-list"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "/map-lists");
+      return res.response;
+    },
+    select:(data)=>{
+      dispatch(setShapes(data.response.floor_map_list))
+      return data
+    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  return {FloorMapList, isFloorMapListPending, FloorMapListError}
 };

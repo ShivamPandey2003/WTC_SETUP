@@ -24,6 +24,7 @@ const NewFrom = () => {
   );
 
   const value = session.find((pre) => pre.session_id === selected);
+
   const {
     register,
     handleSubmit,
@@ -35,8 +36,8 @@ const NewFrom = () => {
         ? {
             ...value,
             speakers: value.speakers[0],
-            venueID: value.venue.id
-            // category: value.category[0],
+            venueID: value?.venue?.id ?? "",
+            category: value.category[0],
           }
         : ({} as any),
   });
@@ -73,6 +74,7 @@ const NewFrom = () => {
     formData.append("category", newData.category);
     formData.append("speakers", newData.speakers);
     formData.append("attachments", newData.attachments?.[0] as Blob);
+    formData.append("venueID", newData.venueID);
 
     if (value) {
       formData.append("id", selected as string);
@@ -127,9 +129,9 @@ const NewFrom = () => {
       label: "Category",
       type: "select",
       placeholder: "Select a category",
-      options: AllCategory.response
-        .filter((pre: any) => !Boolean(pre.type))
-        .map((item: any) => {
+      options: AllCategory?.response
+        .filter((pre) => !Boolean(pre.type))
+        .map((item) => {
           return { label: item.name, value: item.id };
         }),
       addMoreHandler: () => dispatch(setCategoryModal(true)),
@@ -153,10 +155,10 @@ const NewFrom = () => {
       type: "select",
       placeholder: "Select location",
       options: FloorPlan?.response.floor_map_list
-        .filter((i) => !["IMAGE", "TEXT"].includes(i.type))
+        .filter((i) => !["IMAGE", "TEXT", "SCRIBBLE"].includes(i.type))
         .map((item) => {
           return {
-            label: `${item.type}`,
+            label: `${item.name}`,
             value: item.id,
           };
         }),

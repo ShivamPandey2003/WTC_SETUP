@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Stage from "@/assets/Images/FloorPlan.png";
 import { Link, LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useNavigate } from "react-router";
 import {
+  useGetFloorMapList,
   useGetFloorPlan,
   useUploadFloorPlan,
 } from "@/api/Venue_api/Venue_Design_api";
@@ -12,16 +12,18 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
 import { setShapes } from "@/redux/venueDesignV2Slice";
 import { nanoid } from "nanoid";
+import { Normalize } from "@/lib";
 
 const Floor_Plan = () => {
-  const [floorPlan, setFloorPlan] = useState<string>(Stage);
+  const [floorPlan, setFloorPlan] = useState<string | null>(null);
   const [attachment, setAttachment] = useState<string | File>("/FloorPlan.pdf");
   const dispatch = useDispatch<AppDispatch>();
   const Navigate = useNavigate();
   const { UploadFloorPlan, isPending } = useUploadFloorPlan();
-  const { isPending: isFloorPlanLoaing } = useGetFloorPlan((e) =>
-    setFloorPlan(`data:image/png;base64,${e}`)
+  const { FloorPlan, isPending: isFloorPlanLoaing } = useGetFloorPlan((e) =>
+    setFloorPlan(`data:image/png;base64,${e}`),
   );
+  const {} = useGetFloorMapList();
 
   const onFloorPlanChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newForm = new FormData();
@@ -48,19 +50,25 @@ const Floor_Plan = () => {
   };
 
   const GoToDesign = () => {
-    dispatch(
-      setShapes([
-        {
-          type: "IMAGE",
-          id: nanoid(),
-          image: floorPlan,
-          x: 273.9999999999998,
-          y: 91.99999999999937,
-          width: 763.5740287066074,
-          height: 482.87714925919124,
-        },
-      ])
-    );
+    if (
+      floorPlan &&
+      Normalize(FloorPlan?.response.floor_plan as string) !== Normalize(floorPlan)
+    ) {
+      console.log(FloorPlan?.response.floor_plan);
+      dispatch(
+        setShapes([
+          {
+            type: "IMAGE",
+            id: nanoid(),
+            image: floorPlan,
+            x: 273.9999999999998,
+            y: 91.99999999999937,
+            width: 763.5740287066074,
+            height: 482.87714925919124,
+          },
+        ]),
+      );
+    }
     Navigate("/venue-design/design-floor-plan");
   };
 
@@ -87,15 +95,13 @@ const Floor_Plan = () => {
               <LoaderCircle className="animate-spin text-primary" />
             </div>
           )}
-          <Button onClick={GoToDesign}>
-            Go To Design Floor Plan
-          </Button>
+          <Button onClick={GoToDesign}>Go To Design Floor Plan</Button>
         </div>
         {isFloorPlanLoaing ? (
           <Skeleton className="w-full h-[60vh]" />
         ) : (
           <img
-            src={floorPlan}
+            src={floorPlan ? floorPlan : ""}
             alt="Stage"
             className="object-contain w-full h-[60vh]"
           />
