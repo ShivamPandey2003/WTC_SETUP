@@ -26,7 +26,10 @@ import TextEditor from "@/v2_components/common/V2_VenueDesign/TextArea";
 import { Text as TextInstance } from "konva/lib/shapes/Text";
 import { Check, LoaderCircle, Lock, LockOpen } from "lucide-react";
 import CanvaShapeEditor from "@/v2_components/common/V2_VenueDesign/CanvaShapeEditor";
-import { useSaveFloorPlanData } from "@/api/Venue_api/Venue_Design_api";
+import {
+  useGetFloorMapList,
+  useSaveFloorPlanData,
+} from "@/api/Venue_api/Venue_Design_api";
 import { Button } from "@/components/ui/Button";
 
 const V2_VenueDesign_page = () => {
@@ -36,9 +39,10 @@ const V2_VenueDesign_page = () => {
   const isPaining = useRef<boolean>(false);
   const currentShapeId = useRef<string | null>(null);
   const imageCache = useRef<Record<string, HTMLImageElement>>({});
+  const {} = useGetFloorMapList();
 
   const { action, Shapes, selectId } = useSelector(
-    (state: RootState) => state.Venue_Design_V2
+    (state: RootState) => state.Venue_Design_V2,
   );
   const dispatch = useDispatch<AppDispatch>();
   const [isEditing, setIsEditing] = useState(false);
@@ -47,7 +51,7 @@ const V2_VenueDesign_page = () => {
   const [textWidth, setTextWidth] = useState(200);
   const [editingTextId, setEditingTextId] = useState<string | null>(null);
   const [currentTextNode, setCurrentTextNode] = useState<Konva.Text | null>(
-    null
+    null,
   );
   const [screenDrag, setScreenDrag] = useState<false | null>(null);
   const { SaveFloorPlanData, isPending } = useSaveFloorPlanData();
@@ -104,7 +108,7 @@ const V2_VenueDesign_page = () => {
               width: img.width / 2,
               height: img.height / 2,
             },
-          ])
+          ]),
         );
       };
     };
@@ -195,7 +199,7 @@ const V2_VenueDesign_page = () => {
       id: string,
       e:
         | KonvaEventObject<MouseEvent, Node<NodeConfig>>
-        | KonvaEventObject<TouchEvent, Node<NodeConfig>>
+        | KonvaEventObject<TouchEvent, Node<NodeConfig>>,
     ) => {
       if (!transformerRef.current) return;
       const node = e.target;
@@ -207,7 +211,7 @@ const V2_VenueDesign_page = () => {
       setIsEditing(true);
       transformerRef.current.nodes([]);
     },
-    []
+    [],
   );
 
   const handleTextChange = useCallback(
@@ -216,18 +220,18 @@ const V2_VenueDesign_page = () => {
         dispatch(
           setShapes(
             Shapes.map((shape) =>
-              shape.id === editingTextId ? { ...shape, text: newText } : shape
-            )
-          )
+              shape.id === editingTextId ? { ...shape, text: newText } : shape,
+            ),
+          ),
         );
       }
     },
-    [editingTextId]
+    [editingTextId],
   );
 
   function onClick(
     e: KonvaEventObject<MouseEvent, Node<NodeConfig>>,
-    id: string
+    id: string,
   ) {
     const node = e.target;
     if (action === ACTIONS.ERASER) {
@@ -246,7 +250,7 @@ const V2_VenueDesign_page = () => {
 
   function OnDragEnd(
     e: KonvaEventObject<MouseEvent, Node<NodeConfig>>,
-    id: string
+    id: string,
   ) {
     const node = e.target;
 
@@ -259,15 +263,15 @@ const V2_VenueDesign_page = () => {
                 x: node.x(),
                 y: node.y(),
               }
-            : s
-        )
-      )
+            : s,
+        ),
+      ),
     );
   }
 
   function OnTransformEnd(
     e: KonvaEventObject<Event, Node<NodeConfig>>,
-    id: string
+    id: string,
   ) {
     const node = e.target;
     const scaleX = node.scaleX();
@@ -288,9 +292,9 @@ const V2_VenueDesign_page = () => {
                 width: Math.max(20, node.width() * scaleX),
                 height: Math.max(20, node.height() * scaleY),
               }
-            : s
-        )
-      )
+            : s,
+        ),
+      ),
     );
   }
 
@@ -352,7 +356,10 @@ const V2_VenueDesign_page = () => {
           <Button
             size={"icon-sm"}
             title="Save your progress"
-            onClick={() => SaveFloorPlanData({ floor_map_list: Shapes })}
+            onClick={() => {
+              SaveFloorPlanData({ floor_map_list: Shapes })
+              dispatch(setSelectedId(null))
+            }}
             disabled={isPending}
           >
             {isPending ? (

@@ -148,7 +148,7 @@ export const useDeleteCategory = () => {
 };
 
 export const useGetCategoryAll = ()=>{
-  const {data:AllCategory, isPending, error} = useQuery({
+  const {data:AllCategory, isPending, error} = useQuery<AllCategories_Response, AxiosError>({
     queryKey:['category-list'],
     queryFn:async()=>{
        const res = await apiRequest("get", "category/all");

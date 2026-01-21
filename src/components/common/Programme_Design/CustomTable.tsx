@@ -110,7 +110,7 @@ const CustomTable = () => {
                   <td className="px-6 py-2">
                       {item.category.map((id) => {
                         const Aray: any = new Map(
-                          AllCategory.response.map((i: any) => [i.id, i])
+                          AllCategory?.response.map((i: any) => [i.id, i])
                         );
                         return Aray.get(id).name;
                       })}

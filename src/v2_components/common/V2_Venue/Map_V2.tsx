@@ -47,7 +47,7 @@ const Map_V2 = () => {
     const stage = stageRef.current;
     if (!stage) return;
     const node = stage.findOne(`#${searchParams}`) as Konva.Shape | null;
-    console.log(`#${searchParams}`)
+    console.log(`#${searchParams}`);
     console.log("Found node:", stage.findOne(`#${searchParams}`));
     if (!node) return;
 
@@ -184,8 +184,21 @@ const Map_V2 = () => {
   }
 
   return (
-    <div className="w-full overflow-auto max-h-[70vh] relative">
-      <Stage ref={stageRef} width={1200} height={600} draggable={false}>
+    <div
+      className="w-full overflow-auto relative"
+      style={{
+        maxHeight: "500px",
+        WebkitOverflowScrolling: "touch",
+        touchAction: "pan-y pan-x",
+      }}
+    >
+      <Stage
+        ref={stageRef}
+        width={1200}
+        height={600}
+        draggable={false}
+        style={{ touchAction: "auto" }}
+      >
         <Layer>
           <Rect
             x={0}

@@ -156,3 +156,8 @@ export function formatDates_V2(dates: string[]): FormattedDate[] {
     };
   });
 }
+
+export const Normalize = (b64: string):string =>
+  b64
+    .replace(/^data:image\/\w+;base64,/, "") // remove prefix
+    .replace(/\s/g, ""); 
