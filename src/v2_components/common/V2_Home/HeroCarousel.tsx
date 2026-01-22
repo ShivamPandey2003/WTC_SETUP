@@ -2,17 +2,8 @@ import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 // import { ChevronLeft, ChevronRight } from "lucide-react";
 
-export interface Slide {
-  id: number;
-  title: string;
-  subtitle: string;
-  description: string;
-  image: string;
-  buttonText: string;
-}
-
 interface HeroCarouselProps {
-  slides:Slide[];
+  slides: News[];
   className?: string;
   titleClassName?: string;
   subtitleClassName?: string;
@@ -49,6 +40,17 @@ export default function HeroCarousel({
     setTimeout(() => setIsAutoPlaying(true), 500);
   };
 
+  const Title = (e: string[], last?: number) => {
+    const mid = Math.ceil(e.length / 2);
+    if (!last) {
+      const firstHalf = e.slice(0, mid).join(" ");
+      return firstHalf;
+    } else {
+      const secondHalf = e.slice(mid, last).join(" ");
+      return secondHalf;
+    }
+  };
+
   //   const nextSlide = () => {
   //     setCurrentSlide((prev) => (prev + 1) % slides.length);
   //     setIsAutoPlaying(false);
@@ -63,7 +65,7 @@ export default function HeroCarousel({
     <div
       className={cn(
         "relative w-full h-[350px] md:h-[420px] rounded-2xl overflow-hidden group",
-        className
+        className,
       )}
     >
       {slides.map((slide, index) => (
@@ -75,29 +77,33 @@ export default function HeroCarousel({
         >
           <div
             className="w-full h-full bg-cover bg-center"
-            style={{ backgroundImage: `url(${slide.image})` }}
+            style={{
+              backgroundImage: slide.bg_img
+                ? `url(data:image/png;base64,${slide.bg_img})`
+                : "url('https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200')",
+            }}
           >
             <div className="w-full h-full bg-gradient-to-r from-slate-900/80 to-slate-900/40 flex flex-col justify-end py-4 px-8 md:px-16">
               <h1
                 className={cn(
                   "text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2",
-                  titleClassName
+                  titleClassName,
                 )}
               >
-                {slide.title}
+                {Title(slide.title.split(" "))}
               </h1>
               <h2
                 className={cn(
                   "text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4",
-                  subtitleClassName
+                  subtitleClassName,
                 )}
               >
-                {slide.subtitle}
+                {Title(slide.title.split(" "), slide.title.split(" ").length)}
               </h2>
               <p
                 className={cn(
                   "text-xl md:text-2xl text-white/90 mb-8",
-                  descriptionClassName
+                  descriptionClassName,
                 )}
               >
                 {slide.description}
@@ -105,10 +111,10 @@ export default function HeroCarousel({
               <button
                 className={cn(
                   "bg-white/90 hover:bg-white text-slate-800 font-semibold px-8 py-3 rounded-full w-fit transition-colors duration-200",
-                  buttonClassName
+                  buttonClassName,
                 )}
               >
-                {slide.buttonText}
+                {"More Info"}
               </button>
             </div>
           </div>

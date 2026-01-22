@@ -6,41 +6,9 @@ import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
 // import EventCard from "@/v2_components/common/V2_Home/EventCard";
-import HeroCarousel, {
-  type Slide,
-} from "@/v2_components/common/V2_Home/HeroCarousel";
+import HeroCarousel from "@/v2_components/common/V2_Home/HeroCarousel";
 import NewsCard from "@/v2_components/common/V2_Home/NewsCard";
 import SponserCarousal from "@/v2_components/common/V2_Home/SponserCarousal";
-
-const slides: Slide[] = [
-  {
-    id: 1,
-    title: "World Tunnel",
-    subtitle: "Congress 2026",
-    description: "We Welcome You All To Montreal",
-    image:
-      "https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    buttonText: "More info",
-  },
-  {
-    id: 2,
-    title: "Innovation in",
-    subtitle: "Tunneling",
-    description: "Advancing Underground Infrastructure",
-    image:
-      "https://images.pexels.com/photos/2219024/pexels-photo-2219024.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    buttonText: "Learn more",
-  },
-  {
-    id: 3,
-    title: "Sustainable",
-    subtitle: "Solutions",
-    description: "Building the Future Underground",
-    image:
-      "https://images.pexels.com/photos/1103969/pexels-photo-1103969.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    buttonText: "Explore",
-  },
-];
 // const slides2 = [
 //   {
 //     id: 1,
@@ -128,17 +96,17 @@ const V2_Home_page = () => {
     <div className="px-4 mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <HeroCarousel slides={slides} />
+          <HeroCarousel slides={NewsList.response.slice(0, 4)} />
         </div>
         <div className="space-y-4">
-          {NewsList.response.slice(0, 2).map((item, index) => (
+          {NewsList.response.slice(4, 6).map((item, index) => (
             <NewsCard key={index} {...item} className="h-50" />
           ))}
         </div>
       </div>
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {NewsList.response.slice(3, 5).map((item, index) => (
+          {NewsList.response.slice(6, 8).map((item, index) => (
             <NewsCard key={index} {...item} />
           ))}
         </div>
@@ -155,7 +123,7 @@ const V2_Home_page = () => {
       </div>
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6 mb-2">
         {NewsList.response
-          .slice(3, NewsList.response.length)
+          .slice(8, NewsList.response.length)
           .map((item, index) => (
             <NewsCard key={index} {...item} />
           ))}

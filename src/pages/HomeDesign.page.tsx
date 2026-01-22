@@ -1,4 +1,4 @@
-import { useHomeDesignUpdate } from "@/api/global_api/global_api";
+import { useGetNewsList, useHomeDesignUpdate } from "@/api/global_api/global_api";
 import { useUploadNewsCSV } from "@/api/home_design_api/Home_design_api";
 // import BannerPreview from "@/components/common/Home_Design/BannerPreview";
 import CreateModal from "@/components/common/Home_Design/CreateModal";
@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const HomeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
+  const { NewsList } = useGetNewsList();
   const dispatch = useDispatch<AppDispatch>();
   const { isCreating, uploadCSV } = useSelector((state: RootState) => state.Home_Design);
   const { appConfig } = useSelector(
@@ -26,6 +27,10 @@ const HomeDesign_page = () => {
   );
   const { UpdateHomeDesign, isUpdateHomeDesignPending } = useHomeDesignUpdate();
   const {UploadNewsCSV, isPending} = useUploadNewsCSV()
+
+  if(!NewsList || !NewsList.response){
+    return null
+  }
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -127,7 +132,7 @@ const HomeDesign_page = () => {
                 </div>
               </Section>
               <Section title="Carousel Preview">
-                <MiniSmallCarousel />
+                <MiniSmallCarousel slides={NewsList.response.slice(0, 4)}/>
               </Section>
             </div>
             <Section title="Info Cards" ClassName="w-full">

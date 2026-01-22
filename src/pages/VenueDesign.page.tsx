@@ -1,4 +1,5 @@
 import { useVenueDesignUpdate } from "@/api/global_api/global_api";
+import { useGetSpeakerSetting } from "@/api/speaker_design_api/speaker_design_api";
 import Floor_Plan from "@/components/common/Venue_Design/Floor_Plan";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
 import Section from "@/components/global/Section";
@@ -17,7 +18,10 @@ const VenueDesign_page = () => {
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
-  const {UpdateVenueDesign, isUpdateVenueDesignPending} = useVenueDesignUpdate()
+  const {} = useGetSpeakerSetting();
+
+  const { UpdateVenueDesign, isUpdateVenueDesignPending } =
+    useVenueDesignUpdate();
   const dispatch = useDispatch<AppDispatch>();
 
   return (
@@ -71,12 +75,15 @@ const VenueDesign_page = () => {
               />
               <TextStyleRow
                 label={normalizeLabel("getting_there_sub_title")}
-                value={SpeakerSettings.getting_there_sub_title}
+                value={SpeakerSettings.venue.getting_there_sub_title}
                 onChange={(e) =>
                   dispatch(
                     setSpeakerSettings({
                       ...SpeakerSettings,
-                      getting_there_sub_title: e,
+                      venue: {
+                        ...SpeakerSettings.venue,
+                        getting_there_sub_title: e,
+                      },
                     }),
                   )
                 }
@@ -84,12 +91,15 @@ const VenueDesign_page = () => {
               />
               <TextStyleRow
                 label={normalizeLabel("getting_there_description")}
-                value={SpeakerSettings.getting_there_description}
+                value={SpeakerSettings.venue.getting_there_description}
                 onChange={(e) =>
                   dispatch(
                     setSpeakerSettings({
                       ...SpeakerSettings,
-                      getting_there_description: e,
+                      venue: {
+                        ...SpeakerSettings.venue,
+                        getting_there_description: e,
+                      },
                     }),
                   )
                 }
@@ -97,12 +107,15 @@ const VenueDesign_page = () => {
               />
               <TextStyleRow
                 label={normalizeLabel("latitude")}
-                value={SpeakerSettings.latitude}
+                value={SpeakerSettings.venue.latitude}
                 onChange={(e) =>
                   dispatch(
                     setSpeakerSettings({
                       ...SpeakerSettings,
-                      latitude: e,
+                      venue: {
+                        ...SpeakerSettings.venue,
+                        latitude: e,
+                      },
                     }),
                   )
                 }
@@ -110,12 +123,15 @@ const VenueDesign_page = () => {
               />
               <TextStyleRow
                 label={normalizeLabel("longitude")}
-                value={SpeakerSettings.longitude}
+                value={SpeakerSettings.venue.longitude}
                 onChange={(e) =>
                   dispatch(
                     setSpeakerSettings({
                       ...SpeakerSettings,
-                      longitude: e,
+                      venue: {
+                        ...SpeakerSettings.venue,
+                        longitude: e,
+                      },
                     }),
                   )
                 }

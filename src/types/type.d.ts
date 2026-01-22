@@ -8,7 +8,7 @@ declare type HomeDesignStateType = {
   isPublished: string | null;
   isCreating: boolean;
   news: News[];
-  uploadCSV:boolean
+  uploadCSV: boolean;
 };
 
 declare type LoginResponse = {
@@ -87,7 +87,7 @@ declare type Session = {
   description: string;
   bg_img: null | string;
   is_active: boolean;
-  venue:Shape
+  venue: Shape;
 };
 
 declare type CreateSessionRequest = Omit<
@@ -503,5 +503,16 @@ declare type Global_Floor_Plan_Response = {
 
 declare type AllCategories_Response = {
   header: ResponseHeader;
-  response:Category[]
-}
+  response: Category[];
+};
+
+declare type TabsResponse = {
+  header: ResponseHeader;
+  response: {
+    home_tab: string;
+    programme_tab: string;
+    speaker_tab: string;
+    venue_tab: string;
+    exhibitors_tab: string;
+  };
+};
