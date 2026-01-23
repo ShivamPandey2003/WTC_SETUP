@@ -15,7 +15,14 @@ type initialStateType = {
   Venue: GlobalVenue;
   selectedDate: string;
   filterData: Record<string, Programme[]>;
-  searchParams:string | null;
+  searchParams: string | null;
+  ArrayTabs: {
+    home_tab: string;
+    programme_tab: string;
+    speaker_tab: string;
+    venue_tab: string;
+    exhibitors_tab: string;
+  };
 };
 
 const todayDate = new Date().toLocaleDateString("en-US", {
@@ -52,7 +59,14 @@ const initialState: initialStateType = {
   },
   selectedDate: todayDate,
   filterData: {},
-  searchParams:null,
+  searchParams: null,
+  ArrayTabs: {
+    home_tab: "",
+    programme_tab: "",
+    speaker_tab: "",
+    venue_tab: "",
+    exhibitors_tab: "",
+  },
 };
 
 const Global_Slice = createSlice({
@@ -74,7 +88,7 @@ const Global_Slice = createSlice({
     },
     setFilterData: (
       state,
-      payload: PayloadAction<Record<string, Programme[]>>
+      payload: PayloadAction<Record<string, Programme[]>>,
     ) => {
       state.filterData = payload.payload;
       return state;
@@ -90,10 +104,30 @@ const Global_Slice = createSlice({
     setSearchParams: (state, payload: PayloadAction<string | null>) => {
       state.searchParams = payload.payload;
       return state;
-    }
+    },
+    setArrayTabs: (
+      state,
+      payload: PayloadAction<{
+        home_tab: string;
+        programme_tab: string;
+        speaker_tab: string;
+        venue_tab: string;
+        exhibitors_tab: string;
+      }>,
+    ) => {
+      state.ArrayTabs = payload.payload;
+      return state;
+    },
   },
 });
 
-export const { setProgramme, setVenue, setSelectedDate, setConference_title, setFilterData, setSearchParams } =
-  Global_Slice.actions;
+export const {
+  setProgramme,
+  setVenue,
+  setSelectedDate,
+  setConference_title,
+  setFilterData,
+  setSearchParams,
+  setArrayTabs
+} = Global_Slice.actions;
 export default Global_Slice.reducer;

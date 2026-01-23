@@ -4,10 +4,12 @@ export type payload = SpeakerSetting & {
   programme_tab: string;
   speaker_tab: string;
   exhibitors_tab: string;
-  getting_there_sub_title: string;
-  getting_there_description: string;
-  latitude: string;
-  longitude: string;
+  venue: {
+    getting_there_sub_title: string;
+    getting_there_description: string;
+    latitude: string;
+    longitude: string;
+  };
   venue_tab: string;
 };
 
@@ -39,10 +41,12 @@ const initialState: ProgrammeDesignStateType = {
     programme_tab: "",
     speaker_tab: "",
     exhibitors_tab: "",
-    getting_there_sub_title: "",
+    venue:{
+        getting_there_sub_title: "",
     getting_there_description: "",
     latitude: "",
     longitude: "",
+    },
     venue_tab: "",
     speaker_info: {
       show_speaker_fullname: false,

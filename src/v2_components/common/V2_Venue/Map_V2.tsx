@@ -9,10 +9,12 @@ import { useGetFloorPlanV2 } from "@/api/global_api/global_api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Map_V2 = () => {
   const stageRef = useRef<Konva.Stage | null>(null);
   const imageCache = useRef<Record<string, HTMLImageElement>>({});
+  const isMobile = useIsMobile()
   const [, setImageTick] = useState(0);
   const [activeNode, setActiveNode] = useState<Konva.Shape | null>(null);
   const [tooltip, setTooltip] = useState<{
@@ -194,7 +196,7 @@ const Map_V2 = () => {
         ref={stageRef}
         width={1200}
         height={600}
-        draggable={false}
+        draggable={isMobile}
         style={{ touchAction: "auto" }}
       >
         <Layer>

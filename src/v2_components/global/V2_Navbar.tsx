@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { setLoginModel } from "@/redux/ModalSlice";
-import type { AppDispatch } from "@/redux/store";
+import type { AppDispatch, RootState } from "@/redux/store";
 import { Menu } from "lucide-react";
 import { useEffect, useState, type RefObject } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 
 interface Prop {
@@ -18,6 +18,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
   const dispatch = useDispatch<AppDispatch>();
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+  const {ArrayTabs} = useSelector((state:RootState)=>state.Global_Slice)
 
   useEffect(() => {
     const el = REF?.current;
@@ -35,6 +36,16 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
     };
   }, []);
 
+  const TitleFetch = (e:string)=>{
+    switch(e){
+      case "programme": return ArrayTabs.programme_tab;
+      case "speaker": return ArrayTabs.speaker_tab;
+      case "venue":return ArrayTabs.venue_tab;
+      case "exhibitors": return ArrayTabs.exhibitors_tab
+      case "":return ArrayTabs.home_tab
+    }
+  }
+
   return (
     <header
       className={cn(
@@ -45,7 +56,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
       <div className="flex items-center gap-4">
         <Menu className="sm:hidden cursor-pointer" onClick={setOpen} />
         <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize">
-          {pathname.split("_")[0].slice(1)}
+          {TitleFetch(pathname.split("_")[0].slice(1))}
         </h2>
       </div>
       {!token ? (

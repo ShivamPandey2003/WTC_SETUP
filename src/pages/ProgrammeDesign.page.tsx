@@ -28,6 +28,8 @@ import { setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import {
   CalendarDays,
+  ChevronLeft,
+  ChevronRight,
   Clock,
   Loader,
   Navigation,
@@ -35,7 +37,7 @@ import {
   SquareArrowOutUpRight,
   X,
 } from "lucide-react";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SpeakerCreateModal from "@/components/common/Speaker_Design/CreateModal";
 import { setIsCreating as SetisSpeakerCreating } from "@/redux/SpeakerDesignSlice";
@@ -44,10 +46,12 @@ import { useUploadSessionsCSV } from "@/api/programme_design_api/Programme_desig
 
 const ProgrammeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
+  const scrollRef = useRef<HTMLDivElement>(null);
   // const {DeleteCategory, isDeleteCategoryPending} = useDeleteCategory()
   const { UpdateProgrammeDesign, isUpdateProgrammeDesignPending } =
     useProgrameDesignUpdate();
-    const { UploadNewsCSV, isPending: isUploadSessionsCSV } = useUploadSessionsCSV();
+  const { UploadNewsCSV, isPending: isUploadSessionsCSV } =
+    useUploadSessionsCSV();
   const { isCreating, slectedDate, uploadCSV } = useSelector(
     (state: RootState) => state.Programme_Design,
   );
@@ -67,6 +71,16 @@ const ProgrammeDesign_page = () => {
     SpeakerSettings.conference_start_date,
     SpeakerSettings.conference_end_date,
   );
+
+  const scroll = (direction: "left" | "right") => {
+    if (!scrollRef.current) return;
+
+    const amount = 150; // px to scroll
+    scrollRef.current.scrollBy({
+      left: direction === "left" ? -amount : amount,
+      behavior: "smooth",
+    });
+  };
 
   useEffect(() => {
     const end = new Date(formatDate(SpeakerSettings.conference_end_date));
@@ -116,21 +130,43 @@ const ProgrammeDesign_page = () => {
           loading={isUpdateProgrammeDesignPending}
         />
         {Boolean(value === "Session Data") && (
-          <div className="absolute right-10 flex items-center gap-4">
-            <div className="flex items-center gap-3">
-              {Dates.map((date) => (
-                <Button
-                  onClick={() => dispatch(setSelectedDate(date))}
-                  key={date}
-                  variant={"ghost"}
-                  className={cn(
-                    "h-7",
-                    date === slectedDate && "bg-border text-primary",
-                  )}
+          <div className="absolute right-10 top-23 flex items-center gap-4">
+            <div className="w-full max-w-xl flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => scroll("left")}
+              >
+                <ChevronLeft/>
+              </Button>
+              <div className="overflow-hidden flex-1">
+                <div
+                  ref={scrollRef}
+                  className="flex items-center gap-3 overflow-y-auto scroll-smooth"
+                  style={{ scrollbarWidth: "none" }}
                 >
-                  {date}
-                </Button>
-              ))}
+                  {Dates.map((date) => (
+                    <Button
+                      onClick={() => dispatch(setSelectedDate(date))}
+                      key={date}
+                      variant={"ghost"}
+                      className={cn(
+                        "h-7",
+                        date === slectedDate && "bg-border text-primary",
+                      )}
+                    >
+                      {date}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => scroll("right")}
+              >
+                <ChevronRight/>
+              </Button>
             </div>
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
@@ -169,14 +205,17 @@ const ProgrammeDesign_page = () => {
             <Section title="Basic info" ClassName="w-full">
               <div className="grid sm:grid-cols-2 items-center">
                 <TextStyleRow
-                      label={"Tab Title"}
-                      value={SpeakerSettings.programme_tab}
-                      onChange={(e) =>
-                        dispatch(
-                          setSpeakerSettings({ ...SpeakerSettings, programme_tab: e }),
-                        )
-                      }
-                    />
+                  label={"Tab Title"}
+                  value={SpeakerSettings.programme_tab}
+                  onChange={(e) =>
+                    dispatch(
+                      setSpeakerSettings({
+                        ...SpeakerSettings,
+                        programme_tab: e,
+                      }),
+                    )
+                  }
+                />
                 {Object.entries(SpeakerSettings)
                   .filter(([key]) => key.includes("conference"))
                   .map(([key, value], i) => (

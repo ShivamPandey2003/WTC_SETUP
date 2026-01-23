@@ -8,6 +8,7 @@ import { queryClient } from "@/provider/TanstackProvider";
 import { setCategory } from "@/redux/ExhibitorSlice";
 import { setAppConfig } from "@/redux/GlobalDesignSlice";
 import {
+  setArrayTabs,
   setConference_title,
   setProgramme,
   setVenue,
@@ -311,16 +312,14 @@ export const useVenueDesignUpdate = () => {
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
-  const filtered = CustomPick(SpeakerSettings, [
+  const { venue_tab, venue } = CustomPick(SpeakerSettings, [
     "venue_tab",
-    "getting_there_sub_title",
-    "getting_there_description",
-    "latitude",
-    "longitude",
+    "venue",
   ]);
 
   const data = {
-    ...filtered,
+    ...venue,
+    venue_tab,
     floor_plan: "",
     visa_title: "",
     visa_sub_title: "",
@@ -593,6 +592,33 @@ export const useGetFloorPlanV2 = () => {
 
   return {
     FloorPlan,
+    isPending,
+    error,
+  };
+};
+
+export const useGetTabs = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    data: tabsData,
+    isPending,
+    error,
+  } = useQuery<TabsResponse, AxiosError>({
+    queryKey: ["global_Tab"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "tabs");
+      return res.response;
+    },
+    select: (data) => {
+      dispatch(setArrayTabs(data.response));
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  return {
+    tabsData,
     isPending,
     error,
   };
