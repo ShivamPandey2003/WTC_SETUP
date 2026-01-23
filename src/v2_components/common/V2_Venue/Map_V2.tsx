@@ -14,7 +14,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 const Map_V2 = () => {
   const stageRef = useRef<Konva.Stage | null>(null);
   const imageCache = useRef<Record<string, HTMLImageElement>>({});
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile();
   const [, setImageTick] = useState(0);
   const [activeNode, setActiveNode] = useState<Konva.Shape | null>(null);
   const [tooltip, setTooltip] = useState<{
@@ -26,6 +26,15 @@ const Map_V2 = () => {
   const { searchParams } = useSelector(
     (state: RootState) => state.Global_Slice,
   );
+  const [stageSize, setStageSize] = useState({ width: 1200, height: 600 });
+
+  useEffect(() => {
+    if (!isMobile) return;
+    const rect = stageRef.current?.container().getBoundingClientRect();
+    if (rect) {
+      setStageSize({ width: rect.width, height: rect.height });
+    }
+  }, [isMobile]);
 
   useEffect(() => {
     FloorPlan?.response.floor_map_list.forEach((shape) => {
@@ -189,15 +198,15 @@ const Map_V2 = () => {
       style={{
         maxHeight: "500px",
         WebkitOverflowScrolling: "touch",
-        touchAction: "pan-y pan-x",
+        touchAction: "none",
       }}
     >
       <Stage
         ref={stageRef}
-        width={1200}
-        height={600}
+        width={stageSize.width}
+        height={stageSize.height}
         draggable={isMobile}
-        style={{ touchAction: "auto" }}
+        style={{ touchAction: "none" }}
       >
         <Layer>
           <Rect
