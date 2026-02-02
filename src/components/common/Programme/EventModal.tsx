@@ -17,8 +17,8 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
   const { Session } = useSelector((state: RootState) => state.Global_Slice);
 
   const selectedValue = Array.isArray(id)
-  ? Session.filter((pre) => id.includes(pre.id))
-  : Session.find((pre) => pre.id === id);
+    ? Session.filter((pre) => id.includes(pre.id))
+    : Session.find((pre) => pre.id === id);
 
   const [value, setValue] = React.useState<string>("");
 
@@ -64,7 +64,9 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                 {selectedValue.location}
               </Button>
               <Button variant={"link"} size={"sm"} className="p-0 ml-4">
-                {selectedValue.venue?selectedValue.venue.name:"Not available"}
+                Room no: {selectedValue.venue
+                  ? selectedValue.venue.name
+                  : "Not available"}
               </Button>
               <button
                 onClick={() => onClose(null)}
@@ -156,7 +158,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                       {s.location}
                     </Button>
                     <Button variant={"link"} size={"sm"} className="p-0 ml-4">
-                      {s.venue?s.venue.name:"Not available"}
+                      Room no: {s.venue ? s.venue.name : "Not available"}
                     </Button>
                     <button
                       onClick={() => onClose(null)}
