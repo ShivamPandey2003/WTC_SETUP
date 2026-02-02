@@ -23,13 +23,12 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
   const [value, setValue] = React.useState<string>("");
 
   React.useEffect(() => {
-  if (Array.isArray(id)) {
-    setValue(id[0]);   // default to the first tab
-  } else {
-    setValue(id);      // single session
-  }
-}, [id]);
-
+    if (Array.isArray(id)) {
+      setValue(id[0]); // default to the first tab
+    } else {
+      setValue(id); // single session
+    }
+  }, [id]);
 
   return (
     <Modal
@@ -63,6 +62,11 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
               </p>
               <Button variant={"link"} size={"sm"} className="p-0">
                 {selectedValue.location}
+              </Button>
+              <Button variant={"link"} size={"sm"} className="p-0 ml-4">
+                Room no: {selectedValue.venue
+                  ? selectedValue.venue.name
+                  : "Not available"}
               </Button>
               <button
                 onClick={() => onClose(null)}
@@ -125,6 +129,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
             <TabsList className="mb-4 pl-80 xxs:pl-60 xs:pl-0">
               {selectedValue.map(({ title, id }) => (
                 <TabsTrigger
+                  key={id}
                   variant={"link"}
                   value={id}
                   className="text-[15px] font-semibold leading-[15px] px-0 mr-6"
@@ -133,87 +138,86 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                 </TabsTrigger>
               ))}
             </TabsList>
-            
-              {selectedValue.map((s) => (
-                <TabsContent value={s.id} className="h-[30rem]">
-                  <div className="flex items-start gap-4">
-                    <img
-                      src={
-                        s.bg_img
-                          ? `data:image/png;base64,${s.bg_img}`
-                          : dummy
-                      }
-                      alt={s.title}
-                      className="w-[200px] h-[118px] rounded-lg object-cover opacity-80"
-                    />
-                    <div className="">
-                      <h2 className="text-xl font-bold text-primary mb-2">
-                        {s.title}
-                      </h2>
-                      <p className="text-sm text-primary font-semibold mb-1">
-                        {`${s.start_date} - ${s.end_date}`}
-                      </p>
-                      <Button variant={"link"} size={"sm"} className="p-0">
-                        {s.location}
-                      </Button>
-                      <button
-                        onClick={() => onClose(null)}
-                        className="absolute top-3 right-3 p-1 rounded-full bg-white/90 hover:bg-white transition-colors"
-                        aria-label="Close"
-                      >
-                        <X className="w-4 h-4 text-gray-700 font-semibold" />
-                      </button>
-                      <div className="flex gap-3 mb-5">
-                        <Button variant={"link"} size={"sm"} className="p-0">
-                          Add to calendar
-                        </Button>
-                        <Button variant={"link"} size={"sm"} className="p-0">
-                          Notify me
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="relative">
-                    <p className="text-sm text-gray-600 leading-relaxed mb-4">
-                      {s.description}
+
+            {selectedValue.map((s) => (
+              <TabsContent value={s.id} className="h-[30rem]">
+                <div className="flex items-start gap-4">
+                  <img
+                    src={s.bg_img ? `data:image/png;base64,${s.bg_img}` : dummy}
+                    alt={s.title}
+                    className="w-[200px] h-[118px] rounded-lg object-cover opacity-80"
+                  />
+                  <div className="">
+                    <h2 className="text-xl font-bold text-primary mb-2">
+                      {s.title}
+                    </h2>
+                    <p className="text-sm text-primary font-semibold mb-1">
+                      {`${s.start_date} - ${s.end_date}`}
                     </p>
-
-                    <div className="flex items-center gap-2 mb-5 text-sm text-gray-700">
-                      <FileText className="w-4 h-4" />
-                      <span className="hover:underline cursor-pointer">
-                        Paper.pdf
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-6">
-                      {s.speakers.map((speaker, index) => (
-                        <div key={index} className="flex flex-col items-center">
-                          <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center mb-2 overflow-hidden">
-                            {!speaker ? (
-                              <img
-                                src={speaker}
-                                alt={speaker}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <svg
-                                className="w-6 h-6 text-white"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                              </svg>
-                            )}
-                          </div>
-                          <span className="text-xs text-gray-700 text-center">
-                            {speaker.fullname}
-                          </span>
-                        </div>
-                      ))}
+                    <Button variant={"link"} size={"sm"} className="p-0">
+                      {s.location}
+                    </Button>
+                    <Button variant={"link"} size={"sm"} className="p-0 ml-4">
+                      Room no: {s.venue ? s.venue.name : "Not available"}
+                    </Button>
+                    <button
+                      onClick={() => onClose(null)}
+                      className="absolute top-3 right-3 p-1 rounded-full bg-white/90 hover:bg-white transition-colors"
+                      aria-label="Close"
+                    >
+                      <X className="w-4 h-4 text-gray-700 font-semibold" />
+                    </button>
+                    <div className="flex gap-3 mb-5">
+                      <Button variant={"link"} size={"sm"} className="p-0">
+                        Add to calendar
+                      </Button>
+                      <Button variant={"link"} size={"sm"} className="p-0">
+                        Notify me
+                      </Button>
                     </div>
                   </div>
-                </TabsContent>
-              ))}
+                </div>
+                <div className="relative">
+                  <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                    {s.description}
+                  </p>
+
+                  <div className="flex items-center gap-2 mb-5 text-sm text-gray-700">
+                    <FileText className="w-4 h-4" />
+                    <span className="hover:underline cursor-pointer">
+                      Paper.pdf
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-6">
+                    {s.speakers.map((speaker, index) => (
+                      <div key={index} className="flex flex-col items-center">
+                        <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center mb-2 overflow-hidden">
+                          {!speaker ? (
+                            <img
+                              src={speaker}
+                              alt={speaker}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <svg
+                              className="w-6 h-6 text-white"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                            </svg>
+                          )}
+                        </div>
+                        <span className="text-xs text-gray-700 text-center">
+                          {speaker.fullname}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </TabsContent>
+            ))}
           </Tabs>
         </div>
       )}

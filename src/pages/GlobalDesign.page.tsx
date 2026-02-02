@@ -78,7 +78,7 @@ const GlobalDesign_page = () => {
         </Section>
         <div className="flex gap-4">
           <Section title="Logo" ClassName="w-1/2">
-            <div className="flex justify-between mx-[2rem]">
+            <div className="flex justify-between mx-[1.5rem]">
               <LogoUpload
                 logoUrl={`data:image/png;base64,${appConfig.logo.logo_img}`}
                 fileName={appConfig.logo.name}
@@ -88,6 +88,7 @@ const GlobalDesign_page = () => {
                 fileName={"Sponsor_Logo"}
                 type={0}
                 title="Sponsor Logo"
+                recommend="500 × 100"
               />
             </div>
           </Section>

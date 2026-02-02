@@ -18,7 +18,7 @@ const CreateModal:React.FC<CreateModalProps> = ({isOpen, onClose}) => {
       <div className="bg-primary w-full rounded-t-lg px-8 text-white py-3 text-xl font-semibold">
         {"Create Programme"}
       </div>
-      <div className="p-6 h-[85vh] overflow-auto">
+      <div className="p-6 overflow-auto">
         <div>
           <NewFrom />
         </div>

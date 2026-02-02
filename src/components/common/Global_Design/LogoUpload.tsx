@@ -7,6 +7,7 @@ interface LogoUploadProps {
   fileName?: string;
   type?: number;
   title?: string;
+  recommend?: string;
 }
 
 export default function LogoUpload({
@@ -14,6 +15,7 @@ export default function LogoUpload({
   fileName = "ita-montreal.png",
   type = 1,
   title = "App Logo",
+  recommend ="128 × 68",
 }: LogoUploadProps) {
   const [image, setImage] = React.useState<string | null>(logoUrl);
   const { UploadLogo, isPending } = useUploadLogo();
@@ -47,6 +49,10 @@ export default function LogoUpload({
             className="h-16 object-contain"
           />
         )}
+      </div>
+      <div className="my-3 text-xs flex items-center gap-2">
+        <span>PNG</span> | <span>Max 2MB</span> |{" "}
+        <span>Recommended {recommend}</span>
       </div>
       <div className="mt-3 flex items-center gap-4 text-sm">
         <span className="text-gray-600">{fileName}</span>

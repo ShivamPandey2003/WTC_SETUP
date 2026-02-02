@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const speakerSchema = z.object({
-  prefix:z.string().optional().nullable(),
+  prefix: z.string().optional().nullable(),
   firstname: z.string().min(1, "First Name is required"),
   lastname: z.string().min(1, "Last Name is required"),
   designation: z.string().optional().nullable(),
@@ -13,9 +13,11 @@ export const speakerSchema = z.object({
     .optional()
     .refine(
       (files) => !files || files.length > 0,
-      "At least one file is required"
+      "At least one file is required",
     ),
-  keyNote:z.boolean()
+  linkedin_url: z.url().optional(),
+  whatsapp_url: z.url().optional(),
+  keyNote: z.boolean(),
 });
 
 export type SpeakerForm = z.infer<typeof speakerSchema>;
