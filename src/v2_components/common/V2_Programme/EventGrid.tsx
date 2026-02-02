@@ -5,12 +5,14 @@ import { cn } from "@/lib/utils";
 import { formatDates_V2 } from "@/lib";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
+import EventModal from "@/components/common/Programme/EventModal";
 
 const EventGrid = () => {
   const { Programmes } = useSelector((state: RootState) => state.ExtraSlice);
   const Dates = getDateRange(Programmes.start_date, Programmes.end_date);
   const Times = generateTimeArray(Programmes.start_time, Programmes.end_time);
   const timeRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
+  const [seleted, setSelected] = React.useState<string | null | string[]>(null);
   const [positions, setPositions] = React.useState<
     Record<string, { top: number; height: number }>
   >({});
@@ -129,6 +131,7 @@ const EventGrid = () => {
                                 height: `${positions[event.id]?.height || 0}px`,
                                 backgroundColor: event.color,
                               }}
+                              onClick={() => setSelected(event.session_id)}
                             >
                               {event.title}
                             </div>
@@ -157,6 +160,7 @@ const EventGrid = () => {
                                     }px`,
                                     backgroundColor: row.color,
                                   }}
+                                  onClick={() => setSelected(row.session_id)}
                                 >
                                   {row.title}
                                 </div>
@@ -177,6 +181,7 @@ const EventGrid = () => {
                                 height: `${positions[event.id]?.height || 0}px`,
                                 backgroundColor: event.color,
                               }}
+                              onClick={() => setSelected(event.session_id)}
                             >
                               {event.title}
                             </div>
@@ -201,6 +206,7 @@ const EventGrid = () => {
                               height: `${positions[item.id]?.height || 0}px`,
                               backgroundColor: item.color,
                             }}
+                            onClick={() => setSelected(item.session_id)}
                           >
                             <span className="rotate-90 inline-block text-xs">
                               {item.title}
@@ -215,6 +221,11 @@ const EventGrid = () => {
           ))}
         </div>
       </div>
+      <EventModal
+        isOpen={Boolean(seleted)}
+        onClose={() => setSelected(null)}
+        id={seleted as string | string[]}
+      />
     </div>
   );
 };

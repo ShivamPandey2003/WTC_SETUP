@@ -322,6 +322,7 @@ declare type Programme = {
   external_link: string;
   description: string;
   bg_img: string;
+  venue: Shape;
 };
 
 // declare type Programme = {

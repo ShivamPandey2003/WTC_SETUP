@@ -1,4 +1,7 @@
-import { useCreateSpeaker, useEditSpeaker } from "@/api/speaker_design_api/speaker_design_api";
+import {
+  useCreateSpeaker,
+  useEditSpeaker,
+} from "@/api/speaker_design_api/speaker_design_api";
 import CustomForm from "@/components/global/CustomForm";
 import { setIsCreating, setSelected } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
@@ -9,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const NewFrom = () => {
   const { selected, speakers } = useSelector(
-    (state: RootState) => state.Speaker_DesignSlice
+    (state: RootState) => state.Speaker_DesignSlice,
   );
 
   const value = speakers.find((pre) => pre.speaker_id === selected);
@@ -23,8 +26,9 @@ const NewFrom = () => {
     defaultValues: selected && value ? value : ({} as any),
   });
   const dispatch = useDispatch<AppDispatch>();
-  const {CreateSpeaker, isPending:isCreateSpeakerPending} = useCreateSpeaker()
-  const {EditSpeaker, isPending:isEditSpeakerPending} = useEditSpeaker()
+  const { CreateSpeaker, isPending: isCreateSpeakerPending } =
+    useCreateSpeaker();
+  const { EditSpeaker, isPending: isEditSpeakerPending } = useEditSpeaker();
 
   const onSubmit = (newData: SpeakerForm) => {
     const formData = new FormData();
@@ -39,10 +43,10 @@ const NewFrom = () => {
     formData.append("attachments", newData.attachments?.[0] as Blob);
     formData.append("keyNote", String(newData.keyNote));
 
-    if(selected && value){
-      formData.append("id", selected)
-      EditSpeaker(formData)
-    }else{
+    if (selected && value) {
+      formData.append("id", selected);
+      EditSpeaker(formData);
+    } else {
       CreateSpeaker(formData);
     }
   };
@@ -68,8 +72,16 @@ const NewFrom = () => {
     accept?: string;
   }[] = [
     { name: "prefix", label: "Prefix", placeholder: "Enter prefix here" },
-    { name: "firstname", label: "Firstname", placeholder: "Enter first name here" },
-    { name: "lastname", label: "Lastname", placeholder: "Enter last name here" },
+    {
+      name: "firstname",
+      label: "Firstname",
+      placeholder: "Enter first name here",
+    },
+    {
+      name: "lastname",
+      label: "Lastname",
+      placeholder: "Enter last name here",
+    },
     {
       name: "bio",
       label: "Bio",
@@ -85,7 +97,17 @@ const NewFrom = () => {
       accept: "image/*",
     },
     { name: "external_link", label: "External Link" },
-    {name:"keyNote", label:"Keynote", type:"checkbox"}
+    {
+      name: "linkedin_url",
+      label: "LinkedIn Link",
+      placeholder: "https://www.linkedin.com/in/username",
+    },
+    {
+      name: "whatsapp_url",
+      label: "WhatsApp Link",
+      placeholder: "https://wa.me/XXXXXXXXXX",
+    },
+    { name: "keyNote", label: "Keynote", type: "checkbox" },
   ];
 
   return (

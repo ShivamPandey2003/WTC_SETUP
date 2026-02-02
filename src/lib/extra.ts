@@ -94,9 +94,13 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
   };
 
   const findClusters = (items: Session[]) => {
+    const sorted = [...items].sort(
+      (a, b) => toMinutes(a.start_time) - toMinutes(b.start_time),
+    );
+
     const clusters: Session[][] = [];
 
-    items.forEach((session) => {
+    for (const session of sorted) {
       let added = false;
 
       for (const cluster of clusters) {
@@ -110,7 +114,7 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
       if (!added) {
         clusters.push([session]);
       }
-    });
+    }
 
     return clusters;
   };
@@ -152,11 +156,14 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
 
   if (leftover.length === 0) return result;
 
-  const byTitle = leftover.reduce((acc, s) => {
-    if (!acc[s.title]) acc[s.title] = [];
-    acc[s.title].push(s);
-    return acc;
-  }, {} as Record<string, Session[]>);
+  const byTitle = leftover.reduce(
+    (acc, s) => {
+      if (!acc[s.title]) acc[s.title] = [];
+      acc[s.title].push(s);
+      return acc;
+    },
+    {} as Record<string, Session[]>,
+  );
 
   Object.values(byTitle).forEach((titleGroup) => {
     const clusters = findClusters(titleGroup);
@@ -165,11 +172,11 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
       if (cluster.length > 1) {
         // MERGE TYPE
         const earliest = cluster.reduce((a, b) =>
-          toMinutes(a.start_time) < toMinutes(b.start_time) ? a : b
+          toMinutes(a.start_time) < toMinutes(b.start_time) ? a : b,
         );
 
         const latest = cluster.reduce((a, b) =>
-          toMinutes(a.end_time) > toMinutes(b.end_time) ? a : b
+          toMinutes(a.end_time) > toMinutes(b.end_time) ? a : b,
         );
 
         result.push({
@@ -217,7 +224,7 @@ const minutesToTime = (min: number): string => {
 
 export const getEarliestAndLatest = (sessions: any[]) => {
   const earliestMin = Math.min(
-    ...sessions.map((s) => timeToMinutes(s.start_time))
+    ...sessions.map((s) => timeToMinutes(s.start_time)),
   );
   const latestMin = Math.max(...sessions.map((s) => timeToMinutes(s.end_time)));
 
@@ -256,7 +263,7 @@ export const getDayMonthRange = (start: string, end: string): string[] => {
 
 export function generateTimeArray(
   start: string = "09:00",
-  end: string = "18:00"
+  end: string = "18:00",
 ): string[] {
   const slots: string[] = [];
 
