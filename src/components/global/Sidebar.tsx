@@ -19,7 +19,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
       <nav className="flex-1 py-4 px-2">
         <button
           className={cn(
-            `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] `,
+            `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "global"
               ? "bg-white text-[#318061]"
               : "hover:bg-white/10"
@@ -32,7 +32,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
 
         <button
           className={cn(
-            `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px]`,
+            `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "home"
               ? "bg-white text-[#318061]"
               : "hover:bg-white/10"
@@ -45,7 +45,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
 
         <button
           className={cn(
-            `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px]`,
+            `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "programme"
               ? "bg-white text-[#318061]"
               : "hover:bg-white/10"
@@ -57,7 +57,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
         </button>
         <button
           className={cn(
-            `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px]`,
+            `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "speakers"
               ? "bg-white text-[#318061]"
               : "hover:bg-white/10"
@@ -69,7 +69,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
         </button>
         <button
           className={cn(
-            `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px]`,
+            `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "venue"
               ? "bg-white text-[#318061]"
               : "hover:bg-white/10"
@@ -81,7 +81,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
         </button>
         <button
           className={cn(
-            `w-full px-4 py-2 flex items-center gap-3 text-sm transition-colors rounded-[5px]`,
+            `w-full px-4 py-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "exhibitors"
               ? "bg-white text-[#318061]"
               : "hover:bg-white/10"
@@ -93,7 +93,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
         </button>
       </nav>
 
-      <button onClick={()=>navigate("/wtc-profile")} className="p-4 flex items-center gap-3 text-sm hover:bg-white/10 transition-colors border-t border-white/20">
+      <button onClick={()=>navigate("/wtc-profile")} className="p-4 flex items-center gap-3 text-sm hover:bg-white/10 transition-colors border-t border-white/20 cursor-pointer">
         <User size={18} />
         <span>User</span>
       </button>

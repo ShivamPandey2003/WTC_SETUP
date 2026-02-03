@@ -184,7 +184,7 @@ const ProgrammeDesign_page = () => {
             </Button>
           </div>
         )}
-        <Tabs defaultValue={value} onValueChange={setValue} className="">
+        <Tabs value={value} onValueChange={setValue} className="">
           <TabsList className="mb-4 pl-80 xxs:pl-60 xs:pl-0">
             <TabsTrigger
               variant={"link"}
@@ -215,6 +215,7 @@ const ProgrammeDesign_page = () => {
                       }),
                     )
                   }
+                  containerClassname="w-[25rem]"
                 />
                 {Object.entries(SpeakerSettings)
                   .filter(([key]) => key.includes("conference"))
@@ -237,7 +238,7 @@ const ProgrammeDesign_page = () => {
                       }
                       classname={cn(key.includes("location") && "w-[400px]")}
                       containerClassname={cn(
-                        key.includes("location") ? "col-span-2" : "col-span-1",
+                        key.includes("location") ? "col-span-2 w-[28.5rem]" : "col-span-1 w-[25rem]",
                       )}
                     />
                   ))}
@@ -298,13 +299,13 @@ const ProgrammeDesign_page = () => {
               <Section title="Session Data" ClassName="w-1/2 h-[172px]">
                 <p className="text-sm text-gray-700 flex gap-1">
                   Data for info cards will be fetched from
-                  <a
-                    href="#"
-                    className="text-primary hover:underline font-medium flex items-center"
+                  <div
+                    onClick={()=>setValue("Session Data")}
+                    className="text-primary hover:underline font-medium flex items-center cursor-pointer"
                   >
                     Session Data
                     <SquareArrowOutUpRight size={13} />
-                  </a>
+                  </div>
                   database.
                 </p>
               </Section>

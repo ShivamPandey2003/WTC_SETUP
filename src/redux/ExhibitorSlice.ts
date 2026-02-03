@@ -4,6 +4,7 @@ type initialStateT = {
   selected: string | null;
   isDeleting: string | null;
   isCreating: boolean;
+  categoryModal: boolean;
   Exhibitors: Exhibitor[];
   Categorys: Category[];
   open_link_new_tab: boolean;
@@ -16,6 +17,7 @@ const initialState: initialStateT = {
   selected: null,
   isDeleting: null,
   isCreating: false,
+  categoryModal: false,
   Exhibitors: [],
   Categorys: [],
   open_link_new_tab: false,
@@ -64,6 +66,10 @@ const Exhibitor_DesignSlice = createSlice({
       state.uploadCSV = payload.payload;
       return state;
     },
+    setCategoryModal: (state, payload: PayloadAction<boolean>) => {
+      state.categoryModal = payload.payload;
+      return state;
+    },
   },
 });
 
@@ -76,6 +82,7 @@ export const {
   setOpenLinkNewTab,
   setAllowEmailExposure,
   setBoothLocation,
-  setUploadCSV
+  setUploadCSV,
+  setCategoryModal
 } = Exhibitor_DesignSlice.actions;
 export default Exhibitor_DesignSlice.reducer;

@@ -56,7 +56,7 @@ const HomeDesign_page = () => {
             </Button>
           </div>
         )}
-        <Tabs defaultValue={value} onValueChange={setValue} className="">
+        <Tabs value={value} onValueChange={setValue} className="">
           <TabsList className="mb-4 pl-80 xxs:pl-60 xs:pl-0">
             <TabsTrigger
               variant={"link"}
@@ -138,13 +138,13 @@ const HomeDesign_page = () => {
             <Section title="Info Cards" ClassName="w-full">
               <p className="text-sm text-gray-700 flex gap-1">
                 Data for info cards will be fetched from{" "}
-                <a
-                  href="#"
-                  className="text-primary hover:underline font-medium flex items-center"
+                <div
+                  onClick={()=>setValue("News")}
+                  className="text-primary hover:underline font-medium flex items-center cursor-pointer"
                 >
                   News
                   <SquareArrowOutUpRight size={13} />
-                </a>{" "}
+                </div>{" "}
                 database.
               </p>
             </Section>

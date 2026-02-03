@@ -41,7 +41,7 @@ const VenueDesign_page = () => {
             </Button>
           </div>
         )}
-        <Tabs defaultValue={value} onValueChange={setValue} className="">
+        <Tabs value={value} onValueChange={setValue} className="">
           <TabsList className="mb-4 pl-80 xxs:pl-60 xs:pl-0">
             <TabsTrigger
               variant={"link"}
@@ -59,7 +59,7 @@ const VenueDesign_page = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="General Settings">
-            <Section title="WIP" ClassName="w-full">
+            <Section title="Basic info" ClassName="w-full">
               <TextStyleRow
                 label={"Tab Title"}
                 value={SpeakerSettings.venue_tab}
@@ -71,7 +71,7 @@ const VenueDesign_page = () => {
                     }),
                   )
                 }
-                containerClassname="mb-4"
+                containerClassname="mb-4 w-[25rem]"
               />
               <TextStyleRow
                 label={normalizeLabel("getting_there_sub_title")}
@@ -87,7 +87,7 @@ const VenueDesign_page = () => {
                     }),
                   )
                 }
-                containerClassname="mb-4"
+                containerClassname="mb-4 w-[25rem]"
               />
               <TextStyleRow
                 label={normalizeLabel("getting_there_description")}
@@ -103,7 +103,7 @@ const VenueDesign_page = () => {
                     }),
                   )
                 }
-                containerClassname="mb-4"
+                containerClassname="mb-4 w-[25rem]"
               />
               <TextStyleRow
                 label={normalizeLabel("latitude")}
@@ -119,7 +119,7 @@ const VenueDesign_page = () => {
                     }),
                   )
                 }
-                containerClassname="mb-4"
+                containerClassname="mb-4 w-[25rem]"
               />
               <TextStyleRow
                 label={normalizeLabel("longitude")}
@@ -135,7 +135,7 @@ const VenueDesign_page = () => {
                     }),
                   )
                 }
-                containerClassname="mb-4"
+                containerClassname="mb-4 w-[25rem]"
               />
             </Section>
           </TabsContent>

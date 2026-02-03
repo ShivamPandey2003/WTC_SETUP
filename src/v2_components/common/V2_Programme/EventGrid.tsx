@@ -152,9 +152,9 @@ const EventGrid = () => {
                                   key={row.id}
                                   className={cn(
                                     "text-white p-1 rounded-xl flex items-center justify-center text-center text-[9px] cursor-pointer",
-                                    `w-[${100 / event.Item.length}%]`
                                   )}
                                   style={{
+                                    width:`${100 / event.Item.length}%`,
                                     height: `${
                                       positions[event.id]?.height || 0
                                     }px`,

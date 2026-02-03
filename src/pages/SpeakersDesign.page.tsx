@@ -95,7 +95,7 @@ const SpeakersDesign_page = () => {
             </Button>
           </div>
         )}
-        <Tabs defaultValue={value} onValueChange={setValue}>
+        <Tabs value={value} onValueChange={setValue}>
           <TabsList className="mb-4 pl-80 xxs:pl-60 xs:pl-0">
             <TabsTrigger
               variant={"link"}
@@ -125,7 +125,7 @@ const SpeakersDesign_page = () => {
                     }),
                   )
                 }
-                containerClassname={"gap-16"}
+                containerClassname={"gap-16 w-[22rem]"}
               />
               {Object.entries(SpeakerSettings.speaker_info).map(
                 ([key, value], i) => (
@@ -154,13 +154,13 @@ const SpeakersDesign_page = () => {
             <Section title="Speaker Data" ClassName="w-full">
               <p className="text-sm text-gray-700 flex gap-1">
                 Data for info cards will be fetched from{" "}
-                <a
-                  href="#"
-                  className="text-primary hover:underline font-medium flex items-center"
+                <div
+                  onClick={()=>setValue("Session Data")}
+                  className="text-primary hover:underline font-medium flex items-center cursor-pointer"
                 >
                   Speaker Data
                   <SquareArrowOutUpRight size={13} />
-                </a>{" "}
+                </div>{" "}
                 database.
               </p>
             </Section>
