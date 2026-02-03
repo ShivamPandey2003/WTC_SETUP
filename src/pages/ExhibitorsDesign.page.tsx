@@ -10,7 +10,7 @@ import React from "react";
 import CreateModal from "@/components/common/Exhibitors_Design/CreateModal";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
-import { setIsCreating, setUploadCSV } from "@/redux/ExhibitorSlice";
+import { setCategoryModal, setIsCreating, setUploadCSV } from "@/redux/ExhibitorSlice";
 import {
   useCategoryList,
   useGeneralExhibitorsUpdate,
@@ -22,6 +22,7 @@ import NoData from "@/components/global/NoData";
 import CSVModel from "@/components/global/CSVModel";
 import { useUploadExhibitorsCSV } from "@/api/exhibitor_design_api/exhibitor_design_api";
 import TextStyleRow from "@/components/global/TextStyleRow";
+import AddCategoryModel from "@/components/common/Exhibitors_Design/AddCategoryModel";
 
 const ExhibitorsDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
@@ -127,9 +128,9 @@ const ExhibitorsDesign_page = () => {
                     }),
                   )
                 }
-                containerClassname="mb-8"
+                containerClassname="mb-8 w-[25rem]"
               />
-              <div className="mb-16">
+              <div className="mb-10">
                 <h2 className="text-[14px] font-medium leading-[15px]">
                   Exhibitor Categories & Order
                 </h2>
@@ -141,6 +142,9 @@ const ExhibitorsDesign_page = () => {
                     color={data.color}
                   />
                 ))}
+                <Button onClick={()=>dispatch(setCategoryModal(true))} className="mt-4" variant={'link'}>
+                  + Add exhibitor category
+                </Button>
               </div>
               <div>
                 <div className="flex items-center py-2">
@@ -222,6 +226,7 @@ const ExhibitorsDesign_page = () => {
         isOpen={isCreating}
         onClose={() => dispatch(setIsCreating(false))}
       />
+      <AddCategoryModel/>
       <CSVModel
         isOpen={uploadCSV}
         onClose={() => dispatch(setUploadCSV(false))}

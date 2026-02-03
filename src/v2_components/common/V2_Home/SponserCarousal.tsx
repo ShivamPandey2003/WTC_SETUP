@@ -35,7 +35,7 @@ const SponserCarousal = ({
   };
   return (
     <div
-      className={`relative rounded-2xl overflow-hidden w-full min-h-[200px] h-full md:h-[200px] border border-gray-300 bg-white`}
+      className={`relative rounded-2xl overflow-hidden w-full min-h-[260px] h-full md:h-[200px] border border-gray-300 bg-white`}
     >
       {slides.map((slide, index) =>
         index === currentSlide ? (

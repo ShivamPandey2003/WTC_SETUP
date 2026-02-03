@@ -100,14 +100,14 @@ const V2_Home_page = () => {
         </div>
         <div className="space-y-4">
           {NewsList.response.slice(4, 6).map((item, index) => (
-            <NewsCard key={index} {...item} className="h-50" />
+            <NewsCard key={index} {...item} className="" index={index + 2} />
           ))}
         </div>
       </div>
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
           {NewsList.response.slice(6, 8).map((item, index) => (
-            <NewsCard key={index} {...item} />
+            <NewsCard key={index} {...item} index={index} />
           ))}
         </div>
         <div>
@@ -125,7 +125,7 @@ const V2_Home_page = () => {
         {NewsList.response
           .slice(8, NewsList.response.length)
           .map((item, index) => (
-            <NewsCard key={index} {...item} />
+            <NewsCard key={index} {...item} index={index + 1} />
           ))}
       </div>
     </div>

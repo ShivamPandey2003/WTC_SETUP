@@ -73,7 +73,7 @@ const NewFrom = () => {
     formData.append("external_link", newData?.external_link as string);
     formData.append("category", newData.category);
     formData.append("speakers", newData.speakers);
-    formData.append("attachments", newData.attachments?.[0] as Blob);
+    formData.append("attachment", newData.attachments?.[0] as Blob);
     formData.append("venueID", newData.venueID);
 
     if (value) {

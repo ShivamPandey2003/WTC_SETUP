@@ -11,7 +11,6 @@ import { z } from "zod";
 export const CategorySchema = z.object({
   name: z.string().nonempty().min(3, "minimum 3 word required"),
   color: z.string().nonempty(),
-  category_type: z.string()
 });
 
 export type Category = z.infer<typeof CategorySchema>;
@@ -30,8 +29,9 @@ const AddCategoryModel = () => {
   const onSubmit = (newData: Category)=>{
     const newDataFormatted = {
       ...newData,
-      category_type: Number(newData.category_type)
+      category_type: 0
     }
+    console.log(newDataFormatted)
     AddCategory(newDataFormatted)
     reset();
   }
@@ -52,7 +52,6 @@ const AddCategoryModel = () => {
   }[] = [
     { name: "name", label: "Name", placeholder: "Enter category name" },
     { name: "color", label: "Color", placeholder: "ex: #ffffff" },
-    { name: "category_type", label: "Category Type", placeholder: "ex: 0" },
   ];
 
   return (

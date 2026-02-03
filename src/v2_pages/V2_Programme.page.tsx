@@ -42,7 +42,7 @@ const V2_Programme_page = () => {
           <div
             key={item.name}
             className={cn(
-              "flex items-center justify-center p-1 rounded-lg border min-w-30 w-fit gap-2"
+              "flex items-center justify-center p-1 rounded-lg border min-w-20 w-fit gap-2 text-xs cursor-pointer"
             )}
             style={{
               background: item.color,

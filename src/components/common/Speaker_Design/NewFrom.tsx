@@ -42,6 +42,8 @@ const NewFrom = () => {
     formData.append("external_link", newData?.external_link as string);
     formData.append("attachments", newData.attachments?.[0] as Blob);
     formData.append("keyNote", String(newData.keyNote));
+    formData.append("linkedin_url", newData.linkedin_url as string);
+    formData.append("whatsapp_url", newData.whatsapp_url as string);
 
     if (selected && value) {
       formData.append("id", selected);
