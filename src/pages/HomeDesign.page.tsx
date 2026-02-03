@@ -136,7 +136,7 @@ const HomeDesign_page = () => {
               </Section>
             </div>
             <Section title="Info Cards" ClassName="w-full">
-              <p className="text-sm text-gray-700 flex gap-1">
+              <div className="text-sm text-gray-700 flex gap-1">
                 Data for info cards will be fetched from{" "}
                 <div
                   onClick={()=>setValue("News")}
@@ -146,7 +146,7 @@ const HomeDesign_page = () => {
                   <SquareArrowOutUpRight size={13} />
                 </div>{" "}
                 database.
-              </p>
+              </div>
             </Section>
           </TabsContent>
           <TabsContent value="News">

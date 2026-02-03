@@ -297,7 +297,7 @@ const ProgrammeDesign_page = () => {
                 </div>
               </Section>
               <Section title="Session Data" ClassName="w-1/2 h-[172px]">
-                <p className="text-sm text-gray-700 flex gap-1">
+                <div className="text-sm text-gray-700 flex gap-1">
                   Data for info cards will be fetched from
                   <div
                     onClick={()=>setValue("Session Data")}
@@ -307,7 +307,7 @@ const ProgrammeDesign_page = () => {
                     <SquareArrowOutUpRight size={13} />
                   </div>
                   database.
-                </p>
+                </div>
               </Section>
             </div>
           </TabsContent>

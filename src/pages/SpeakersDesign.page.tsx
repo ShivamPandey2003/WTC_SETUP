@@ -152,7 +152,7 @@ const SpeakersDesign_page = () => {
               )}
             </Section>
             <Section title="Speaker Data" ClassName="w-full">
-              <p className="text-sm text-gray-700 flex gap-1">
+              <div className="text-sm text-gray-700 flex gap-1">
                 Data for info cards will be fetched from{" "}
                 <div
                   onClick={()=>setValue("Session Data")}
@@ -162,7 +162,7 @@ const SpeakersDesign_page = () => {
                   <SquareArrowOutUpRight size={13} />
                 </div>{" "}
                 database.
-              </p>
+              </div>
             </Section>
           </TabsContent>
           <TabsContent value="Session Data">

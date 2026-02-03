@@ -18,7 +18,6 @@ export default function HeroCarousel({
   titleClassName,
   subtitleClassName,
   descriptionClassName,
-  buttonClassName,
   intervalTime = 5000,
 }: HeroCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
@@ -64,7 +63,7 @@ export default function HeroCarousel({
   return (
     <div
       className={cn(
-        "relative w-full h-[350px] md:h-[420px] rounded-2xl overflow-hidden group",
+        "relative w-full h-[350px] md:h-[530px] rounded-2xl overflow-hidden group",
         className,
       )}
     >
@@ -108,14 +107,14 @@ export default function HeroCarousel({
               >
                 {slide.description}
               </p>
-              <button
+              {/* <button
                 className={cn(
                   "bg-white/90 hover:bg-white text-slate-800 font-semibold px-8 py-3 rounded-full w-fit transition-colors duration-200",
                   buttonClassName,
                 )}
               >
                 {"More Info"}
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
