@@ -5,12 +5,16 @@ import Section from "@/components/global/Section";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
-import { Loader, Plus } from "lucide-react";
+import { Loader, Plus, Upload } from "lucide-react";
 import React from "react";
 import CreateModal from "@/components/common/Exhibitors_Design/CreateModal";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
-import { setCategoryModal, setIsCreating, setUploadCSV } from "@/redux/ExhibitorSlice";
+import {
+  setCategoryModal,
+  setIsCreating,
+  setUploadCSV,
+} from "@/redux/ExhibitorSlice";
 import {
   useCategoryList,
   useGeneralExhibitorsUpdate,
@@ -77,7 +81,7 @@ const ExhibitorsDesign_page = () => {
         <AdminTitlebar
           Title="Exhibitor Design"
           onSave={() => GeneralExhibitorsUpdate()}
-          show={Boolean(value !== "Session Data")}
+          show={false}
           loading={isGeneralExhibitorsUpdatePending}
         />
         {Boolean(value === "Session Data") && (
@@ -86,20 +90,20 @@ const ExhibitorsDesign_page = () => {
               onClick={() => dispatch(setUploadCSV(true))}
               className="w-fit py-1 h-7"
             >
-              <Plus />
-              import CSV
+              <Upload />
+              Uplaod CSV
             </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}
-              className="w-[100px] py-1 h-7"
+              className="w-fit py-1 h-7"
             >
               <Plus />
-              Add New
+              Add Exhibitor
             </Button>
           </div>
         )}
         <Tabs defaultValue={value} onValueChange={setValue} className="">
-          <TabsList className="mb-4 pl-80 xxs:pl-60 xs:pl-0">
+          <TabsList className="pl-80 xxs:pl-60 xs:pl-0">
             <TabsTrigger
               variant={"link"}
               value={"General Settings"}
@@ -116,7 +120,13 @@ const ExhibitorsDesign_page = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="General Settings">
-            <Section title="Basic info" ClassName="w-full">
+            <Section
+              title="Basic info"
+              ClassName="w-full"
+              onSave={() => GeneralExhibitorsUpdate()}
+              show={true}
+              loading={isGeneralExhibitorsUpdatePending}
+            >
               <TextStyleRow
                 label={"Tab Title"}
                 value={SpeakerSettings.exhibitors_tab}
@@ -142,7 +152,11 @@ const ExhibitorsDesign_page = () => {
                     color={data.color}
                   />
                 ))}
-                <Button onClick={()=>dispatch(setCategoryModal(true))} className="mt-4" variant={'link'}>
+                <Button
+                  onClick={() => dispatch(setCategoryModal(true))}
+                  className="mt-4"
+                  variant={"link"}
+                >
                   + Add exhibitor category
                 </Button>
               </div>
@@ -226,7 +240,7 @@ const ExhibitorsDesign_page = () => {
         isOpen={isCreating}
         onClose={() => dispatch(setIsCreating(false))}
       />
-      <AddCategoryModel/>
+      <AddCategoryModel />
       <CSVModel
         isOpen={uploadCSV}
         onClose={() => dispatch(setUploadCSV(false))}

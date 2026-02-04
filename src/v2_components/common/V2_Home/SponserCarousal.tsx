@@ -49,9 +49,12 @@ const SponserCarousal = ({
                 style={{ backgroundImage: `url(${slide.logo})` }}
               >
                 <div className="w-full h-full flex flex-col justify-end py-4 px-2 md:px-4">
-                  <h1 className="text-base font-bold text-primary mb-1">
-                    {slide.full_name} Sponsor
-                  </h1>
+                  <h2 className="text-base font-bold text-primary mb-1">
+                    {slide.full_name}
+                  </h2>
+                  <h2 className="text-base font-bold text-primary mb-1">
+                    Daimond Sponsor
+                  </h2>
                 </div>
               </div>
             </a>

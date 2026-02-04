@@ -34,7 +34,7 @@ export default function UploadModal({
       onClose={onClose}
       size="sm"
       showHeader={false}
-      closeOnOverlayClick={!isAction}
+      closeOnOverlayClick={false}
       closeOnEscape={!isAction}
     >
       <div className="flex flex-col items-center text-center">

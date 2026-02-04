@@ -4,17 +4,19 @@ import Floor_Plan from "@/components/common/Venue_Design/Floor_Plan";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
 import Section from "@/components/global/Section";
 import TextStyleRow from "@/components/global/TextStyleRow";
-import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { normalizeLabel } from "@/lib/utils";
+import { cn, normalizeLabel } from "@/lib/utils";
 import { setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { Plus } from "lucide-react";
+import { Link } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const VenueDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
+  const [attachment, setAttachment] = React.useState<string | File>(
+    "/FloorPlan.pdf",
+  );
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
@@ -24,25 +26,24 @@ const VenueDesign_page = () => {
     useVenueDesignUpdate();
   const dispatch = useDispatch<AppDispatch>();
 
+  const onAttachmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setAttachment(file);
+  };
+
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="mx-auto px-8 py-6 relative">
         <AdminTitlebar
           Title="Venue Design"
           onSave={() => UpdateVenueDesign()}
-          show={Boolean(value !== "Session Data")}
+          show={false}
           loading={isUpdateVenueDesignPending}
         />
-        {Boolean(value === "Session Data") && (
-          <div className="absolute right-10 flex items-center gap-4">
-            <Button onClick={() => {}} className="w-[100px] py-1 h-7">
-              <Plus />
-              Add New
-            </Button>
-          </div>
-        )}
         <Tabs value={value} onValueChange={setValue} className="">
-          <TabsList className="mb-4 pl-80 xxs:pl-60 xs:pl-0">
+          <TabsList className="pl-80 xxs:pl-60 xs:pl-0">
             <TabsTrigger
               variant={"link"}
               value={"General Settings"}
@@ -59,7 +60,13 @@ const VenueDesign_page = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="General Settings">
-            <Section title="Basic info" ClassName="w-full">
+            <Section
+              title="Basic info"
+              ClassName="w-full"
+              onSave={() => UpdateVenueDesign()}
+              show={true}
+              loading={isUpdateVenueDesignPending}
+            >
               <TextStyleRow
                 label={"Tab Title"}
                 value={SpeakerSettings.venue_tab}
@@ -71,7 +78,7 @@ const VenueDesign_page = () => {
                     }),
                   )
                 }
-                containerClassname="mb-4 w-[25rem]"
+                containerClassname="mb-4"
               />
               <TextStyleRow
                 label={normalizeLabel("getting_there_sub_title")}
@@ -87,24 +94,29 @@ const VenueDesign_page = () => {
                     }),
                   )
                 }
-                containerClassname="mb-4 w-[25rem]"
+                containerClassname="mb-4"
               />
-              <TextStyleRow
-                label={normalizeLabel("getting_there_description")}
-                value={SpeakerSettings.venue.getting_there_description}
-                onChange={(e) =>
-                  dispatch(
-                    setSpeakerSettings({
-                      ...SpeakerSettings,
-                      venue: {
-                        ...SpeakerSettings.venue,
-                        getting_there_description: e,
-                      },
-                    }),
-                  )
-                }
-                containerClassname="mb-4 w-[25rem]"
-              />
+              <div className={cn("flex items-center gap-4 py-2")}>
+                <div className="text-sm font-[500] w-[220px] shrink-0">
+                  {normalizeLabel("getting_there_description")}
+                </div>
+                <textarea
+                  value={SpeakerSettings.venue.getting_there_description}
+                  rows={1}
+                  onChange={(e) =>
+                    dispatch(
+                      setSpeakerSettings({
+                        ...SpeakerSettings,
+                        venue: {
+                          ...SpeakerSettings.venue,
+                          getting_there_description: e.target.value,
+                        },
+                      }),
+                    )
+                  }
+                  className="bg-[#1111110D] py-1 px-8 w-[17rem] rounded-[7px] border-transparent text-sm text-gray-600 hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
+                />
+              </div>
               <TextStyleRow
                 label={normalizeLabel("latitude")}
                 value={SpeakerSettings.venue.latitude}
@@ -119,7 +131,7 @@ const VenueDesign_page = () => {
                     }),
                   )
                 }
-                containerClassname="mb-4 w-[25rem]"
+                containerClassname="mb-4"
               />
               <TextStyleRow
                 label={normalizeLabel("longitude")}
@@ -135,8 +147,33 @@ const VenueDesign_page = () => {
                     }),
                   )
                 }
-                containerClassname="mb-4 w-[25rem]"
+                containerClassname="mb-4"
               />
+              <div className={cn("flex items-center gap-4 py-2 w-full")}>
+                <div className="text-sm font-[500] w-[220px] shrink-0">
+                  {normalizeLabel("Attachment")}
+                </div>
+                <div className="flex items-center space-x-8">
+                  <input
+                    type="file"
+                    multiple={false}
+                    onChange={onAttachmentChange}
+                    accept={"application/pdf"}
+                    className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary/20 file:text-primary hover:file:bg-primary/40"
+                  />
+                </div>
+                <a
+                  href={
+                    typeof attachment === "string"
+                      ? attachment
+                      : URL.createObjectURL(attachment)
+                  }
+                  target="_blank"
+                  className="flex items-center text-primary gap-1"
+                >
+                  <Link size={18} /> Floor Plan
+                </a>
+              </div>
             </Section>
           </TabsContent>
           <TabsContent value="Floor Plan">

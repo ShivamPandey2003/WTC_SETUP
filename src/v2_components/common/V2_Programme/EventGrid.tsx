@@ -221,11 +221,11 @@ const EventGrid = () => {
           ))}
         </div>
       </div>
-      <EventModal
+      {seleted && <EventModal
         isOpen={Boolean(seleted)}
         onClose={() => setSelected(null)}
         id={seleted as string | string[]}
-      />
+      />}
     </div>
   );
 };

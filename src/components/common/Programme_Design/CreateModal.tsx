@@ -15,10 +15,10 @@ const CreateModal:React.FC<CreateModalProps> = ({isOpen, onClose}) => {
       showCloseButton
       classname="p-0"
     >
-      <div className="bg-primary w-full rounded-t-lg px-8 text-white py-3 text-xl font-semibold">
+      <div className="bg-primary w-full rounded-t-lg px-6 text-white py-3 text-xl font-semibold">
         {"Create Programme"}
       </div>
-      <div className="p-6 overflow-auto">
+      <div className="p-6 max-h-[70vh] overflow-auto custom-scrollbar">
         <div>
           <NewFrom />
         </div>

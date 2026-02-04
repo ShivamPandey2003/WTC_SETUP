@@ -6,6 +6,8 @@ import { FileText, X } from "lucide-react";
 import React from "react";
 import { useSelector } from "react-redux";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { addToGoogleCalendar, formatForGoogleCalendar } from "@/lib/utils";
+import { useNavigate } from "react-router";
 
 type ModalProps = {
   isOpen: boolean;
@@ -21,6 +23,8 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
     : Session.find((pre) => pre.id === id);
 
   const [value, setValue] = React.useState<string>("");
+
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (Array.isArray(id)) {
@@ -63,11 +67,18 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
               <Button variant={"link"} size={"sm"} className="p-0">
                 {selectedValue.location}
               </Button>
-              <Button variant={"link"} size={"sm"} className="p-0 ml-4">
-                Room no: {selectedValue.venue
-                  ? selectedValue.venue.name
-                  : "Not available"}
-              </Button>
+              {selectedValue.venue && (
+                <Button
+                  onClick={() =>
+                    navigate(`/venue?id=${selectedValue.venue.id}`)
+                  }
+                  variant={"link"}
+                  size={"sm"}
+                  className="p-0 ml-4"
+                >
+                  Room no: {selectedValue.venue.name}
+                </Button>
+              )}
               <button
                 onClick={() => onClose(null)}
                 className="absolute top-3 right-3 p-1 rounded-full bg-white/90 hover:bg-white transition-colors"
@@ -76,7 +87,25 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                 <X className="w-4 h-4 text-gray-700 font-semibold" />
               </button>
               <div className="flex gap-3 mb-5">
-                <Button variant={"link"} size={"sm"} className="p-0">
+                <Button
+                  onClick={() =>
+                    addToGoogleCalendar({
+                      title: selectedValue.title,
+                      start: formatForGoogleCalendar(
+                        selectedValue.start_date,
+                        selectedValue.start_time,
+                      ),
+                      end: formatForGoogleCalendar(
+                        selectedValue.end_date,
+                        selectedValue.end_time,
+                      ),
+                      location: selectedValue.location,
+                    })
+                  }
+                  variant={"link"}
+                  size={"sm"}
+                  className="p-0"
+                >
                   Add to calendar
                 </Button>
                 <Button variant={"link"} size={"sm"} className="p-0">
@@ -140,7 +169,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
             </TabsList>
 
             {selectedValue.map((s) => (
-              <TabsContent value={s.id} className="h-[30rem]">
+              <TabsContent value={s.id} className="h-[30rem]" key={s.id}>
                 <div className="flex items-start gap-4">
                   <img
                     src={s.bg_img ? `data:image/png;base64,${s.bg_img}` : dummy}
@@ -157,9 +186,16 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                     <Button variant={"link"} size={"sm"} className="p-0">
                       {s.location}
                     </Button>
-                    <Button variant={"link"} size={"sm"} className="p-0 ml-4">
-                      Room no: {s.venue ? s.venue.name : "Not available"}
-                    </Button>
+                    {s.venue && (
+                      <Button
+                        onClick={() => navigate(`/venue?id=${s.venue.id}`)}
+                        variant={"link"}
+                        size={"sm"}
+                        className="p-0 ml-4"
+                      >
+                        Room no: {s.venue.name}
+                      </Button>
+                    )}
                     <button
                       onClick={() => onClose(null)}
                       className="absolute top-3 right-3 p-1 rounded-full bg-white/90 hover:bg-white transition-colors"
@@ -168,7 +204,25 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                       <X className="w-4 h-4 text-gray-700 font-semibold" />
                     </button>
                     <div className="flex gap-3 mb-5">
-                      <Button variant={"link"} size={"sm"} className="p-0">
+                      <Button
+                        onClick={() =>
+                          addToGoogleCalendar({
+                            title: s.title,
+                            start: formatForGoogleCalendar(
+                              s.start_date,
+                              s.start_time,
+                            ),
+                            end: formatForGoogleCalendar(
+                              s.end_date,
+                              s.end_time,
+                            ),
+                            location: s.location,
+                          })
+                        }
+                        variant={"link"}
+                        size={"sm"}
+                        className="p-0"
+                      >
                         Add to calendar
                       </Button>
                       <Button variant={"link"} size={"sm"} className="p-0">

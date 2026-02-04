@@ -57,7 +57,7 @@ export default function MiniSmallCarousel({slides}:{slides: News[]}) {
   };
 
   return (
-    <div className="relative w-[350px] h-[130px] rounded-xl overflow-hidden shadow-md">
+    <div className="relative w-full h-[250px] rounded-xl overflow-hidden shadow-md">
       {/* Slides */}
       <div className="absolute inset-0">
         {slides.map((slide, i) => (
@@ -77,20 +77,20 @@ export default function MiniSmallCarousel({slides}:{slides: News[]}) {
                 i === index ? "opacity-100" : "opacity-0"
               )}
             >
-              <div className="relative h-full flex items-center">
-                <div className="flex-1 px-4 sm:px-6">
-                  <h2 className="text-white text-xl sm:text-lg font-bold mb-2 drop-shadow-lg">
+              <div className="relative h-full flex items-end">
+                <div className="flex-1 px-4 sm:px-6 pb-4">
+                  <h2 className="text-white text-xl sm:text-2xl font-bold mb-2 drop-shadow-lg">
                     {Title(slide.title.split(" "))}
                   </h2>
-                  <h3 className="text-white text-lg sm:text-sm font-bold mb-2 drop-shadow-lg">
+                  <h3 className="text-white text-lg sm:text-xl font-bold mb-2 drop-shadow-lg">
                     {Title(slide.title.split(" "), slide.title.split(" ").length)}
                   </h3>
-                  <p className="text-white text-base sm:text-xs mb-2 drop-shadow-md">
+                  <p className="text-white text-base sm:text-base mb-2 drop-shadow-md">
                     {slide.description}
                   </p>
-                  <button className="px-1 sm:px-2 py-1 sm:py-1 bg-white text-gray-800 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg">
+                  {/* <button className="px-1 sm:px-2 py-1 sm:py-1 bg-white text-gray-800 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg">
                     {"More Info"}
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>
@@ -99,7 +99,7 @@ export default function MiniSmallCarousel({slides}:{slides: News[]}) {
       </div>
 
       {/* Dots */}
-      <div className="absolute bottom-1 right-1 flex gap-1">
+      <div className="absolute bottom-1 left-1/2 flex gap-1">
         {slides.map((_, i) => (
           <button
             key={i}

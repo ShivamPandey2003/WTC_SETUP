@@ -5,10 +5,12 @@ import {
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
+import DetailsModal from "@/v2_components/common/V2_Home/DetailsModal";
 // import EventCard from "@/v2_components/common/V2_Home/EventCard";
 import HeroCarousel from "@/v2_components/common/V2_Home/HeroCarousel";
 import NewsCard from "@/v2_components/common/V2_Home/NewsCard";
 import SponserCarousal from "@/v2_components/common/V2_Home/SponserCarousal";
+import { useState } from "react";
 // const slides2 = [
 //   {
 //     id: 1,
@@ -34,6 +36,7 @@ import SponserCarousal from "@/v2_components/common/V2_Home/SponserCarousal";
 // ];
 
 const V2_Home_page = () => {
+  const [selected, setSelected] = useState<number | null>(null);
   const { NewsList, isPending, error } = useGetNewsList();
   const {
     ExhibitorList,
@@ -49,9 +52,6 @@ const V2_Home_page = () => {
   if (
     isPending ||
     isExhibitorsListLoading
-    // isProgrammePending ||
-    // !ProgrammeList ||
-    // !ProgrammeList.response.programme["Nov 30, 2025"]
   ) {
     return (
       <div className="mx-[7.5%]">
@@ -93,41 +93,58 @@ const V2_Home_page = () => {
     );
   }
   return (
-    <div className="px-4 mx-auto">
+    <div className="px-4 pb-4 mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <HeroCarousel slides={NewsList.response.slice(0, 4)} />
         </div>
         <div className="space-y-4">
           {NewsList.response.slice(4, 6).map((item, index) => (
-            <NewsCard key={index} {...item} className="" index={index + 2} />
+            <NewsCard
+              key={index}
+              {...item}
+              className=""
+              index={index + 2}
+              onClick={() => setSelected(index)}
+            />
           ))}
         </div>
       </div>
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
           {NewsList.response.slice(6, 8).map((item, index) => (
-            <NewsCard key={index} {...item} index={index} />
+            <NewsCard
+              key={index}
+              {...item}
+              index={index}
+              onClick={() => setSelected(index)}
+            />
           ))}
         </div>
         <div>
-          {/* <AdCard
-            title="Epiroc"
-            subtitle="Inspired By Innovation"
-            image="https://images.pexels.com/photos/1078884/pexels-photo-1078884.jpeg?auto=compress&cs=tinysrgb&w=1600"
-            buttonText="More info"
-            onButtonClick={() => console.log("Ad clicked")}
-          /> */}
-          <SponserCarousal slides={ExhibitorList.response["Diamond"].slice(0,4)} intervalTime={7000} />
+          <SponserCarousal
+            slides={ExhibitorList.response["Diamond"].slice(0, 4)}
+            intervalTime={7000}
+          />
         </div>
       </div>
-      <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6 mb-2">
+      <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
         {NewsList.response
           .slice(8, NewsList.response.length)
           .map((item, index) => (
-            <NewsCard key={index} {...item} index={index + 1} />
+            <NewsCard
+              key={index}
+              {...item}
+              index={index + 1}
+              onClick={() => setSelected(index)}
+            />
           ))}
       </div>
+      {selected && <DetailsModal
+        id={selected as number}
+        isOpen={Boolean(selected)}
+        onClose={() => setSelected(null)}
+      />}
     </div>
   );
 };

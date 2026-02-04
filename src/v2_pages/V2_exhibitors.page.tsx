@@ -5,8 +5,11 @@ import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
 // import Exhibitors from "@/data/Exhibitors";
 import ExhibitorCard from "@/v2_components/common/V2_Exhibitors/ExhibitorCard";
+import ExhibitorModal from "@/v2_components/common/V2_Exhibitors/ExhibitorModal";
+import { useState } from "react";
 
 const V2_exhibitors_page = () => {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const { ExhibitorList, isPending, error } = useGetExhibitorsList();
 
   if (isPending) {
@@ -46,7 +49,7 @@ const V2_exhibitors_page = () => {
   }
 
   return (
-    <div className="px-4 mx-auto">
+    <div className="px-4 pb-4 mx-auto">
       {ExhibitorList?.response.seq.map(
         (value, i) =>
           Boolean(ExhibitorList.response[value].length) && (
@@ -60,8 +63,19 @@ const V2_exhibitors_page = () => {
                 ))}
               </div>
             </div>
-          )
+          ),
       )}
+      <ExhibitorModal
+        data={ExhibitorList.response.seq.flatMap((pre) =>
+          ExhibitorList.response[pre].map((s) => ({
+            ...s,
+            SponsorType: pre,
+          })),
+        )}
+        id={selectedId as string}
+        isOpen={Boolean(selectedId)}
+        onClose={() => setSelectedId(null)}
+      />
     </div>
   );
 };

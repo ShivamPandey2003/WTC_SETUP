@@ -1,4 +1,7 @@
-import { useGetNewsList, useHomeDesignUpdate } from "@/api/global_api/global_api";
+import {
+  useGetNewsList,
+  useHomeDesignUpdate,
+} from "@/api/global_api/global_api";
 import { useUploadNewsCSV } from "@/api/home_design_api/Home_design_api";
 // import BannerPreview from "@/components/common/Home_Design/BannerPreview";
 import CreateModal from "@/components/common/Home_Design/CreateModal";
@@ -13,7 +16,7 @@ import { cn } from "@/lib/utils";
 import { setAppConfig } from "@/redux/GlobalDesignSlice";
 import { setIsCreating, setUploadCSV } from "@/redux/HomeDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { Check, Plus, SquareArrowOutUpRight } from "lucide-react";
+import { Check, Plus, SquareArrowOutUpRight, Upload } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -21,15 +24,17 @@ const HomeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   const { NewsList } = useGetNewsList();
   const dispatch = useDispatch<AppDispatch>();
-  const { isCreating, uploadCSV } = useSelector((state: RootState) => state.Home_Design);
+  const { isCreating, uploadCSV } = useSelector(
+    (state: RootState) => state.Home_Design,
+  );
   const { appConfig } = useSelector(
     (state: RootState) => state.Global_DesignSlice,
   );
   const { UpdateHomeDesign, isUpdateHomeDesignPending } = useHomeDesignUpdate();
-  const {UploadNewsCSV, isPending} = useUploadNewsCSV()
+  const { UploadNewsCSV, isPending } = useUploadNewsCSV();
 
-  if(!NewsList || !NewsList.response){
-    return null
+  if (!NewsList || !NewsList.response) {
+    return null;
   }
 
   return (
@@ -38,26 +43,29 @@ const HomeDesign_page = () => {
         <AdminTitlebar
           Title="Home Design"
           onSave={() => UpdateHomeDesign()}
-          show={Boolean(value !== "News")}
+          show={false}
           loading={isUpdateHomeDesignPending}
         />
         {Boolean(value === "News") && (
           <div className="absolute right-10 flex items-center gap-4">
-            <Button onClick={() => dispatch(setUploadCSV(true))} className="w-fit py-1 h-7">
-              <Plus />
-              import CSV
+            <Button
+              onClick={() => dispatch(setUploadCSV(true))}
+              className="w-fit py-1 h-7"
+            >
+              <Upload />
+              Upload CSV
             </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}
-              className="w-20 py-1 h-7"
+              className="w-fit py-1 h-7"
             >
               <Plus />
-              Add
+              Add News
             </Button>
           </div>
         )}
         <Tabs value={value} onValueChange={setValue} className="">
-          <TabsList className="mb-4 pl-80 xxs:pl-60 xs:pl-0">
+          <TabsList className="pl-80 xxs:pl-60 xs:pl-0">
             <TabsTrigger
               variant={"link"}
               value={"General Settings"}
@@ -74,26 +82,59 @@ const HomeDesign_page = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="General Settings">
-            <Section title="Tab Title" ClassName="w-full">
-              <input
-                type="text"
-                value={appConfig.home_design.home_title}
-                onChange={(e) =>
-                  dispatch(
-                    setAppConfig({
-                      ...appConfig,
-                      home_design: {
-                        ...appConfig.home_design,
-                        home_title: e.target.value,
-                      },
-                    }),
-                  )
-                }
-                className="bg-[#1111110D] w-[23rem] font-semibold px-5 py-1 text-sm text-black rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
-              />
-            </Section>
+            <div className="flex gap-4">
+              <Section
+                title="Tab Title"
+                ClassName="w-full"
+                onSave={() => UpdateHomeDesign()}
+                show={true}
+                loading={isUpdateHomeDesignPending}
+              >
+                <input
+                  type="text"
+                  value={appConfig.home_design.home_title}
+                  onChange={(e) =>
+                    dispatch(
+                      setAppConfig({
+                        ...appConfig,
+                        home_design: {
+                          ...appConfig.home_design,
+                          home_title: e.target.value,
+                        },
+                      }),
+                    )
+                  }
+                  className="bg-[#1111110D] w-[23rem] font-semibold px-5 py-1 text-sm text-black rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
+                />
+              </Section>
+              <Section
+                title="Info Cards"
+                ClassName="w-full"
+                onSave={() => UpdateHomeDesign()}
+                show={false}
+                loading={isUpdateHomeDesignPending}
+              >
+                <div className="text-sm text-gray-700 flex gap-1">
+                  Data for info cards will be fetched from{" "}
+                  <div
+                    onClick={() => setValue("News")}
+                    className="text-primary hover:underline font-medium flex items-center cursor-pointer"
+                  >
+                    News
+                    <SquareArrowOutUpRight size={13} />
+                  </div>{" "}
+                  database.
+                </div>
+              </Section>
+            </div>
             <div className="flex items-start gap-4">
-              <Section title="Carousel Display" ClassName="w-full h-[210px]">
+              <Section
+                title="Carousel Display"
+                ClassName="w-3/5 h-[330px]"
+                onSave={() => UpdateHomeDesign()}
+                show={true}
+                loading={isUpdateHomeDesignPending}
+              >
                 <div className="flex items-center justify-between">
                   <div className="w-full flex flex-wrap gap-3">
                     {Object.keys(appConfig.home_design)
@@ -131,23 +172,16 @@ const HomeDesign_page = () => {
                   </div>
                 </div>
               </Section>
-              <Section title="Carousel Preview">
-                <MiniSmallCarousel slides={NewsList.response.slice(0, 4)}/>
+              <Section
+                title="Carousel Preview"
+                ClassName="w-2/5"
+                onSave={() => UpdateHomeDesign()}
+                show={false}
+                loading={isUpdateHomeDesignPending}
+              >
+                <MiniSmallCarousel slides={NewsList.response.slice(0, 4)} />
               </Section>
             </div>
-            <Section title="Info Cards" ClassName="w-full">
-              <div className="text-sm text-gray-700 flex gap-1">
-                Data for info cards will be fetched from{" "}
-                <div
-                  onClick={()=>setValue("News")}
-                  className="text-primary hover:underline font-medium flex items-center cursor-pointer"
-                >
-                  News
-                  <SquareArrowOutUpRight size={13} />
-                </div>{" "}
-                database.
-              </div>
-            </Section>
           </TabsContent>
           <TabsContent value="News">
             <CustomTable />

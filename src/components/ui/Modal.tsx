@@ -75,15 +75,15 @@ export default function Modal({
     >
       <div
         ref={modalRef}
-        className={`bg-white rounded-lg shadow-xl w-full ${sizeClasses[size]} transform transition-all duration-300 scale-100 opacity-100 max-h-screen overflow-y-auto`}
+        className={`bg-white relative rounded-lg shadow-xl w-full ${sizeClasses[size]} max-h-[80vh]`}
       >
         {showHeader && (header || title || showCloseButton) && (
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <div className={cn("flex items-center justify-between border-b border-gray-200", "bg-primary w-full rounded-t-lg px-6 text-white py-3 text-xl font-[600]")}>
             {header ? (
               <div className="flex-1">{header}</div>
             ) : (
               title && (
-                <h2 id="modal-title" className="text-xl font-semibold text-gray-900">
+                <h2 id="modal-title">
                   {title}
                 </h2>
               )
