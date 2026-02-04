@@ -52,6 +52,7 @@ const CSVModel = ({
       isOpen={isOpen}
       onClose={onClose}
       showCloseButton
+      closeOnOverlayClick={false}
       classname="p-0"
     >
       <div className="bg-primary w-full rounded-t-lg px-8 text-white py-3 text-xl font-[600]">

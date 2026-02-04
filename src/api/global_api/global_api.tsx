@@ -20,7 +20,7 @@ import type { AxiosError } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { nanoid } from "nanoid";
-import { setProgrammes, type ProgrammeRecord } from "@/redux/ExtraSlice";
+import { setNews, setProgrammes, type ProgrammeRecord } from "@/redux/ExtraSlice";
 
 export const useGlobalDesign = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -46,6 +46,7 @@ export const useGlobalDesign = () => {
 };
 
 export const useGetNewsList = () => {
+  const dispatch = useDispatch<AppDispatch>()
   const {
     data: NewsList,
     isPending,
@@ -58,6 +59,7 @@ export const useGetNewsList = () => {
       return res.response;
     },
     select: (data) => {
+      dispatch(setNews(data.response))
       return data;
     },
     refetchOnWindowFocus: false,
@@ -416,7 +418,7 @@ export const useCategoryList = () => {
 };
 
 export const useGeneralExhibitorsUpdate = () => {
-  const { open_link_new_tab, allow_email_exposure, booth_location, Categorys } =
+  const { Categorys } =
     useSelector((state: RootState) => state.ExhibitorSlice);
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
@@ -424,9 +426,9 @@ export const useGeneralExhibitorsUpdate = () => {
   const exhibitors_category_list = Categorys.map((item) => item.id);
   const Body = {
     exhibitors_category_list,
-    open_link_new_tab,
-    allow_email_exposure,
-    booth_location,
+    open_link_new_tab:SpeakerSettings.exhibitor_settings.open_link_new_tab,
+    allow_email_exposure:SpeakerSettings.exhibitor_settings.allow_email_exposure,
+    booth_location:SpeakerSettings.exhibitor_settings.booth_location,
     exhibitors_tab: SpeakerSettings.exhibitors_tab,
   };
   const {

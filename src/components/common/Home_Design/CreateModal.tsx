@@ -9,15 +9,17 @@ type EditModalProps = {
 const CreateModal:React.FC<EditModalProps> = ({isOpen, onClose}) => {
   return (
     <Modal
-      showHeader={false}
+      showHeader={true}
+      title='Create News'
       isOpen={isOpen}
       onClose={onClose}
-      showCloseButton
+      showCloseButton={false}
       classname="p-0"
+      closeOnOverlayClick={false}
     >
-      <div className="bg-primary w-full rounded-t-lg px-8 text-white py-3 text-xl font-[600]">
+      {/* <div className="bg-primary w-full rounded-t-lg px-6 text-white py-3 text-xl font-[600]">
         {"Create News"}
-      </div>
+      </div> */}
       <div className="p-6">
         <div>
           <NewFrom />

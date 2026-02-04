@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, LoaderCircle } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useNavigate } from "react-router";
 import {
@@ -16,7 +16,6 @@ import { Normalize } from "@/lib";
 
 const Floor_Plan = () => {
   const [floorPlan, setFloorPlan] = useState<string | null>(null);
-  const [attachment, setAttachment] = useState<string | File>("/FloorPlan.pdf");
   const dispatch = useDispatch<AppDispatch>();
   const Navigate = useNavigate();
   const { UploadFloorPlan, isPending } = useUploadFloorPlan();
@@ -40,13 +39,6 @@ const Floor_Plan = () => {
     };
     UploadFloorPlan({ form: newForm });
     fileReader.readAsDataURL(file); // 👈 this was missing
-  };
-
-  const onAttachmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setAttachment(file);
   };
 
   const GoToDesign = () => {
@@ -105,32 +97,6 @@ const Floor_Plan = () => {
             className="object-contain w-full h-[60vh]"
           />
         )}
-      </div>
-      <div className="flex items-center space-x-8">
-        <label
-          className="text-sm font-medium text-blue-500 cursor-pointer"
-          htmlFor="Attachmentfile"
-        >
-          Change Attachment
-          <input
-            type="file"
-            className="hidden"
-            id="Attachmentfile"
-            accept="application/pdf"
-            onChange={onAttachmentChange}
-          />
-        </label>
-        <a
-          href={
-            typeof attachment === "string"
-              ? attachment
-              : URL.createObjectURL(attachment)
-          }
-          target="_blank"
-          className="flex items-center text-blue-600 gap-1"
-        >
-          <Link size={18} /> Floor Plan
-        </a>
       </div>
     </div>
   );

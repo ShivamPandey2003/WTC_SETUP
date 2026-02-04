@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 const GlobalDesign_page = () => {
   const { GlobalDesign, isGlobalDesignPending, error } = useGlobalDesign();
   const { appConfig } = useSelector(
-    (state: RootState) => state.Global_DesignSlice
+    (state: RootState) => state.Global_DesignSlice,
   );
   const dispatch = useDispatch<AppDispatch>();
   const { updateAppConfig, isUpdateAppConfigPending } = useAppConfigUpdate();
@@ -56,9 +56,16 @@ const GlobalDesign_page = () => {
         <AdminTitlebar
           Title="Global Design"
           onSave={() => updateAppConfig()}
+          show={false}
           loading={isUpdateAppConfigPending}
         />
-        <Section title="Color Scheme" ClassName="w-full">
+        <Section
+          title="Color Scheme"
+          ClassName="w-full"
+          onSave={() => updateAppConfig()}
+          show={true}
+          loading={isUpdateAppConfigPending}
+        >
           {Object.entries(appConfig.color_schema).map(([key, value], i) => (
             <ColorPicker
               key={i}
@@ -70,7 +77,7 @@ const GlobalDesign_page = () => {
                   setAppConfig({
                     ...appConfig,
                     color_schema: { ...appConfig.color_schema, [key]: e },
-                  })
+                  }),
                 )
               }
             />
@@ -92,7 +99,13 @@ const GlobalDesign_page = () => {
               />
             </div>
           </Section>
-          <Section title="Text and styles" ClassName="w-1/2">
+          <Section
+            title="Text and styles"
+            ClassName="w-1/2"
+            onSave={() => updateAppConfig()}
+            show={true}
+            loading={isUpdateAppConfigPending}
+          >
             {Object.entries(appConfig.text_style).map(([key, value], i) => (
               <TextStyleRow
                 key={i}
@@ -103,7 +116,7 @@ const GlobalDesign_page = () => {
                     setAppConfig({
                       ...appConfig,
                       text_style: { ...appConfig.text_style, [key]: e },
-                    })
+                    }),
                   )
                 }
               />

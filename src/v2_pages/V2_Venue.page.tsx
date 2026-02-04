@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/Button";
-import { cn, formatDate } from "@/lib/utils";
+import {
+  addToGoogleCalendar,
+  cn,
+  formatDate,
+  formatForGoogleCalendar,
+  normalizeTime,
+} from "@/lib/utils";
 import TextCard from "@/v2_components/common/V2_Venue/TextCard";
 import { useEffect, useState } from "react";
 import BG from "@/assets/Images/BG.jpg";
@@ -28,15 +34,18 @@ const V2_Venue_page = () => {
     conference_location,
     conference_end_date,
     conference_start_date,
+    conference_start_time,
+    conference_end_time,
+    conference_title,
   } = useSelector((state: RootState) => state.Global_Slice);
 
-  useEffect(()=>{
+  useEffect(() => {
     const venueId = searchParams.get("id");
-    if(venueId){
-      setCurrentTab("floor plan")
-      dispatch(setSearchParams(venueId))
+    if (venueId) {
+      setCurrentTab("floor plan");
+      dispatch(setSearchParams(venueId));
     }
-  },[searchParams])
+  }, [searchParams]);
 
   function parseCoordinate(value: string): number {
     const num = parseFloat(value); // get numeric part
@@ -47,6 +56,11 @@ const V2_Venue_page = () => {
     }
     return Math.abs(num);
   }
+
+  const openInGoogleMaps = () => {
+    const url = `https://www.google.com/maps?q=${parseCoordinate(venue.getting_there.latitude)},${parseCoordinate(venue.getting_there.longitude)}`;
+    window.open(url, "_blank");
+  };
 
   if (isPending) {
     return (
@@ -141,7 +155,10 @@ const V2_Venue_page = () => {
                     </p>
                   </div>
                 </div>
-                <Button className="rounded-full bg-[#E5F6DD] text-[#666666] hover:bg-[#c9fcb0] hover:text-[#555555] text-sm w-36">
+                <Button
+                  onClick={openInGoogleMaps}
+                  className="rounded-full bg-[#E5F6DD] text-[#666666] hover:bg-[#c9fcb0] hover:text-[#555555] text-sm w-36"
+                >
                   Open in Maps
                 </Button>
               </div>
@@ -151,13 +168,29 @@ const V2_Venue_page = () => {
                   <div>
                     <h3 className="text-lg font-bold">
                       {`${formatDate(conference_start_date)} - ${formatDate(
-                        conference_end_date
+                        conference_end_date,
                       )}`}
                     </h3>
-                    <p className="w-60 text-sm">07:30 AM - 17:30 PM</p>
+                    <p className="w-60 text-sm">{`${normalizeTime(conference_start_time)} - ${normalizeTime(conference_end_time)}`}</p>
                   </div>
                 </div>
-                <Button className="rounded-full bg-[#E5F6DD] text-[#666666] hover:bg-[#c9fcb0] hover:text-[#555555] text-sm w-36">
+                <Button
+                  onClick={() =>
+                    addToGoogleCalendar({
+                      title: conference_title,
+                      start: formatForGoogleCalendar(
+                        conference_start_date,
+                        conference_start_time,
+                      ),
+                      end: formatForGoogleCalendar(
+                        conference_end_date,
+                        conference_end_time,
+                      ),
+                      location: conference_location,
+                    })
+                  }
+                  className="rounded-full bg-[#E5F6DD] text-[#666666] hover:bg-[#c9fcb0] hover:text-[#555555] text-sm w-36"
+                >
                   Add to calendar
                 </Button>
               </div>

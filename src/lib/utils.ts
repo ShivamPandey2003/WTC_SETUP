@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function getDatesInRangeFormatted(
   startDate: string,
-  endDate: string
+  endDate: string,
 ): string[] {
   const start = new Date(startDate);
   const end = new Date(endDate);
@@ -76,12 +76,15 @@ export function formatSpeakers(arr: string[]) {
 
 export const CustomPick = <T, K extends keyof T>(
   obj: T,
-  keys: K[]
+  keys: K[],
 ): Pick<T, K> => {
-  return keys.reduce((acc, key) => {
-    acc[key] = obj[key];
-    return acc;
-  }, {} as Pick<T, K>);
+  return keys.reduce(
+    (acc, key) => {
+      acc[key] = obj[key];
+      return acc;
+    },
+    {} as Pick<T, K>,
+  );
 };
 
 export const filterDates = (dates: { date: string; day_name: string }[]) => {
@@ -102,7 +105,7 @@ export const filterDates = (dates: { date: string; day_name: string }[]) => {
 
 export function getNewDatesInRangeFormatted(
   startDate: string,
-  endDate: string
+  endDate: string,
 ): { date: string; day_name: string }[] {
   const start = new Date(startDate);
   const end = new Date(endDate);
@@ -135,4 +138,30 @@ export const formatTime = (isoString: string): string => {
   const minutes = date.getMinutes().toString().padStart(2, "0");
 
   return `${hours}:${minutes}`;
+};
+
+export const formatForGoogleCalendar = (date: string, time: string) => {
+  const dateTime = new Date(`${date}T${time}`);
+  return dateTime.toISOString().replace(/-|:|\.\d+/g, "");
+};
+
+export function normalizeTime(time: string) {
+  if (!time) return "";
+  return time.split(".")[0].slice(0, 5);
+}
+
+export const addToGoogleCalendar = ({
+  title,
+  start,
+  end,
+  location,
+}: {
+  title: string;
+  start: string;
+  end: string;
+  location: string;
+}) => {
+  const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${start}/${end}&location=${encodeURIComponent(location)}`;
+
+  window.open(url, "_blank");
 };

@@ -35,7 +35,7 @@ import {
   Navigation,
   Plus,
   SquareArrowOutUpRight,
-  X,
+  Upload,
 } from "lucide-react";
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -43,10 +43,12 @@ import SpeakerCreateModal from "@/components/common/Speaker_Design/CreateModal";
 import { setIsCreating as SetisSpeakerCreating } from "@/redux/SpeakerDesignSlice";
 import CSVModel from "@/components/global/CSVModel";
 import { useUploadSessionsCSV } from "@/api/programme_design_api/Programme_design_api";
+import Category_Labels from "@/data/Category_Labels";
 
 const ProgrammeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   const scrollRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
   // const {DeleteCategory, isDeleteCategoryPending} = useDeleteCategory()
   const { UpdateProgrammeDesign, isUpdateProgrammeDesignPending } =
     useProgrameDesignUpdate();
@@ -93,6 +95,19 @@ const ProgrammeDesign_page = () => {
     }
   }, [SpeakerSettings.conference_end_date, slectedDate, dispatch]);
 
+  useEffect(() => {
+    if (value !== "Session Data") return;
+
+    const el = itemRefs.current[slectedDate];
+    if (!el) return;
+
+    el.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest",
+    });
+  }, [slectedDate, value]);
+
   if (isPending) {
     return (
       <div className="w-full h-screen flex flex-col items-center justify-center">
@@ -126,7 +141,7 @@ const ProgrammeDesign_page = () => {
         <AdminTitlebar
           Title="Programme Design"
           onSave={() => UpdateProgrammeDesign()}
-          show={Boolean(value !== "Session Data")}
+          show={false}
           loading={isUpdateProgrammeDesignPending}
         />
         {Boolean(value === "Session Data") && (
@@ -137,26 +152,33 @@ const ProgrammeDesign_page = () => {
                 size="icon"
                 onClick={() => scroll("left")}
               >
-                <ChevronLeft/>
+                <ChevronLeft />
               </Button>
               <div className="overflow-hidden flex-1">
                 <div
                   ref={scrollRef}
-                  className="flex items-center gap-3 overflow-y-auto scroll-smooth"
+                  className="flex items-center gap-3 overflow-x-auto scroll-smooth"
                   style={{ scrollbarWidth: "none" }}
                 >
                   {Dates.map((date) => (
-                    <Button
-                      onClick={() => dispatch(setSelectedDate(date))}
+                    <div
+                      ref={(el) => {
+                        itemRefs.current[date] = el;
+                      }}
                       key={date}
-                      variant={"ghost"}
-                      className={cn(
-                        "h-7",
-                        date === slectedDate && "bg-border text-primary",
-                      )}
                     >
-                      {date}
-                    </Button>
+                      <Button
+                        onClick={() => dispatch(setSelectedDate(date))}
+                        key={date}
+                        variant={"ghost"}
+                        className={cn(
+                          "h-7 shrink-0",
+                          date === slectedDate && "bg-border text-primary",
+                        )}
+                      >
+                        {date}
+                      </Button>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -165,27 +187,27 @@ const ProgrammeDesign_page = () => {
                 size="icon"
                 onClick={() => scroll("right")}
               >
-                <ChevronRight/>
+                <ChevronRight />
               </Button>
             </div>
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
               className="w-fit py-1 h-7"
             >
-              <Plus />
-              import CSV
+              <Upload />
+              Upload CSV
             </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}
-              className="w-[100px] py-1 h-7"
+              className="w-fit py-1 h-7"
             >
               <Plus />
-              Add New
+              Add Session
             </Button>
           </div>
         )}
         <Tabs value={value} onValueChange={setValue} className="">
-          <TabsList className="mb-4 pl-80 xxs:pl-60 xs:pl-0">
+          <TabsList className="pl-80 xxs:pl-60 xs:pl-0">
             <TabsTrigger
               variant={"link"}
               value={"General Settings"}
@@ -202,7 +224,13 @@ const ProgrammeDesign_page = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="General Settings">
-            <Section title="Basic info" ClassName="w-full">
+            <Section
+              title="Basic info"
+              ClassName="w-full"
+              onSave={() => UpdateProgrammeDesign()}
+              show={true}
+              loading={isUpdateProgrammeDesignPending}
+            >
               <div className="grid sm:grid-cols-2 items-center">
                 <TextStyleRow
                   label={"Tab Title"}
@@ -238,14 +266,22 @@ const ProgrammeDesign_page = () => {
                       }
                       classname={cn(key.includes("location") && "w-[400px]")}
                       containerClassname={cn(
-                        key.includes("location") ? "col-span-2 w-[28.5rem]" : "col-span-1 w-[25rem]",
+                        key.includes("location")
+                          ? "col-span-2 w-[28.5rem]"
+                          : "col-span-1 w-[25rem]",
                       )}
                     />
                   ))}
               </div>
             </Section>
             <div className="flex items-start gap-4">
-              <Section title="Session Configuration" ClassName="w-1/2">
+              <Section
+                title="Session Configuration"
+                ClassName="w-3/5"
+                onSave={() => UpdateProgrammeDesign()}
+                show={true}
+                loading={isUpdateProgrammeDesignPending}
+              >
                 <div className="flex items-center py-2">
                   <div className="w-40 text-sm font-medium">
                     {"Category Filters"}
@@ -266,41 +302,40 @@ const ProgrammeDesign_page = () => {
                     <p>Enabled</p>
                   </div>
                 </div>
-                <div className="flex items-center py-2">
+                <div className="flex items-start justify-between py-2">
                   <div className="w-40 text-sm font-medium">
                     {"Category Filters"}
                   </div>
-                  <div className="flex">
-                    <div
-                      className={cn(
-                        "relative flex w-fit items-center gap-3 bg-[#1111110D] px-3 py-1 text-sm text-gray-600 rounded-[7px] text-center focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors",
-                      )}
-                    >
-                      {SpeakerSettings.category_labels.map((str) => (
-                        <div
-                          key={str}
-                          className="flex items-center gap-2 px-3 bg-white rounded-lg border border-transparent hover:border-gray-300"
-                        >
-                          {str}
-                          <X size={18} />
-                        </div>
-                      ))}
-                    </div>
-                    <Button
-                      variant={"link"}
-                      onClick={() => dispatch(setCategoryModal(true))}
-                    >
-                      <Plus />
-                      Add New
-                    </Button>
+                  <div
+                    className={cn(
+                      "relative flex flex-wrap w-fit items-center gap-3 bg-[#1111110D] p-4 text-sm text-gray-600 rounded-[7px] text-center focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors",
+                    )}
+                  >
+                    {/* {SpeakerSettings.category_labels */}
+                    {Category_Labels.map((str) => (
+                      <div
+                        key={str.id}
+                        className="flex items-center gap-2 px-3 bg-white rounded-lg border border-transparent hover:border-gray-300"
+                      >
+                        {str.name}
+                        {/* <X size={18} /> */}
+                      </div>
+                    ))}
                   </div>
+                  <Button
+                    variant={"link"}
+                    onClick={() => dispatch(setCategoryModal(true))}
+                  >
+                    <Plus />
+                    Add New
+                  </Button>
                 </div>
               </Section>
-              <Section title="Session Data" ClassName="w-1/2 h-[172px]">
+              <Section title="Session Data" ClassName="w-2/5">
                 <div className="text-sm text-gray-700 flex gap-1">
                   Data for info cards will be fetched from
                   <div
-                    onClick={()=>setValue("Session Data")}
+                    onClick={() => setValue("Session Data")}
                     className="text-primary hover:underline font-medium flex items-center cursor-pointer"
                   >
                     Session Data

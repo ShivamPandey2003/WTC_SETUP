@@ -69,7 +69,7 @@ export default function HeroCarousel({
     >
       {slides.map((slide, index) => (
         <div
-          key={slide.id}
+          key={index}
           className={`absolute inset-0 transition-opacity duration-700 ${
             index === currentSlide ? "opacity-100" : "opacity-0"
           }`}

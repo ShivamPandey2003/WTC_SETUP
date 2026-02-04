@@ -4,16 +4,21 @@ import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
 // import { teamMembers } from "@/data/Speaker";
 import SpeakerCard from "@/v2_components/common/V2_Speaker/SpeakerCard";
+import SpeakerModal from "@/v2_components/common/V2_Speaker/SpeakerModal";
+import { useState } from "react";
 
 const V2_Speakers_page = () => {
+  const [selectedId, setSelectedId]= useState<string|null>(null)
   const { SpeakersList, isPending, error } = useGetSpeakersList();
 
   if (isPending || !SpeakersList) {
     return (
-      <div className="grid xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {[1, 2, 3, 4, 5].map((val) => (
-          <Skeleton key={val} className="w-[200px] h-60" />
-        ))}
+      <div className="w-full mx-auto">
+        <div className="px-4 flex gap-4 flex-wrap items-start justify-center sm:justify-start">
+          {[1, 2, 3, 4, 5].map((val) => (
+            <Skeleton key={val} className="w-[250px] h-80" />
+          ))}
+        </div>
       </div>
     );
   }
@@ -42,11 +47,12 @@ const V2_Speakers_page = () => {
     // flex gap-4 flex-wrap items-start justify-center
     // grid-cols-5 gap-6
     <div className="w-full mx-auto">
-      <div className="px-4 flex gap-4 flex-wrap items-start justify-center sm:justify-start">
+      <div className="p-4 flex gap-4 flex-wrap items-start justify-center sm:justify-start">
         {SpeakersList.response.map((item, i) => (
-          <SpeakerCard key={i} {...item} />
+          <SpeakerCard key={i} {...item} onClick={()=>setSelectedId(item.speaker_id)} />
         ))}
       </div>
+      <SpeakerModal data={SpeakersList.response} id={selectedId as string} isOpen={Boolean(selectedId)} onClose={()=>setSelectedId(null)}/>
     </div>
   );
 };
