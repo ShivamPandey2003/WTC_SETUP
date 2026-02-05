@@ -9,6 +9,7 @@ import {
   useUploadProfilePic,
 } from "@/api/Profile_api/Profile_api";
 import { LoaderCircle } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 const formSchema = z.object({
   prefix: z.string().optional(),
@@ -24,12 +25,12 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export default function ProfileForm() {
-  
   const { user_info } = useSelector((state: RootState) => state.Profile_Slice);
   const { UploadPic, isPending } = useUploadProfilePic();
-  const { UpdateProfile } =
-  useProfileUpdate();
-  const [image, setImage] = useState<string | null>(`data:image/png;base64,${user_info.profile_image}`);
+  const { UpdateProfile } = useProfileUpdate();
+  const [image, setImage] = useState<string | null>(
+    `data:image/png;base64,${user_info.profile_image}`,
+  );
 
   const {
     register,
@@ -79,7 +80,7 @@ export default function ProfileForm() {
   const handleRemoveImage = () => setImage(null);
 
   return (
-    <div className="w-[50%] mx-auto p-6 bg-white rounded-xl space-y-4">
+    <div className="w-4/5 mx-auto p-6 bg-white rounded-xl space-y-4 relative">
       {/* Profile Image */}
       <div className="flex items-end">
         <label className="text-sm font-medium text-gray-600 mr-6">
@@ -121,8 +122,8 @@ export default function ProfileForm() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-        <div className="flex justify-between items-center">
-          <label className="text-sm font-medium text-gray-600">
+        <div className="flex items-center">
+          <label className="text-sm font-medium text-gray-600 w-[170px]">
             Name Prefix
           </label>
           <input
@@ -132,8 +133,8 @@ export default function ProfileForm() {
           />
         </div>
 
-        <div className="flex justify-between items-center">
-          <label className="block text-sm font-medium text-gray-600">
+        <div className="flex items-center">
+          <label className="block text-sm font-medium text-gray-600 w-[170px]">
             First Name
           </label>
           <div>
@@ -148,8 +149,8 @@ export default function ProfileForm() {
           </div>
         </div>
 
-        <div className="flex justify-between items-center">
-          <label className="block text-sm font-medium text-gray-600">
+        <div className="flex items-center">
+          <label className="block text-sm font-medium text-gray-600 w-[170px]">
             Last Name
           </label>
           <div>
@@ -164,8 +165,8 @@ export default function ProfileForm() {
           </div>
         </div>
 
-        <div className="flex justify-between items-center">
-          <label className="block text-sm font-medium text-gray-600">
+        <div className="flex items-center">
+          <label className="block text-sm font-medium text-gray-600 w-[170px]">
             Gender
           </label>
           <select
@@ -178,8 +179,8 @@ export default function ProfileForm() {
           </select>
         </div>
 
-        <div className="flex justify-between items-center">
-          <label className="block text-sm font-medium text-gray-600">
+        <div className="flex items-center">
+          <label className="block text-sm font-medium text-gray-600 w-[170px]">
             Company Name
           </label>
           <input
@@ -189,8 +190,8 @@ export default function ProfileForm() {
           />
         </div>
 
-        <div className="flex justify-between items-center">
-          <label className="block text-sm font-medium text-gray-600">
+        <div className="flex items-center">
+          <label className="block text-sm font-medium text-gray-600 w-[170px]">
             Designation
           </label>
           <input
@@ -200,8 +201,8 @@ export default function ProfileForm() {
           />
         </div>
 
-        <div className="flex justify-between items-center">
-          <label className="block text-sm font-medium text-gray-600">
+        <div className="flex items-center">
+          <label className="block text-sm font-medium text-gray-600 w-[170px]">
             Email
           </label>
           <div>
@@ -216,8 +217,8 @@ export default function ProfileForm() {
           </div>
         </div>
 
-        <div className="flex justify-between items-center">
-          <label className="block text-sm font-medium text-gray-600">
+        <div className="flex items-center">
+          <label className="block text-sm font-medium text-gray-600 w-[170px]">
             LinkedIn
           </label>
           <div>
@@ -231,14 +232,14 @@ export default function ProfileForm() {
             )}
           </div>
         </div>
-        <div className="w-full flex justify-end">
-          <button
-            type="submit"
-            className="w-[6rem] bg-primary text-white font-semibold rounded-md py-2 hover:bg-green-800 transition"
-          >
-            SAVE
-          </button>
-        </div>
+        {/* <div className="w-full flex"> */}
+        <Button
+          type="submit"
+          className="w-[100px] py-1 h-7 absolute top-4 right-4"
+        >
+          Save
+        </Button>
+        {/* </div> */}
       </form>
     </div>
   );

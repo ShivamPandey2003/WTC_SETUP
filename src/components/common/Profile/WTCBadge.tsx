@@ -11,7 +11,7 @@ export default function WTCBadge() {
 
   return (
     <div
-      className={`w-[370px] rounded-lg shadow-lg p-5 text-center relative overflow-hidden border border-gray-100`}
+      className={`w-[370px] rounded-lg shadow-lg p-5 text-center relative overflow-hidden border border-gray-100 bg-white`}
       style={{ backgroundImage: `url(${BgIMG})` }}
     >
       <div className="flex w-full items-center justify-between mb-5">

@@ -36,7 +36,7 @@ import { useState } from "react";
 // ];
 
 const V2_Home_page = () => {
-  const [selected, setSelected] = useState<number | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
   const { NewsList, isPending, error } = useGetNewsList();
   const {
     ExhibitorList,
@@ -105,7 +105,7 @@ const V2_Home_page = () => {
               {...item}
               className=""
               index={index + 2}
-              onClick={() => setSelected(index)}
+              onClick={() => setSelected(item.id)}
             />
           ))}
         </div>
@@ -117,7 +117,7 @@ const V2_Home_page = () => {
               key={index}
               {...item}
               index={index}
-              onClick={() => setSelected(index)}
+              onClick={() => setSelected(item.id)}
             />
           ))}
         </div>
@@ -136,12 +136,12 @@ const V2_Home_page = () => {
               key={index}
               {...item}
               index={index + 1}
-              onClick={() => setSelected(index)}
+              onClick={() => setSelected(item.id)}
             />
           ))}
       </div>
       {selected && <DetailsModal
-        id={selected as number}
+        id={selected as string}
         isOpen={Boolean(selected)}
         onClose={() => setSelected(null)}
       />}
