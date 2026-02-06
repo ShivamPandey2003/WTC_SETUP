@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router";
 // import Home_page from "@/pages/Home.page";
-import RootLayout from "@/layouts/rootlayout";
+// import RootLayout from "@/layouts/rootlayout";
 // import Speaker_page from "@/pages/Speaker.page";
 // import Programme_page from "@/pages/Programme.page";
 // import Venue_page from "@/pages/Venue.page";
@@ -24,6 +24,7 @@ import V2_exhibitors_page from "@/v2_pages/V2_exhibitors.page";
 import V2_Venue_page from "@/v2_pages/V2_Venue.page";
 import V2_Programme_page from "@/v2_pages/V2_Programme.page";
 import V2_VenueDesign_page from "@/v2_pages/V2_VenueDesign.page";
+import V2_UserProfile_page from "@/v2_pages/V2_UserProfile.page";
 
 const Router = createBrowserRouter(
   [
@@ -110,16 +111,20 @@ const Router = createBrowserRouter(
         {
           path:"venue-design/design-floor-plan",
           element:<V2_VenueDesign_page/>
-        }
+        },
+        {
+          path: "wtc-profile",
+          element: <Profile_page />,
+        },
       ],
     },
     {
       path: "/",
-      element: <ProtectedRoute element={<RootLayout />} />,
+      element: <ProtectedRoute element={<V2_rootlayout />} />,
       children: [
         {
-          path: "wtc-profile",
-          element: <Profile_page />,
+          path: "user-profile",
+          element: <V2_UserProfile_page />,
         },
       ],
     },

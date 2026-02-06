@@ -36,20 +36,25 @@ import {
   Plus,
   SquareArrowOutUpRight,
   Upload,
+  X,
 } from "lucide-react";
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SpeakerCreateModal from "@/components/common/Speaker_Design/CreateModal";
 import { setIsCreating as SetisSpeakerCreating } from "@/redux/SpeakerDesignSlice";
 import CSVModel from "@/components/global/CSVModel";
-import { useUploadSessionsCSV } from "@/api/programme_design_api/Programme_design_api";
-import Category_Labels from "@/data/Category_Labels";
+import {
+  useDeleteCategory,
+  useGetCategoryAll,
+  useUploadSessionsCSV,
+} from "@/api/programme_design_api/Programme_design_api";
 
 const ProgrammeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   const scrollRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  // const {DeleteCategory, isDeleteCategoryPending} = useDeleteCategory()
+  const { DeleteCategory, isDeleteCategoryPending } = useDeleteCategory();
+  const { AllCategory, isPending: isCategoriesPending } = useGetCategoryAll();
   const { UpdateProgrammeDesign, isUpdateProgrammeDesignPending } =
     useProgrameDesignUpdate();
   const { UploadNewsCSV, isPending: isUploadSessionsCSV } =
@@ -108,7 +113,7 @@ const ProgrammeDesign_page = () => {
     });
   }, [slectedDate, value]);
 
-  if (isPending) {
+  if (isPending || isCategoriesPending) {
     return (
       <div className="w-full h-screen flex flex-col items-center justify-center">
         <Loader className="text-primary animate-spin" size={30} />
@@ -312,13 +317,18 @@ const ProgrammeDesign_page = () => {
                     )}
                   >
                     {/* {SpeakerSettings.category_labels */}
-                    {Category_Labels.map((str) => (
+                    {AllCategory?.response.map((str) => (
                       <div
                         key={str.id}
-                        className="flex items-center gap-2 px-3 bg-white rounded-lg border border-transparent hover:border-gray-300"
+                        aria-disabled={isDeleteCategoryPending}
+                        className="flex items-center gap-4 px-3 bg-white rounded-lg border border-transparent hover:border-gray-300 cursor-pointer"
                       >
-                        {str.name}
-                        {/* <X size={18} /> */}
+                        <span className="hover:text-primary font-semibold">{str.name}</span>
+                        <X
+                          size={18}
+                          className="hover:text-primary"
+                          onClick={() => DeleteCategory({ id: str.id })}
+                        />
                       </div>
                     ))}
                   </div>

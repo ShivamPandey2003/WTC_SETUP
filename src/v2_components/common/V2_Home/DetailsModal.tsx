@@ -7,12 +7,12 @@ import { useSelector } from "react-redux";
 type ModalProps = {
   isOpen: boolean;
   onClose: React.Dispatch<React.SetStateAction<string | null>>;
-  id: number;
+  id: string;
 };
 
 const DetailsModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
   const { News } = useSelector((state: RootState) => state.ExtraSlice);
-  const data = News.find((_, i) => i === id);
+  const data = News.find((p) => p.id === id);
   return (
     <Modal
       showHeader={false}

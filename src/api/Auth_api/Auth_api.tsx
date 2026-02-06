@@ -11,6 +11,7 @@ import {
   setOtp,
   setResendCooldown,
   setStep,
+  setUserInfo,
 } from "@/redux/AuthSlice";
 import { setLoginModel } from "@/redux/ModalSlice";
 import { useNavigate } from "react-router";
@@ -63,6 +64,12 @@ export const useVerifyOtp = () => {
     },
     onSuccess: (data) => {
       localStorage.setItem("token", data.response.access_token);
+      dispatch(
+        setUserInfo({
+          firstname: data.response.firstname,
+          lastname: data.response.lastname,
+        }),
+      );
       navigate("/global-design");
       toast.success("Login successful!");
       dispatch(setEmail(""));
@@ -81,7 +88,7 @@ export const useVerifyOtp = () => {
 export const useResendOtp = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { email, resendCount } = useSelector(
-    (state: RootState) => state.AuthSlice
+    (state: RootState) => state.AuthSlice,
   );
   const { mutate: Resend, isPending: isResendPending } = useMutation<
     ResendResponse,
