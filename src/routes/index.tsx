@@ -24,6 +24,7 @@ import V2_exhibitors_page from "@/v2_pages/V2_exhibitors.page";
 import V2_Venue_page from "@/v2_pages/V2_Venue.page";
 import V2_Programme_page from "@/v2_pages/V2_Programme.page";
 import V2_VenueDesign_page from "@/v2_pages/V2_VenueDesign.page";
+import V2_UserProfile_page from "@/v2_pages/V2_UserProfile.page";
 
 const Router = createBrowserRouter(
   [
@@ -117,16 +118,16 @@ const Router = createBrowserRouter(
         },
       ],
     },
-    // {
-    //   path: "/",
-    //   element: <ProtectedRoute element={<V2_rootlayout />} />,
-    //   children: [
-    //     {
-    //       path: "wtc-profile",
-    //       element: <Profile_page />,
-    //     },
-    //   ],
-    // },
+    {
+      path: "/",
+      element: <ProtectedRoute element={<V2_rootlayout />} />,
+      children: [
+        {
+          path: "user-profile",
+          element: <V2_UserProfile_page />,
+        },
+      ],
+    },
     // {
     //   path: "/",
     //   element: <V2_rootlayout />,

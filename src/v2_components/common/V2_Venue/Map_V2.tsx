@@ -187,7 +187,7 @@ const Map_V2 = () => {
     <div
       className="w-full overflow-auto relative"
       style={{
-        maxHeight: "500px",
+        maxHeight: "68vh",
         WebkitOverflowScrolling: "touch",
         touchAction: "pan-y pan-x",
       }}

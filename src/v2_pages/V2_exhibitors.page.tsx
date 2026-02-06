@@ -59,7 +59,7 @@ const V2_exhibitors_page = () => {
               </h3>
               <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
                 {ExhibitorList.response[value].map((item, i) => (
-                  <ExhibitorCard key={i} {...item} />
+                  <ExhibitorCard key={i} {...item} onClick={()=>setSelectedId(item.id)} />
                 ))}
               </div>
             </div>

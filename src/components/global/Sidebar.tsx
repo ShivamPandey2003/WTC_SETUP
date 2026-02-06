@@ -1,4 +1,6 @@
 import { cn } from "@/lib/utils";
+import { setUserInfo } from "@/redux/AuthSlice";
+import type { AppDispatch, RootState } from "@/redux/store";
 import NewDropdown from "@/v2_components/global/V2_DropDown";
 import {
   Globe,
@@ -9,6 +11,7 @@ import {
   Navigation,
   Boxes,
 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 
 interface SidebarProps {
@@ -17,6 +20,8 @@ interface SidebarProps {
 
 export default function Sidebar({ activeItem = "global" }: SidebarProps) {
   const navigate = useNavigate();
+  const {userinfo} = useSelector((state:RootState)=>state.AuthSlice)
+  const dispatch = useDispatch<AppDispatch>()
   const menu = [
     {
       id: "Profile",
@@ -26,7 +31,11 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
     {
       id: "Logout",
       label: "Logout",
-      onClick: () => {},
+      onClick: () => {
+        localStorage.removeItem("token")
+        dispatch(setUserInfo({firstname:"", lastname:""}))
+        navigate('/')
+      },
     },
   ];
 
@@ -120,7 +129,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
         trigger={
           <button className="w-full p-4 flex items-center gap-3 text-sm hover:bg-white/10 transition-colors border-t border-white/20 cursor-pointer">
             <User size={18} />
-            <span>User</span>
+            <span className="text-xs">{`${userinfo.firstname} ${userinfo.lastname}`}</span>
           </button>
         }
         items={menu}

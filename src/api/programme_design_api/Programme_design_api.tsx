@@ -131,12 +131,12 @@ export const useDeleteCategory = () => {
     }
   >({
     mutationFn: async (data) => {
-      const res = await apiRequest("delete", `/category/delete/${data}`);
+      const res = await apiRequest("delete", `/category/delete/${data.id}`);
       return res.response;
     },
     onSuccess: () => {
       toast.success("Category delete successfully");
-      queryClient.invalidateQueries({ queryKey: ["Settings"] });
+      queryClient.invalidateQueries({ queryKey: ["category-list"] });
       dispatch(setCategoryModal(false));
     },
     onError: (err) => {

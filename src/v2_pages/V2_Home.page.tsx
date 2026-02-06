@@ -96,7 +96,7 @@ const V2_Home_page = () => {
     <div className="px-4 pb-4 mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <HeroCarousel slides={NewsList.response.slice(0, 4)} />
+          <HeroCarousel slides={NewsList.response.slice(0, 4)} onCLick={(str)=>setSelected(str)} />
         </div>
         <div className="space-y-4">
           {NewsList.response.slice(4, 6).map((item, index) => (

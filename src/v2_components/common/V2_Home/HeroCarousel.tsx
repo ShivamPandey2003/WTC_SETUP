@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 
 interface HeroCarouselProps {
   slides: News[];
+  onCLick:(str:string)=>void
   className?: string;
   titleClassName?: string;
   subtitleClassName?: string;
@@ -19,6 +20,7 @@ export default function HeroCarousel({
   subtitleClassName,
   descriptionClassName,
   intervalTime = 5000,
+  onCLick
 }: HeroCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState<boolean>(true);
@@ -76,6 +78,7 @@ export default function HeroCarousel({
         >
           <div
             className="w-full h-full bg-cover bg-center"
+            onClick={()=>onCLick(slide.id)}
             style={{
               backgroundImage: slide.bg_img
                 ? `url(data:image/png;base64,${slide.bg_img})`

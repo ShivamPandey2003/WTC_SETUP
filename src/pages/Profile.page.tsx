@@ -48,7 +48,6 @@ const Profile_page = () => {
         <div className="flex items-center justify-between gap-4">
           <ProfileForm />
           <div className="w-fit flex flex-col items-center">
-            <p className="text-[#111111BF] mb-2">Your WTC Badge</p>
             <WTCBadge />
             <p></p>
           </div>
