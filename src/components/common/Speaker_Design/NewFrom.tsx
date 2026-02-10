@@ -41,6 +41,7 @@ const NewFrom = () => {
     formData.append("designation", newData.designation as string);
     formData.append("external_link", newData?.external_link as string);
     formData.append("attachments", newData.attachments?.[0] as Blob);
+    formData.append("profile_image", newData.profile_image?.[0] as Blob);
     formData.append("keyNote", String(newData.keyNote));
     formData.append("linkedin_url", newData.linkedin_url as string);
     formData.append("whatsapp_url", newData.whatsapp_url as string);
@@ -92,6 +93,12 @@ const NewFrom = () => {
     },
     { name: "designation", label: "Designation" },
     { name: "company", label: "Company" },
+    {
+      name: "profile_image",
+      label: "Profile image",
+      type: "file",
+      accept: "image/*",
+    },
     {
       name: "attachments",
       label: "Attachments",

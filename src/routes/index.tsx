@@ -82,7 +82,7 @@ const Router = createBrowserRouter(
     },
     {
       path: "/",
-      element: <ProtectedRoute element={<AdminLayout />} />,
+      element: <ProtectedRoute element={<AdminLayout />} adminOnly/>,
       children: [
         {
           path: "global-design",
@@ -109,7 +109,7 @@ const Router = createBrowserRouter(
           element: <ExhibitorsDesign_page />,
         },
         {
-          path:"venue-design/design-floor-plan",
+          path:"venue-design/design-floor-plan/:id",
           element:<V2_VenueDesign_page/>
         },
         {

@@ -1,6 +1,11 @@
 import { queryClient } from "@/provider/TanstackProvider";
 import type { AppDispatch } from "@/redux/store";
-import { setShapes } from "@/redux/venueDesignV2Slice";
+import {
+  setEditFloorLevelModal,
+  setFloorLevelModal,
+  setGlobalMap,
+  setMap,
+} from "@/redux/venueDesignV2Slice";
 import { apiRequest } from "@/services/apiService";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -58,9 +63,13 @@ export const useSaveFloorPlanData = () => {
     mutate: SaveFloorPlanData,
     isPending,
     error,
-  } = useMutation<LogoUpdateResponse, AxiosError, { floor_map_list: Shape[] }>({
+  } = useMutation<
+    LogoUpdateResponse,
+    AxiosError,
+    { id: string; floor_map_list: Shape[] }
+  >({
     mutationFn: async (data) => {
-      const res = await apiRequest("post", `/floor-data/save`, data);
+      const res = await apiRequest("post", `/designer/floor-data/save`, data);
       return res.response;
     },
     onSuccess: (data) => {
@@ -101,21 +110,145 @@ export const useGetAdminFloorPlanV2 = () => {
   };
 };
 
-export const useGetFloorMapList = () => {
-  const dispatch = useDispatch<AppDispatch>()
-  const {data:FloorMapList, isPending:isFloorMapListPending, error:FloorMapListError} = useQuery<Global_Floor_Plan_Response, AxiosError>({
-    queryKey: ["map-list"],
+// export const useGetFloorMapList = () => {
+//   const dispatch = useDispatch<AppDispatch>()
+//   const {data:FloorMapList, isPending:isFloorMapListPending, error:FloorMapListError} = useQuery<Global_Floor_Plan_Response, AxiosError>({
+//     queryKey: ["map-list"],
+//     queryFn: async () => {
+//       const res = await apiRequest("get", "/map-lists");
+//       return res.response;
+//     },
+//     select:(data)=>{
+//       dispatch(setShapes(data.response.floor_map_list))
+//       return data
+//     },
+//     refetchOnWindowFocus: false,
+//     retry: 1,
+//   });
+
+//   return {FloorMapList, isFloorMapListPending, FloorMapListError}
+// };
+
+export const useV2GetFloorMApList = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    data: V2_FloorMapList,
+    isPending: V2_isFloorMapListPending,
+    error: V2_FloorMapListError,
+  } = useQuery<VenueDesignMap, AxiosError>({
+    queryKey: ["map-list_V2"],
     queryFn: async () => {
-      const res = await apiRequest("get", "/map-lists");
+      const res = await apiRequest("get", "/designer/listing");
       return res.response;
     },
-    select:(data)=>{
-      dispatch(setShapes(data.response.floor_map_list))
-      return data
+    select: (data) => {
+      dispatch(setMap(data.response));
+      return data;
     },
     refetchOnWindowFocus: false,
     retry: 1,
   });
 
-  return {FloorMapList, isFloorMapListPending, FloorMapListError}
+  return { V2_FloorMapList, V2_isFloorMapListPending, V2_FloorMapListError };
+};
+
+export const useCreateFloorLevel = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    mutate: CreateFloorLevel,
+    isPending,
+    error,
+  } = useMutation<any, AxiosError, FormData>({
+    mutationFn: async (data) => {
+      const res = await apiRequest("post", "/designer/save", data);
+      return res.response;
+    },
+    onSuccess: () => {
+      toast.success("Floor Level created successfully");
+      queryClient.invalidateQueries({ queryKey: ["map-list_V2"] });
+      dispatch(setFloorLevelModal(false));
+    },
+    onError: (err) => {
+      toast.error(`Error creating Floor Level: ${err.message}`);
+    },
+  });
+
+  return { CreateFloorLevel, isPending, error };
+};
+
+export const useDeleteFloorLevel = () => {
+  const {
+    mutate: DeleteFloorLevel,
+    isPending,
+    error,
+  } = useMutation<any, AxiosError, { id: string }>({
+    mutationFn: async (data) => {
+      const res = await apiRequest("delete", `/designer/${data.id}`, data);
+      return res.response;
+    },
+    onSuccess: () => {
+      toast.success("Floor Level delete successfully");
+      queryClient.invalidateQueries({ queryKey: ["map-list_V2"] });
+    },
+    onError: (err) => {
+      toast.error(`Error delete Floor Level: ${err.message}`);
+    },
+  });
+
+  return { DeleteFloorLevel, isPending, error };
+};
+
+export const useEditFloorLevel = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    mutate: EditFloorLevel,
+    isPending,
+    error,
+  } = useMutation<any, AxiosError, { id: string; data: FormData }>({
+    mutationFn: async (data) => {
+      const res = await apiRequest(
+        "post",
+        `/designer/edit/${data.id}`,
+        data.data,
+      );
+      return res.response;
+    },
+    onSuccess: () => {
+      toast.success("Floor Level Edit successfully");
+      queryClient.invalidateQueries({ queryKey: ["map-list_V2"] });
+      dispatch(setEditFloorLevelModal(false));
+    },
+    onError: (err) => {
+      toast.error(`Error Edit Floor Level: ${err.message}`);
+    },
+  });
+
+  return { EditFloorLevel, isPending, error };
+};
+
+export const useGlobalV2GetFloorMapList = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    data: V2_Global_FloorMapList,
+    isPending: V2_Global_isFloorMapListPending,
+    error: V2_Global_FloorMapListError,
+  } = useQuery<GlobalVenueDesignMap, AxiosError>({
+    queryKey: ["Global_map-list_V2"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "/designer/list");
+      return res.response;
+    },
+    select: (data) => {
+      dispatch(setGlobalMap(data.response));
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  return {
+    V2_Global_FloorMapList,
+    V2_Global_isFloorMapListPending,
+    V2_Global_FloorMapListError,
+  };
 };

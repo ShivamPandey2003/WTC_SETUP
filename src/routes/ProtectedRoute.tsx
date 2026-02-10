@@ -1,24 +1,46 @@
 import { Navigate } from "react-router";
+import { useSelector } from "react-redux";
 import { type JSX } from "react";
+import type { RootState } from "@/redux/store";
 
 interface ProtectedRouteProps {
   element: JSX.Element;
-  reverse?: boolean; // if true, redirect authenticated users away from login
+  reverse?: boolean;
+  adminOnly?: boolean;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, reverse = false }) => {
-  const isAuthenticated = !!localStorage.getItem('token');
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  element,
+  reverse = false,
+  adminOnly = false,
+}) => {
+  const token = localStorage.getItem("token");
+
+  const { grp } = useSelector((state: RootState) => state.AuthSlice.userinfo);
+
+  const isAuthenticated = !!token;
+  const isAdmin = grp === 1;
 
   if (!isAuthenticated) {
     localStorage.clear();
   }
 
   if (reverse) {
-    // e.g., User is authenticated and tries to visit login → redirect them
     return isAuthenticated ? <Navigate to="/" replace /> : element;
   }
 
-  // Regular protected route
+  if (adminOnly) {
+    if (!isAuthenticated) {
+      return <Navigate to="/" replace />;
+    }
+
+    if (!isAdmin) {
+      return <Navigate to="/" replace />;
+    }
+
+    return element;
+  }
+
   return isAuthenticated ? element : <Navigate to="/" replace />;
 };
 

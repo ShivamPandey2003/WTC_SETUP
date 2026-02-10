@@ -317,20 +317,24 @@ const ProgrammeDesign_page = () => {
                     )}
                   >
                     {/* {SpeakerSettings.category_labels */}
-                    {AllCategory?.response.map((str) => (
-                      <div
-                        key={str.id}
-                        aria-disabled={isDeleteCategoryPending}
-                        className="flex items-center gap-4 px-3 bg-white rounded-lg border border-transparent hover:border-gray-300 cursor-pointer"
-                      >
-                        <span className="hover:text-primary font-semibold">{str.name}</span>
-                        <X
-                          size={18}
-                          className="hover:text-primary"
-                          onClick={() => DeleteCategory({ id: str.id })}
-                        />
-                      </div>
-                    ))}
+                    {AllCategory?.response
+                      .filter((pre) => !Boolean(pre.type))
+                      .map((str) => (
+                        <button
+                          key={str.id}
+                          disabled={isDeleteCategoryPending}
+                          className="flex items-center gap-4 px-3 bg-white rounded-lg border border-transparent hover:border-gray-300 cursor-pointer"
+                        >
+                          <span className="hover:text-primary font-semibold">
+                            {str.name}
+                          </span>
+                          <X
+                            size={18}
+                            className="hover:text-primary"
+                            onClick={() => DeleteCategory({ id: str.id })}
+                          />
+                        </button>
+                      ))}
                   </div>
                   <Button
                     variant={"link"}

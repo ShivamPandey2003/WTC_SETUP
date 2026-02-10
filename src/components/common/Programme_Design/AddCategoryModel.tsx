@@ -31,7 +31,6 @@ const AddCategoryModel = () => {
       ...newData,
       category_type: 0
     }
-    console.log(newDataFormatted)
     AddCategory(newDataFormatted)
     reset();
   }

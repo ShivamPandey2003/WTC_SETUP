@@ -150,6 +150,7 @@ declare type SpeakerListResponse = {
   response: (CreateSpeakerRequestT & {
     speaker_id: string;
     created_on: string;
+    profile_image:string
   })[];
 };
 
@@ -178,6 +179,11 @@ declare type AppConfig = {
     font_family: string;
     all_other_text: string;
   };
+  splash:{
+    image:sting|File;
+    title:string;
+    subtitle:string;
+  }
   sponsors: {
     logo: string;
   };
@@ -517,3 +523,21 @@ declare type TabsResponse = {
     exhibitors_tab: string;
   };
 };
+
+declare type MapT = {
+  id:string,
+  label: string,
+  floor_level: number,
+  image: string,
+  map_list: Shape[]
+}
+
+declare type VenueDesignMap = {
+  header: ResponseHeader;
+  response:MapT[]
+}
+
+declare type GlobalVenueDesignMap = {
+  header: ResponseHeader;
+  response:( MapT & { programmes: Programme[], created_by:string } )[]
+}

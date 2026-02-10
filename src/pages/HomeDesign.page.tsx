@@ -1,6 +1,7 @@
 import {
   useGetNewsList,
   useHomeDesignUpdate,
+  useUploadLogo,
 } from "@/api/global_api/global_api";
 import { useUploadNewsCSV } from "@/api/home_design_api/Home_design_api";
 // import BannerPreview from "@/components/common/Home_Design/BannerPreview";
@@ -10,6 +11,7 @@ import CustomTable from "@/components/common/Home_Design/Table";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
 import CSVModel from "@/components/global/CSVModel";
 import Section from "@/components/global/Section";
+import TextStyleRow from "@/components/global/TextStyleRow";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { cn } from "@/lib/utils";
@@ -32,6 +34,18 @@ const HomeDesign_page = () => {
   );
   const { UpdateHomeDesign, isUpdateHomeDesignPending } = useHomeDesignUpdate();
   const { UploadNewsCSV, isPending } = useUploadNewsCSV();
+  const { UploadLogo, isPending: SplashScreenIsUpdating } = useUploadLogo();
+
+  const OnSave = () => {
+    const formData = new FormData();
+    formData.append("file", appConfig.splash.image);
+
+    UploadLogo({
+      type: 5,
+      extra: `&title=${appConfig.splash.title}&subtitle=${appConfig.splash.subtitle}`,
+      form: formData,
+    });
+  };
 
   if (!NewsList || !NewsList.response) {
     return null;
@@ -128,50 +142,117 @@ const HomeDesign_page = () => {
               </Section>
             </div>
             <div className="flex items-start gap-4">
-              <Section
-                title="Carousel Display"
-                ClassName="w-3/5 h-[330px]"
-                onSave={() => UpdateHomeDesign()}
-                show={true}
-                loading={isUpdateHomeDesignPending}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="w-full flex flex-wrap gap-3">
-                    {Object.keys(appConfig.home_design)
-                      .filter((pre) => pre !== "home_title")
-                      .map((value) => (
-                        <div
-                          key={value}
-                          className={cn(
-                            "flex items-center gap-2 bg-[#1111110D] px-3 py-1 text-sm text-black font-semibold rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors cursor-pointer",
-                            appConfig.home_design[
+              <div className="w-3/5">
+                <Section
+                  title="Carousel Display"
+                  ClassName="w-full"
+                  onSave={() => UpdateHomeDesign()}
+                  show={true}
+                  loading={isUpdateHomeDesignPending}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="w-full flex flex-wrap gap-3">
+                      {Object.keys(appConfig.home_design)
+                        .filter((pre) => pre !== "home_title")
+                        .map((value) => (
+                          <div
+                            key={value}
+                            className={cn(
+                              "flex items-center gap-2 bg-[#1111110D] px-3 py-1 text-sm text-black font-semibold rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors cursor-pointer",
+                              appConfig.home_design[
+                                value as keyof typeof appConfig.home_design
+                              ] && "text-primary",
+                            )}
+                            onClick={() =>
+                              dispatch(
+                                setAppConfig({
+                                  ...appConfig,
+                                  home_design: {
+                                    ...appConfig.home_design,
+                                    [value]:
+                                      !appConfig.home_design[
+                                        value as keyof typeof appConfig.home_design
+                                      ],
+                                  },
+                                }),
+                              )
+                            }
+                          >
+                            {appConfig.home_design[
                               value as keyof typeof appConfig.home_design
-                            ] && "text-primary",
-                          )}
-                          onClick={() =>
-                            dispatch(
-                              setAppConfig({
-                                ...appConfig,
-                                home_design: {
-                                  ...appConfig.home_design,
-                                  [value]:
-                                    !appConfig.home_design[
-                                      value as keyof typeof appConfig.home_design
-                                    ],
-                                },
-                              }),
-                            )
-                          }
-                        >
-                          {appConfig.home_design[
-                            value as keyof typeof appConfig.home_design
-                          ] && <Check size={20} />}
-                          {value}
-                        </div>
-                      ))}
+                            ] && <Check size={20} />}
+                            {value}
+                          </div>
+                        ))}
+                    </div>
                   </div>
-                </div>
-              </Section>
+                </Section>
+                <Section
+                  title="Splash Screen"
+                  ClassName="w-full"
+                  onSave={() => OnSave()}
+                  show={true}
+                  loading={SplashScreenIsUpdating}
+                >
+                  <TextStyleRow
+                    label={"Title"}
+                    value={appConfig.splash.title}
+                    onChange={(e) =>
+                      dispatch(
+                        setAppConfig({
+                          ...appConfig,
+                          splash: { ...appConfig.splash, title: e },
+                        }),
+                      )
+                    }
+                  />
+                  <TextStyleRow
+                    label={"Subtitle"}
+                    value={appConfig.splash.subtitle}
+                    onChange={(e) =>
+                      dispatch(
+                        setAppConfig({
+                          ...appConfig,
+                          splash: { ...appConfig.splash, subtitle: e },
+                        }),
+                      )
+                    }
+                  />
+                  <div className="flex items-center gap-4 py-2">
+                    <div className="text-sm font-[500] w-[220px] shrink-0">
+                      Background Image
+                    </div>
+                    <input
+                      type="file"
+                      multiple={false}
+                      accept={"image/*"}
+                      onChange={(e) => {
+                        dispatch(
+                          setAppConfig({
+                            ...appConfig,
+                            splash: {
+                              ...appConfig.splash,
+                              image: e.target.files?.[0],
+                            },
+                          }),
+                        );
+                      }}
+                      className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    />
+                    {appConfig.splash.image && (
+                      <img
+                        src={
+                          typeof appConfig.splash.image === "string"
+                            ? `data:image/png;base64,${appConfig.splash.image}`
+                            : URL.createObjectURL(appConfig.splash.image)
+                        }
+                        alt=""
+                        className="w-40 rounded-lg"
+                      />
+                    )}
+                  </div>
+                </Section>
+              </div>
               <Section
                 title="Carousel Preview"
                 ClassName="w-2/5"

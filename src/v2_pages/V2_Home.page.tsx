@@ -96,7 +96,7 @@ const V2_Home_page = () => {
     <div className="px-4 pb-4 mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <HeroCarousel slides={NewsList.response.slice(0, 4)} onCLick={(str)=>setSelected(str)} />
+          <HeroCarousel slides={NewsList.response.slice(0, 4)} onClick={(str)=>setSelected(str)} />
         </div>
         <div className="space-y-4">
           {NewsList.response.slice(4, 6).map((item, index) => (
@@ -104,7 +104,7 @@ const V2_Home_page = () => {
               key={index}
               {...item}
               className=""
-              index={index + 2}
+              bg_img={item.bg_img}
               onClick={() => setSelected(item.id)}
             />
           ))}
@@ -116,7 +116,7 @@ const V2_Home_page = () => {
             <NewsCard
               key={index}
               {...item}
-              index={index}
+              bg_img={item.bg_img}
               onClick={() => setSelected(item.id)}
             />
           ))}
@@ -135,7 +135,7 @@ const V2_Home_page = () => {
             <NewsCard
               key={index}
               {...item}
-              index={index + 1}
+              bg_img={item.bg_img}
               onClick={() => setSelected(item.id)}
             />
           ))}

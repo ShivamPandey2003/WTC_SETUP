@@ -4,6 +4,7 @@ import {
   cn,
   formatDate,
   formatForGoogleCalendar,
+  normalizeLabel,
   normalizeTime,
 } from "@/lib/utils";
 import TextCard from "@/v2_components/common/V2_Venue/TextCard";
@@ -21,11 +22,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Map_V2 from "@/v2_components/common/V2_Venue/Map_V2";
 import { useSearchParams } from "react-router";
 import { setSearchParams } from "@/redux/GlobalSlice";
+import { useGlobalV2GetFloorMapList } from "@/api/Venue_api/Venue_Design_api";
 
 const apiKey = import.meta.env.VITE_REACT_GOOGLE_MAPS_API_KEY;
 
 const V2_Venue_page = () => {
   const [currentTab, setCurrentTab] = useState<string>("getting there");
+  const [selectedId, setSelectedId] = useState<string>("");
+  const { V2_Global_FloorMapList, V2_Global_isFloorMapListPending } =
+    useGlobalV2GetFloorMapList();
   const [searchParams] = useSearchParams();
   const { Venue, isPending, error } = useGetVenue();
   const dispatch = useDispatch<AppDispatch>();
@@ -62,7 +67,16 @@ const V2_Venue_page = () => {
     window.open(url, "_blank");
   };
 
-  if (isPending) {
+  useEffect(() => {
+    if (
+      V2_Global_FloorMapList?.response &&
+      V2_Global_FloorMapList.response.length > 0
+    ) {
+      setSelectedId(V2_Global_FloorMapList.response[0].id);
+    }
+  }, [V2_Global_FloorMapList]);
+
+  if (isPending || V2_Global_isFloorMapListPending) {
     return (
       <div className="w-full h-[80vh] flex flex-col items-center justify-center">
         <Loader className="text-primary animate-spin" size={30} />
@@ -200,21 +214,36 @@ const V2_Venue_page = () => {
       )}
       {currentTab === "floor plan" && (
         <div className="w-full rounded-xl p-6 bg-white h-fit">
-          {/* <img
-            src={Stage}
-            alt="Stage"
-            className="object-contain w-full h-[70vh]"
-          /> */}
-          <div className="w-full">
-            <Map_V2 />
+          <div className={cn("flex items-center gap-4 w-full")}>
+            <div className="text-sm font-[500] w-[180px] shrink-0">
+              {normalizeLabel("Floor Levels")}
+            </div>
+            <div className="flex items-center gap-4">
+              <select
+                value={selectedId as string}
+                onChange={(e) => setSelectedId(e.target.value)}
+                className="rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary mb-1"
+              >
+                <option value="">{"Select an option"}</option>
+                {V2_Global_FloorMapList &&
+                  V2_Global_FloorMapList.response.map((opt) => (
+                    <option key={opt.id} value={opt.id}>
+                      {opt.label}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <a
+              href="/FloorPlan.pdf"
+              target="_blank"
+              className="flex items-center text-blue-600 gap-1"
+            >
+              <Link size={18} /> Floor Plan
+            </a>
           </div>
-          <a
-            href="/FloorPlan.pdf"
-            target="_blank"
-            className="flex items-center text-blue-600 gap-1"
-          >
-            <Link size={18} /> Floor Plan
-          </a>
+          <div className="w-full">
+            <Map_V2 id={selectedId} />
+          </div>
         </div>
       )}
     </div>

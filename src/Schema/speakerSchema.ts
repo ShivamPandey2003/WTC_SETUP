@@ -15,6 +15,13 @@ export const speakerSchema = z.object({
       (files) => !files || files.length > 0,
       "At least one file is required",
     ),
+  profile_image: z
+    .instanceof(FileList)
+    .optional()
+    .refine(
+      (files) => !files || files.length > 0,
+      "At least one file is required",
+    ),
   linkedin_url: z.url().optional(),
   whatsapp_url: z.url().optional(),
   keyNote: z.boolean(),

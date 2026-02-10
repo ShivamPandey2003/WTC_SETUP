@@ -1,86 +1,108 @@
-import React, { useState } from "react";
-import { LoaderCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { LoaderCircle, Pencil, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useNavigate } from "react-router";
 import {
-  useGetFloorMapList,
-  useGetFloorPlan,
-  useUploadFloorPlan,
+  useDeleteFloorLevel,
+  useV2GetFloorMApList,
 } from "@/api/Venue_api/Venue_Design_api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
-import { setShapes } from "@/redux/venueDesignV2Slice";
-import { nanoid } from "nanoid";
-import { Normalize } from "@/lib";
+import {
+  setEditFloorLevelModal,
+  setFloorLevelModal,
+} from "@/redux/venueDesignV2Slice";
+import { cn, normalizeLabel } from "@/lib/utils";
+import AddFloorLevelModel from "./AddFloorLevelModel";
+import EditFloorLevelModel from "./EditFloorLevel";
 
 const Floor_Plan = () => {
   const [floorPlan, setFloorPlan] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string>("");
   const dispatch = useDispatch<AppDispatch>();
   const Navigate = useNavigate();
-  const { UploadFloorPlan, isPending } = useUploadFloorPlan();
-  const { FloorPlan, isPending: isFloorPlanLoaing } = useGetFloorPlan((e) =>
-    setFloorPlan(`data:image/png;base64,${e}`),
-  );
-  const {} = useGetFloorMapList();
-
-  const onFloorPlanChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newForm = new FormData();
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    newForm.append("file", file);
-    const fileReader = new FileReader();
-
-    fileReader.onload = () => {
-      if (fileReader.result) {
-        setFloorPlan(fileReader.result as string);
-      }
-    };
-    UploadFloorPlan({ form: newForm });
-    fileReader.readAsDataURL(file); // 👈 this was missing
-  };
+  const { V2_FloorMapList, V2_isFloorMapListPending } = useV2GetFloorMApList();
+  const { DeleteFloorLevel, isPending } = useDeleteFloorLevel();
 
   const GoToDesign = () => {
-    if (
-      floorPlan &&
-      Normalize(FloorPlan?.response.floor_plan as string) !== Normalize(floorPlan)
-    ) {
-      dispatch(
-        setShapes([
-          {
-            type: "IMAGE",
-            id: nanoid(),
-            image: floorPlan,
-            x: 273.9999999999998,
-            y: 91.99999999999937,
-            width: 763.5740287066074,
-            height: 482.87714925919124,
-          },
-        ]),
-      );
-    }
-    Navigate("/venue-design/design-floor-plan");
+    Navigate(`/venue-design/design-floor-plan/${selectedId}`);
   };
+
+  useEffect(() => {
+    if (V2_FloorMapList?.response && V2_FloorMapList.response.length > 0) {
+      setSelectedId(V2_FloorMapList.response[0].id);
+    }
+  }, [V2_FloorMapList]);
+
+  useEffect(() => {
+    if (selectedId && V2_FloorMapList) {
+      const value = V2_FloorMapList.response.find(
+        (Pre) => Pre.id === selectedId,
+      );
+
+      if (value) {
+        setFloorPlan(`data:image/png;base64,${value.image}`);
+      }
+    }
+  }, [selectedId]);
 
   return (
     <div className="w-full rounded-xl bg-white h-[78vh] p-4">
       <div className="mb-10">
-        <div className="flex items-center gap-4">
-          {!isPending ? (
-            <label
-              className="text-sm font-medium text-blue-500 cursor-pointer"
-              htmlFor="floorfile"
-            >
-              Change Floor Plan
-              <input
-                type="file"
-                className="hidden"
-                id="floorfile"
-                onChange={onFloorPlanChange}
-                accept="image/png, image/jpeg"
-              />
-            </label>
+        <div className="flex w-full items-center justify-between gap-4">
+          {!V2_isFloorMapListPending ? (
+            <div className={cn("flex items-center gap-4 py-2 w-full")}>
+              <div className="text-sm font-[500] w-[180px] shrink-0">
+                {normalizeLabel("Floor Levels")}
+              </div>
+              <div className="flex items-center gap-4">
+                <select
+                  value={selectedId as string}
+                  onChange={(e) => setSelectedId(e.target.value)}
+                  className="rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary mb-1"
+                >
+                  <option value="">{"Select an option"}</option>
+                  {V2_FloorMapList &&
+                    V2_FloorMapList.response.map((opt) => (
+                      <option key={opt.id} value={opt.id}>
+                        {opt.label}
+                      </option>
+                    ))}
+                </select>
+                <button
+                  className="flex w-fit items-center text-primary cursor-pointer hover:underline text-sm"
+                  onClick={() => dispatch(setFloorLevelModal(true))}
+                >
+                  <Plus size={16} />
+                  Add more
+                </button>
+                <div
+                  className="flex w-fit items-center text-primary cursor-pointer hover:underline text-sm"
+                  onClick={() => dispatch(setEditFloorLevelModal(true))}
+                >
+                  <Pencil size={16} />
+                  Edit selected floor
+                </div>
+                <button
+                  disabled={isPending}
+                  className="flex w-fit items-center text-primary cursor-pointer hover:underline text-sm"
+                  onClick={() => DeleteFloorLevel({ id: selectedId })}
+                >
+                  {!isPending ? (
+                    <>
+                      <Trash2 size={16} />
+                      Delete selected floor
+                    </>
+                  ) : (
+                    <>
+                      <LoaderCircle size={16} className="animate-spin" />
+                      processing
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
           ) : (
             <div className="flex items-center justify-center">
               <LoaderCircle className="animate-spin text-primary" />
@@ -88,7 +110,7 @@ const Floor_Plan = () => {
           )}
           <Button onClick={GoToDesign}>Go To Design Floor Plan</Button>
         </div>
-        {isFloorPlanLoaing ? (
+        {V2_isFloorMapListPending ? (
           <Skeleton className="w-full h-[60vh]" />
         ) : (
           <img
@@ -98,6 +120,8 @@ const Floor_Plan = () => {
           />
         )}
       </div>
+      <AddFloorLevelModel />
+      <EditFloorLevelModel id={selectedId} />
     </div>
   );
 };

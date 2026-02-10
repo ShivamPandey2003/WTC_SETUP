@@ -99,7 +99,7 @@ const EventGrid = () => {
           </div>
         ))}
       </div>
-      <div className="overflow-x-auto pl-20">
+      <div className="flex-1 overflow-x-auto pl-20">
         <div className="flex gap-2 mb-4">
           {DateList.map((item, i) => (
             <div key={i} className="min-w-[190px] text-center">
@@ -111,9 +111,10 @@ const EventGrid = () => {
         <div className="flex gap-2">
           {Dates.map((item, i) => (
             <React.Fragment key={i}>
-              <div key={item} className="min-w-[190px] w-fit relative">
+              <div key={item} className="min-w-[190px] relative">
                 <div className="flex gap-1">
-                  <div className="flex flex-col gap-0.5 w-full relative">
+                  <div className="flex flex-col gap-0.5 w-full relative"
+                  style={{ height: Times.length * 40 }}>
                     {[...Programmes.data[item]]
                       .sort((a, b) => a.start.localeCompare(b.start))
                       .map((event, i) => {

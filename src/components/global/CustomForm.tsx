@@ -3,6 +3,8 @@ import {
   type FieldErrors,
   type UseFormRegister,
   type Path,
+  type UseFormWatch,
+  type UseFormSetValue,
 } from "react-hook-form";
 import { Button } from "../ui/Button";
 import { Save, X, Plus } from "lucide-react";
@@ -15,6 +17,7 @@ type FieldConfig<T extends Record<string, any>> = {
     | "textarea"
     | "number"
     | "file"
+    | "file-new"
     | "checkbox"
     | "date"
     | "array-string"
@@ -25,12 +28,15 @@ type FieldConfig<T extends Record<string, any>> = {
   accept?: string;
   options?: { label: string; value: string }[];
   addMoreHandler?: () => void;
+  file?: File;
 };
 
 type Props<T extends Record<string, any>> = {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   fields: FieldConfig<T>[];
   register: UseFormRegister<T>;
+  setValue?: UseFormSetValue<T>;
+  watch?: UseFormWatch<T>;
   errors: FieldErrors<T>;
   isLoading: boolean;
   onClose: () => void;
@@ -43,9 +49,11 @@ const CustomForm = <T extends Record<string, any>>({
   errors,
   isLoading,
   onClose,
+  watch,
+  setValue,
 }: Props<T>) => {
   const [arrayStrings, setArrayStrings] = useState<Record<string, string[]>>(
-    {}
+    {},
   );
   const [arrayAttachments, setArrayAttachments] = useState<
     Record<string, File[]>
@@ -68,7 +76,7 @@ const CustomForm = <T extends Record<string, any>>({
   const handleUpdateString = (
     fieldName: string,
     index: number,
-    value: string
+    value: string,
   ) => {
     setArrayStrings((prev) => {
       const updated = [...(prev[fieldName] || [])];
@@ -170,7 +178,7 @@ const CustomForm = <T extends Record<string, any>>({
                         handleUpdateString(
                           field.name as string,
                           index,
-                          e.target.value
+                          e.target.value,
                         )
                       }
                       placeholder={field.placeholder}
@@ -249,16 +257,52 @@ const CustomForm = <T extends Record<string, any>>({
                   ))}
                 </select>
                 {field.addMoreHandler && (
-                  <div className="flex items-center self-end text-primary cursor-pointer hover:underline text-sm" onClick={field.addMoreHandler}>
+                  <div
+                    className="flex items-center self-end text-primary cursor-pointer hover:underline text-sm"
+                    onClick={field.addMoreHandler}
+                  >
                     <Plus size={16} />
                     Add more
                   </div>
                 )}
               </div>
+            ) : field.type === "file-new" ? (
+              <div className="space-y-2">
+                <input
+                  type="file"
+                  accept={field.accept}
+                  multiple={false}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    if (!setValue)return;
+                      setValue(field.name, file as any, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                  }}
+                  className="w-full text-sm text-gray-700
+        file:mr-4 file:py-2 file:px-4
+        file:rounded file:border-0
+        file:text-sm file:font-medium
+        file:bg-blue-50 file:text-blue-700
+        hover:file:bg-blue-100"
+                />
+
+                {/* Optional but recommended */}
+                {watch && watch(field.name) as any instanceof File && (
+                  <img
+                    src={URL.createObjectURL(watch(field.name))}
+                    className="h-24 rounded border object-cover"
+                  />
+                )}
+              </div>
             ) : (
               <input
                 type={field.type ?? "text"}
-                {...register(field.name)}
+                {...register(field.name, {
+                  valueAsNumber: field.type === "number",
+                })}
                 placeholder={field.placeholder}
                 className="w-full rounded outline-0 border-[1px] border-gray-200 px-2 py-1 focus:border-primary"
               />
