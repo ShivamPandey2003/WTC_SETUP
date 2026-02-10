@@ -12,6 +12,7 @@ type initialStateType = {
   userinfo: {
     firstname: string;
     lastname: string;
+    grp:number
   };
 };
 
@@ -24,11 +25,12 @@ const initialState: initialStateType = {
   userinfo: {
     firstname: "",
     lastname: "",
+    grp:0
   },
 };
 
 const AuthSlice = createSlice({
-  name: "Auth",
+  name: "AuthSlice",
   initialState,
   reducers: {
     setStep: (state, payload: PayloadAction<Step>) => {
@@ -58,6 +60,7 @@ const AuthSlice = createSlice({
       payload: PayloadAction<{
         firstname: string;
         lastname: string;
+        grp:number
       }>,
     ) => {
       state.userinfo = payload.payload;

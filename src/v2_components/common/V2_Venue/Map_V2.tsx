@@ -5,35 +5,53 @@ import ShapesElement from "../V2_VenueDesign/Shapes";
 import Konva from "konva";
 import type { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
 import TestMode from "./TestMode";
-import { useGetFloorPlanV2 } from "@/api/global_api/global_api";
-import { Skeleton } from "@/components/ui/skeleton";
+// import { Skeleton } from "@/components/ui/skeleton";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { isBase64Image } from "@/lib/utils";
 
-const Map_V2 = () => {
+interface prop {
+  id: string;
+}
+
+const Map_V2 = ({ id }: prop) => {
   const stageRef = useRef<Konva.Stage | null>(null);
   const imageCache = useRef<Record<string, HTMLImageElement>>({});
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile();
   const [, setImageTick] = useState(0);
+  const [FloorPlan, setFloorPlan] = useState<
+    (MapT & { programmes: Programme[] }) | null
+  >(null);
   const [activeNode, setActiveNode] = useState<Konva.Shape | null>(null);
   const [tooltip, setTooltip] = useState<{
     x: number;
     y: number;
     id: string | null;
   } | null>(null);
-  const { FloorPlan, isPending, error } = useGetFloorPlanV2();
   const { searchParams } = useSelector(
     (state: RootState) => state.Global_Slice,
   );
+  const { GlobalMap } = useSelector(
+    (state: RootState) => state.Venue_Design_V2,
+  );
 
   useEffect(() => {
-    FloorPlan?.response.floor_map_list.forEach((shape) => {
+    const value = GlobalMap.find((pre) => pre.id === id);
+    if (!value) return;
+    setFloorPlan(value);
+  }, [id]);
+
+  useEffect(() => {
+    if (!FloorPlan) return;
+    FloorPlan.map_list.forEach((shape) => {
       if (shape.type !== ACTIONS.IMAGE) return;
 
       if (!imageCache.current[shape.id]) {
         const img = new Image();
-        img.src = (shape as ImageShape).image;
+        img.src = isBase64Image((shape as ImageShape).image)
+          ? (shape as ImageShape).image
+          : `data:image/png;base64,${(shape as ImageShape).image}`;
 
         img.onload = () => {
           imageCache.current[shape.id] = img;
@@ -171,23 +189,11 @@ const Map_V2 = () => {
     resetZoom();
   };
 
-  if (isPending) {
-    return <Skeleton className="w-full h-[70vh]" />;
-  }
-
-  if (error) {
-    return null;
-  }
-
-  if (!FloorPlan?.response.floor_map_list.length) {
-    return null;
-  }
-
   return (
     <div
       className="w-full overflow-auto relative"
       style={{
-        maxHeight: "68vh",
+        maxHeight: "66vh",
         WebkitOverflowScrolling: "touch",
         touchAction: "pan-y pan-x",
       }}
@@ -211,7 +217,7 @@ const Map_V2 = () => {
               closeTooltip();
             }}
           />
-          {FloorPlan.response.floor_map_list.map((shape) => {
+          {FloorPlan?.map_list.map((shape) => {
             switch (shape.type) {
               case ACTIONS.IMAGE: {
                 const imgShape = shape as ImageShape;

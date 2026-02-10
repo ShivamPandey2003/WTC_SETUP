@@ -149,8 +149,8 @@ export const useGetProgrammeList = () => {
             return {
               session_id: Datas.id,
               id: nanoid(),
-              title: detail[0].name,
-              color: detail[0].color,
+              title: detail[0]?.name,
+              color: detail[0]?.color,
               start_time: Datas.start_time,
               end_time: Datas.end_time,
               type: "normal",
@@ -256,12 +256,12 @@ export const useUploadLogo = () => {
   } = useMutation<
     LogoUpdateResponse,
     AxiosError,
-    { form: FormData; type: number }
+    { form: FormData; type: number, extra?:string }
   >({
     mutationFn: async (data) => {
       const res = await apiRequest(
         "post",
-        `global/settings/logo/update?main=${data.type}`,
+        `global/settings/logo/update?main=${data.type}${data.extra}`,
         data.form,
       );
       return res.response;

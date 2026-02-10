@@ -100,8 +100,8 @@ export const useEditExhibitor = () => {
     {form:FormData, id: string }
   >({
     mutationFn: async (data) => {
-      const { id, ...rest } = data;
-      const res = await apiRequest("post", `exhibitors/edit/${id}`, rest);
+      const { id, form } = data;
+      const res = await apiRequest("post", `exhibitors/edit/${id}`, form);
       return res.response;
     },
     onSuccess: (data) => {

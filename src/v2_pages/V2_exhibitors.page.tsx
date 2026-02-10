@@ -12,6 +12,8 @@ const V2_exhibitors_page = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { ExhibitorList, isPending, error } = useGetExhibitorsList();
 
+  console.log(ExhibitorList)
+
   if (isPending) {
     return (
       <div className="mx-[7.5%]">

@@ -16,7 +16,7 @@ import venueDesignV2Slice from './venueDesignV2Slice'
 const persistConfig = {
   key: "root",
   storage, // localStorage
-  whitelist:["Global_DesignSlice"]
+  whitelist:["Global_DesignSlice", "AuthSlice"]
 };
 
 const rootReducer = combineReducers({

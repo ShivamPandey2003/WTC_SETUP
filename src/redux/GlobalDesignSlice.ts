@@ -23,7 +23,12 @@ const initialState: initialStateType = {
       name: "",
       logo_img: "",
     },
-    sponsors:{
+    splash: {
+      image: "",
+      title: "",
+      subtitle: "",
+    },
+    sponsors: {
       logo: "",
     },
     home_design: {

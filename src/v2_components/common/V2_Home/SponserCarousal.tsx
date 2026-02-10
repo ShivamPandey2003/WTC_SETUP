@@ -46,7 +46,7 @@ const SponserCarousal = ({
             <a href={slide.url} target="_blank" rel="noopener noreferrer">
               <div
                 className="w-full h-full bg-contain bg-no-repeat bg-center"
-                style={{ backgroundImage: `url(${slide.logo})` }}
+                style={{ backgroundImage: `url(data:image/png;base64,${slide.logo})` }}
               >
                 <div className="w-full h-full flex flex-col justify-end py-4 px-2 md:px-4">
                   <h2 className="text-base font-bold text-primary mb-1">

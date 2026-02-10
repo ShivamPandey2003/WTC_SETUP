@@ -68,6 +68,7 @@ export const useVerifyOtp = () => {
         setUserInfo({
           firstname: data.response.firstname,
           lastname: data.response.lastname,
+          grp: data.response.grp,
         }),
       );
       navigate("/global-design");

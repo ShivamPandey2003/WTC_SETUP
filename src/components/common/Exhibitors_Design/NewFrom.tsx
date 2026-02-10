@@ -39,14 +39,16 @@ const NewFrom = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const onSubmit = (newData: ExhibitorSchemaType) => {
+    console.log(newData.category)
     if (selected && value) {
       const formData = new FormData();
       formData.append("full_name", newData.full_name as string);
       formData.append("url", newData.url as string);
       formData.append("email", newData.email as string);
       formData.append("category", newData.category as string);
-      formData.append("logo", newData.logo?.[0] as Blob);
+      formData.append("file", newData.logo?.[0] as Blob);
       formData.append("ads", String(newData?.ads));
+      console.log(formData.get("category"))
       EditExhibitor({ form:formData, id: `${selected}` });
     } else {
       const formData = new FormData();
@@ -54,7 +56,7 @@ const NewFrom = () => {
       formData.append("url", newData.url as string);
       formData.append("email", newData.email as string);
       formData.append("category", newData.category as string);
-      formData.append("logo", newData.logo?.[0] as Blob);
+      formData.append("file", newData.logo?.[0] as Blob);
       formData.append("ads", String(newData?.ads));
       CreateExhibitor(formData);
     }
