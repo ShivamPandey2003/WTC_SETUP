@@ -28,7 +28,7 @@ const V2_SplashScreen = ({ open, setOpen }: V2_SplashScreenProps) => {
       <div
         className="w-[40rem] h-[40rem] bg-cover bg-center relative rounded-2xl"
         style={{
-          backgroundImage: `data:image/png;base64,${appConfig.splash.image}`,
+          backgroundImage: `url(data:image/png;base64,${appConfig.splash.image})`,
         }}
         onClick={(e) => e.stopPropagation()}
       >
