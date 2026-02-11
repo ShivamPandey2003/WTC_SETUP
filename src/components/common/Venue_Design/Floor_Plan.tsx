@@ -42,7 +42,7 @@ const Floor_Plan = () => {
       );
 
       if (value) {
-        setFloorPlan(`data:image/png;base64,${value.image}`);
+        setFloorPlan(value.image);
       }
     }
   }, [selectedId]);
@@ -52,41 +52,45 @@ const Floor_Plan = () => {
       <div className="mb-10">
         <div className="flex w-full items-center justify-between gap-4">
           {!V2_isFloorMapListPending ? (
-            <div className={cn("flex items-center gap-4 py-2 w-full")}>
-              <div className="text-sm font-[500] w-[180px] shrink-0">
-                {normalizeLabel("Floor Levels")}
+            <div className="flex gap-4">
+              <div className={cn("flex items-center gap-4 py-2")}>
+                <div className="text-sm font-[500] w-[100px] shrink-0">
+                  {normalizeLabel("Floor Levels")}
+                </div>
+                <div className="flex items-center gap-4">
+                  <select
+                    value={selectedId as string}
+                    onChange={(e) => setSelectedId(e.target.value)}
+                    className="rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary mb-1"
+                  >
+                    <option value="">{"Select an option"}</option>
+                    {V2_FloorMapList &&
+                      V2_FloorMapList.response.map((opt) => (
+                        <option key={opt.id} value={opt.id}>
+                          {opt.label}
+                        </option>
+                      ))}
+                  </select>
+                </div>
               </div>
-              <div className="flex items-center gap-4">
-                <select
-                  value={selectedId as string}
-                  onChange={(e) => setSelectedId(e.target.value)}
-                  className="rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary mb-1"
-                >
-                  <option value="">{"Select an option"}</option>
-                  {V2_FloorMapList &&
-                    V2_FloorMapList.response.map((opt) => (
-                      <option key={opt.id} value={opt.id}>
-                        {opt.label}
-                      </option>
-                    ))}
-                </select>
-                <button
-                  className="flex w-fit items-center text-primary cursor-pointer hover:underline text-sm"
+              <div className="flex items-center gap-2">
+                <Button
+                  variant={"link"}
                   onClick={() => dispatch(setFloorLevelModal(true))}
                 >
                   <Plus size={16} />
-                  Add more
-                </button>
-                <div
-                  className="flex w-fit items-center text-primary cursor-pointer hover:underline text-sm"
+                  Add
+                </Button>
+                <Button
+                  variant={"link"}
                   onClick={() => dispatch(setEditFloorLevelModal(true))}
                 >
                   <Pencil size={16} />
                   Edit selected floor
-                </div>
-                <button
+                </Button>
+                <Button
                   disabled={isPending}
-                  className="flex w-fit items-center text-primary cursor-pointer hover:underline text-sm"
+                  variant={"link"}
                   onClick={() => DeleteFloorLevel({ id: selectedId })}
                 >
                   {!isPending ? (
@@ -100,7 +104,7 @@ const Floor_Plan = () => {
                       processing
                     </>
                   )}
-                </button>
+                </Button>
               </div>
             </div>
           ) : (

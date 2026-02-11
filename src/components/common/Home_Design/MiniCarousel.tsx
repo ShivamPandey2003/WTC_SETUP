@@ -64,7 +64,7 @@ export default function MiniSmallCarousel({slides}:{slides: News[]}) {
           <React.Fragment key={i}>
             <img
               key={i}
-              src={slide.bg_img?`data:image/png;base64,${slide.bg_img}`:'https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200'}
+              src={slide.bg_img?slide.bg_img:'https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200'}
               alt={slide.title}
               className={cn(
                 `absolute inset-0 w-full h-full object-cover transition-opacity duration-500`,

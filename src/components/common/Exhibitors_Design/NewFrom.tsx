@@ -39,7 +39,6 @@ const NewFrom = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const onSubmit = (newData: ExhibitorSchemaType) => {
-    console.log(newData.category)
     if (selected && value) {
       const formData = new FormData();
       formData.append("full_name", newData.full_name as string);

@@ -16,9 +16,9 @@ const CreateModal:React.FC<CreateModalProps> = ({isOpen, onClose}) => {
       classname="p-0"
     >
       <div className="bg-primary w-full rounded-t-lg px-6 text-white py-3 text-xl font-semibold">
-        {"Add New Exhibitor for WTC 2026"}
+        {"Add Exhibitor"}
       </div>
-      <div className="p-6">
+      <div className="">
         <div>
           <NewFrom />
         </div>

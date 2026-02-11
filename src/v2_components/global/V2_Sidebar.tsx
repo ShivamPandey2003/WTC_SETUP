@@ -26,12 +26,12 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
         onClick={() => navigate("/")}
       >
         <img
-          src={`data:image/png;base64,${appConfig?.logo?.logo_img}`}
+          src={appConfig?.logo?.logo_img}
           className="w-[128px] h-[68px] object-contain"
         />
         <span className="text-[10px] font-bold">Sponsored by</span>
         <img
-          src={`data:image/png;base64,${appConfig?.sponsors?.logo}`}
+          src={appConfig?.sponsors?.logo}
           className="w-[128px] h-[40px] object-contain"
         />
       </div>
@@ -47,7 +47,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
                 <Button
                   key={key}
                   className={cn(
-                    "bg-white text-balck hover:bg-[#35825C] hover:text-white cursor-pointer",
+                    "bg-white text-balck hover:bg-[#35825C] hover:text-white cursor-pointer justify-start",
                     pathname === item.route && "bg-[#35825C] text-white",
                   )}
                   onClick={() => {

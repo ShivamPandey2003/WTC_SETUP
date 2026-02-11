@@ -87,11 +87,11 @@ const GlobalDesign_page = () => {
           <Section title="Logo" ClassName="w-1/2">
             <div className="flex justify-between mx-[1.5rem]">
               <LogoUpload
-                logoUrl={`data:image/png;base64,${appConfig.logo.logo_img}`}
+                logoUrl={appConfig.logo.logo_img}
                 fileName={appConfig.logo.name}
               />
               <LogoUpload
-                logoUrl={`data:image/png;base64,${appConfig.sponsors.logo}`}
+                logoUrl={appConfig.sponsors.logo}
                 fileName={"Sponsor_Logo"}
                 type={0}
                 title="Sponsor Logo"

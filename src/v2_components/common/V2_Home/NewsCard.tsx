@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import V2_LineClamp from "@/v2_components/global/V2_LineClamp";
 
 interface NewsCardProps {
   title: string;
@@ -27,15 +28,15 @@ export default function NewsCard({
       <img
         src={
           bg_img
-            ? `data:image/png;base64,${bg_img}`
+            ? bg_img
             : "https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200"
         }
         alt=""
-        className="w-full h-[7rem] object-cover rounded-t-xl object-center"
+        className="w-full h-[5.5rem] object-cover rounded-t-xl object-center"
       />
       <div className="p-4">
-        <h3 className="text-lg font-bold text-gray-900 mb-3">{title}</h3>
-        <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
+        <h3 className="font-bold text-gray-900 mb-3">{title}</h3>
+        <V2_LineClamp onClick={onClick} text={description}/>
       </div>
     </div>
   );

@@ -186,3 +186,13 @@ export function base64ToFile(
 export function isBase64Image(str: string): boolean {
   return /^data:image\/(png|jpg|jpeg|gif|webp);base64,/.test(str);
 }
+
+export const isValidImage = (filename: string) => {
+  const lower = filename.toLowerCase();
+  return (
+    lower.endsWith(".png") ||
+    lower.endsWith(".jpg") ||
+    lower.endsWith(".jpeg") ||
+    lower.endsWith(".webp")
+  );
+};
