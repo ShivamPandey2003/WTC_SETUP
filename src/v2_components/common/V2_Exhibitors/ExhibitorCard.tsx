@@ -22,7 +22,7 @@ export default function ExhibitorCard({
         className={`bg-gray-300 p-8 flex items-center justify-center min-h-32`}
       >
         <img
-          src={`data:image/png;base64,${logo}`}
+          src={logo}
           alt={full_name}
           className="h-12 object-contain"
         />

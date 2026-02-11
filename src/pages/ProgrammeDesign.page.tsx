@@ -36,7 +36,6 @@ import {
   Plus,
   SquareArrowOutUpRight,
   Upload,
-  X,
 } from "lucide-react";
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -48,6 +47,9 @@ import {
   useGetCategoryAll,
   useUploadSessionsCSV,
 } from "@/api/programme_design_api/Programme_design_api";
+import Custom_Text_Row from "@/components/common/Exhibitors_Design/Custom_Text_Row";
+import DeleteModal from "@/components/global/DeleteModel";
+import { setDeletingCategory } from "@/redux/ExhibitorSlice";
 
 const ProgrammeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
@@ -67,6 +69,10 @@ const ProgrammeDesign_page = () => {
   );
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
+  );
+
+  const { deletingCategory } = useSelector(
+    (state: RootState) => state.ExhibitorSlice,
   );
   const dispatch = useDispatch<AppDispatch>();
   const {
@@ -289,7 +295,7 @@ const ProgrammeDesign_page = () => {
               >
                 <div className="flex items-center py-2">
                   <div className="w-40 text-sm font-medium">
-                    {"Category Filters"}
+                    {"Category Active"}
                   </div>
                   <div className="flex items-center gap-4">
                     <p>Disabled</p>
@@ -307,42 +313,31 @@ const ProgrammeDesign_page = () => {
                     <p>Enabled</p>
                   </div>
                 </div>
-                <div className="flex items-start justify-between py-2">
-                  <div className="w-40 text-sm font-medium">
+                <div className="py-2">
+                  <div className="w-40 text-sm font-medium mb-4">
                     {"Category Filters"}
                   </div>
-                  <div
-                    className={cn(
-                      "relative flex flex-wrap w-fit items-center gap-3 bg-[#1111110D] p-4 text-sm text-gray-600 rounded-[7px] text-center focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors",
-                    )}
-                  >
-                    {/* {SpeakerSettings.category_labels */}
+                  <div className="">
                     {AllCategory?.response
                       .filter((pre) => !Boolean(pre.type))
-                      .map((str) => (
-                        <button
-                          key={str.id}
-                          disabled={isDeleteCategoryPending}
-                          className="flex items-center gap-4 px-3 bg-white rounded-lg border border-transparent hover:border-gray-300 cursor-pointer"
-                        >
-                          <span className="hover:text-primary font-semibold">
-                            {str.name}
-                          </span>
-                          <X
-                            size={18}
-                            className="hover:text-primary"
-                            onClick={() => DeleteCategory({ id: str.id })}
-                          />
-                        </button>
+                      .map((data, index) => (
+                        <Custom_Text_Row
+                          type={data.type}
+                          key={index}
+                          id={data.id}
+                          index={String(index + 1)}
+                          value={data.name}
+                          color={data.color}
+                        />
                       ))}
+                    <Button
+                      onClick={() => dispatch(setCategoryModal(true))}
+                      className="mt-4"
+                      variant={"link"}
+                    >
+                      + Add exhibitor category
+                    </Button>
                   </div>
-                  <Button
-                    variant={"link"}
-                    onClick={() => dispatch(setCategoryModal(true))}
-                  >
-                    <Plus />
-                    Add New
-                  </Button>
                 </div>
               </Section>
               <Section title="Session Data" ClassName="w-2/5">
@@ -374,6 +369,12 @@ const ProgrammeDesign_page = () => {
         onClose={() => dispatch(SetisSpeakerCreating(false))}
       />
       <AddCategoryModel />
+      <DeleteModal
+        isOpen={Boolean(deletingCategory)}
+        onClose={() => dispatch(setDeletingCategory(null))}
+        onConfirm={() => DeleteCategory({ id: deletingCategory as string })}
+        isDeleting={isDeleteCategoryPending}
+      />
       <CSVModel
         isOpen={uploadCSV}
         onClose={() => dispatch(setUploadCSV(false))}

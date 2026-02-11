@@ -96,27 +96,6 @@ const VenueDesign_page = () => {
                 }
                 containerClassname="mb-4"
               />
-              <div className={cn("flex items-center gap-4 py-2")}>
-                <div className="text-sm font-[500] w-[220px] shrink-0">
-                  {normalizeLabel("getting_there_description")}
-                </div>
-                <textarea
-                  value={SpeakerSettings.venue.getting_there_description}
-                  rows={1}
-                  onChange={(e) =>
-                    dispatch(
-                      setSpeakerSettings({
-                        ...SpeakerSettings,
-                        venue: {
-                          ...SpeakerSettings.venue,
-                          getting_there_description: e.target.value,
-                        },
-                      }),
-                    )
-                  }
-                  className="bg-[#1111110D] py-1 px-8 w-[17rem] rounded-[7px] border-transparent text-sm text-gray-600 hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
-                />
-              </div>
               <TextStyleRow
                 label={normalizeLabel("latitude")}
                 value={SpeakerSettings.venue.latitude}
@@ -149,6 +128,27 @@ const VenueDesign_page = () => {
                 }
                 containerClassname="mb-4"
               />
+              <div className={cn("flex items-start gap-4 py-2")}>
+                <div className="text-sm font-[500] w-[220px] shrink-0">
+                  {normalizeLabel("getting_there_description")}
+                </div>
+                <textarea
+                  value={SpeakerSettings.venue.getting_there_description}
+                  rows={3}
+                  onChange={(e) =>
+                    dispatch(
+                      setSpeakerSettings({
+                        ...SpeakerSettings,
+                        venue: {
+                          ...SpeakerSettings.venue,
+                          getting_there_description: e.target.value,
+                        },
+                      }),
+                    )
+                  }
+                  className="bg-[#1111110D] py-1 px-8 w-[17rem] rounded-[7px] border-transparent text-sm text-gray-600 hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
+                />
+              </div>
               <div className={cn("flex items-center gap-4 py-2 w-full")}>
                 <div className="text-sm font-[500] w-[220px] shrink-0">
                   {normalizeLabel("Attachment")}

@@ -104,7 +104,7 @@ const V2_Venue_page = () => {
   }
 
   return (
-    <div className="px-4 mx-auto">
+    <div className="px-4 mx-auto pb-4">
       <div className="p-1 bg-white w-fit rounded-full flex gap-2 mb-4">
         <Button
           variant={currentTab === "getting there" ? "default" : "ghost"}
@@ -124,12 +124,12 @@ const V2_Venue_page = () => {
       {currentTab === "getting there" && (
         <div className="grid lg:grid-cols-2 gap-4">
           <div className="col-span-1 space-y-4">
-            <TextCard />
             <div className="bg-white rounded-3xl overflow-hidden shadow-sm">
               <img src={BG} alt="BG" className="w-full h-90 object-cover" />
             </div>
+            <TextCard />
           </div>
-          <div className="bg-white rounded-3xl overflow-hidden shadow-sm p-6">
+          <div className="bg-white rounded-3xl h-fit overflow-hidden shadow-sm p-6">
             <LoadScriptNext
               loadingElement={<Skeleton className="w-full h-80 mb-8" />}
               googleMapsApiKey={apiKey}
@@ -159,7 +159,7 @@ const V2_Venue_page = () => {
               className="w-full h-[20rem] object-cover object-top mb-8"
             /> */}
             <div className="h-1/2">
-              <div className="flex items-center justify-between mb-8">
+              <div className="flex justify-between mb-8">
                 <div className="flex gap-6">
                   <Navigation strokeWidth={"1px"} />
                   <div>
@@ -214,24 +214,26 @@ const V2_Venue_page = () => {
       )}
       {currentTab === "floor plan" && (
         <div className="w-full rounded-xl p-6 bg-white h-fit">
-          <div className={cn("flex items-center gap-4 w-full")}>
-            <div className="text-sm font-[500] w-[180px] shrink-0">
-              {normalizeLabel("Floor Levels")}
-            </div>
-            <div className="flex items-center gap-4">
-              <select
-                value={selectedId as string}
-                onChange={(e) => setSelectedId(e.target.value)}
-                className="rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary mb-1"
-              >
-                <option value="">{"Select an option"}</option>
-                {V2_Global_FloorMapList &&
-                  V2_Global_FloorMapList.response.map((opt) => (
-                    <option key={opt.id} value={opt.id}>
-                      {opt.label}
-                    </option>
-                  ))}
-              </select>
+          <div className="flex items-center justify-between">
+            <div className={cn("flex items-center gap-4")}>
+              <div className="text-sm font-[500] w-[100px] shrink-0">
+                {normalizeLabel("Floor Levels")}
+              </div>
+              <div className="flex items-center gap-4">
+                <select
+                  value={selectedId as string}
+                  onChange={(e) => setSelectedId(e.target.value)}
+                  className="rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary mb-1"
+                >
+                  <option value="">{"Select an option"}</option>
+                  {V2_Global_FloorMapList &&
+                    V2_Global_FloorMapList.response.map((opt) => (
+                      <option key={opt.id} value={opt.id}>
+                        {opt.label}
+                      </option>
+                    ))}
+                </select>
+              </div>
             </div>
             <a
               href="/FloorPlan.pdf"

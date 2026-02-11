@@ -28,7 +28,7 @@ const DetailsModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
           <img
             src={
               data.bg_img
-                ? `data:image/png;base64,${data.bg_img}`
+                ? data.bg_img
                 : "https://images.pexels.com/photos/4940642/pexels-photo-4940642.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
             }
             alt=""

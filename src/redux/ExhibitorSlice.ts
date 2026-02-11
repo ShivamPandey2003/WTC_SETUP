@@ -11,6 +11,8 @@ type initialStateT = {
   allow_email_exposure: boolean;
   booth_location: boolean;
   uploadCSV: boolean;
+  isEditable: Record<string, boolean>
+  deletingCategory: string|null
 };
 
 const initialState: initialStateT = {
@@ -23,7 +25,9 @@ const initialState: initialStateT = {
   open_link_new_tab: false,
   allow_email_exposure: false,
   booth_location: false,
-  uploadCSV: false
+  uploadCSV: false,
+  isEditable:{},
+  deletingCategory:null
 };
 
 const Exhibitor_DesignSlice = createSlice({
@@ -70,6 +74,13 @@ const Exhibitor_DesignSlice = createSlice({
       state.categoryModal = payload.payload;
       return state;
     },
+    setDeletingCategory: (state, payload: PayloadAction<string | null>) => {
+      state.deletingCategory = payload.payload;
+      return state;
+    },
+    setIsEditable:(state, payload: PayloadAction<Record<string, boolean>>)=>{
+      state.isEditable = payload.payload
+    }
   },
 });
 
@@ -83,6 +94,8 @@ export const {
   setAllowEmailExposure,
   setBoothLocation,
   setUploadCSV,
-  setCategoryModal
+  setCategoryModal,
+  setIsEditable,
+  setDeletingCategory
 } = Exhibitor_DesignSlice.actions;
 export default Exhibitor_DesignSlice.reducer;

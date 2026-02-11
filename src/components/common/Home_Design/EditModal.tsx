@@ -19,7 +19,7 @@ const EditModal:React.FC<EditModalProps> = ({isOpen, onClose}) => {
       <div className="bg-primary w-full rounded-t-lg px-6 text-white py-3 text-xl font-[600]">
         {"Edit News"}
       </div>
-      <div className="p-6">
+      <div className="">
         <div>
           <NewFrom />
         </div>

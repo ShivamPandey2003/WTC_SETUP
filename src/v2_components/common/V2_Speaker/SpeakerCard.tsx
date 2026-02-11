@@ -28,12 +28,12 @@ export default function SpeakerCard({
   onClick
 }: TeamMemberCardProps) {
   return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 w-[250px] sm:min-w-[15rem]" onClick={onClick}>
+    <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 w-[250px] sm:min-w-[15rem] cursor-pointer" onClick={onClick}>
       <div className="h-[14rem] overflow-hidden bg-gray-200">
         <img
           src={
             user_img
-              ? `data:image/png;base64,${user_img}`
+              ? user_img
               : "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=600"
           }
           alt={name}

@@ -99,7 +99,7 @@ const HomeDesign_page = () => {
             <div className="flex gap-4">
               <Section
                 title="Tab Title"
-                ClassName="w-full"
+                ClassName="w-3/5"
                 onSave={() => UpdateHomeDesign()}
                 show={true}
                 loading={isUpdateHomeDesignPending}
@@ -123,7 +123,7 @@ const HomeDesign_page = () => {
               </Section>
               <Section
                 title="Info Cards"
-                ClassName="w-full"
+                ClassName="w-2/5"
                 onSave={() => UpdateHomeDesign()}
                 show={false}
                 loading={isUpdateHomeDesignPending}

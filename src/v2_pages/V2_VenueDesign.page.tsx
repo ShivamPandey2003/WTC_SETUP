@@ -303,11 +303,11 @@ const V2_VenueDesign_page = () => {
     dispatch(
       setMap(
         map.map((pre) =>
-          pre.id === id
+          pre.id === SelectedId
             ? {
                 ...pre,
                 map_list: pre.map_list.map((shape) => {
-                  if (shape.id === editingTextId) {
+                  if (shape.id === id) {
                     return { ...shape, x: node.x(), y: node.y() };
                   }
                   return shape;
@@ -318,6 +318,8 @@ const V2_VenueDesign_page = () => {
       ),
     );
   }
+
+  console.log()
 
   function OnTransformEnd(
     e: KonvaEventObject<Event, Node<NodeConfig>>,
@@ -334,11 +336,11 @@ const V2_VenueDesign_page = () => {
     dispatch(
       setMap(
         map.map((pre) =>
-          pre.id === id
+          pre.id === SelectedId
             ? {
                 ...pre,
                 map_list: pre.map_list.map((shape) => {
-                  if (shape.id === editingTextId) {
+                  if (shape.id === id) {
                     return {
                       ...shape,
                       x: node.x(),

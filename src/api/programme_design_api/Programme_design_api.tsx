@@ -1,4 +1,5 @@
 import { queryClient } from "@/provider/TanstackProvider";
+import { setDeletingCategory, setIsEditable } from "@/redux/ExhibitorSlice";
 import {
   setCategoryModal,
   setIsCreating,
@@ -7,11 +8,12 @@ import {
   setSession,
   setUploadCSV,
 } from "@/redux/ProgrammeDesignSlice";
-import type { AppDispatch } from "@/redux/store";
+import {setCategoryModal as exhibitorCategoryModal} from '@/redux/ExhibitorSlice'
+import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 
 export const useCreateSession = () => {
@@ -39,7 +41,7 @@ export const useCreateSession = () => {
 };
 
 export const useGetSessionList = () => {
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>();
   const {
     data: SessionList,
     isPending,
@@ -51,7 +53,7 @@ export const useGetSessionList = () => {
       return res.response;
     },
     select: (data) => {
-      dispatch(setSession(data.response))
+      dispatch(setSession(data.response));
       return data;
     },
     refetchOnWindowFocus: false,
@@ -108,6 +110,7 @@ export const useAddCategory = () => {
       toast.success("Category added successfully");
       queryClient.invalidateQueries({ queryKey: ["category-list"] });
       dispatch(setCategoryModal(false));
+      dispatch(exhibitorCategoryModal(false));
     },
     onError: (err) => {
       toast.error(`Error adding category: ${err.message}`);
@@ -137,29 +140,75 @@ export const useDeleteCategory = () => {
     onSuccess: () => {
       toast.success("Category delete successfully");
       queryClient.invalidateQueries({ queryKey: ["category-list"] });
-      dispatch(setCategoryModal(false));
+      dispatch(setDeletingCategory(null));
     },
     onError: (err) => {
       toast.error(`Error deleting category: ${err.message}`);
     },
   });
 
-  return {DeleteCategory, isDeleteCategoryPending, error}
+  return { DeleteCategory, isDeleteCategoryPending, error };
 };
 
-export const useGetCategoryAll = ()=>{
-  const {data:AllCategory, isPending, error} = useQuery<AllCategories_Response, AxiosError>({
-    queryKey:['category-list'],
-    queryFn:async()=>{
-       const res = await apiRequest("get", "category/all");
+export const useGetCategoryAll = () => {
+  const {
+    data: AllCategory,
+    isPending,
+    error,
+  } = useQuery<AllCategories_Response, AxiosError>({
+    queryKey: ["category-list"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "category/all");
       return res.response;
     },
     refetchOnWindowFocus: false,
     retry: 1,
-  })
+  });
 
-  return {AllCategory, isPending, error}
-}
+  return { AllCategory, isPending, error };
+};
+
+export const useEditCategory = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { isEditable } = useSelector(
+    (state: RootState) => state.ExhibitorSlice,
+  );
+  const {
+    mutate: EditCategory,
+    isPending: isEditCategoryPending,
+    error,
+  } = useMutation<
+    ProgrammeCreateCategoryResponse,
+    AxiosError,
+    {
+      id: string;
+      name: string;
+      color: string;
+      category_type: number;
+    }
+  >({
+    mutationFn: async (data) => {
+      const { id, ...rest } = data;
+      const res = await apiRequest("post", `/category/edit/${id}`, rest);
+      return res.response;
+    },
+    onSuccess: (_, vari) => {
+      toast.success("Category edit successfully");
+      queryClient.invalidateQueries({ queryKey: ["category-list"] });
+      dispatch(
+        setIsEditable({
+          ...isEditable,
+          [vari.id]: false,
+        }),
+      );
+    },
+    onError: (err) => {
+      toast.error(`Error editing category: ${err.message}`);
+    },
+  });
+
+  return { EditCategory, isEditCategoryPending, error };
+};
 
 export const useEditSession = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -187,7 +236,6 @@ export const useEditSession = () => {
 };
 
 export const useUploadSessionsCSV = () => {
-
   const dispatch = useDispatch<AppDispatch>();
 
   const {
