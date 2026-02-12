@@ -319,8 +319,6 @@ const V2_VenueDesign_page = () => {
     );
   }
 
-  console.log()
-
   function OnTransformEnd(
     e: KonvaEventObject<Event, Node<NodeConfig>>,
     id: string,

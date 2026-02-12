@@ -72,13 +72,6 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
         >
           Login
         </Button>
-      ) : grp !== 1 ? (
-        <Button
-          onClick={() => navigate("/user-profile")}
-          className="px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
-        >
-          Go to Profile
-        </Button>
       ) : (
         <Button
           onClick={() => navigate("/global-design")}
@@ -87,6 +80,15 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
           Go to dashboard
         </Button>
       )}
+
+      {/* : grp !== 1 ? (
+        <Button
+          onClick={() => navigate("/user-profile")}
+          className="px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
+        >
+          Go to Profile
+        </Button>
+      )  */}
     </header>
   );
 };

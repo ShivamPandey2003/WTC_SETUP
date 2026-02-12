@@ -29,7 +29,7 @@ const Map_V2 = ({ id }: prop) => {
     y: number;
     id: string | null;
   } | null>(null);
-  const { searchParams } = useSelector(
+  const { searchParams, searchParams2 } = useSelector(
     (state: RootState) => state.Global_Slice,
   );
   const { GlobalMap } = useSelector(
@@ -62,14 +62,13 @@ const Map_V2 = ({ id }: prop) => {
   }, [FloorPlan]);
 
   useEffect(() => {
-    if (!searchParams) return;
+    if (!searchParams2) return;
 
     const stage = stageRef.current;
     if (!stage) return;
-    const node = stage.findOne(`#${searchParams}`) as Konva.Shape | null;
+    const node = stage.findOne(`#${searchParams2}`) as Konva.Shape | null;
     if (!node) return;
-
-    focusOnShape(node, searchParams);
+    focusOnShape(node, searchParams2);
   }, [searchParams, stageRef.current]);
 
   const getTooltipPosition = (node: Konva.Node) => {
@@ -164,7 +163,7 @@ const Map_V2 = ({ id }: prop) => {
       duration: 0.3,
       easing: Konva.Easings.EaseInOut,
     });
-  }, []);
+  }, [searchParams2]);
 
   function onClick(
     e: KonvaEventObject<MouseEvent, Node<NodeConfig>>,

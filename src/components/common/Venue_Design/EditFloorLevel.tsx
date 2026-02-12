@@ -4,7 +4,7 @@ import Modal from "@/components/ui/Modal";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { setEditFloorLevelModal } from "@/redux/venueDesignV2Slice";
 import {
-  FloorLevelSchema,
+  EditFloorLevelSchema,
   type FloorLevelSchemaType,
 } from "@/Schema/FloorLevelSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,7 +30,7 @@ const EditFloorLevelModel = ({ id }: EditFloorLevelModelProp) => {
     formState: { errors },
     reset,
   } = useForm<FloorLevelSchemaType>({
-    resolver: zodResolver(FloorLevelSchema),
+    resolver: zodResolver(EditFloorLevelSchema),
   });
   const dispatch = useDispatch<AppDispatch>();
 
@@ -95,7 +95,7 @@ const EditFloorLevelModel = ({ id }: EditFloorLevelModelProp) => {
       <div className="bg-primary w-full rounded-t-lg px-8 text-white py-3 text-xl font-[600]">
         {"Edit Floor Plan"}
       </div>
-      <div className="p-6 overflow-auto">
+      <div className="overflow-auto">
         <div>
           <CustomForm
             onSubmit={handleSubmit(onSubmit)}

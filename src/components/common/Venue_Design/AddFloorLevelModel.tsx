@@ -65,7 +65,7 @@ const AddFloorLevelModel = () => {
       <div className="bg-primary w-full rounded-t-lg px-8 text-white py-3 text-xl font-[600]">
         {"Add Floor Level"}
       </div>
-      <div className="p-6 overflow-auto">
+      <div className="overflow-auto">
         <div>
           <CustomForm
             onSubmit={handleSubmit(onSubmit)}

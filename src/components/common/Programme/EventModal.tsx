@@ -49,11 +49,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
         <div className="w-full">
           <div className="flex items-start gap-4">
             <img
-              src={
-                selectedValue.bg_img
-                  ? `data:image/png;base64,${selectedValue.bg_img}`
-                  : dummy
-              }
+              src={selectedValue.bg_img ? selectedValue.bg_img : dummy}
               alt={selectedValue.title}
               className="w-[200px] h-[118px] rounded-lg object-cover opacity-80"
             />
@@ -70,7 +66,9 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
               {selectedValue.venue && (
                 <Button
                   onClick={() =>
-                    navigate(`/venue?id=${selectedValue.venue.id}`)
+                    navigate(
+                      `/venue?id=${selectedValue.venue.designId}&venueid=${selectedValue.venue.id}`,
+                    )
                   }
                   variant={"link"}
                   size={"sm"}

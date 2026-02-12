@@ -134,7 +134,7 @@ const VenueDesign_page = () => {
                 </div>
                 <textarea
                   value={SpeakerSettings.venue.getting_there_description}
-                  rows={3}
+                  // rows={3}
                   onChange={(e) =>
                     dispatch(
                       setSpeakerSettings({
@@ -146,7 +146,7 @@ const VenueDesign_page = () => {
                       }),
                     )
                   }
-                  className="bg-[#1111110D] py-1 px-8 w-[17rem] rounded-[7px] border-transparent text-sm text-gray-600 hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
+                  className="bg-[#1111110D] py-1 px-8 w-[30rem] min-h-[7rem] h-fit rounded-[7px] border-transparent text-sm text-gray-600 hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
                 />
               </div>
               <div className={cn("flex items-center gap-4 py-2 w-full")}>
@@ -173,6 +173,41 @@ const VenueDesign_page = () => {
                 >
                   <Link size={18} /> Floor Plan
                 </a>
+              </div>
+              <div className="flex items-center gap-4 py-2 w-full">
+                <div className="text-sm font-[500] w-[220px] shrink-0">
+                  Image
+                </div>
+                <input
+                  type="file"
+                  multiple={false}
+                  accept={"image/*"}
+                  onChange={(e) => {
+                    dispatch(
+                      setSpeakerSettings({
+                        ...SpeakerSettings,
+                        venue: {
+                          ...SpeakerSettings.venue,
+                          image: e.target.files?.[0] as File,
+                        },
+                      }),
+                    );
+                  }}
+                  className="text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary/20 file:text-primary hover:file:bg-primary/40"
+                />
+                {SpeakerSettings.venue.image && (
+                  <img
+                    src={
+                      typeof SpeakerSettings.venue.image === "string"
+                        ? SpeakerSettings.venue.image
+                        : URL.createObjectURL(
+                            SpeakerSettings.venue.image as File,
+                          )
+                    }
+                    alt=""
+                    className="w-40 rounded-lg"
+                  />
+                )}
               </div>
             </Section>
           </TabsContent>

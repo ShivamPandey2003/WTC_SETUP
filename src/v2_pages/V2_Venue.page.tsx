@@ -9,7 +9,6 @@ import {
 } from "@/lib/utils";
 import TextCard from "@/v2_components/common/V2_Venue/TextCard";
 import { useEffect, useState } from "react";
-import BG from "@/assets/Images/BG.jpg";
 // import MapText from "@/assets/Images/MapText.png";
 import { Calendar, Link, Loader, Navigation } from "lucide-react";
 import { useGetVenue } from "@/api/global_api/global_api";
@@ -21,7 +20,7 @@ import { GoogleMap, LoadScriptNext, Marker } from "@react-google-maps/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import Map_V2 from "@/v2_components/common/V2_Venue/Map_V2";
 import { useSearchParams } from "react-router";
-import { setSearchParams } from "@/redux/GlobalSlice";
+import { setSearchParams, setSearchParams2 } from "@/redux/GlobalSlice";
 import { useGlobalV2GetFloorMapList } from "@/api/Venue_api/Venue_Design_api";
 
 const apiKey = import.meta.env.VITE_REACT_GOOGLE_MAPS_API_KEY;
@@ -42,13 +41,16 @@ const V2_Venue_page = () => {
     conference_start_time,
     conference_end_time,
     conference_title,
+    searchParams:Params
   } = useSelector((state: RootState) => state.Global_Slice);
 
   useEffect(() => {
     const venueId = searchParams.get("id");
+    const shapeId = searchParams.get("venueid");
     if (venueId) {
       setCurrentTab("floor plan");
       dispatch(setSearchParams(venueId));
+      dispatch(setSearchParams2(shapeId));
     }
   }, [searchParams]);
 
@@ -75,6 +77,11 @@ const V2_Venue_page = () => {
       setSelectedId(V2_Global_FloorMapList.response[0].id);
     }
   }, [V2_Global_FloorMapList]);
+
+  useEffect(()=>{
+    if(!Params) return;
+    setSelectedId(Params)
+  },[Params])
 
   if (isPending || V2_Global_isFloorMapListPending) {
     return (
@@ -125,7 +132,11 @@ const V2_Venue_page = () => {
         <div className="grid lg:grid-cols-2 gap-4">
           <div className="col-span-1 space-y-4">
             <div className="bg-white rounded-3xl overflow-hidden shadow-sm">
-              <img src={BG} alt="BG" className="w-full h-90 object-cover" />
+              <img
+                src={Venue.response.bg_venue}
+                alt="BG"
+                className="w-full h-90 object-cover"
+              />
             </div>
             <TextCard />
           </div>

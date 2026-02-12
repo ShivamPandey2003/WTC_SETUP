@@ -29,7 +29,7 @@ export default function ProfileForm() {
   const { UploadPic, isPending } = useUploadProfilePic();
   const { UpdateProfile } = useProfileUpdate();
   const [image, setImage] = useState<string | null>(
-    `data:image/png;base64,${user_info.profile_image}`,
+    user_info.profile_image
   );
 
   const {
@@ -83,9 +83,6 @@ export default function ProfileForm() {
     <div className="w-4/5 mx-auto p-6 bg-white rounded-xl space-y-4 relative">
       {/* Profile Image */}
       <div className="flex items-end">
-        <label className="text-sm font-medium text-gray-600 mr-6">
-          Picture
-        </label>
         {isPending ? (
           <div className="bg-gray-300 w-24 h-24 rounded-full flex items-center justify-center">
             <LoaderCircle className="animate-spin text-primary" />

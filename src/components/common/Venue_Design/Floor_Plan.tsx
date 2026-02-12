@@ -91,6 +91,7 @@ const Floor_Plan = () => {
                 <Button
                   disabled={isPending}
                   variant={"link"}
+                  className={cn(!isPending && "text-[#B85555]")}
                   onClick={() => DeleteFloorLevel({ id: selectedId })}
                 >
                   {!isPending ? (

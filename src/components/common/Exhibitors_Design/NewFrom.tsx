@@ -1,28 +1,19 @@
-import {
-  useCreateExhibitor,
-  useEditExhibitor,
-} from "@/api/exhibitor_design_api/exhibitor_design_api";
+import { useCreateExhibitor } from "@/api/exhibitor_design_api/exhibitor_design_api";
 import { useGetCategoryAll } from "@/api/programme_design_api/Programme_design_api";
 import CustomForm from "@/components/global/CustomForm";
-import { setSelected, setIsCreating } from "@/redux/ExhibitorSlice";
-import type { AppDispatch, RootState } from "@/redux/store";
+import { setIsCreating } from "@/redux/ExhibitorSlice";
+import type { AppDispatch } from "@/redux/store";
 import {
   ExhibitorSchema,
   type ExhibitorSchemaType,
 } from "@/Schema/exhibitorSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const NewFrom = () => {
-  const { selected, Exhibitors } = useSelector(
-    (state: RootState) => state.ExhibitorSlice,
-  );
-
-  const value = Exhibitors.find((pre) => pre.id === selected);
-
   const { CreateExhibitor, isCreatePending } = useCreateExhibitor();
-  const { EditExhibitor, isEditPending } = useEditExhibitor();
   const { AllCategory, isPending } = useGetCategoryAll();
 
   const {
@@ -31,43 +22,28 @@ const NewFrom = () => {
     formState: { errors },
   } = useForm<ExhibitorSchemaType>({
     resolver: zodResolver(ExhibitorSchema),
-    defaultValues:
-      selected && value
-        ? { ...value, category: value.categoryId }
-        : ({} as any),
   });
   const dispatch = useDispatch<AppDispatch>();
 
   const onSubmit = (newData: ExhibitorSchemaType) => {
-    if (selected && value) {
-      const formData = new FormData();
-      formData.append("full_name", newData.full_name as string);
-      formData.append("url", newData.url as string);
-      formData.append("email", newData.email as string);
-      formData.append("category", newData.category as string);
-      formData.append("file", newData.logo?.[0] as Blob);
-      formData.append("ads", String(newData?.ads));
-      console.log(formData.get("category"))
-      EditExhibitor({ form:formData, id: `${selected}` });
-    } else {
-      const formData = new FormData();
-      formData.append("full_name", newData.full_name as string);
-      formData.append("url", newData.url as string);
-      formData.append("email", newData.email as string);
-      formData.append("category", newData.category as string);
-      formData.append("file", newData.logo?.[0] as Blob);
-      formData.append("ads", String(newData?.ads));
-      CreateExhibitor(formData);
-    }
+    const formData = new FormData();
+    formData.append("full_name", newData.full_name as string);
+    formData.append("url", newData.url as string);
+    formData.append("email", newData.email as string);
+    formData.append("category", newData.category as string);
+    formData.append("file", newData.logo?.[0] as Blob);
+    formData.append("ads", String(newData?.ads));
+    CreateExhibitor(formData);
   };
 
-  const onClose =
-    selected && value
-      ? () => dispatch(setSelected(null))
-      : () => dispatch(setIsCreating(false));
+  const onClose = () => dispatch(setIsCreating(false));
 
   if (isPending) {
-    return;
+    return (
+      <div className="h-[30vh] flex items-center justify-center">
+        <Loader2 size={24} className={`text-primary animate-spin`} />
+      </div>
+    );
   }
 
   const fields: {
@@ -115,7 +91,7 @@ const NewFrom = () => {
       fields={fields}
       register={register}
       errors={errors}
-      isLoading={isCreatePending || isEditPending}
+      isLoading={isCreatePending}
       onClose={onClose}
     />
   );

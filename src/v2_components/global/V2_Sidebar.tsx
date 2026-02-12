@@ -41,7 +41,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
               <Skeleton key={n} className="w-full mb-2 h-8" />
             ))
           : Object.entries(tabsData.response).map(([key, value]) => {
-              const item = V2Sidebar.find((pre) => pre.title.includes(value));
+              const item = V2Sidebar.find((pre) => pre.title.includes(key));
               if (!item) return null;
               return (
                 <Button
@@ -56,7 +56,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
                   }}
                 >
                   <item.Icon />
-                  {value}
+                  <span className="max-w-[80px] line-clamp-1">{value}</span>
                 </Button>
               );
             })}

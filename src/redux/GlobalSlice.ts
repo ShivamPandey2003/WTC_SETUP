@@ -16,6 +16,7 @@ type initialStateType = {
   selectedDate: string;
   filterData: Record<string, Programme[]>;
   searchParams: string | null;
+  searchParams2: string | null;
   ArrayTabs: {
     home_tab: string;
     programme_tab: string;
@@ -40,6 +41,7 @@ const initialState: initialStateType = {
   conference_location: "",
   Session: [],
   Venue: {
+    bg_venue: "",
     getting_there: {
       sub_title: "",
       description: "",
@@ -60,6 +62,7 @@ const initialState: initialStateType = {
   selectedDate: todayDate,
   filterData: {},
   searchParams: null,
+  searchParams2: null,
   ArrayTabs: {
     home_tab: "",
     programme_tab: "",
@@ -105,6 +108,10 @@ const Global_Slice = createSlice({
       state.searchParams = payload.payload;
       return state;
     },
+    setSearchParams2: (state, payload: PayloadAction<string | null>) => {
+      state.searchParams2 = payload.payload;
+      return state;
+    },
     setArrayTabs: (
       state,
       payload: PayloadAction<{
@@ -128,6 +135,7 @@ export const {
   setConference_title,
   setFilterData,
   setSearchParams,
-  setArrayTabs
+  setSearchParams2,
+  setArrayTabs,
 } = Global_Slice.actions;
 export default Global_Slice.reducer;

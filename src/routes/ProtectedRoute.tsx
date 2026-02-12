@@ -34,9 +34,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       return <Navigate to="/" replace />;
     }
 
-    if (!isAdmin) {
-      return <Navigate to="/" replace />;
-    }
+    // if (!isAdmin) {
+    //   return <Navigate to="/" replace />;
+    // }
 
     return element;
   }

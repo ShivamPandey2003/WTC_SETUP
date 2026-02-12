@@ -29,7 +29,7 @@ const EventGrid = () => {
     return r2.top - r1.top;
   }
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const pos: Record<string, { top: number; height: number }> = {};
 
     Dates.forEach((date) => {
@@ -81,7 +81,7 @@ const EventGrid = () => {
     });
 
     setPositions(pos);
-  }, []);
+  }, [Programmes]);
 
   return (
     <div className="relative">

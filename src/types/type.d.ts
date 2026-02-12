@@ -150,7 +150,7 @@ declare type SpeakerListResponse = {
   response: (CreateSpeakerRequestT & {
     speaker_id: string;
     created_on: string;
-    profile_image:string
+    profile_image: string;
   })[];
 };
 
@@ -179,11 +179,11 @@ declare type AppConfig = {
     font_family: string;
     all_other_text: string;
   };
-  splash:{
-    image:sting|File;
-    title:string;
-    subtitle:string;
-  }
+  splash: {
+    image: sting | File;
+    title: string;
+    subtitle: string;
+  };
   sponsors: {
     logo: string;
   };
@@ -221,6 +221,7 @@ declare type GlobalNavMenuResponse = {
 };
 
 declare type GlobalVenue = {
+  bg_venue: string;
   getting_there: {
     sub_title: string;
     description: string;
@@ -328,7 +329,7 @@ declare type Programme = {
   external_link: string;
   description: string;
   bg_img: string;
-  venue: Shape;
+  venue: Shape & {designId:string};
 };
 
 // declare type Programme = {
@@ -525,19 +526,19 @@ declare type TabsResponse = {
 };
 
 declare type MapT = {
-  id:string,
-  label: string,
-  floor_level: number,
-  image: string,
-  map_list: Shape[]
-}
+  id: string;
+  label: string;
+  floor_level: number;
+  image: string;
+  map_list: Shape[];
+};
 
 declare type VenueDesignMap = {
   header: ResponseHeader;
-  response:MapT[]
-}
+  response: MapT[];
+};
 
 declare type GlobalVenueDesignMap = {
   header: ResponseHeader;
-  response:( MapT & { programmes: Programme[], created_by:string } )[]
-}
+  response: (MapT & { programmes: Programme[]; created_by: string })[];
+};
