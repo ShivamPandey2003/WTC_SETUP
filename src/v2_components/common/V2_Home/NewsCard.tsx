@@ -33,6 +33,7 @@ export default function NewsCard({
         }
         alt=""
         className="w-full h-[5.5rem] object-cover rounded-t-xl object-center"
+        loading="lazy"
       />
       <div className="p-4">
         <h3 className="font-bold text-gray-900 mb-3">{title}</h3>
