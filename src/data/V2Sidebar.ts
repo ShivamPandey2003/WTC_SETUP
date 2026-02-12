@@ -9,27 +9,27 @@ type Nav_Routes = {
 export default [
     {
         Icon:House,
-        title:"News Feed",
+        title:"home_tab",
         route:"/"
     },
     {
         Icon:Calendar,
-        title: "Programme",
+        title: "programme_tab",
         route: "/programme"
     },
     {
         Icon:Users,
-        title: "Speakers",
+        title: "speaker_tab",
         route: "/speaker"
     },
     {
         Icon:Navigation,
-        title: "Venue",
+        title: "venue_tab",
         route: "/venue"
     },
     {
         Icon:Inbox,
-        title: "Exhibitors",
+        title: "exhibitors_tab",
         route: "/exhibitors"
     },
 ] as Nav_Routes[]

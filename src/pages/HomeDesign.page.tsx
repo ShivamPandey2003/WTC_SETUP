@@ -243,7 +243,7 @@ const HomeDesign_page = () => {
                       <img
                         src={
                           typeof appConfig.splash.image === "string"
-                            ? `data:image/png;base64,${appConfig.splash.image}`
+                            ? appConfig.splash.image
                             : URL.createObjectURL(appConfig.splash.image)
                         }
                         alt=""

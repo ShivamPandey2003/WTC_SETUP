@@ -1,5 +1,5 @@
 import Modal from '@/components/ui/Modal';
-import NewFrom from './NewFrom';
+import EditFrom from './EditForm';
 
 type EditModalProps = {
     isOpen: boolean;
@@ -21,7 +21,7 @@ const EditModal:React.FC<EditModalProps> = ({isOpen, onClose}) => {
       </div>
       <div className="">
         <div>
-          <NewFrom />
+          <EditFrom />
         </div>
       </div>
     </Modal>

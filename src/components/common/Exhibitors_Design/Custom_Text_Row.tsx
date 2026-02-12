@@ -89,7 +89,7 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
             Edit
           </Button>
 
-          <Button variant="link" onClick={()=>dispatch(setDeletingCategory(id))}>
+          <Button className="text-[#B85555]" variant="link" onClick={()=>dispatch(setDeletingCategory(id))}>
             <Trash2 />
             Delete
           </Button>

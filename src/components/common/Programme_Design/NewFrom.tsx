@@ -1,56 +1,48 @@
 import {
   useCreateSession,
-  useEditSession,
   useGetCategoryAll,
 } from "@/api/programme_design_api/Programme_design_api";
 import { useGetSpeakerList } from "@/api/speaker_design_api/speaker_design_api";
 import CustomForm from "@/components/global/CustomForm";
 import { setIsCreating } from "@/redux/HomeDesignSlice";
-import { setCategoryModal, setSelected } from "@/redux/ProgrammeDesignSlice";
+import { setCategoryModal } from "@/redux/ProgrammeDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { SessionSchema, type SessionForm } from "@/Schema/sessionSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsCreating as CreateSpeaker } from "@/redux/SpeakerDesignSlice";
-import { useGetAdminFloorPlanV2 } from "@/api/Venue_api/Venue_Design_api";
+import { useV2GetFloorMApList } from "@/api/Venue_api/Venue_Design_api";
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const NewFrom = () => {
   const { AllCategory, isPending } = useGetCategoryAll();
   const { SpeakerList, isPending: isSpeakersListPenindg } = useGetSpeakerList();
-  const { FloorPlan, isPending: isFloorPlanPending } = useGetAdminFloorPlanV2();
-  const { selected, session, slectedDate } = useSelector(
-    (state: RootState) => state.Programme_Design
+  const { V2_FloorMapList, V2_isFloorMapListPending } = useV2GetFloorMApList();
+  const [Values, setValues] = useState<
+    {
+      label: string;
+      value: string;
+    }[]
+  >([]);
+  const { slectedDate } = useSelector(
+    (state: RootState) => state.Programme_Design,
   );
-
-  const value = session.find((pre) => pre.session_id === selected);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm<SessionForm>({
     resolver: zodResolver(SessionSchema),
-    defaultValues:
-      selected && value
-        ? {
-            ...value,
-            speakers: value.speakers[0],
-            venueID: value?.venue?.id ?? "",
-            category: value.category[0],
-          }
-        : ({} as any),
   });
   const dispatch = useDispatch<AppDispatch>();
   const { CreateSession, isPending: isCreateSessionPending } =
     useCreateSession();
 
-  const { EditSession, isPending: isEditSessionPending } = useEditSession();
-
-  const onClose =
-    selected && value
-      ? () => dispatch(setSelected(null))
-      : () => dispatch(setIsCreating(false));
+  const onClose = () => dispatch(setIsCreating(false));
 
   const onSubmit = (newData: SessionForm) => {
     const formData = new FormData();
@@ -62,7 +54,6 @@ const NewFrom = () => {
       const day = String(d.getDate()).padStart(2, "0");
       return `${year}-${month}-${day}`;
     }
-
     formData.append("title", newData.title);
     formData.append("description", newData.description);
     formData.append("start_time", newData.start_time);
@@ -74,18 +65,38 @@ const NewFrom = () => {
     formData.append("category", newData.category);
     formData.append("speakers", newData.speakers);
     formData.append("attachment", newData.attachments?.[0] as Blob);
-    formData.append("venueID", newData.venueID);
+    formData.append("venueID", `${newData.floorID}__${newData.venueID}`);
 
-    if (value) {
-      formData.append("id", selected as string);
-      EditSession(formData);
-    } else {
-      CreateSession(formData);
-    }
+    CreateSession(formData);
   };
 
-  if (isPending || isSpeakersListPenindg || isFloorPlanPending) {
-    return;
+  const selectedFloorID = useWatch({
+    control,
+    name: "floorID",
+  });
+
+  useEffect(() => {
+    const Value = V2_FloorMapList?.response
+      .find((pre) => pre.id === selectedFloorID)
+      ?.map_list.filter((i) => !["IMAGE", "TEXT", "SCRIBBLE"].includes(i.type))
+      .map((item) => {
+        return {
+          label: `${item.name}`,
+          value: item.id,
+        };
+      });
+
+    if (!Value) return;
+
+    setValues(Value);
+  }, [selectedFloorID]);
+
+  if (isPending || isSpeakersListPenindg || V2_isFloorMapListPending) {
+    return (
+      <div className="h-[30vh] flex items-center justify-center">
+        <Loader2 size={24} className={`text-primary animate-spin`} />
+      </div>
+    );
   }
 
   const fields: {
@@ -150,18 +161,23 @@ const NewFrom = () => {
       addMoreHandler: () => dispatch(CreateSpeaker(true)),
     },
     {
+      name: "floorID",
+      label: "Floor",
+      type: "select",
+      placeholder: "Select Floor",
+      options: V2_FloorMapList?.response.map((item) => {
+        return {
+          label: `${item.label}`,
+          value: item.id,
+        };
+      }),
+    },
+    {
       name: "venueID",
       label: "Venue",
       type: "select",
       placeholder: "Select location",
-      options: FloorPlan?.response.floor_map_list
-        .filter((i) => !["IMAGE", "TEXT", "SCRIBBLE"].includes(i.type))
-        .map((item) => {
-          return {
-            label: `${item.name}`,
-            value: item.id,
-          };
-        }),
+      options: Values,
     },
   ];
 
@@ -171,7 +187,7 @@ const NewFrom = () => {
       fields={fields}
       register={register}
       errors={errors}
-      isLoading={isCreateSessionPending || isEditSessionPending}
+      isLoading={isCreateSessionPending}
       onClose={onClose}
     />
   );
