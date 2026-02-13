@@ -28,7 +28,7 @@ const SpeakerModal: React.FC<ModalProps> = ({ isOpen, onClose, id, data }) => {
             <img
               src={
                 Speaker.user_img
-                  ? `data:image/png;base64,${Speaker.user_img}`
+                  ? Speaker.user_img
                   : "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=600"
               }
               alt={Speaker.name}

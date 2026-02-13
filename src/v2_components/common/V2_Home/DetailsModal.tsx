@@ -32,7 +32,7 @@ const DetailsModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                 : "https://images.pexels.com/photos/4940642/pexels-photo-4940642.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
             }
             alt=""
-            className="w-full h-[15rem] object-cover rounded-t-lg"
+            className="w-full h-[15rem] object-cover rounded-t-lg bg-gray-200"
           />
           <div className="p-4 flex flex-col gap-4">
             <h2 className="text-2xl font-bold">{data.title}</h2>

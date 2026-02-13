@@ -15,7 +15,7 @@ import {
 } from "@/redux/GlobalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -59,7 +59,7 @@ export const useGetNewsList = () => {
   } = useQuery<NewsListResponse, AxiosError>({
     queryKey: ["global-News"],
     queryFn: async () => {
-      const res = await apiRequest("get", "news/general");
+      const res = await apiRequest("get", "news/list");
       return res.response;
     },
     select: (data) => {
@@ -71,6 +71,38 @@ export const useGetNewsList = () => {
   });
 
   return { NewsList, isPending, error, refetch };
+};
+
+export const useInfiniteNews = () => {
+  const {
+    data: AllNews,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+    error,
+  } = useInfiniteQuery<GlobalInfinityNews, AxiosError>({
+    queryKey: ["News-pagination"],
+    queryFn: async ({ pageParam }) => {
+      const res = await apiRequest("get", `news/general?page=${pageParam}`);
+      return res.response;
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { current_page, max_page, next_page } = lastPage.response;
+      if (current_page < max_page) return next_page;
+      return undefined; // no more pages
+    },
+  });
+
+  return {
+    AllNews,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+    error,
+  };
 };
 
 export const useGetSpeakersList = () => {
@@ -92,6 +124,38 @@ export const useGetSpeakersList = () => {
   });
 
   return { SpeakersList, isPending, error };
+};
+
+export const useInfiniteSpeakers = () => {
+  const {
+    data: AllSpeakers,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+    error,
+  } = useInfiniteQuery<GlobalInfinitySpeakers, AxiosError>({
+    queryKey: ["Speakers-pagination"],
+    queryFn: async ({ pageParam }) => {
+      const res = await apiRequest("get", `speaker/list?page=${pageParam}`);
+      return res.response;
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { current_page, max_page, next_page } = lastPage.response;
+      if (current_page < max_page) return next_page;
+      return undefined; // no more pages
+    },
+  });
+
+  return {
+    AllSpeakers,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+    error,
+  };
 };
 
 export const useGetProgrammeList = () => {
@@ -469,7 +533,7 @@ export const useGetExhibitorsList = () => {
   } = useQuery<GlobalExhibitorListResponse, AxiosError>({
     queryKey: ["global-Exhibitors"],
     queryFn: async () => {
-      const res = await apiRequest("get", "exhibitors/list");
+      const res = await apiRequest("get", "exhibitors/carusole");
       return res.response;
     },
     select: (data) => {
@@ -480,6 +544,38 @@ export const useGetExhibitorsList = () => {
   });
 
   return { ExhibitorList, isPending, error };
+};
+
+export const useInfiniteExhibitors = () => {
+  const {
+    data: AllExhibitors,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+    error,
+  } = useInfiniteQuery<GlobalInfinityExhibitors, AxiosError>({
+    queryKey: ["Exhibitors-pagination"],
+    queryFn: async ({ pageParam }) => {
+      const res = await apiRequest("get", `exhibitors/list?page=${pageParam}`);
+      return res.response;
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { current_page, max_page, next_page } = lastPage.response;
+      if (current_page < max_page) return next_page;
+      return undefined; // no more pages
+    },
+  });
+
+  return {
+    AllExhibitors,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+    error,
+  };
 };
 
 export const useGetUsersProfile = (id: string) => {

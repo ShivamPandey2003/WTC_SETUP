@@ -1,9 +1,11 @@
 import {
-  useGetNewsList,
   useHomeDesignUpdate,
   useUploadLogo,
 } from "@/api/global_api/global_api";
-import { useUploadNewsCSV } from "@/api/home_design_api/Home_design_api";
+import {
+  useGetNewsList,
+  useUploadNewsCSV,
+} from "@/api/home_design_api/Home_design_api";
 // import BannerPreview from "@/components/common/Home_Design/BannerPreview";
 import CreateModal from "@/components/common/Home_Design/CreateModal";
 import MiniSmallCarousel from "@/components/common/Home_Design/MiniCarousel";
