@@ -1,17 +1,55 @@
-import { useGetSpeakersList } from "@/api/global_api/global_api";
+import {
+  useInfiniteSpeakers,
+} from "@/api/global_api/global_api";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
 // import { teamMembers } from "@/data/Speaker";
 import SpeakerCard from "@/v2_components/common/V2_Speaker/SpeakerCard";
 import SpeakerModal from "@/v2_components/common/V2_Speaker/SpeakerModal";
-import { useState } from "react";
+import { Loader } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const V2_Speakers_page = () => {
-  const [selectedId, setSelectedId]= useState<string|null>(null)
-  const { SpeakersList, isPending, error } = useGetSpeakersList();
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+  const {
+    AllSpeakers,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+    error,
+  } = useInfiniteSpeakers();
 
-  if (isPending || !SpeakersList) {
+  const SpeakersList = useMemo(() => {
+    if (!AllSpeakers) return [];
+    const newData = AllSpeakers.pages.flatMap((page) => page.response.data);
+    if (!newData) return [];
+
+    return newData;
+  }, [AllSpeakers]);
+
+  const handleObserver = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const target = entries[0];
+      if (target.isIntersecting && hasNextPage) {
+        fetchNextPage();
+      }
+    },
+    [fetchNextPage, hasNextPage],
+  );
+
+  useEffect(() => {
+    if (!loadMoreRef.current) return;
+    observerRef.current = new IntersectionObserver(handleObserver);
+    observerRef.current.observe(loadMoreRef.current);
+
+    return () => observerRef.current?.disconnect();
+  }, [handleObserver]);
+
+  if (status === "pending") {
     return (
       <div className="w-full mx-auto">
         <div className="px-4 flex gap-4 flex-wrap items-start justify-center sm:justify-start">
@@ -31,11 +69,7 @@ const V2_Speakers_page = () => {
     );
   }
 
-  if (
-    !SpeakersList ||
-    !SpeakersList.response ||
-    !SpeakersList.response.length
-  ) {
+  if (!AllSpeakers || !AllSpeakers.pages || !AllSpeakers.pages.length) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />
@@ -48,11 +82,30 @@ const V2_Speakers_page = () => {
     // grid-cols-5 gap-6
     <div className="w-full mx-auto">
       <div className="p-4 flex gap-4 flex-wrap items-start justify-center sm:justify-start">
-        {SpeakersList.response.map((item, i) => (
-          <SpeakerCard key={i} {...item} onClick={()=>setSelectedId(item.speaker_id)} />
+        {SpeakersList.map((item, i) => (
+          <SpeakerCard
+            key={i}
+            {...item}
+            onClick={() => setSelectedId(item.speaker_id)}
+          />
         ))}
       </div>
-      <SpeakerModal data={SpeakersList.response} id={selectedId as string} isOpen={Boolean(selectedId)} onClose={()=>setSelectedId(null)}/>
+      <SpeakerModal
+        data={SpeakersList}
+        id={selectedId as string}
+        isOpen={Boolean(selectedId)}
+        onClose={() => setSelectedId(null)}
+      />
+      <div
+        ref={loadMoreRef}
+        className="w-full flex items-center justify-center my-4"
+      >
+        {isFetchingNextPage ? (
+          <Loader size={30} className="animate-spin text-primary" />
+        ) : (
+          ""
+        )}
+      </div>
     </div>
   );
 };

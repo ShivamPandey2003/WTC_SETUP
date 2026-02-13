@@ -105,7 +105,7 @@ export default function HeroCarousel({
                 </h2>
                 <p
                   className={cn(
-                    "text-xl md:text-2xl text-white/90 mb-8",
+                    "text-xl md:text-2xl text-white/90 mb-8 line-clamp-2",
                     descriptionClassName,
                   )}
                 >

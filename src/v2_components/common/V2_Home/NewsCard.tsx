@@ -20,7 +20,7 @@ export default function NewsCard({
   return (
     <div
       className={cn(
-        "bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer",
+        "bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer min-h-[255px]",
         className,
       )}
       onClick={() => onClick()}

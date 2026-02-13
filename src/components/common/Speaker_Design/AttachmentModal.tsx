@@ -13,7 +13,6 @@ type ModalProps = {
 };
 
 const AttachmentModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
-  console.log(data);
   return (
     <Modal
       showHeader={false}

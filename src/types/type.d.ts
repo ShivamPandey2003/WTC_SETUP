@@ -329,7 +329,7 @@ declare type Programme = {
   external_link: string;
   description: string;
   bg_img: string;
-  venue: Shape & {designId:string};
+  venue: Shape & { designId: string };
 };
 
 // declare type Programme = {
@@ -473,11 +473,7 @@ declare type CategoryListResponse = {
 
 declare type GlobalExhibitorListResponse = {
   header: ResponseHeader;
-  response: {
-    seq: string[];
-  } & {
-    [category: string]: Omit<Exhibitor, "category">[];
-  };
+  response: Omit<Exhibitor, "category">[];
 };
 
 declare type GlobalUsersProfile = {
@@ -541,4 +537,38 @@ declare type VenueDesignMap = {
 declare type GlobalVenueDesignMap = {
   header: ResponseHeader;
   response: (MapT & { programmes: Programme[]; created_by: string })[];
+};
+
+declare type Infinity = {
+  max_page: number;
+  current_page: number;
+  next_page: number;
+  total_count: number;
+};
+
+declare type GlobalInfinityNews = {
+  header: ResponseHeader;
+  response: Infinity & { data: News[] };
+};
+
+declare type GlobalInfinitySpeakers = {
+  header: ResponseHeader;
+  response: Infinity & {
+    data: (CreateSpeakerRequest & {
+      speaker_id: string;
+      created_on: string;
+      user_img: string;
+    })[];
+  };
+};
+
+declare type GlobalInfinityExhibitors = {
+  header: ResponseHeader;
+  response: Infinity & {
+    data: {
+      seq: string[];
+    } & {
+      grouped: { [category: string]: Omit<Exhibitor, "category">[] };
+    };
+  };
 };
