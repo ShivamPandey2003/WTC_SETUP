@@ -335,7 +335,7 @@ const ProgrammeDesign_page = () => {
                       className="mt-4"
                       variant={"link"}
                     >
-                      + Add exhibitor category
+                      + Add category
                     </Button>
                   </div>
                 </div>

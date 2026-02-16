@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { setLoginModel } from "@/redux/ModalSlice";
+import { setLoginModel, setSearchModal } from "@/redux/ModalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { Menu } from "lucide-react";
 import { useEffect, useState, type RefObject } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
+import { SearchTrigger } from "./SearchTrigger";
 
 interface Prop {
   REF: RefObject<HTMLDivElement | null>;
@@ -65,28 +66,33 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
           {TitleFetch(pathname.split("_")[0].slice(1))}
         </h2>
       </div>
-      {!token ? (
-        <Button
-          onClick={() => dispatch(setLoginModel(true))}
-          className="px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
-        >
-          Login
-        </Button>
-      ) : grp !== 1 ? (
-        <Button
-          onClick={() => navigate("/user-profile")}
-          className="px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
-        >
-          Go to Profile
-        </Button>
-      ) : (
-        <Button
-          onClick={() => navigate("/global-design")}
-          className="px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
-        >
-          Go to dashboard
-        </Button>
-      )}
+      <div className="flex items-center gap-4">
+        {pathname !== "/venue" && pathname !== "/programme" && (
+          <SearchTrigger onClick={() => dispatch(setSearchModal(true))} />
+        )}
+        {!token ? (
+          <Button
+            onClick={() => dispatch(setLoginModel(true))}
+            className="px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
+          >
+            Login
+          </Button>
+        ) : grp !== 1 ? (
+          <Button
+            onClick={() => navigate("/user-profile")}
+            className="px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
+          >
+            Go to Profile
+          </Button>
+        ) : (
+          <Button
+            onClick={() => navigate("/global-design")}
+            className="px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
+          >
+            Go to dashboard
+          </Button>
+        )}
+      </div>
     </header>
   );
 };

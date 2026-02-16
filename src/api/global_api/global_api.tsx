@@ -731,3 +731,53 @@ export const useGetTabs = () => {
     error,
   };
 };
+
+export const useInfiniteSearch = ({
+  search,
+  route,
+}: { search?: string; route?: string } = {}) => {
+  const {
+    data: AllNews,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+    error,
+  } = useInfiniteQuery<any, AxiosError>({
+    queryKey: ["News-pagination", search, route],
+    queryFn: async ({ pageParam }) => {
+      const params = search
+        ? `page=${pageParam}&search=${search}`
+        : `page=${pageParam}`;
+      let endpoint: string = "";
+      switch (route) {
+        case "/":
+          endpoint = `news/general?${params}`;
+          break;
+        case "/speaker":
+          endpoint = `speaker/list?${params}`;
+          break;
+        case "/exhibitors":
+          endpoint = `exhibitors/list?${params}`
+      }
+      const res = await apiRequest("get", endpoint);
+      return res.response;
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { current_page, max_page, next_page } = lastPage.response;
+      if (current_page < max_page) return next_page;
+      return undefined; // no more pages
+    },
+    retry:1
+  });
+
+  return {
+    AllNews,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+    error,
+  };
+};
