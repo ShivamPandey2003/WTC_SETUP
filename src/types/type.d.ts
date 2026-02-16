@@ -1,5 +1,6 @@
 declare type ModelSliceType = {
   loginModel: boolean;
+  searchModal: boolean;
 };
 
 declare type HomeDesignStateType = {
