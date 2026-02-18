@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { LoaderCircle, Search, X } from "lucide-react";
 import { useInfiniteSearch } from "@/api/global_api/global_api";
 import { useDebounce } from "@/hooks/useDebounce";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -14,6 +14,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
+  const navigate = useNavigate();
 
   const { AllNews, status } = useInfiniteSearch({
     search: debouncedSearch,
@@ -22,13 +23,20 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
   const NewsList = useMemo(() => {
     if (!AllNews) return [];
-    const newNewsData = AllNews.pages.flatMap((page) => page.response.data);
-    if (!newNewsData) return [];
+    const newNewsData = AllNews.pages.flatMap(
+      (page) => page.response.data ?? [],
+    );
+    if (!newNewsData.length) return [];
 
     return newNewsData;
   }, [AllNews]);
 
-  console.log(NewsList);
+  const title =
+    pathname === "/"
+      ? "News"
+      : pathname === "/speaker"
+        ? "Speakers"
+        : "Exhibitors";
 
   useEffect(() => {
     if (isOpen) {
@@ -73,8 +81,8 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             <X className="w-5 h-5 text-gray-500" />
           </button>
         </div>
-
-        <div className="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
+        <div className="px-6 pb-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
+          <h2 className="text-2xl font-semibold my-6">{title}</h2>
           {status === "pending" ? (
             <div className="text-center text-gray-400 py-8">
               <LoaderCircle className="w-12 h-12 mx-auto mb-3 opacity-30 animate-spin" />
@@ -89,7 +97,14 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             NewsList.map((item) => {
               if (pathname === "/") {
                 return (
-                  <div className="flex items-start mb-6 gap-4" key={item.id}>
+                  <div
+                    className="flex items-start mb-6 gap-4 cursor-pointer"
+                    key={item.id}
+                    onClick={() => {
+                      navigate(`/news/${item.id}`);
+                      onClose();
+                    }}
+                  >
                     <img
                       src={item.bg_img as string}
                       alt={item.title}
@@ -106,8 +121,9 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               } else if (pathname === "/speaker") {
                 return (
                   <div
-                    className="flex items-start mb-6 gap-4"
+                    className="flex items-start mb-6 gap-4 cursor-pointer"
                     key={item.speaker_id}
+                    onClick={() => navigate(`/speaker/${item.id}`)}
                   >
                     <img
                       src={item.user_img as string}
@@ -129,8 +145,9 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       item.grouped[str].map((value: any) => {
                         return (
                           <div
-                            className="flex items-start mb-6 gap-4"
+                            className="flex items-start mb-6 gap-4 cursor-pointer"
                             key={value.id}
+                            onClick={() => navigate(`/exhibitors/${value.id}`)}
                           >
                             <img
                               src={value.logo as string}
@@ -146,6 +163,9 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                               </p>
                               <p className="line-clamp-4 text-sm">
                                 {value.url}
+                              </p>
+                              <p className="line-clamp-4 text-sm">
+                                Type: {str}
                               </p>
                             </div>
                           </div>

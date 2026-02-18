@@ -83,8 +83,6 @@ const V2_Venue_page = () => {
     setSelectedId(Params)
   },[Params])
 
-  console.log(V2_Global_FloorMapList)
-
   if (isPending || V2_Global_isFloorMapListPending) {
     return (
       <div className="w-full h-[80vh] flex flex-col items-center justify-center">

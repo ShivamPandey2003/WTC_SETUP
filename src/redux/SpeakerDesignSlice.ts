@@ -21,6 +21,11 @@ type ProgrammeDesignStateType = Omit<
   speakers: (CreateSpeakerRequestT & {
     speaker_id: string;
     created_on: string;
+    profile_image: string;
+    attachments: {
+      filename: string;
+      base64: string;
+    }[];
   })[];
   SpeakerSettings: payload;
 };
@@ -82,7 +87,15 @@ const Speakers_DesignSlice = createSlice({
     setSpeaker: (
       state,
       payload: PayloadAction<
-        (CreateSpeakerRequestT & { speaker_id: string; created_on: string })[]
+        (CreateSpeakerRequestT & {
+          speaker_id: string;
+          created_on: string;
+          profile_image: string;
+          attachments: {
+            filename: string;
+            base64: string;
+          }[];
+        })[]
       >,
     ) => {
       state.speakers = payload.payload;

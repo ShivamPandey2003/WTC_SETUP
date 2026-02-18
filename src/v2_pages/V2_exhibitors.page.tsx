@@ -1,20 +1,24 @@
-import {
-  useInfiniteExhibitors,
-} from "@/api/global_api/global_api";
+import { useInfiniteExhibitors } from "@/api/global_api/global_api";
 import ExibitorSection from "@/components/common/Exhibitors/Section";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
+import { setExhibitors } from "@/redux/ExhibitorSlice";
+import type { AppDispatch } from "@/redux/store";
 // import Exhibitors from "@/data/Exhibitors";
 import ExhibitorCard from "@/v2_components/common/V2_Exhibitors/ExhibitorCard";
 import ExhibitorModal from "@/v2_components/common/V2_Exhibitors/ExhibitorModal";
 import { Loader } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 const V2_exhibitors_page = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const navigation = useNavigate();
   const {
     AllExhibitors,
     fetchNextPage,
@@ -26,7 +30,9 @@ const V2_exhibitors_page = () => {
 
   const ExhibitorList = useMemo(() => {
     if (!AllExhibitors) return [];
-    const newExhibitorsData = AllExhibitors.pages.flatMap((page) => page.response.data);
+    const newExhibitorsData = AllExhibitors.pages.flatMap(
+      (page) => page.response.data,
+    );
     if (!newExhibitorsData) return [];
 
     return newExhibitorsData;
@@ -49,6 +55,20 @@ const V2_exhibitors_page = () => {
 
     return () => observerRef.current?.disconnect();
   }, [handleObserver]);
+
+  useEffect(() => {
+    if (!ExhibitorList.length) return;
+
+    dispatch(
+      setExhibitors(
+        ExhibitorList.flatMap((item) =>
+          item.seq.flatMap((pr) =>
+            item.grouped[pr].map((s) => ({ ...s, SponsorType: pr })),
+          ),
+        ),
+      ),
+    );
+  }, [ExhibitorList]);
 
   if (status === "pending") {
     return (
@@ -97,7 +117,7 @@ const V2_exhibitors_page = () => {
                     <ExhibitorCard
                       key={i}
                       {...item}
-                      onClick={() => setSelectedId(item.id)}
+                      onClick={() => navigation(`/exhibitors/${item.id}`)}
                     />
                   ))}
                 </div>

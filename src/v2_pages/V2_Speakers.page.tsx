@@ -4,16 +4,22 @@ import {
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
+import { setSpeaker } from "@/redux/SpeakerDesignSlice";
+import type { AppDispatch } from "@/redux/store";
 // import { teamMembers } from "@/data/Speaker";
 import SpeakerCard from "@/v2_components/common/V2_Speaker/SpeakerCard";
-import SpeakerModal from "@/v2_components/common/V2_Speaker/SpeakerModal";
+// import SpeakerModal from "@/v2_components/common/V2_Speaker/SpeakerModal";
 import { Loader } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 const V2_Speakers_page = () => {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  // const [selectedId, setSelectedId] = useState<string | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const {
     AllSpeakers,
     fetchNextPage,
@@ -48,6 +54,12 @@ const V2_Speakers_page = () => {
 
     return () => observerRef.current?.disconnect();
   }, [handleObserver]);
+
+  useEffect(() => {
+      if (!SpeakersList.length) return;
+  
+      dispatch(setSpeaker(SpeakersList));
+    }, [SpeakersList]);
 
   if (status === "pending") {
     return (
@@ -86,16 +98,16 @@ const V2_Speakers_page = () => {
           <SpeakerCard
             key={i}
             {...item}
-            onClick={() => setSelectedId(item.speaker_id)}
+            onClick={() => navigate(`/speaker/${item.speaker_id}`)}
           />
         ))}
       </div>
-      <SpeakerModal
+      {/* <SpeakerModal
         data={SpeakersList}
         id={selectedId as string}
         isOpen={Boolean(selectedId)}
         onClose={() => setSelectedId(null)}
-      />
+      /> */}
       <div
         ref={loadMoreRef}
         className="w-full flex items-center justify-center my-4"

@@ -1,6 +1,7 @@
 declare type ModelSliceType = {
   loginModel: boolean;
   searchModal: boolean;
+  title: string | null;
 };
 
 declare type HomeDesignStateType = {
@@ -139,11 +140,13 @@ declare type CreateSpeakerRequestT = {
   created_on: string;
   attachments: {
     filename: string;
-    speaker_image: string;
+    base64: string;
   }[];
   coming_sessions: Record<string, string>[];
   total_sessions: number;
   keyNote: boolean;
+  whatsapp_url:string;
+  linkedin_url:string;
 };
 
 declare type SpeakerListResponse = {
@@ -555,10 +558,14 @@ declare type GlobalInfinityNews = {
 declare type GlobalInfinitySpeakers = {
   header: ResponseHeader;
   response: Infinity & {
-    data: (CreateSpeakerRequest & {
+    data: (CreateSpeakerRequestT & {
       speaker_id: string;
       created_on: string;
-      user_img: string;
+      profile_image: string;
+      attachments: {
+        filename: string;
+        base64: string;
+      }[];
     })[];
   };
 };

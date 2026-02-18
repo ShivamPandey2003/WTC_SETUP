@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { setLoginModel, setSearchModal } from "@/redux/ModalSlice";
+import { setLoginModel, setSearchModal, setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { Menu } from "lucide-react";
+import { ChevronLeft, Menu } from "lucide-react";
 import { useEffect, useState, type RefObject } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { SearchTrigger } from "./SearchTrigger";
 
 interface Prop {
@@ -16,11 +16,13 @@ interface Prop {
 const V2_Navbar = ({ REF, setOpen }: Prop) => {
   const [showBackground, setShowBackground] = useState<boolean>(false);
   const { pathname } = useLocation();
+  const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const token = localStorage.getItem("token");
   const { grp } = useSelector((state: RootState) => state.AuthSlice.userinfo);
   const navigate = useNavigate();
   const { ArrayTabs } = useSelector((state: RootState) => state.Global_Slice);
+  const { title } = useSelector((state: RootState) => state.model);
 
   useEffect(() => {
     const el = REF?.current;
@@ -48,6 +50,8 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
         return ArrayTabs.venue_tab;
       case "exhibitors":
         return ArrayTabs.exhibitors_tab;
+      case "news":
+        return ArrayTabs.home_tab;
       case "":
         return ArrayTabs.home_tab;
     }
@@ -62,12 +66,23 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
     >
       <div className="flex items-center gap-4">
         <Menu className="sm:hidden cursor-pointer" onClick={setOpen} />
+        {id && (
+          <ChevronLeft
+            className="cursor-pointer hover:text-primary"
+            onClick={() => {
+              navigate(-1);
+              dispatch(setTitle(null));
+            }}
+          />
+        )}
         <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize">
-          {TitleFetch(pathname.split("_")[0].slice(1))}
+          {TitleFetch(pathname.split("/")[1])} {title ? `/ ${title}` : ""}
         </h2>
       </div>
       <div className="flex items-center gap-4">
-        {pathname !== "/venue" && pathname !== "/programme" && (
+        {(pathname === "/" ||
+          pathname === "/speaker" ||
+          pathname === "/exhibitors") && (
           <SearchTrigger onClick={() => dispatch(setSearchModal(true))} />
         )}
         {!token ? (

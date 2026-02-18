@@ -63,7 +63,7 @@ const V2_rootlayout = () => {
           <V2_Sidebar_Context setOpen={() => setOpen(false)} />
         </div>
       </aside>
-      <SearchModal isOpen={searchModal} onClose={()=>dispatch(setSearchModal(false))} />
+      {searchModal && <SearchModal isOpen={searchModal} onClose={()=>dispatch(setSearchModal(false))} />}
       <LoginModal2 isOpen={loginModel} onClose={() => onClose()} />
       <V2_SplashScreen open={spashScreen} setOpen={setSpashScreen} />
     </div>
