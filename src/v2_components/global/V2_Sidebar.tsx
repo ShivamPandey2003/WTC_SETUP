@@ -47,7 +47,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
                 <Button
                   key={key}
                   className={cn(
-                    "bg-white text-balck hover:bg-[#35825C] hover:text-white cursor-pointer justify-start",
+                    "bg-white text-black hover:bg-[#35825C] hover:text-white cursor-pointer justify-start",
                     pathname === item.route && "bg-[#35825C] text-white",
                   )}
                   onClick={() => {

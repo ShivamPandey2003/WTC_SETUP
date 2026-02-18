@@ -744,7 +744,7 @@ export const useInfiniteSearch = ({
     status,
     error,
   } = useInfiniteQuery<any, AxiosError>({
-    queryKey: ["News-pagination", search, route],
+    queryKey: [search, route],
     queryFn: async ({ pageParam }) => {
       const params = search
         ? `page=${pageParam}&search=${search}`
@@ -758,7 +758,11 @@ export const useInfiniteSearch = ({
           endpoint = `speaker/list?${params}`;
           break;
         case "/exhibitors":
-          endpoint = `exhibitors/list?${params}`
+          endpoint = `exhibitors/list?${params}`;
+          break;
+        case route?.includes("news"):
+          endpoint = `news/general?${params}`;
+          break;
       }
       const res = await apiRequest("get", endpoint);
       return res.response;
@@ -769,7 +773,7 @@ export const useInfiniteSearch = ({
       if (current_page < max_page) return next_page;
       return undefined; // no more pages
     },
-    retry:1
+    retry: 1,
   });
 
   return {

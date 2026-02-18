@@ -7,13 +7,14 @@ import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { setNews } from "@/redux/ExtraSlice";
 import type { AppDispatch } from "@/redux/store";
-import DetailsModal from "@/v2_components/common/V2_Home/DetailsModal";
+// import DetailsModal from "@/v2_components/common/V2_Home/DetailsModal";
 import HeroCarousel from "@/v2_components/common/V2_Home/HeroCarousel";
 import NewsCard from "@/v2_components/common/V2_Home/NewsCard";
 import SponserCarousal from "@/v2_components/common/V2_Home/SponserCarousal";
 import { Loader } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 // const slides2 = [
 //   {
 //     id: 1,
@@ -39,10 +40,11 @@ import { useDispatch } from "react-redux";
 // ];
 
 const V2_Home_page = () => {
-  const [selected, setSelected] = useState<string | null>(null);
+  // const [selected, setSelected] = useState<string | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch<AppDispatch>();
+  const navigation = useNavigate();
   const {
     AllNews,
     fetchNextPage,
@@ -136,7 +138,7 @@ const V2_Home_page = () => {
         <div className="lg:col-span-2">
           <HeroCarousel
             slides={NewsList.slice(0, 4)}
-            onClick={(str) => setSelected(str)}
+            onClick={(str) => navigation(`/news/${str}`)}
           />
         </div>
         <div className="space-y-4">
@@ -146,7 +148,7 @@ const V2_Home_page = () => {
               {...item}
               className=""
               bg_img={item.bg_img}
-              onClick={() => setSelected(item.id)}
+              onClick={() => navigation(`/news/${item.id}`)}
             />
           ))}
         </div>
@@ -158,7 +160,7 @@ const V2_Home_page = () => {
               key={index}
               {...item}
               bg_img={item.bg_img}
-              onClick={() => setSelected(item.id)}
+              onClick={() => navigation(`/news/${item.id}`)}
             />
           ))}
         </div>
@@ -175,17 +177,17 @@ const V2_Home_page = () => {
             key={index}
             {...item}
             bg_img={item.bg_img}
-            onClick={() => setSelected(item.id)}
+            onClick={() => navigation(`/news/${item.id}`)}
           />
         ))}
       </div>
-      {selected && (
+      {/* {selected && (
         <DetailsModal
           id={selected as string}
           isOpen={Boolean(selected)}
           onClose={() => setSelected(null)}
         />
-      )}
+      )} */}
       <div
         ref={loadMoreRef}
         className="w-full flex items-center justify-center my-4"
