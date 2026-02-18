@@ -8,7 +8,7 @@ type ModalProps = {
   onClose: () => void;
   data: {
     filename: string;
-    speaker_image: string;
+    base64: string;
   }[];
 };
 
@@ -30,7 +30,7 @@ const AttachmentModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
             <div key={i} className="flex items-start gap-8 mb-6">
               <div>{i + 1}.</div>
               <img
-                src={pre.speaker_image}
+                src={pre.base64}
                 alt={pre.filename}
                 className="w-4/5 h-[25rem]"
               />
@@ -39,7 +39,7 @@ const AttachmentModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
             <div key={i} className="flex items-start gap-8 mb-6">
               <div>{i + 1}.</div>
               <a
-                href={pre.speaker_image}
+                href={pre.base64}
                 target="_blank"
                 className="flex items-center text-blue-600 gap-1"
               >

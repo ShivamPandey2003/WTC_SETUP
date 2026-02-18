@@ -5,7 +5,7 @@ type initialStateT = {
   isDeleting: string | null;
   isCreating: boolean;
   categoryModal: boolean;
-  Exhibitors: (Exhibitor & {SponsorType: string})[];
+  Exhibitors: (Exhibitor & {SponsorType?: string})[];
   Categorys: Category[];
   open_link_new_tab: boolean;
   allow_email_exposure: boolean;
@@ -46,7 +46,7 @@ const Exhibitor_DesignSlice = createSlice({
       state.isCreating = payload.payload;
       return state;
     },
-    setExhibitors: (state, payload: PayloadAction<(Exhibitor & {SponsorType: string})[]>) => {
+    setExhibitors: (state, payload: PayloadAction<(Exhibitor & {SponsorType?: string})[]>) => {
       state.Exhibitors = payload.payload;
       return state;
     },
