@@ -73,7 +73,7 @@ export default function HeroCarousel({
         index === currentSlide ? (
           <div
             key={index}
-            className={`absolute inset-0 transition-opacity duration-700 ${
+            className={`absolute inset-0 transition-opacity duration-700 cursor-pointer ${
               index === currentSlide ? "opacity-100" : "opacity-0"
             }`}
           >
@@ -146,7 +146,7 @@ export default function HeroCarousel({
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-2 h-2 rounded-full transition-all duration-200 ${
+            className={`w-2 h-2 rounded-full transition-all duration-200 cursor-pointer ${
               index === currentSlide
                 ? "bg-white w-8"
                 : "bg-white/50 hover:bg-white/75"

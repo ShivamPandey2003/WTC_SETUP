@@ -1,9 +1,8 @@
-import {
-  useInfiniteSpeakers,
-} from "@/api/global_api/global_api";
+import { useInfiniteSpeakers } from "@/api/global_api/global_api";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
+import { setTitle } from "@/redux/ModalSlice";
 import { setSpeaker } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch } from "@/redux/store";
 // import { teamMembers } from "@/data/Speaker";
@@ -56,10 +55,14 @@ const V2_Speakers_page = () => {
   }, [handleObserver]);
 
   useEffect(() => {
-      if (!SpeakersList.length) return;
-  
-      dispatch(setSpeaker(SpeakersList));
-    }, [SpeakersList]);
+    if (!SpeakersList.length) return;
+
+    dispatch(setSpeaker(SpeakersList));
+  }, [SpeakersList]);
+
+  useEffect(() => {
+    dispatch(setTitle(null));
+  }, []);
 
   if (status === "pending") {
     return (

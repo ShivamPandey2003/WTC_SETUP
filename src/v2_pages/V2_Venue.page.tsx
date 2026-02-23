@@ -22,6 +22,7 @@ import Map_V2 from "@/v2_components/common/V2_Venue/Map_V2";
 import { useSearchParams } from "react-router";
 import { setSearchParams, setSearchParams2 } from "@/redux/GlobalSlice";
 import { useGlobalV2GetFloorMapList } from "@/api/Venue_api/Venue_Design_api";
+import { setTitle } from "@/redux/ModalSlice";
 
 const apiKey = import.meta.env.VITE_REACT_GOOGLE_MAPS_API_KEY;
 
@@ -41,7 +42,7 @@ const V2_Venue_page = () => {
     conference_start_time,
     conference_end_time,
     conference_title,
-    searchParams:Params
+    searchParams: Params,
   } = useSelector((state: RootState) => state.Global_Slice);
 
   useEffect(() => {
@@ -78,10 +79,14 @@ const V2_Venue_page = () => {
     }
   }, [V2_Global_FloorMapList]);
 
-  useEffect(()=>{
-    if(!Params) return;
-    setSelectedId(Params)
-  },[Params])
+  useEffect(() => {
+    if (!Params) return;
+    setSelectedId(Params);
+  }, [Params]);
+
+  useEffect(() => {
+    dispatch(setTitle(null));
+  }, []);
 
   if (isPending || V2_Global_isFloorMapListPending) {
     return (
@@ -234,12 +239,12 @@ const V2_Venue_page = () => {
                 <select
                   value={selectedId as string}
                   onChange={(e) => setSelectedId(e.target.value)}
-                  className="rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary mb-1"
+                  className="rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary mb-1 cursor-pointer"
                 >
                   <option value="">{"Select an option"}</option>
                   {V2_Global_FloorMapList &&
                     V2_Global_FloorMapList.response.map((opt) => (
-                      <option key={opt.id} value={opt.id}>
+                      <option key={opt.id} value={opt.id} className="cursor-pointer">
                         {opt.label}
                       </option>
                     ))}

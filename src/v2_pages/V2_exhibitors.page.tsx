@@ -4,6 +4,7 @@ import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { setExhibitors } from "@/redux/ExhibitorSlice";
+import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
 // import Exhibitors from "@/data/Exhibitors";
 import ExhibitorCard from "@/v2_components/common/V2_Exhibitors/ExhibitorCard";
@@ -69,6 +70,10 @@ const V2_exhibitors_page = () => {
       ),
     );
   }, [ExhibitorList]);
+
+  useEffect(() => {
+    dispatch(setTitle(null));
+  }, []);
 
   if (status === "pending") {
     return (

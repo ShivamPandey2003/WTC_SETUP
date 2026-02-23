@@ -15,7 +15,7 @@ export default function ExhibitorCard({
 }: ExhibitorCardProps) {
   return (
     <div
-      className={`rounded-lg overflow-hidden shadow-md border border-border w-[20rem] max-w-full sm:max-w-[17.5rem] md:max-w-xs`}
+      className={`rounded-lg overflow-hidden shadow-md border border-border w-[20rem] max-w-full sm:max-w-[17.5rem] md:max-w-xs cursor-pointer`}
       onClick={onClick}
     >
       <div

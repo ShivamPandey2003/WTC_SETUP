@@ -6,6 +6,7 @@ import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { setNews } from "@/redux/ExtraSlice";
+import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
 // import DetailsModal from "@/v2_components/common/V2_Home/DetailsModal";
 import HeroCarousel from "@/v2_components/common/V2_Home/HeroCarousel";
@@ -90,6 +91,10 @@ const V2_Home_page = () => {
 
     dispatch(setNews(NewsList));
   }, [NewsList]);
+
+  useEffect(() => {
+    dispatch(setTitle(null));
+  }, []);
 
   if (status === "pending" || isExhibitorsListLoading) {
     return (

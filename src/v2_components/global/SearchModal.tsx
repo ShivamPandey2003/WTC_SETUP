@@ -123,7 +123,10 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   <div
                     className="flex items-start mb-6 gap-4 cursor-pointer"
                     key={item.speaker_id}
-                    onClick={() => navigate(`/speaker/${item.id}`)}
+                    onClick={() => {
+                      navigate(`/speaker/${item.speaker_id}`);
+                      onClose();
+                    }}
                   >
                     <img
                       src={item.user_img as string}
@@ -147,7 +150,10 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                           <div
                             className="flex items-start mb-6 gap-4 cursor-pointer"
                             key={value.id}
-                            onClick={() => navigate(`/exhibitors/${value.id}`)}
+                            onClick={() => {
+                              navigate(`/exhibitors/${value.id}`);
+                              onClose();
+                            }}
                           >
                             <img
                               src={value.logo as string}

@@ -38,7 +38,7 @@ const ExhibitorsDetails = () => {
 
   return (
     <div className="px-4 pb-4 mx-auto">
-      <div className="max-w-5xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           <div className="relative px-6 py-6">
             <div className="flex flex-col sm:flex-row gap-8 items-start">
@@ -77,7 +77,7 @@ const ExhibitorsDetails = () => {
                   </a>
                   <button
                     onClick={() => handleCopyEmail(exhibitorData.email)}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-lg transition-all duration-200"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-lg transition-all duration-200 cursor-pointer"
                   >
                     <Copy className="w-5 h-5" />
                     Copy Email

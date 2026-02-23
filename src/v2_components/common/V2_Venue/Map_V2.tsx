@@ -190,7 +190,7 @@ const Map_V2 = ({ id }: prop) => {
 
   return (
     <div
-      className="w-full overflow-auto relative"
+      className="w-full overflow-auto relative cursor-pointer"
       style={{
         maxHeight: "66vh",
         WebkitOverflowScrolling: "touch",
