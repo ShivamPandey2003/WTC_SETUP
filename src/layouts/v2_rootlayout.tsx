@@ -14,14 +14,15 @@ import { useEffect, useRef, useState } from "react";
 import { Outlet } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { setLoginModel } from "@/redux/ModalSlice";
+import { setLoginModel, setSearchModal } from "@/redux/ModalSlice";
 import { setEmail, setOtp, setStep } from "@/redux/AuthSlice";
+import { SearchModal } from "@/v2_components/global/SearchModal";
 
 const V2_rootlayout = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState<boolean>(false);
   const [spashScreen, setSpashScreen] = useState<boolean>(true);
-  const { loginModel } = useSelector((state: RootState) => state.model);
+  const { loginModel, searchModal } = useSelector((state: RootState) => state.model);
   const dispatch = useDispatch<AppDispatch>();
   const {} = useGlobalDesign();
   const {} = useGetConferenceDetails();
@@ -62,6 +63,7 @@ const V2_rootlayout = () => {
           <V2_Sidebar_Context setOpen={() => setOpen(false)} />
         </div>
       </aside>
+      {searchModal && <SearchModal isOpen={searchModal} onClose={()=>dispatch(setSearchModal(false))} />}
       <LoginModal2 isOpen={loginModel} onClose={() => onClose()} />
       <V2_SplashScreen open={spashScreen} setOpen={setSpashScreen} />
     </div>

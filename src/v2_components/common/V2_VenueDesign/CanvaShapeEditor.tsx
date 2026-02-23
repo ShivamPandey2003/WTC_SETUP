@@ -2,19 +2,23 @@ import { Input } from "@/components/ui/Input";
 import ColorSize from "@/data/Color&Size";
 import { cn } from "@/lib/utils";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { setShapes } from "@/redux/venueDesignV2Slice";
+import { setMap } from "@/redux/venueDesignV2Slice";
 import { Lock, LockOpen } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
 
 type prop = {
   id: string;
 };
 
 const CanvaShapeEditor = ({ id }: prop) => {
-  const { Shapes } = useSelector((state: RootState) => state.Venue_Design_V2);
+  const { id: SelectedId } = useParams<{ id: string }>();
+  const { map } = useSelector((state: RootState) => state.Venue_Design_V2);
   const dispatch = useDispatch<AppDispatch>();
 
-  const Shape = Shapes.find((pre) => pre.id === id);
+  const Shape = map
+    .find((pre) => pre.id === SelectedId)
+    ?.map_list.find((shape) => shape.id === id);
 
   return (
     <div className="absolute top-2/6 left-1 px-2">
@@ -34,10 +38,18 @@ const CanvaShapeEditor = ({ id }: prop) => {
                     value={Shape.name ?? ""}
                     onChange={(e) =>
                       dispatch(
-                        setShapes(
-                          Shapes.map((pre) =>
-                            pre.id === id
-                              ? { ...pre, name: e.target.value }
+                        setMap(
+                          map.map((pre) =>
+                            pre.id === SelectedId
+                              ? {
+                                  ...pre,
+                                  map_list: pre.map_list.map((shape) => {
+                                    if (shape.id === id) {
+                                      return { ...shape, name: e.target.value };
+                                    }
+                                    return shape;
+                                  }),
+                                }
                               : pre,
                           ),
                         ),
@@ -59,10 +71,18 @@ const CanvaShapeEditor = ({ id }: prop) => {
                     style={{ backgroundColor: color }}
                     onClick={() =>
                       dispatch(
-                        setShapes(
-                          Shapes.map((pre) =>
-                            pre.id === id
-                              ? { ...pre, strokeColor: color }
+                        setMap(
+                          map.map((pre) =>
+                            pre.id === SelectedId
+                              ? {
+                                  ...pre,
+                                  map_list: pre.map_list.map((shape) => {
+                                    if (shape.id === id) {
+                                      return { ...shape, strokeColor: color };
+                                    }
+                                    return shape;
+                                  }),
+                                }
                               : pre,
                           ),
                         ),
@@ -78,10 +98,21 @@ const CanvaShapeEditor = ({ id }: prop) => {
                   value={Shape.strokeColor}
                   onChange={(e) =>
                     dispatch(
-                      setShapes(
-                        Shapes.map((pre) =>
-                          pre.id === id
-                            ? { ...pre, strokeColor: e.target.value }
+                      setMap(
+                        map.map((pre) =>
+                          pre.id === SelectedId
+                            ? {
+                                ...pre,
+                                map_list: pre.map_list.map((shape) => {
+                                  if (shape.id === id) {
+                                    return {
+                                      ...shape,
+                                      strokeColor: e.target.value,
+                                    };
+                                  }
+                                  return shape;
+                                }),
+                              }
                             : pre,
                         ),
                       ),
@@ -110,9 +141,22 @@ const CanvaShapeEditor = ({ id }: prop) => {
                     style={{ backgroundColor: color }}
                     onClick={() =>
                       dispatch(
-                        setShapes(
-                          Shapes.map((pre) =>
-                            pre.id === id ? { ...pre, fillColor: color } : pre,
+                        setMap(
+                          map.map((pre) =>
+                            pre.id === SelectedId
+                              ? {
+                                  ...pre,
+                                  map_list: pre.map_list.map((shape) => {
+                                    if (shape.id === id) {
+                                      return {
+                                        ...shape,
+                                        fillColor: color,
+                                      };
+                                    }
+                                    return shape;
+                                  }),
+                                }
+                              : pre,
                           ),
                         ),
                       )
@@ -127,10 +171,21 @@ const CanvaShapeEditor = ({ id }: prop) => {
                   value={Shape.fillColor}
                   onChange={(e) =>
                     dispatch(
-                      setShapes(
-                        Shapes.map((pre) =>
-                          pre.id === id
-                            ? { ...pre, fillColor: e.target.value }
+                      setMap(
+                        map.map((pre) =>
+                          pre.id === SelectedId
+                            ? {
+                                ...pre,
+                                map_list: pre.map_list.map((shape) => {
+                                  if (shape.id === id) {
+                                    return {
+                                      ...shape,
+                                      fillColor: e.target.value,
+                                    };
+                                  }
+                                  return shape;
+                                }),
+                              }
                             : pre,
                         ),
                       ),
@@ -152,10 +207,21 @@ const CanvaShapeEditor = ({ id }: prop) => {
                     key={key}
                     onClick={() =>
                       dispatch(
-                        setShapes(
-                          Shapes.map((pre) =>
-                            pre.id === id
-                              ? { ...pre, strokeWidth: value }
+                        setMap(
+                          map.map((pre) =>
+                            pre.id === SelectedId
+                              ? {
+                                  ...pre,
+                                  map_list: pre.map_list.map((shape) => {
+                                    if (shape.id === id) {
+                                      return {
+                                        ...shape,
+                                        strokeWidth: value,
+                                      };
+                                    }
+                                    return shape;
+                                  }),
+                                }
                               : pre,
                           ),
                         ),
@@ -173,19 +239,28 @@ const CanvaShapeEditor = ({ id }: prop) => {
               <div
                 onClick={() =>
                   dispatch(
-                    setShapes(
-                      Shapes.map((pre) =>
-                        pre.id === id ? { ...pre, locked: !pre.locked } : pre,
+                    setMap(
+                      map.map((pre) =>
+                        pre.id === SelectedId
+                          ? {
+                              ...pre,
+                              map_list: pre.map_list.map((shape) => {
+                                if (shape.id === id) {
+                                  return {
+                                    ...shape,
+                                    locked: !Shape.locked,
+                                  };
+                                }
+                                return shape;
+                              }),
+                            }
+                          : pre,
                       ),
                     ),
                   )
                 }
               >
-                {Shapes.find((pre) => pre.id === id)?.locked ? (
-                  <Lock />
-                ) : (
-                  <LockOpen />
-                )}
+                {Shape?.locked ? <Lock /> : <LockOpen />}
               </div>
             </div>
           </>
@@ -203,13 +278,21 @@ const CanvaShapeEditor = ({ id }: prop) => {
               className="px-2 outline-none border border-border rounded-md bg-gray-200"
               onChange={(e) =>
                 dispatch(
-                  setShapes(
-                    Shapes.map((pre) =>
-                      pre.id === id
-                        ? ({
+                  setMap(
+                    map.map((pre) =>
+                      pre.id === SelectedId
+                        ? {
                             ...pre,
-                            fontSize: Number(e.target.value),
-                          } as TextShape)
+                            map_list: pre.map_list.map((shape) => {
+                              if (shape.id === id) {
+                                return {
+                                  ...shape,
+                                  fontSize: Number(e.target.value),
+                                };
+                              }
+                              return shape;
+                            }),
+                          }
                         : pre,
                     ),
                   ),

@@ -4,11 +4,11 @@ import {
   cn,
   formatDate,
   formatForGoogleCalendar,
+  normalizeLabel,
   normalizeTime,
 } from "@/lib/utils";
 import TextCard from "@/v2_components/common/V2_Venue/TextCard";
 import { useEffect, useState } from "react";
-import BG from "@/assets/Images/BG.jpg";
 // import MapText from "@/assets/Images/MapText.png";
 import { Calendar, Link, Loader, Navigation } from "lucide-react";
 import { useGetVenue } from "@/api/global_api/global_api";
@@ -20,12 +20,17 @@ import { GoogleMap, LoadScriptNext, Marker } from "@react-google-maps/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import Map_V2 from "@/v2_components/common/V2_Venue/Map_V2";
 import { useSearchParams } from "react-router";
-import { setSearchParams } from "@/redux/GlobalSlice";
+import { setSearchParams, setSearchParams2 } from "@/redux/GlobalSlice";
+import { useGlobalV2GetFloorMapList } from "@/api/Venue_api/Venue_Design_api";
+import { setTitle } from "@/redux/ModalSlice";
 
 const apiKey = import.meta.env.VITE_REACT_GOOGLE_MAPS_API_KEY;
 
 const V2_Venue_page = () => {
   const [currentTab, setCurrentTab] = useState<string>("getting there");
+  const [selectedId, setSelectedId] = useState<string>("");
+  const { V2_Global_FloorMapList, V2_Global_isFloorMapListPending } =
+    useGlobalV2GetFloorMapList();
   const [searchParams] = useSearchParams();
   const { Venue, isPending, error } = useGetVenue();
   const dispatch = useDispatch<AppDispatch>();
@@ -37,13 +42,16 @@ const V2_Venue_page = () => {
     conference_start_time,
     conference_end_time,
     conference_title,
+    searchParams: Params,
   } = useSelector((state: RootState) => state.Global_Slice);
 
   useEffect(() => {
     const venueId = searchParams.get("id");
+    const shapeId = searchParams.get("venueid");
     if (venueId) {
       setCurrentTab("floor plan");
       dispatch(setSearchParams(venueId));
+      dispatch(setSearchParams2(shapeId));
     }
   }, [searchParams]);
 
@@ -62,7 +70,25 @@ const V2_Venue_page = () => {
     window.open(url, "_blank");
   };
 
-  if (isPending) {
+  useEffect(() => {
+    if (
+      V2_Global_FloorMapList?.response &&
+      V2_Global_FloorMapList.response.length > 0
+    ) {
+      setSelectedId(V2_Global_FloorMapList.response[0].id);
+    }
+  }, [V2_Global_FloorMapList]);
+
+  useEffect(() => {
+    if (!Params) return;
+    setSelectedId(Params);
+  }, [Params]);
+
+  useEffect(() => {
+    dispatch(setTitle(null));
+  }, []);
+
+  if (isPending || V2_Global_isFloorMapListPending) {
     return (
       <div className="w-full h-[80vh] flex flex-col items-center justify-center">
         <Loader className="text-primary animate-spin" size={30} />
@@ -90,7 +116,7 @@ const V2_Venue_page = () => {
   }
 
   return (
-    <div className="px-4 mx-auto">
+    <div className="px-4 mx-auto pb-4">
       <div className="p-1 bg-white w-fit rounded-full flex gap-2 mb-4">
         <Button
           variant={currentTab === "getting there" ? "default" : "ghost"}
@@ -110,12 +136,16 @@ const V2_Venue_page = () => {
       {currentTab === "getting there" && (
         <div className="grid lg:grid-cols-2 gap-4">
           <div className="col-span-1 space-y-4">
-            <TextCard />
             <div className="bg-white rounded-3xl overflow-hidden shadow-sm">
-              <img src={BG} alt="BG" className="w-full h-90 object-cover" />
+              <img
+                src={Venue.response.bg_venue}
+                alt="BG"
+                className="w-full h-90 object-cover"
+              />
             </div>
+            <TextCard />
           </div>
-          <div className="bg-white rounded-3xl overflow-hidden shadow-sm p-6">
+          <div className="bg-white rounded-3xl h-fit overflow-hidden shadow-sm p-6">
             <LoadScriptNext
               loadingElement={<Skeleton className="w-full h-80 mb-8" />}
               googleMapsApiKey={apiKey}
@@ -145,7 +175,7 @@ const V2_Venue_page = () => {
               className="w-full h-[20rem] object-cover object-top mb-8"
             /> */}
             <div className="h-1/2">
-              <div className="flex items-center justify-between mb-8">
+              <div className="flex justify-between mb-8">
                 <div className="flex gap-6">
                   <Navigation strokeWidth={"1px"} />
                   <div>
@@ -200,21 +230,38 @@ const V2_Venue_page = () => {
       )}
       {currentTab === "floor plan" && (
         <div className="w-full rounded-xl p-6 bg-white h-fit">
-          {/* <img
-            src={Stage}
-            alt="Stage"
-            className="object-contain w-full h-[70vh]"
-          /> */}
-          <div className="w-full">
-            <Map_V2 />
+          <div className="flex items-center justify-between">
+            <div className={cn("flex items-center gap-4")}>
+              <div className="text-sm font-[500] w-[100px] shrink-0">
+                {normalizeLabel("Floor Levels")}
+              </div>
+              <div className="flex items-center gap-4">
+                <select
+                  value={selectedId as string}
+                  onChange={(e) => setSelectedId(e.target.value)}
+                  className="rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary mb-1 cursor-pointer"
+                >
+                  <option value="">{"Select an option"}</option>
+                  {V2_Global_FloorMapList &&
+                    V2_Global_FloorMapList.response.map((opt) => (
+                      <option key={opt.id} value={opt.id} className="cursor-pointer">
+                        {opt.label}
+                      </option>
+                    ))}
+                </select>
+              </div>
+            </div>
+            <a
+              href="/FloorPlan.pdf"
+              target="_blank"
+              className="flex items-center text-blue-600 gap-1"
+            >
+              <Link size={18} /> Floor Plan
+            </a>
           </div>
-          <a
-            href="/FloorPlan.pdf"
-            target="_blank"
-            className="flex items-center text-blue-600 gap-1"
-          >
-            <Link size={18} /> Floor Plan
-          </a>
+          <div className="w-full">
+            <Map_V2 id={selectedId} />
+          </div>
         </div>
       )}
     </div>

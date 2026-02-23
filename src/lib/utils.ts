@@ -165,3 +165,34 @@ export const addToGoogleCalendar = ({
 
   window.open(url, "_blank");
 };
+
+export function base64ToFile(
+  base64: string,
+  filename = "image.png"
+): File {
+  const [meta, data] = base64.split(",");
+  const mime = meta.match(/data:(.*);base64/)?.[1] || "image/png";
+
+  const binary = atob(data);
+  const bytes = new Uint8Array(binary.length);
+
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+
+  return new File([bytes], filename, { type: mime });
+}
+
+export function isBase64Image(str: string): boolean {
+  return /^data:image\/(png|jpg|jpeg|gif|webp);base64,/.test(str);
+}
+
+export const isValidImage = (filename: string) => {
+  const lower = filename.toLowerCase();
+  return (
+    lower.endsWith(".png") ||
+    lower.endsWith(".jpg") ||
+    lower.endsWith(".jpeg") ||
+    lower.endsWith(".webp")
+  );
+};

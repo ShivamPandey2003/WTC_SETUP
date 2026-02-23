@@ -1,6 +1,5 @@
 import V2Sidebar from "@/data/V2Sidebar";
-import { useLocation, useNavigate } from "react-router";
-import { Button } from "@/components/ui/Button";
+import { NavLink, useLocation, useNavigate } from "react-router";
 import { cn } from "@/lib/utils";
 import type { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
@@ -26,12 +25,12 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
         onClick={() => navigate("/")}
       >
         <img
-          src={`data:image/png;base64,${appConfig?.logo?.logo_img}`}
+          src={appConfig?.logo?.logo_img}
           className="w-[128px] h-[68px] object-contain"
         />
         <span className="text-[10px] font-bold">Sponsored by</span>
         <img
-          src={`data:image/png;base64,${appConfig?.sponsors?.logo}`}
+          src={appConfig?.sponsors?.logo}
           className="w-[128px] h-[40px] object-contain"
         />
       </div>
@@ -41,23 +40,24 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
               <Skeleton key={n} className="w-full mb-2 h-8" />
             ))
           : Object.entries(tabsData.response).map(([key, value]) => {
-              const item = V2Sidebar.find((pre) => pre.title.includes(value));
+              const item = V2Sidebar.find((pre) => pre.title.includes(key));
+              const isHomeActive =
+                item?.route === "/" && pathname.startsWith("/new");
               if (!item) return null;
               return (
-                <Button
-                  key={key}
-                  className={cn(
-                    "bg-white text-balck hover:bg-[#35825C] hover:text-white cursor-pointer",
-                    pathname === item.route && "bg-[#35825C] text-white",
-                  )}
-                  onClick={() => {
-                    navigate(item.route);
-                    setOpen?.();
-                  }}
+                <NavLink
+                  to={item.route}
+                  className={({ isActive }) =>
+                    cn(
+                      "bg-white text-black hover:bg-[#35825C] hover:text-white cursor-pointer inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive justify-start px-4 py-2 has-[>svg]:px-3",
+                      (isActive || isHomeActive) && "bg-[#35825C] text-white",
+                    )
+                  }
+                  onClick={() => setOpen?.()}
                 >
                   <item.Icon />
-                  {value}
-                </Button>
+                  <span className="max-w-[80px] line-clamp-1">{value}</span>
+                </NavLink>
               );
             })}
       </div>

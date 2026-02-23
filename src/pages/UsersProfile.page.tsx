@@ -43,7 +43,7 @@ const UsersProfile_page = () => {
     <div className="w-full flex justify-center items-center h-[80vh]">
       <div
         className={`w-[370px] rounded-lg shadow-lg p-5 text-center relative overflow-hidden border border-gray-100`}
-        style={{ backgroundImage: `url(${BgIMG})` }}
+        style={{ backgroundImage: `url(${BgIMG})`, background:"white" }}
       >
         <div className="flex w-full items-center justify-between mb-5">
           <img src={LOGO} alt="WTC Logo" className="w-16 h-16 object-contain" />
@@ -62,7 +62,7 @@ const UsersProfile_page = () => {
 
         <div className="flex justify-center mb-3">
           <img
-            src={`data:image/png;base64,${UsersProfile.response.profile_image}`}
+            src={UsersProfile.response.profile_image}
             alt="User"
             className="w-32 h-32 rounded-full"
           />

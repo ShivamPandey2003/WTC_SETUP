@@ -12,11 +12,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type Konva from "konva";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
-import {
-  setAction,
-  setSelectedId,
-  setShapes,
-} from "@/redux/venueDesignV2Slice";
+import { setAction, setMap, setSelectedId } from "@/redux/venueDesignV2Slice";
 import type { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
 import { nanoid } from "nanoid";
 import onPointerDownSwitch from "@/v2_components/common/V2_VenueDesign/AddShape";
@@ -27,10 +23,12 @@ import { Text as TextInstance } from "konva/lib/shapes/Text";
 import { Check, LoaderCircle, Lock, LockOpen } from "lucide-react";
 import CanvaShapeEditor from "@/v2_components/common/V2_VenueDesign/CanvaShapeEditor";
 import {
-  useGetFloorMapList,
   useSaveFloorPlanData,
+  useV2GetFloorMApList,
 } from "@/api/Venue_api/Venue_Design_api";
 import { Button } from "@/components/ui/Button";
+import { useParams } from "react-router";
+import { isBase64Image } from "@/lib/utils";
 
 const V2_VenueDesign_page = () => {
   const stageRef = useRef<Konva.Stage | null>(null);
@@ -39,9 +37,10 @@ const V2_VenueDesign_page = () => {
   const isPaining = useRef<boolean>(false);
   const currentShapeId = useRef<string | null>(null);
   const imageCache = useRef<Record<string, HTMLImageElement>>({});
-  const {} = useGetFloorMapList();
+  const {} = useV2GetFloorMApList();
+  const { id: SelectedId } = useParams<{ id: string }>();
 
-  const { action, Shapes, selectId } = useSelector(
+  const { action, map, selectId } = useSelector(
     (state: RootState) => state.Venue_Design_V2,
   );
   const dispatch = useDispatch<AppDispatch>();
@@ -59,33 +58,52 @@ const V2_VenueDesign_page = () => {
   const isDraggable = action === ACTIONS.SELECT;
   const isDrawing = action !== ACTIONS.SELECT;
 
+  const Value = map.find((pre) => pre.id === SelectedId);
+
   useEffect(() => {
-    Shapes.forEach((shape) => {
-      if (shape.type !== ACTIONS.IMAGE) return;
+    if (Value) {
+      Value.map_list.forEach((shape) => {
+        if (shape.type !== ACTIONS.IMAGE) return;
 
-      if (!imageCache.current[shape.id]) {
-        const img = new Image();
-        img.src = (shape as ImageShape).image;
+        if (!imageCache.current[shape.id]) {
+          const img = new Image();
+          img.src = isBase64Image((shape as ImageShape).image)
+            ? (shape as ImageShape).image
+            : `data:image/png;base64,${(shape as ImageShape).image}`;
 
-        img.onload = () => {
-          imageCache.current[shape.id] = img;
-          setImageTick((t) => t + 1);
-        };
-      }
-    });
-  }, [Shapes]);
+          img.onload = () => {
+            imageCache.current[shape.id] = img;
+            setImageTick((t) => t + 1);
+          };
+        }
+      });
+    }
+  }, [Value]);
 
   function onPointerUp() {
     isPaining.current = false;
   }
 
   function eraseShapeById(id: string) {
-    dispatch(setShapes(Shapes.filter((shape) => shape.id !== id)));
+    if (!Value) return;
+    dispatch(
+      setMap(
+        map.map((pre) =>
+          pre.id === SelectedId
+            ? {
+                ...pre,
+                map_list: pre.map_list.filter((shape) => shape.id !== id),
+              }
+            : pre,
+        ),
+      ),
+    );
   }
 
   function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!Value) return;
 
     const reader = new FileReader();
 
@@ -97,18 +115,27 @@ const V2_VenueDesign_page = () => {
 
       img.onload = () => {
         dispatch(
-          setShapes([
-            ...Shapes,
-            {
-              type: ACTIONS.IMAGE,
-              id: nanoid(),
-              image: reader.result as string,
-              x: 100,
-              y: 100,
-              width: img.width / 2,
-              height: img.height / 2,
-            },
-          ]),
+          setMap(
+            map.map((pre) =>
+              pre.id === SelectedId
+                ? {
+                    ...pre,
+                    map_list: [
+                      ...Value.map_list,
+                      {
+                        type: ACTIONS.IMAGE,
+                        id: nanoid(),
+                        image: reader.result as string,
+                        x: 100,
+                        y: 100,
+                        width: img.width / 2,
+                        height: img.height / 2,
+                      },
+                    ],
+                  }
+                : pre,
+            ),
+          ),
         );
       };
     };
@@ -131,7 +158,15 @@ const V2_VenueDesign_page = () => {
     currentShapeId.current = id;
     isPaining.current = true;
 
-    onPointerDownSwitch({ action, x, y, id, Shapes, dispatch });
+    onPointerDownSwitch({
+      action,
+      x,
+      y,
+      id,
+      Map: map,
+      selectedFloor: SelectedId as string,
+      dispatch,
+    });
   }
 
   function onPointerMove() {
@@ -150,7 +185,8 @@ const V2_VenueDesign_page = () => {
       x,
       y,
       id: currentShapeId.current,
-      Shapes,
+      Map: map,
+      selectedFloor: SelectedId as string,
       dispatch,
     });
   }
@@ -218,9 +254,19 @@ const V2_VenueDesign_page = () => {
     (newText: string) => {
       if (editingTextId) {
         dispatch(
-          setShapes(
-            Shapes.map((shape) =>
-              shape.id === editingTextId ? { ...shape, text: newText } : shape,
+          setMap(
+            map.map((pre) =>
+              pre.id === SelectedId
+                ? {
+                    ...pre,
+                    map_list: pre.map_list.map((shape) => {
+                      if (shape.id === editingTextId) {
+                        return { ...shape, text: newText };
+                      }
+                      return shape;
+                    }),
+                  }
+                : pre,
             ),
           ),
         );
@@ -255,15 +301,19 @@ const V2_VenueDesign_page = () => {
     const node = e.target;
 
     dispatch(
-      setShapes(
-        Shapes.map((s) =>
-          s.id === id
+      setMap(
+        map.map((pre) =>
+          pre.id === SelectedId
             ? {
-                ...s,
-                x: node.x(),
-                y: node.y(),
+                ...pre,
+                map_list: pre.map_list.map((shape) => {
+                  if (shape.id === id) {
+                    return { ...shape, x: node.x(), y: node.y() };
+                  }
+                  return shape;
+                }),
               }
-            : s,
+            : pre,
         ),
       ),
     );
@@ -282,17 +332,25 @@ const V2_VenueDesign_page = () => {
     node.scaleY(1);
 
     dispatch(
-      setShapes(
-        Shapes.map((s) =>
-          s.id === id
+      setMap(
+        map.map((pre) =>
+          pre.id === SelectedId
             ? {
-                ...s,
-                x: node.x(),
-                y: node.y(),
-                width: Math.max(20, node.width() * scaleX),
-                height: Math.max(20, node.height() * scaleY),
+                ...pre,
+                map_list: pre.map_list.map((shape) => {
+                  if (shape.id === id) {
+                    return {
+                      ...shape,
+                      x: node.x(),
+                      y: node.y(),
+                      width: Math.max(20, node.width() * scaleX),
+                      height: Math.max(20, node.height() * scaleY),
+                    };
+                  }
+                  return shape;
+                }),
               }
-            : s,
+            : pre,
         ),
       ),
     );
@@ -357,8 +415,12 @@ const V2_VenueDesign_page = () => {
             size={"icon-sm"}
             title="Save your progress"
             onClick={() => {
-              SaveFloorPlanData({ floor_map_list: Shapes })
-              dispatch(setSelectedId(null))
+              if (!Value) return;
+              SaveFloorPlanData({
+                id: SelectedId as string,
+                floor_map_list: Value.map_list,
+              });
+              dispatch(setSelectedId(null));
             }}
             disabled={isPending}
           >
@@ -395,7 +457,7 @@ const V2_VenueDesign_page = () => {
               dispatch(setSelectedId(null));
             }}
           />
-          {Shapes.map((shape) => {
+          {Value?.map_list.map((shape) => {
             switch (shape.type) {
               case ACTIONS.IMAGE: {
                 const imgShape = shape as ImageShape;

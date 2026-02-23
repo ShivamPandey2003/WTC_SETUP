@@ -64,7 +64,7 @@ export default function MiniSmallCarousel({slides}:{slides: News[]}) {
           <React.Fragment key={i}>
             <img
               key={i}
-              src={slide.bg_img?`data:image/png;base64,${slide.bg_img}`:'https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200'}
+              src={slide.bg_img?slide.bg_img:'https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200'}
               alt={slide.title}
               className={cn(
                 `absolute inset-0 w-full h-full object-cover transition-opacity duration-500`,
@@ -85,7 +85,7 @@ export default function MiniSmallCarousel({slides}:{slides: News[]}) {
                   <h3 className="text-white text-lg sm:text-xl font-bold mb-2 drop-shadow-lg">
                     {Title(slide.title.split(" "), slide.title.split(" ").length)}
                   </h3>
-                  <p className="text-white text-base sm:text-base mb-2 drop-shadow-md">
+                  <p className="text-white text-base sm:text-base mb-2 drop-shadow-md line-clamp-2">
                     {slide.description}
                   </p>
                   {/* <button className="px-1 sm:px-2 py-1 sm:py-1 bg-white text-gray-800 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg">

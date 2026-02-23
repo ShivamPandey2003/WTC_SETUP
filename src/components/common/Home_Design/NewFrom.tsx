@@ -3,13 +3,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import CustomForm from "@/components/global/CustomForm";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "@/redux/store";
-import {
-  useCreateNews,
-  useEditNews,
-} from "@/api/home_design_api/Home_design_api";
-import { setIsCreating, setSelected } from "@/redux/HomeDesignSlice";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/redux/store";
+import { useCreateNews } from "@/api/home_design_api/Home_design_api";
+import { setIsCreating } from "@/redux/HomeDesignSlice";
 
 export const FormSchema = newsSchema.omit({
   "Created On": true,
@@ -22,11 +19,6 @@ export const FormSchema = newsSchema.omit({
 type FormData = z.infer<typeof FormSchema>;
 
 const NewFrom = () => {
-  const { selected, news } = useSelector(
-    (state: RootState) => state.Home_Design
-  );
-  const data = news.find((item) => item.id === selected);
-  const { EditNews, isPending } = useEditNews();
   const { CreateNews, isPending: isCreatePending } = useCreateNews();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -36,34 +28,25 @@ const NewFrom = () => {
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(FormSchema),
-    defaultValues: selected && data ? data : {},
   });
 
   const onSubmit = (newData: FormData) => {
-     const formData = new FormData();
+    const formData = new FormData();
 
-     formData.append("title", newData.title)
-     formData.append("description", newData.description as string)
-     formData.append("tile_space", newData.tile_space as string)
-     formData.append("attachment", newData.attachments?.[0] as Blob);
+    formData.append("title", newData.title);
+    formData.append("description", newData.description as string);
+    formData.append("tile_space", newData.tile_space as string);
+    formData.append("attachment", newData.attachments?.[0] as Blob);
 
-    if (selected && data) {
-      formData.append("id", selected)
-      EditNews(formData);
-    } else {
-      CreateNews(formData);
-    }
+    CreateNews(formData);
   };
 
-  const onClose =
-    selected && data
-      ? () => dispatch(setSelected(null))
-      : () => dispatch(setIsCreating(false));
+  const onClose = () => dispatch(setIsCreating(false));
 
   const fields: {
     name: keyof FormData;
     label: string;
-    type?: "text" | "textarea" | "file"| "select";
+    type?: "text" | "textarea" | "file" | "select";
     placeholder?: string;
     accept?: string;
     options?: { label: string; value: string }[];
@@ -75,13 +58,22 @@ const NewFrom = () => {
       type: "textarea",
       placeholder: "Enter detailed description...",
     },
-    { name: "tile_space", label: "Tile Space", placeholder: "example:- 2x", type: "select", options:[{label:"1x", value:"1x"},{label:"2x", value:"2x"}] },
+    {
+      name: "tile_space",
+      label: "Tile Space",
+      placeholder: "example:- 2x",
+      type: "select",
+      options: [
+        { label: "1x", value: "1x" },
+        { label: "2x", value: "2x" },
+      ],
+    },
     {
       name: "attachments",
       label: "Attachments",
       type: "file",
       accept: "image/*",
-    }
+    },
   ];
 
   return (
@@ -90,7 +82,7 @@ const NewFrom = () => {
       fields={fields}
       register={register}
       errors={errors}
-      isLoading={isPending || isCreatePending}
+      isLoading={isCreatePending}
       onClose={() => onClose()}
     />
   );

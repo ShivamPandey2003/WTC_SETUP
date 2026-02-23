@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 
 interface HeroCarouselProps {
   slides: News[];
+  onClick: (str: string) => void;
   className?: string;
   titleClassName?: string;
   subtitleClassName?: string;
@@ -19,6 +20,7 @@ export default function HeroCarousel({
   subtitleClassName,
   descriptionClassName,
   intervalTime = 5000,
+  onClick,
 }: HeroCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState<boolean>(true);
@@ -67,47 +69,49 @@ export default function HeroCarousel({
         className,
       )}
     >
-      {slides.map((slide, index) => (
-        <div
-          key={index}
-          className={`absolute inset-0 transition-opacity duration-700 ${
-            index === currentSlide ? "opacity-100" : "opacity-0"
-          }`}
-        >
+      {slides.map((slide, index) =>
+        index === currentSlide ? (
           <div
-            className="w-full h-full bg-cover bg-center"
-            style={{
-              backgroundImage: slide.bg_img
-                ? `url(data:image/png;base64,${slide.bg_img})`
-                : "url('https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200')",
-            }}
+            key={index}
+            className={`absolute inset-0 transition-opacity duration-700 cursor-pointer ${
+              index === currentSlide ? "opacity-100" : "opacity-0"
+            }`}
           >
-            <div className="w-full h-full bg-gradient-to-r from-slate-900/80 to-slate-900/40 flex flex-col justify-end py-4 px-8 md:px-16">
-              <h1
-                className={cn(
-                  "text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2",
-                  titleClassName,
-                )}
-              >
-                {Title(slide.title.split(" "))}
-              </h1>
-              <h2
-                className={cn(
-                  "text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4",
-                  subtitleClassName,
-                )}
-              >
-                {Title(slide.title.split(" "), slide.title.split(" ").length)}
-              </h2>
-              <p
-                className={cn(
-                  "text-xl md:text-2xl text-white/90 mb-8",
-                  descriptionClassName,
-                )}
-              >
-                {slide.description}
-              </p>
-              {/* <button
+            <div
+              className="w-full h-full bg-cover bg-center"
+              onClick={() => onClick(slide.id)}
+              style={{
+                backgroundImage: slide.bg_img
+                  ? `url(${slide.bg_img})`
+                  : "url('https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200')",
+              }}
+            >
+              <div className="w-full h-full bg-gradient-to-r from-slate-900/80 to-slate-900/40 flex flex-col justify-end py-4 px-8 md:px-16">
+                <h1
+                  className={cn(
+                    "text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2",
+                    titleClassName,
+                  )}
+                >
+                  {Title(slide.title.split(" "))}
+                </h1>
+                <h2
+                  className={cn(
+                    "text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4",
+                    subtitleClassName,
+                  )}
+                >
+                  {Title(slide.title.split(" "), slide.title.split(" ").length)}
+                </h2>
+                <p
+                  className={cn(
+                    "text-xl md:text-2xl text-white/90 mb-8 line-clamp-2",
+                    descriptionClassName,
+                  )}
+                >
+                  {slide.description}
+                </p>
+                {/* <button
                 className={cn(
                   "bg-white/90 hover:bg-white text-slate-800 font-semibold px-8 py-3 rounded-full w-fit transition-colors duration-200",
                   buttonClassName,
@@ -115,10 +119,11 @@ export default function HeroCarousel({
               >
                 {"More Info"}
               </button> */}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ) : null,
+      )}
 
       {/* <button
         onClick={prevSlide}
@@ -141,7 +146,7 @@ export default function HeroCarousel({
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-2 h-2 rounded-full transition-all duration-200 ${
+            className={`w-2 h-2 rounded-full transition-all duration-200 cursor-pointer ${
               index === currentSlide
                 ? "bg-white w-8"
                 : "bg-white/50 hover:bg-white/75"

@@ -42,14 +42,21 @@ import { useDispatch, useSelector } from "react-redux";
 import SpeakerCreateModal from "@/components/common/Speaker_Design/CreateModal";
 import { setIsCreating as SetisSpeakerCreating } from "@/redux/SpeakerDesignSlice";
 import CSVModel from "@/components/global/CSVModel";
-import { useUploadSessionsCSV } from "@/api/programme_design_api/Programme_design_api";
-import Category_Labels from "@/data/Category_Labels";
+import {
+  useDeleteCategory,
+  useGetCategoryAll,
+  useUploadSessionsCSV,
+} from "@/api/programme_design_api/Programme_design_api";
+import Custom_Text_Row from "@/components/common/Exhibitors_Design/Custom_Text_Row";
+import DeleteModal from "@/components/global/DeleteModel";
+import { setDeletingCategory } from "@/redux/ExhibitorSlice";
 
 const ProgrammeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   const scrollRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  // const {DeleteCategory, isDeleteCategoryPending} = useDeleteCategory()
+  const { DeleteCategory, isDeleteCategoryPending } = useDeleteCategory();
+  const { AllCategory, isPending: isCategoriesPending } = useGetCategoryAll();
   const { UpdateProgrammeDesign, isUpdateProgrammeDesignPending } =
     useProgrameDesignUpdate();
   const { UploadNewsCSV, isPending: isUploadSessionsCSV } =
@@ -62,6 +69,10 @@ const ProgrammeDesign_page = () => {
   );
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
+  );
+
+  const { deletingCategory } = useSelector(
+    (state: RootState) => state.ExhibitorSlice,
   );
   const dispatch = useDispatch<AppDispatch>();
   const {
@@ -108,7 +119,7 @@ const ProgrammeDesign_page = () => {
     });
   }, [slectedDate, value]);
 
-  if (isPending) {
+  if (isPending || isCategoriesPending) {
     return (
       <div className="w-full h-screen flex flex-col items-center justify-center">
         <Loader className="text-primary animate-spin" size={30} />
@@ -284,7 +295,7 @@ const ProgrammeDesign_page = () => {
               >
                 <div className="flex items-center py-2">
                   <div className="w-40 text-sm font-medium">
-                    {"Category Filters"}
+                    {"Category Active"}
                   </div>
                   <div className="flex items-center gap-4">
                     <p>Disabled</p>
@@ -302,33 +313,31 @@ const ProgrammeDesign_page = () => {
                     <p>Enabled</p>
                   </div>
                 </div>
-                <div className="flex items-start justify-between py-2">
-                  <div className="w-40 text-sm font-medium">
+                <div className="py-2">
+                  <div className="w-40 text-sm font-medium mb-4">
                     {"Category Filters"}
                   </div>
-                  <div
-                    className={cn(
-                      "relative flex flex-wrap w-fit items-center gap-3 bg-[#1111110D] p-4 text-sm text-gray-600 rounded-[7px] text-center focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors",
-                    )}
-                  >
-                    {/* {SpeakerSettings.category_labels */}
-                    {Category_Labels.map((str) => (
-                      <div
-                        key={str.id}
-                        className="flex items-center gap-2 px-3 bg-white rounded-lg border border-transparent hover:border-gray-300"
-                      >
-                        {str.name}
-                        {/* <X size={18} /> */}
-                      </div>
-                    ))}
+                  <div className="">
+                    {AllCategory?.response
+                      .filter((pre) => !Boolean(pre.type))
+                      .map((data, index) => (
+                        <Custom_Text_Row
+                          type={data.type}
+                          key={index}
+                          id={data.id}
+                          index={String(index + 1)}
+                          value={data.name}
+                          color={data.color}
+                        />
+                      ))}
+                    <Button
+                      onClick={() => dispatch(setCategoryModal(true))}
+                      className="mt-4"
+                      variant={"link"}
+                    >
+                      + Add category
+                    </Button>
                   </div>
-                  <Button
-                    variant={"link"}
-                    onClick={() => dispatch(setCategoryModal(true))}
-                  >
-                    <Plus />
-                    Add New
-                  </Button>
                 </div>
               </Section>
               <Section title="Session Data" ClassName="w-2/5">
@@ -360,6 +369,12 @@ const ProgrammeDesign_page = () => {
         onClose={() => dispatch(SetisSpeakerCreating(false))}
       />
       <AddCategoryModel />
+      <DeleteModal
+        isOpen={Boolean(deletingCategory)}
+        onClose={() => dispatch(setDeletingCategory(null))}
+        onConfirm={() => DeleteCategory({ id: deletingCategory as string })}
+        isDeleting={isDeleteCategoryPending}
+      />
       <CSVModel
         isOpen={uploadCSV}
         onClose={() => dispatch(setUploadCSV(false))}

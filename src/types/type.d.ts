@@ -1,5 +1,7 @@
 declare type ModelSliceType = {
   loginModel: boolean;
+  searchModal: boolean;
+  title: string | null;
 };
 
 declare type HomeDesignStateType = {
@@ -138,11 +140,13 @@ declare type CreateSpeakerRequestT = {
   created_on: string;
   attachments: {
     filename: string;
-    speaker_image: string;
+    base64: string;
   }[];
   coming_sessions: Record<string, string>[];
   total_sessions: number;
   keyNote: boolean;
+  whatsapp_url: string;
+  linkedin_url: string;
 };
 
 declare type SpeakerListResponse = {
@@ -150,6 +154,7 @@ declare type SpeakerListResponse = {
   response: (CreateSpeakerRequestT & {
     speaker_id: string;
     created_on: string;
+    profile_image: string;
   })[];
 };
 
@@ -177,6 +182,11 @@ declare type AppConfig = {
     heading_3: string;
     font_family: string;
     all_other_text: string;
+  };
+  splash: {
+    image: sting | File;
+    title: string;
+    subtitle: string;
   };
   sponsors: {
     logo: string;
@@ -215,6 +225,7 @@ declare type GlobalNavMenuResponse = {
 };
 
 declare type GlobalVenue = {
+  bg_venue: string;
   getting_there: {
     sub_title: string;
     description: string;
@@ -302,6 +313,10 @@ declare type SpeakerSettingResponse = {
 };
 
 declare type Programme = {
+  attachments: {
+    filename: string;
+    file: string;
+  };
   id: string;
   title: string;
   location: string;
@@ -317,12 +332,13 @@ declare type Programme = {
     bio: string;
     external_link: string;
     keyNote: boolean;
+    profile_img: string;
   }[];
   categories: Record<string, Record<string, string>>;
   external_link: string;
   description: string;
   bg_img: string;
-  venue: Shape;
+  venue: Shape & { designId: string; design_label: string };
 };
 
 // declare type Programme = {
@@ -466,11 +482,7 @@ declare type CategoryListResponse = {
 
 declare type GlobalExhibitorListResponse = {
   header: ResponseHeader;
-  response: {
-    seq: string[];
-  } & {
-    [category: string]: Omit<Exhibitor, "category">[];
-  };
+  response: Omit<Exhibitor, "category">[];
 };
 
 declare type GlobalUsersProfile = {
@@ -515,5 +527,74 @@ declare type TabsResponse = {
     speaker_tab: string;
     venue_tab: string;
     exhibitors_tab: string;
+  };
+};
+
+declare type MapT = {
+  id: string;
+  label: string;
+  floor_level: number;
+  image: string;
+  map_list: Shape[];
+};
+
+declare type VenueDesignMap = {
+  header: ResponseHeader;
+  response: MapT[];
+};
+
+declare type GlobalVenueDesignMap = {
+  header: ResponseHeader;
+  response: (MapT & { programmes: Programme[]; created_by: string })[];
+};
+
+declare type Infinity = {
+  max_page: number;
+  current_page: number;
+  next_page: number;
+  total_count: number;
+};
+
+declare type GlobalInfinityNews = {
+  header: ResponseHeader;
+  response: Infinity & { data: News[] };
+};
+
+declare type GlobalInfinitySpeakers = {
+  header: ResponseHeader;
+  response: Infinity & {
+    data: (CreateSpeakerRequestT & {
+      speaker_id: string;
+      created_on: string;
+      profile_image: string;
+      attachments: {
+        filename: string;
+        base64: string;
+      }[];
+    })[];
+  };
+};
+
+declare type GlobalInfinityExhibitors = {
+  header: ResponseHeader;
+  response: Infinity & {
+    data: {
+      seq: string[];
+    } & {
+      grouped: { [category: string]: Omit<Exhibitor, "category">[] };
+    };
+  };
+};
+
+declare type FindSpeakerById = {
+  header: ResponseHeader;
+  response: CreateSpeakerRequestT & {
+    speaker_id: string;
+    created_on: string;
+    profile_image: string;
+    attachments: {
+      filename: string;
+      base64: string;
+    }[];
   };
 };

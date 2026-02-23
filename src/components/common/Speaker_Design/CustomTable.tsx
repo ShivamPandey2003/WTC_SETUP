@@ -13,7 +13,10 @@ import { setIsDeleting, setSelected } from "@/redux/SpeakerDesignSlice";
 import EditModal from "./EditModal";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
-import Avatar1 from '@/assets/Images/Avatar1.png'
+import Avatar1 from "@/assets/Images/Avatar1.png";
+import { useState } from "react";
+import  { Button } from "@/components/ui/Button";
+import AttachmentModal from "./AttachmentModal";
 
 const CustomTable = () => {
   const {
@@ -24,8 +27,9 @@ const CustomTable = () => {
   const { DeleteSpeaker, isPending: isDeleteSpeakerPending } =
     useDeleteSpeaker();
   const { selected, isDeleting } = useSelector(
-    (state: RootState) => state.Speaker_DesignSlice
+    (state: RootState) => state.Speaker_DesignSlice,
   );
+  const [openAttachment, setOpenAttachment] = useState<string | null>(null);
   const dispatch = useDispatch<AppDispatch>();
 
   if (isSpeakerListPending) {
@@ -39,7 +43,10 @@ const CustomTable = () => {
   if (errorInSpeakerList) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <ErrorDisplay title="News Feed Error" message={errorInSpeakerList.message} />
+        <ErrorDisplay
+          title="News Feed Error"
+          message={errorInSpeakerList.message}
+        />
       </div>
     );
   }
@@ -77,6 +84,9 @@ const CustomTable = () => {
                 Picture
               </th>
               <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Attachment
+              </th>
+              <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Keynote
               </th>
               <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -99,12 +109,23 @@ const CustomTable = () => {
                 </td>
                 <td className="pl-9 py-2">
                   <img
-                    src={item.attachments[0].speaker_image?`data:image/png;base64,${item.attachments[0].speaker_image}`:Avatar1}
+                    src={item.profile_image ? item.profile_image : Avatar1}
                     className="w-6 h-6"
                   />
                 </td>
-                <td className="pl-12 py-2">
-                  {item.keyNote?<Keynote size={20} className="text-primary" />:<X size={20} className="text-red-400"/>}
+                <td className="pl-9 py-2">
+                  {item.attachments.length > 0 ? (
+                    <Button variant={"link"} size={"sm"} className="p-0 h-fit" onClick={()=>setOpenAttachment(item.speaker_id)}>Check</Button>
+                  ) : (
+                    "Not Available"
+                  )}
+                </td>
+                <td className="pl-10 py-2">
+                  {item.keyNote ? (
+                    <Keynote size={20} className="text-primary" />
+                  ) : (
+                    <X size={20} className="text-red-400" />
+                  )}
                 </td>
                 <td className="px-6 py-2 flex gap-2">
                   <Pencil
@@ -134,6 +155,11 @@ const CustomTable = () => {
       <EditModal
         isOpen={Boolean(selected)}
         onClose={() => dispatch(setSelected(null))}
+      />
+      <AttachmentModal
+        isOpen={Boolean(openAttachment)}
+        onClose={()=>setOpenAttachment(null)}
+        data={SpeakerList.response.find(pre=> pre.speaker_id === openAttachment)?.attachments ?? []}
       />
     </div>
   );

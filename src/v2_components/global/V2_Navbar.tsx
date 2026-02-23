@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { setLoginModel } from "@/redux/ModalSlice";
+import { setLoginModel, setSearchModal, setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { Menu } from "lucide-react";
+import { ChevronLeft, Menu } from "lucide-react";
 import { useEffect, useState, type RefObject } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
+import { SearchTrigger } from "./SearchTrigger";
 
 interface Prop {
   REF: RefObject<HTMLDivElement | null>;
@@ -15,10 +16,13 @@ interface Prop {
 const V2_Navbar = ({ REF, setOpen }: Prop) => {
   const [showBackground, setShowBackground] = useState<boolean>(false);
   const { pathname } = useLocation();
+  const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const token = localStorage.getItem("token");
+  const { grp } = useSelector((state: RootState) => state.AuthSlice.userinfo);
   const navigate = useNavigate();
-  const {ArrayTabs} = useSelector((state:RootState)=>state.Global_Slice)
+  const { ArrayTabs } = useSelector((state: RootState) => state.Global_Slice);
+  const { title } = useSelector((state: RootState) => state.model);
 
   useEffect(() => {
     const el = REF?.current;
@@ -36,44 +40,80 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
     };
   }, []);
 
-  const TitleFetch = (e:string)=>{
-    switch(e){
-      case "programme": return ArrayTabs.programme_tab;
-      case "speaker": return ArrayTabs.speaker_tab;
-      case "venue":return ArrayTabs.venue_tab;
-      case "exhibitors": return ArrayTabs.exhibitors_tab
-      case "":return ArrayTabs.home_tab
+  const TitleFetch = (e: string) => {
+    switch (e) {
+      case "programme":
+        return ArrayTabs.programme_tab;
+      case "speaker":
+        return ArrayTabs.speaker_tab;
+      case "venue":
+        return ArrayTabs.venue_tab;
+      case "exhibitors":
+        return ArrayTabs.exhibitors_tab;
+      case "news":
+        return ArrayTabs.home_tab;
+      case "":
+        return ArrayTabs.home_tab;
     }
-  }
+  };
 
   return (
     <header
       className={cn(
         "sticky top-0 z-[999] flex items-center justify-between p-4 transition-colors duration-200",
-        showBackground && "bg-[#F2F2F2] shadow"
+        showBackground && "bg-[#F2F2F2] shadow",
       )}
     >
       <div className="flex items-center gap-4">
         <Menu className="sm:hidden cursor-pointer" onClick={setOpen} />
-        <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize">
-          {TitleFetch(pathname.split("_")[0].slice(1))}
+        {id && (
+          <ChevronLeft
+            className="cursor-pointer hover:text-primary"
+            onClick={() => {
+              navigate(-1);
+              dispatch(setTitle(null));
+            }}
+          />
+        )}
+        <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize text-ellipsis whitespace-nowrap overflow-hidden max-w-[100px] sm:max-w-[300px] md:max-w-[600px]">
+          {TitleFetch(pathname.split("/")[1])} {title ? `/ ${title}` : ""}
         </h2>
       </div>
-      {!token ? (
-        <Button
-          onClick={() => dispatch(setLoginModel(true))}
-          className="px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
-        >
-          Login
-        </Button>
-      ) : (
-        <Button
-          onClick={() => navigate("/global-design")}
-          className="px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
-        >
-          Go to dashboard
-        </Button>
-      )}
+      <div className="flex items-center gap-4">
+        {(pathname === "/" ||
+          pathname === "/speaker" ||
+          pathname === "/exhibitors") && (
+          <SearchTrigger onClick={() => dispatch(setSearchModal(true))} />
+        )}
+        {!token ? (
+          <Button
+            onClick={() => dispatch(setLoginModel(true))}
+            className="px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
+          >
+            Login
+          </Button>
+        ) : grp !== 1 ? (
+          <Button
+            onClick={() => {
+              navigate("/user-profile");
+              dispatch(setTitle(null));
+            }}
+            className="px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
+          >
+            Go to Profile
+          </Button>
+        ) : (
+          <Button
+            onClick={() => {
+              navigate("/global-design");
+              dispatch(setTitle(null));
+            }}
+            className="px-6 sm:px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
+          >
+            dashboard
+          </Button>
+        )}
+      </div>
     </header>
   );
 };

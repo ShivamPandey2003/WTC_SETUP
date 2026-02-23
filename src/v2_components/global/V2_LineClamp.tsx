@@ -1,0 +1,31 @@
+import { Button } from "@/components/ui/Button";
+import { useEffect, useRef, useState } from "react";
+
+interface prop {
+  text: string;
+  onClick:()=>void
+}
+
+export default function V2_LineClamp({ text, onClick }: prop) {
+  const textRef = useRef<HTMLParagraphElement>(null);
+  const [isClamped, setIsClamped] = useState(false);
+
+  useEffect(() => {
+    const el = textRef.current;
+    if (el) {
+      setIsClamped(el.scrollHeight > el.clientHeight);
+    }
+  }, []);
+
+  return (
+    <div className="max-w-sm">
+      <p ref={textRef} className="line-clamp-2 text-sm">
+        {text}
+      </p>
+
+      {isClamped && (
+        <Button variant={"link"} onClick={onClick} className="text-blue-500 text-sm font-medium p-0">Read more</Button>
+      )}
+    </div>
+  );
+}

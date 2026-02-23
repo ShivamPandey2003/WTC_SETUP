@@ -107,7 +107,7 @@ const CustomTable = () => {
                     className="bg-cover bg-center w-20 h-7"
                     style={{
                       backgroundImage: item.bg_img
-                        ? `url(data:image/png;base64,${item.bg_img})`
+                        ? `url(${item.bg_img})`
                         : "url('https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200')",
                     }}
                   />

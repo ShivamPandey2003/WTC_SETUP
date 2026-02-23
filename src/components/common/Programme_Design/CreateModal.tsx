@@ -18,7 +18,7 @@ const CreateModal:React.FC<CreateModalProps> = ({isOpen, onClose}) => {
       <div className="bg-primary w-full rounded-t-lg px-6 text-white py-3 text-xl font-semibold">
         {"Create Programme"}
       </div>
-      <div className="p-6 max-h-[70vh] overflow-auto custom-scrollbar">
+      <div className="">
         <div>
           <NewFrom />
         </div>

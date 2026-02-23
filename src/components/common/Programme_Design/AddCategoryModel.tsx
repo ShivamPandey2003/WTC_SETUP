@@ -31,7 +31,6 @@ const AddCategoryModel = () => {
       ...newData,
       category_type: 0
     }
-    console.log(newDataFormatted)
     AddCategory(newDataFormatted)
     reset();
   }
@@ -65,7 +64,7 @@ const AddCategoryModel = () => {
       <div className="bg-primary w-full rounded-t-lg px-8 text-white py-3 text-xl font-[600]">
         {"Add Category"}
       </div>
-      <div className="p-6 overflow-auto">
+      <div>
         <div>
           <CustomForm
             onSubmit={handleSubmit(onSubmit)}

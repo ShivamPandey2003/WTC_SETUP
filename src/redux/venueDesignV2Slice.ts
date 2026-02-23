@@ -2,14 +2,20 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 type initialStateType = {
   action: string;
-  Shapes: Shape[];
+  map: MapT[];
   selectId: string | null;
+  FloorLevelModal: boolean;
+  EditFloorLevelModal: boolean;
+  GlobalMap: (MapT & { programmes: Programme[]; created_by: string })[];
 };
 
 const initialState: initialStateType = {
   action: "SELECT",
-  Shapes: [],
+  map: [],
   selectId: null,
+  FloorLevelModal: false,
+  EditFloorLevelModal: false,
+  GlobalMap: [],
 };
 
 const venueDesignV2Slice = createSlice({
@@ -20,17 +26,40 @@ const venueDesignV2Slice = createSlice({
       state.action = payload.payload;
       return state;
     },
-    setShapes: (state, payload: PayloadAction<Shape[]>) => {
-      state.Shapes = payload.payload;
+    setMap: (state, payload: PayloadAction<MapT[]>) => {
+      state.map = payload.payload;
+      return state;
+    },
+    setGlobalMap: (
+      state,
+      payload: PayloadAction<
+        (MapT & { programmes: Programme[]; created_by: string })[]
+      >,
+    ) => {
+      state.GlobalMap = payload.payload;
       return state;
     },
     setSelectedId: (state, payload: PayloadAction<string | null>) => {
       state.selectId = payload.payload;
       return state;
     },
+    setFloorLevelModal: (state, payload: PayloadAction<boolean>) => {
+      state.FloorLevelModal = payload.payload;
+      return state;
+    },
+    setEditFloorLevelModal: (state, payload: PayloadAction<boolean>) => {
+      state.EditFloorLevelModal = payload.payload;
+      return state;
+    },
   },
 });
 
-export const { setAction, setShapes, setSelectedId } =
-  venueDesignV2Slice.actions;
+export const {
+  setAction,
+  setMap,
+  setSelectedId,
+  setFloorLevelModal,
+  setEditFloorLevelModal,
+  setGlobalMap,
+} = venueDesignV2Slice.actions;
 export default venueDesignV2Slice.reducer;

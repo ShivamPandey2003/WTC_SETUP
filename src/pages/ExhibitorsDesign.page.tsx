@@ -6,13 +6,15 @@ import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
 import { Loader, Plus, Upload } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import CreateModal from "@/components/common/Exhibitors_Design/CreateModal";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
 import {
   setCategoryModal,
+  setDeletingCategory,
   setIsCreating,
+  setIsEditable,
   setUploadCSV,
 } from "@/redux/ExhibitorSlice";
 import {
@@ -27,28 +29,44 @@ import CSVModel from "@/components/global/CSVModel";
 import { useUploadExhibitorsCSV } from "@/api/exhibitor_design_api/exhibitor_design_api";
 import TextStyleRow from "@/components/global/TextStyleRow";
 import AddCategoryModel from "@/components/common/Exhibitors_Design/AddCategoryModel";
+import DeleteModal from "@/components/global/DeleteModel";
+import { useDeleteCategory } from "@/api/programme_design_api/Programme_design_api";
 
 const ExhibitorsDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   const { UploadExhibitorsCSV, isPending: isUploadPending } =
     useUploadExhibitorsCSV();
-  const {} = useCategoryList();
+  const {Category, isCategoryPending} = useCategoryList();
+  const dispatch = useDispatch();
   const {
     SpeakerSettings: SettingValue,
     isPending,
     error,
   } = useGetSpeakerSetting();
-  const { isCreating, Categorys, uploadCSV } = useSelector(
+  const { isCreating, Categorys, uploadCSV, deletingCategory } = useSelector(
     (state: RootState) => state.ExhibitorSlice,
   );
+  const { DeleteCategory, isDeleteCategoryPending } = useDeleteCategory();
+
+  useEffect(() => {
+    const newState = Categorys.reduce(
+      (acc, p) => {
+        acc[p.id] = false;
+        return acc;
+      },
+      {} as Record<string, boolean>,
+    );
+
+    dispatch(setIsEditable(newState));
+  }, [Categorys]);
+
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
-  const dispatch = useDispatch();
   const { GeneralExhibitorsUpdate, isGeneralExhibitorsUpdatePending } =
     useGeneralExhibitorsUpdate();
 
-  if (isPending) {
+  if (isPending || isCategoryPending) {
     return (
       <div className="w-full h-screen flex flex-col items-center justify-center">
         <Loader className="text-primary animate-spin" size={30} />
@@ -120,116 +138,125 @@ const ExhibitorsDesign_page = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="General Settings">
-            <Section
-              title="Basic info"
-              ClassName="w-full"
-              onSave={() => GeneralExhibitorsUpdate()}
-              show={true}
-              loading={isGeneralExhibitorsUpdatePending}
-            >
-              <TextStyleRow
-                label={"Tab Title"}
-                value={SpeakerSettings.exhibitors_tab}
-                onChange={(e) =>
-                  dispatch(
-                    setSpeakerSettings({
-                      ...SpeakerSettings,
-                      exhibitors_tab: e,
-                    }),
-                  )
-                }
-                containerClassname="mb-8 w-[25rem]"
-              />
-              <div className="mb-10">
-                <h2 className="text-[14px] font-medium leading-[15px]">
-                  Exhibitor Categories & Order
-                </h2>
-                {Categorys.map((data, index) => (
-                  <Custom_Text_Row
-                    key={index}
-                    index={String(index + 1)}
-                    value={data.name}
-                    color={data.color}
-                  />
-                ))}
-                <Button
-                  onClick={() => dispatch(setCategoryModal(true))}
-                  className="mt-4"
-                  variant={"link"}
-                >
-                  + Add exhibitor category
-                </Button>
-              </div>
-              <div>
-                <div className="flex items-center py-2">
-                  <div className="w-40 text-sm font-medium mr-8">
-                    {"Open links in new tab"}
+            <div className="flex gap-4 items-start">
+              <Section
+                title="Basic info"
+                ClassName="w-full"
+                onSave={() => GeneralExhibitorsUpdate()}
+                show={true}
+                loading={isGeneralExhibitorsUpdatePending}
+              >
+                <TextStyleRow
+                  label={"Tab Title"}
+                  value={SpeakerSettings.exhibitors_tab}
+                  onChange={(e) =>
+                    dispatch(
+                      setSpeakerSettings({
+                        ...SpeakerSettings,
+                        exhibitors_tab: e,
+                      }),
+                    )
+                  }
+                  containerClassname="mb-8 w-[25rem]"
+                />
+                <div>
+                  <div className="flex items-center py-2">
+                    <div className="w-40 text-sm font-medium mr-8">
+                      {"Open links in new tab"}
+                    </div>
+                    <ToggleSwitch
+                      isOpen={
+                        SpeakerSettings.exhibitor_settings.open_link_new_tab
+                      }
+                      setIsOn={() =>
+                        dispatch(
+                          setSpeakerSettings({
+                            ...SpeakerSettings,
+                            exhibitor_settings: {
+                              ...SpeakerSettings.exhibitor_settings,
+                              open_link_new_tab:
+                                !SpeakerSettings.exhibitor_settings
+                                  .open_link_new_tab,
+                            },
+                          }),
+                        )
+                      }
+                    />
                   </div>
-                  <ToggleSwitch
-                    isOpen={
-                      SpeakerSettings.exhibitor_settings.open_link_new_tab
-                    }
-                    setIsOn={() =>
-                      dispatch(
-                        setSpeakerSettings({
-                          ...SpeakerSettings,
-                          exhibitor_settings: {
-                            ...SpeakerSettings.exhibitor_settings,
-                            open_link_new_tab:
-                              !SpeakerSettings.exhibitor_settings
-                                .open_link_new_tab,
-                          },
-                        }),
-                      )
-                    }
-                  />
-                </div>
-                <div className="flex items-center py-2">
-                  <div className="w-40 text-sm font-medium mr-8">
-                    {"Allow email exposure"}
+                  <div className="flex items-center py-2">
+                    <div className="w-40 text-sm font-medium mr-8">
+                      {"Allow email exposure"}
+                    </div>
+                    <ToggleSwitch
+                      isOpen={
+                        SpeakerSettings.exhibitor_settings.allow_email_exposure
+                      }
+                      setIsOn={() =>
+                        dispatch(
+                          setSpeakerSettings({
+                            ...SpeakerSettings,
+                            exhibitor_settings: {
+                              ...SpeakerSettings.exhibitor_settings,
+                              allow_email_exposure:
+                                !SpeakerSettings.exhibitor_settings
+                                  .allow_email_exposure,
+                            },
+                          }),
+                        )
+                      }
+                    />
                   </div>
-                  <ToggleSwitch
-                    isOpen={
-                      SpeakerSettings.exhibitor_settings.allow_email_exposure
-                    }
-                    setIsOn={() =>
-                      dispatch(
-                        setSpeakerSettings({
-                          ...SpeakerSettings,
-                          exhibitor_settings: {
-                            ...SpeakerSettings.exhibitor_settings,
-                            allow_email_exposure:
-                              !SpeakerSettings.exhibitor_settings
-                                .allow_email_exposure,
-                          },
-                        }),
-                      )
-                    }
-                  />
-                </div>
-                <div className="flex items-center py-2">
-                  <div className="w-40 text-sm font-medium mr-8">
-                    {"Booth Location Required"}
+                  <div className="flex items-center py-2">
+                    <div className="w-40 text-sm font-medium mr-8">
+                      {"Booth Location Required"}
+                    </div>
+                    <ToggleSwitch
+                      isOpen={SpeakerSettings.exhibitor_settings.booth_location}
+                      setIsOn={() =>
+                        dispatch(
+                          setSpeakerSettings({
+                            ...SpeakerSettings,
+                            exhibitor_settings: {
+                              ...SpeakerSettings.exhibitor_settings,
+                              booth_location:
+                                !SpeakerSettings.exhibitor_settings
+                                  .booth_location,
+                            },
+                          }),
+                        )
+                      }
+                    />
                   </div>
-                  <ToggleSwitch
-                    isOpen={SpeakerSettings.exhibitor_settings.booth_location}
-                    setIsOn={() =>
-                      dispatch(
-                        setSpeakerSettings({
-                          ...SpeakerSettings,
-                          exhibitor_settings: {
-                            ...SpeakerSettings.exhibitor_settings,
-                            booth_location:
-                              !SpeakerSettings.exhibitor_settings
-                                .booth_location,
-                          },
-                        }),
-                      )
-                    }
-                  />
                 </div>
-              </div>
-            </Section>
+              </Section>
+              <Section
+                title="Exhibitor Categories & Order"
+                ClassName="w-full"
+                onSave={() => {}}
+                show={false}
+                loading={false}
+              >
+                <div className="">
+                  {Category?.response.filter(pre=>Boolean(pre.type)).map((data, index) => (
+                    <Custom_Text_Row
+                      type={data.type}
+                      key={index}
+                      id={data.id}
+                      index={String(index + 1)}
+                      value={data.name}
+                      color={data.color}
+                    />
+                  ))}
+                  <Button
+                    onClick={() => dispatch(setCategoryModal(true))}
+                    className="mt-4"
+                    variant={"link"}
+                  >
+                    + Add exhibitor category
+                  </Button>
+                </div>
+              </Section>
+            </div>
           </TabsContent>
           <TabsContent value="Session Data">
             <CustomTable />
@@ -249,6 +276,12 @@ const ExhibitorsDesign_page = () => {
         onSubmit={UploadExhibitorsCSV}
         description="Upload CSV file to create Exhibitor entries. CSV Columns: full_name, url, email, category, ads"
         path="/exhibitors_listing.csv"
+      />
+      <DeleteModal
+        isOpen={Boolean(deletingCategory)}
+        onClose={() => dispatch(setDeletingCategory(null))}
+        onConfirm={() => DeleteCategory({ id: deletingCategory as string })}
+        isDeleting={isDeleteCategoryPending}
       />
     </div>
   );

@@ -9,6 +9,7 @@ export type payload = SpeakerSetting & {
     getting_there_description: string;
     latitude: string;
     longitude: string;
+    image: string | File;
   };
   venue_tab: string;
 };
@@ -20,6 +21,11 @@ type ProgrammeDesignStateType = Omit<
   speakers: (CreateSpeakerRequestT & {
     speaker_id: string;
     created_on: string;
+    profile_image: string;
+    attachments: {
+      filename: string;
+      base64: string;
+    }[];
   })[];
   SpeakerSettings: payload;
 };
@@ -41,11 +47,12 @@ const initialState: ProgrammeDesignStateType = {
     programme_tab: "",
     speaker_tab: "",
     exhibitors_tab: "",
-    venue:{
-        getting_there_sub_title: "",
-    getting_there_description: "",
-    latitude: "",
-    longitude: "",
+    venue: {
+      getting_there_sub_title: "",
+      getting_there_description: "",
+      latitude: "",
+      longitude: "",
+      image: "",
     },
     venue_tab: "",
     speaker_info: {
@@ -80,7 +87,15 @@ const Speakers_DesignSlice = createSlice({
     setSpeaker: (
       state,
       payload: PayloadAction<
-        (CreateSpeakerRequestT & { speaker_id: string; created_on: string })[]
+        (CreateSpeakerRequestT & {
+          speaker_id: string;
+          created_on: string;
+          profile_image: string;
+          attachments: {
+            filename: string;
+            base64: string;
+          }[];
+        })[]
       >,
     ) => {
       state.speakers = payload.payload;

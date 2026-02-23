@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router";
 // import Home_page from "@/pages/Home.page";
-import RootLayout from "@/layouts/rootlayout";
+// import RootLayout from "@/layouts/rootlayout";
 // import Speaker_page from "@/pages/Speaker.page";
 // import Programme_page from "@/pages/Programme.page";
 // import Venue_page from "@/pages/Venue.page";
@@ -24,6 +24,10 @@ import V2_exhibitors_page from "@/v2_pages/V2_exhibitors.page";
 import V2_Venue_page from "@/v2_pages/V2_Venue.page";
 import V2_Programme_page from "@/v2_pages/V2_Programme.page";
 import V2_VenueDesign_page from "@/v2_pages/V2_VenueDesign.page";
+import V2_UserProfile_page from "@/v2_pages/V2_UserProfile.page";
+import NewsDetail from "@/v2_pages/NewsDetail";
+import SpeakerDetails from "@/v2_pages/SpeakerDetails";
+import ExhibitorsDetails from "@/v2_pages/ExhibitorsDetails";
 
 const Router = createBrowserRouter(
   [
@@ -77,11 +81,23 @@ const Router = createBrowserRouter(
             </ErrorBoundary>
           ),
         },
+        {
+          path: "news/:id",
+          element:<NewsDetail/>
+        },
+        {
+          path: "speaker/:id",
+          element:<SpeakerDetails/>
+        },
+        {
+          path: "exhibitors/:id",
+          element:<ExhibitorsDetails/>
+        }
       ],
     },
     {
       path: "/",
-      element: <ProtectedRoute element={<AdminLayout />} />,
+      element: <ProtectedRoute element={<AdminLayout />} adminOnly/>,
       children: [
         {
           path: "global-design",
@@ -108,18 +124,22 @@ const Router = createBrowserRouter(
           element: <ExhibitorsDesign_page />,
         },
         {
-          path:"venue-design/design-floor-plan",
+          path:"venue-design/design-floor-plan/:id",
           element:<V2_VenueDesign_page/>
-        }
+        },
+        {
+          path: "wtc-profile",
+          element: <Profile_page />,
+        },
       ],
     },
     {
       path: "/",
-      element: <ProtectedRoute element={<RootLayout />} />,
+      element: <ProtectedRoute element={<V2_rootlayout />} />,
       children: [
         {
-          path: "wtc-profile",
-          element: <Profile_page />,
+          path: "user-profile",
+          element: <V2_UserProfile_page />,
         },
       ],
     },

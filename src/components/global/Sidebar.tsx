@@ -1,5 +1,17 @@
 import { cn } from "@/lib/utils";
-import { Globe, Home, CreditCard, User, UserRound, Navigation, Boxes } from "lucide-react";
+import { setUserInfo } from "@/redux/AuthSlice";
+import type { AppDispatch, RootState } from "@/redux/store";
+import NewDropdown from "@/v2_components/global/V2_DropDown";
+import {
+  Globe,
+  Home,
+  CreditCard,
+  User,
+  UserRound,
+  Navigation,
+  Boxes,
+} from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 
 interface SidebarProps {
@@ -8,6 +20,24 @@ interface SidebarProps {
 
 export default function Sidebar({ activeItem = "global" }: SidebarProps) {
   const navigate = useNavigate();
+  const {userinfo} = useSelector((state:RootState)=>state.AuthSlice)
+  const dispatch = useDispatch<AppDispatch>()
+  const menu = [
+    {
+      id: "Profile",
+      label: "Admin Profile",
+      onClick: () => navigate("/wtc-profile"),
+    },
+    {
+      id: "Logout",
+      label: "Logout",
+      onClick: () => {
+        localStorage.removeItem("token")
+        dispatch(setUserInfo({firstname:"", lastname:"", grp:0}))
+        navigate('/')
+      },
+    },
+  ];
 
   return (
     <aside className="w-[153px] bg-primary text-white h-screen flex flex-col">
@@ -22,7 +52,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
             `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "global"
               ? "bg-white text-[#318061]"
-              : "hover:bg-white/10"
+              : "hover:bg-white/10",
           )}
           onClick={() => navigate("/global-design")}
         >
@@ -35,7 +65,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
             `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "home"
               ? "bg-white text-[#318061]"
-              : "hover:bg-white/10"
+              : "hover:bg-white/10",
           )}
           onClick={() => navigate("/home-design")}
         >
@@ -48,7 +78,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
             `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "programme"
               ? "bg-white text-[#318061]"
-              : "hover:bg-white/10"
+              : "hover:bg-white/10",
           )}
           onClick={() => navigate("/programme-design")}
         >
@@ -60,7 +90,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
             `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "speakers"
               ? "bg-white text-[#318061]"
-              : "hover:bg-white/10"
+              : "hover:bg-white/10",
           )}
           onClick={() => navigate("/speakers-design")}
         >
@@ -72,7 +102,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
             `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "venue"
               ? "bg-white text-[#318061]"
-              : "hover:bg-white/10"
+              : "hover:bg-white/10",
           )}
           onClick={() => navigate("/venue-design")}
         >
@@ -84,7 +114,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
             `w-full px-4 py-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "exhibitors"
               ? "bg-white text-[#318061]"
-              : "hover:bg-white/10"
+              : "hover:bg-white/10",
           )}
           onClick={() => navigate("/exhibitors-design")}
         >
@@ -93,10 +123,17 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
         </button>
       </nav>
 
-      <button onClick={()=>navigate("/wtc-profile")} className="p-4 flex items-center gap-3 text-sm hover:bg-white/10 transition-colors border-t border-white/20 cursor-pointer">
-        <User size={18} />
-        <span>User</span>
-      </button>
+      <NewDropdown
+        className="w-full"
+        position="top"
+        trigger={
+          <button className="w-full p-4 flex items-center gap-3 text-sm hover:bg-white/10 transition-colors border-t border-white/20 cursor-pointer">
+            <User size={18} />
+            <span className="text-xs">{`${userinfo.firstname} ${userinfo.lastname}`}</span>
+          </button>
+        }
+        items={menu}
+      />
     </aside>
   );
 }

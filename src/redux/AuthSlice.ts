@@ -9,6 +9,11 @@ type initialStateType = {
   otp: OTP;
   resendCount: number;
   resendCooldownEnd: number;
+  userinfo: {
+    firstname: string;
+    lastname: string;
+    grp:number
+  };
 };
 
 const initialState: initialStateType = {
@@ -17,10 +22,15 @@ const initialState: initialStateType = {
   otp: ["", "", "", "", "", ""],
   resendCount: 0,
   resendCooldownEnd: 0,
+  userinfo: {
+    firstname: "",
+    lastname: "",
+    grp:0
+  },
 };
 
 const AuthSlice = createSlice({
-  name: "Auth",
+  name: "AuthSlice",
   initialState,
   reducers: {
     setStep: (state, payload: PayloadAction<Step>) => {
@@ -45,6 +55,16 @@ const AuthSlice = createSlice({
       state.resendCount = 0;
       state.resendCooldownEnd = 0;
     },
+    setUserInfo: (
+      state,
+      payload: PayloadAction<{
+        firstname: string;
+        lastname: string;
+        grp:number
+      }>,
+    ) => {
+      state.userinfo = payload.payload;
+    },
   },
 });
 
@@ -55,5 +75,6 @@ export const {
   setResendCooldown,
   increaseResendCount,
   resetResendState,
+  setUserInfo
 } = AuthSlice.actions;
 export default AuthSlice.reducer;
