@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { addToGoogleCalendar, formatForGoogleCalendar } from "@/lib/utils";
 import { useNavigate } from "react-router";
+import { useNotifyProgramme } from "@/api/programme_design_api/Programme_design_api";
 
 type ModalProps = {
   isOpen: boolean;
@@ -17,6 +18,7 @@ type ModalProps = {
 
 const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
   const { Session } = useSelector((state: RootState) => state.Global_Slice);
+  const { notify, isPending } = useNotifyProgramme();
 
   const selectedValue = Array.isArray(id)
     ? Session.filter((pre) => id.includes(pre.id))
@@ -74,7 +76,8 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                   size={"sm"}
                   className="p-0 ml-4"
                 >
-                  Room no: {selectedValue.venue.name}
+                  Room no: {selectedValue.venue.design_label} -{" "}
+                  {selectedValue.venue.name}
                 </Button>
               )}
               <button
@@ -106,7 +109,13 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                 >
                   Add to calendar
                 </Button>
-                <Button variant={"link"} size={"sm"} className="p-0">
+                <Button
+                  variant={"link"}
+                  size={"sm"}
+                  className="p-0"
+                  onClick={() => notify({ id: selectedValue.id })}
+                  disabled={isPending}
+                >
                   Notify me
                 </Button>
               </div>
@@ -117,19 +126,29 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
               {selectedValue.description}
             </p>
 
-            <div className="flex items-center gap-2 mb-5 text-sm text-gray-700">
-              <FileText className="w-4 h-4" />
-              <span className="hover:underline cursor-pointer">Paper.pdf</span>
-            </div>
+            {selectedValue.attachments.file && (
+              <a href={selectedValue.attachments.file} target="_blank">
+                <div className="flex items-center gap-2 mb-5 text-sm text-gray-700">
+                  <FileText className="w-4 h-4" />
+                  <span className="hover:underline cursor-pointer">
+                    {selectedValue.attachments.filename}
+                  </span>
+                </div>
+              </a>
+            )}
 
             <div className="flex items-center gap-6">
               {selectedValue.speakers.map((speaker, index) => (
-                <div key={index} className="flex flex-col items-center">
+                <div
+                  key={index}
+                  className="flex flex-col items-center cursor-pointer"
+                  onClick={() => navigate(`/speaker/${speaker.speaker_id}`)}
+                >
                   <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center mb-2 overflow-hidden">
-                    {!speaker ? (
+                    {speaker.profile_img ? (
                       <img
-                        src={speaker}
-                        alt={speaker}
+                        src={speaker.profile_img}
+                        alt={speaker.fullname}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -223,7 +242,13 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                       >
                         Add to calendar
                       </Button>
-                      <Button variant={"link"} size={"sm"} className="p-0">
+                      <Button
+                        variant={"link"}
+                        size={"sm"}
+                        className="p-0"
+                        onClick={() => notify({ id: s.id })}
+                        disabled={isPending}
+                      >
                         Notify me
                       </Button>
                     </div>
@@ -233,17 +258,20 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                   <p className="text-sm text-gray-600 leading-relaxed mb-4">
                     {s.description}
                   </p>
-
-                  <div className="flex items-center gap-2 mb-5 text-sm text-gray-700">
-                    <FileText className="w-4 h-4" />
-                    <span className="hover:underline cursor-pointer">
-                      Paper.pdf
-                    </span>
-                  </div>
+                  {s.attachments.file && (
+                    <a href={s.attachments.file} target="_blank">
+                      <div className="flex items-center gap-2 mb-5 text-sm text-gray-700">
+                        <FileText className="w-4 h-4" />
+                        <span className="hover:underline cursor-pointer">
+                          {s.attachments.filename}
+                        </span>
+                      </div>
+                    </a>
+                  )}
 
                   <div className="flex items-center gap-6">
                     {s.speakers.map((speaker, index) => (
-                      <div key={index} className="flex flex-col items-center">
+                      <div key={index} className="flex flex-col items-center cursor-pointer">
                         <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center mb-2 overflow-hidden">
                           {!speaker ? (
                             <img

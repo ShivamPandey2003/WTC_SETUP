@@ -75,7 +75,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
             }}
           />
         )}
-        <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize">
+        <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize text-ellipsis whitespace-nowrap overflow-hidden max-w-[100px] sm:max-w-[300px] md:max-w-[600px]">
           {TitleFetch(pathname.split("/")[1])} {title ? `/ ${title}` : ""}
         </h2>
       </div>
@@ -94,17 +94,23 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
           </Button>
         ) : grp !== 1 ? (
           <Button
-            onClick={() => navigate("/user-profile")}
+            onClick={() => {
+              navigate("/user-profile");
+              dispatch(setTitle(null));
+            }}
             className="px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
           >
             Go to Profile
           </Button>
         ) : (
           <Button
-            onClick={() => navigate("/global-design")}
-            className="px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
+            onClick={() => {
+              navigate("/global-design");
+              dispatch(setTitle(null));
+            }}
+            className="px-6 sm:px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
           >
-            Go to dashboard
+            dashboard
           </Button>
         )}
       </div>

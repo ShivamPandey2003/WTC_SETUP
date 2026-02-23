@@ -145,8 +145,8 @@ declare type CreateSpeakerRequestT = {
   coming_sessions: Record<string, string>[];
   total_sessions: number;
   keyNote: boolean;
-  whatsapp_url:string;
-  linkedin_url:string;
+  whatsapp_url: string;
+  linkedin_url: string;
 };
 
 declare type SpeakerListResponse = {
@@ -313,6 +313,10 @@ declare type SpeakerSettingResponse = {
 };
 
 declare type Programme = {
+  attachments: {
+    filename: string;
+    file: string;
+  };
   id: string;
   title: string;
   location: string;
@@ -328,12 +332,13 @@ declare type Programme = {
     bio: string;
     external_link: string;
     keyNote: boolean;
+    profile_img: string;
   }[];
   categories: Record<string, Record<string, string>>;
   external_link: string;
   description: string;
   bg_img: string;
-  venue: Shape & { designId: string };
+  venue: Shape & { designId: string; design_label: string };
 };
 
 // declare type Programme = {
@@ -578,5 +583,18 @@ declare type GlobalInfinityExhibitors = {
     } & {
       grouped: { [category: string]: Omit<Exhibitor, "category">[] };
     };
+  };
+};
+
+declare type FindSpeakerById = {
+  header: ResponseHeader;
+  response: CreateSpeakerRequestT & {
+    speaker_id: string;
+    created_on: string;
+    profile_image: string;
+    attachments: {
+      filename: string;
+      base64: string;
+    }[];
   };
 };

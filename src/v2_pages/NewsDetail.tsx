@@ -28,7 +28,7 @@ const NewsDetail = () => {
 
   return (
     <div className="px-4 pb-4 mx-auto">
-      <article className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           <div className="relative h-96 sm:h-[28rem] overflow-hidden group">
             <img

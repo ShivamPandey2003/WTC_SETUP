@@ -1,12 +1,20 @@
 import NoData from "@/components/global/NoData";
+import { Skeleton } from "@/components/ui/skeleton";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
+import { apiRequest } from "@/services/apiService";
+import { useQuery } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 import {
   Briefcase,
   Building2,
   ExternalLink,
   MessageCircle,
   Linkedin,
+  Lectern,
+  MapPin,
+  CalendarDays,
+  Clock,
 } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,10 +27,25 @@ const SpeakerDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
 
-  const speakerDetails = useMemo(
+  const speakerFromRedux = useMemo(
     () => speakers.find((speaker) => speaker.speaker_id === id),
     [id, speakers],
   );
+
+  const { data: speakerFromAPI, isLoading } = useQuery<
+    FindSpeakerById,
+    AxiosError
+  >({
+    queryKey: ["speaker", id],
+    queryFn: async () => {
+      const res = await apiRequest("get", `/speaker/${id}`);
+      return res.response;
+    },
+    enabled: !speakerFromRedux && !!id, // only call API if not in redux
+    retry: 1,
+  });
+
+  const speakerDetails = speakerFromRedux || speakerFromAPI?.response;
 
   useEffect(() => {
     if (speakerDetails) {
@@ -33,6 +56,14 @@ const SpeakerDetails = () => {
       );
     }
   }, [speakerDetails]);
+
+  if (isLoading) {
+    return (
+      <div className="px-4 pb-4 mx-auto">
+        <Skeleton className="max-w-5xl mx-auto h-[85vh]" />
+      </div>
+    );
+  }
 
   if (!speakerDetails) {
     return (
@@ -81,6 +112,12 @@ const SpeakerDetails = () => {
                         <Building2 className="w-5 h-5 text-slate-400" />
                         <span className="font-medium">
                           {speakerDetails.company}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-slate-600">
+                        <Lectern className="w-5 h-5 text-slate-400" />
+                        <span className="font-medium">
+                          {speakerDetails.total_sessions}
                         </span>
                       </div>
                     </div>
@@ -166,37 +203,57 @@ const SpeakerDetails = () => {
                   <h2 className="text-2xl font-bold text-slate-900 mb-6">
                     Coming Sessions
                   </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
                     {speakerDetails.coming_sessions.map((session, index) => (
                       <div
                         key={index}
-                        className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-6"
+                        className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-3"
                       >
-                        <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                        <h3 className="text-lg font-semibold text-slate-900 mb-1">
                           {session.title}
                         </h3>
-                        <p className="text-slate-600 text-sm">
+                        <p className="text-slate-700 text-sm line-clamp-2">
                           {session.description}
                         </p>
+                        <div className="flex items-center gap-2 my-3">
+                          <MapPin className="w-4 h-4 text-slate-600" />
+                          <p className="text-slate-700 text-sm">
+                            {session.location}
+                          </p>
+                        </div>
+                        <div className="flex items-center justify-between mt-2">
+                          <div className="flex items-center gap-2">
+                            <CalendarDays className="w-4 h-4 text-slate-600" />
+                            <p className="text-slate-700 text-sm">
+                              Start date: {session.start_date}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <CalendarDays className="w-4 h-4 text-slate-600" />
+                            <p className="text-slate-700 text-sm">
+                              End date: {session.end_date}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between mt-1">
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4 text-slate-600" />
+                            <p className="text-slate-700 text-sm">
+                              Start time: {session.start_time}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4 text-slate-600" />
+                            <p className="text-slate-700 text-sm">
+                              End time: {session.end_time}
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
-
-            <div className="mt-12 pt-8 border-t border-slate-200">
-              <p className="text-sm text-slate-500">
-                Added on{" "}
-                {new Date(speakerDetails.created_on).toLocaleDateString(
-                  "en-US",
-                  {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  },
-                )}
-              </p>
-            </div>
           </div>
         </div>
       </article>

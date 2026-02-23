@@ -8,7 +8,7 @@ import {
   setSession,
   setUploadCSV,
 } from "@/redux/ProgrammeDesignSlice";
-import {setCategoryModal as exhibitorCategoryModal} from '@/redux/ExhibitorSlice'
+import { setCategoryModal as exhibitorCategoryModal } from "@/redux/ExhibitorSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -258,4 +258,21 @@ export const useUploadSessionsCSV = () => {
   });
 
   return { UploadNewsCSV, isPending, error };
+};
+
+export const useNotifyProgramme = () => {
+  const { mutate, isPending } = useMutation<any, AxiosError, { id: string }>({
+    mutationFn: async ({ id }) => {
+      const res = await apiRequest("post", `/programme/${id}/notify`);
+      return res.response;
+    },
+    onSuccess: (data) => {
+      toast.success(data.header.message);
+    },
+    onError: (err) => {
+      toast.error(`Error sending notification: ${err.message}`);
+    },
+  });
+
+  return { notify: mutate, isPending };
 };

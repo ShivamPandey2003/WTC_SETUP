@@ -1,6 +1,5 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
 import ModelSlice from './ModalSlice'
 import Home_DesignSlice from './HomeDesignSlice'
 import Programme_DesignSlice from './ProgrammeDesignSlice'
@@ -12,11 +11,12 @@ import AuthSlice from './AuthSlice'
 import ExhibitorSlice from './ExhibitorSlice'
 import ExtraSlice from './ExtraSlice'
 import venueDesignV2Slice from './venueDesignV2Slice'
+import { indexedDBStorage } from "@/services/indexdb";
 
 const persistConfig = {
   key: "root",
-  storage, // localStorage
-  whitelist:["Global_DesignSlice", "AuthSlice"]
+  storage: indexedDBStorage, // localStorage
+  // whitelist:["Global_DesignSlice", "AuthSlice"]
 };
 
 const rootReducer = combineReducers({

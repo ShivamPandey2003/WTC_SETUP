@@ -3,12 +3,21 @@ import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { setTitle } from "@/redux/ModalSlice";
+import type { AppDispatch } from "@/redux/store";
 import EventGrid from "@/v2_components/common/V2_Programme/EventGrid";
 import { Check, Loader } from "lucide-react";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 
 const V2_Programme_page = () => {
   const { ProgrammeList, isPending, error } = useGetProgrammeList();
+  const dispatch = useDispatch<AppDispatch>();
+
+    useEffect(() => {
+      dispatch(setTitle(null));
+    }, []);
 
   if (isPending) {
     return (
