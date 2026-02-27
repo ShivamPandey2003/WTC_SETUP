@@ -87,7 +87,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
         )}
         {!token ? (
           <Button
-            onClick={() => dispatch(setLoginModel(true))}
+            onClick={() => navigate("/auth")}
             className="px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
           >
             Login

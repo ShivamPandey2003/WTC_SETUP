@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { apiRequest } from "@/services/apiService";
-import type { EmailFormValues } from "@/Schema/authSchema";
+import type { EmailFormValues, SignUpFromValue } from "@/Schema/authSchema";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
@@ -13,7 +13,7 @@ import {
   setStep,
   setUserInfo,
 } from "@/redux/AuthSlice";
-import { setLoginModel } from "@/redux/ModalSlice";
+import { setLoginModel, setResgister } from "@/redux/ModalSlice";
 import { useNavigate } from "react-router";
 
 const coolDownTime =
@@ -69,9 +69,16 @@ export const useVerifyOtp = () => {
           firstname: data.response.firstname,
           lastname: data.response.lastname,
           grp: data.response.grp,
+          is_verified: data.response.is_verified,
         }),
       );
-      navigate("/global-design");
+      if (!data.response.is_verified && data.response.grp !== 1) {
+        navigate("/onboarding");
+      } else if (data.response.grp !== 1) {
+        navigate("/");
+      } else {
+        navigate("/global-design");
+      }
       toast.success("Login successful!");
       dispatch(setEmail(""));
       dispatch(setStep("email"));
@@ -120,4 +127,25 @@ export const useResendOtp = () => {
   });
 
   return { Resend, isResendPending };
+};
+
+export const useUserRegistration = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { mutate: userRegistration, isPending: isUserRegistrationPending } =
+    useMutation<ProfilePicResponse, AxiosError, SignUpFromValue>({
+      mutationFn: async (data) => {
+        const res = await apiRequest("post", "/user/signup", data);
+        return res.response;
+      },
+      onSuccess: (_, variables) => {
+        toast.success("User signed up successfully!");
+        dispatch(setEmail(variables.email));
+        dispatch(setResgister(false));
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
+
+  return { userRegistration, isUserRegistrationPending };
 };

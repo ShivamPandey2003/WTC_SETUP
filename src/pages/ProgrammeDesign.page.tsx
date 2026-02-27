@@ -31,6 +31,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
+  Download,
   Loader,
   Navigation,
   Plus,
@@ -45,6 +46,7 @@ import CSVModel from "@/components/global/CSVModel";
 import {
   useDeleteCategory,
   useGetCategoryAll,
+  useSessionDownload,
   useUploadSessionsCSV,
 } from "@/api/programme_design_api/Programme_design_api";
 import Custom_Text_Row from "@/components/common/Exhibitors_Design/Custom_Text_Row";
@@ -59,6 +61,7 @@ const ProgrammeDesign_page = () => {
   const { AllCategory, isPending: isCategoriesPending } = useGetCategoryAll();
   const { UpdateProgrammeDesign, isUpdateProgrammeDesignPending } =
     useProgrameDesignUpdate();
+  const { downloadSession, isdownloadPending } = useSessionDownload();
   const { UploadNewsCSV, isPending: isUploadSessionsCSV } =
     useUploadSessionsCSV();
   const { isCreating, slectedDate, uploadCSV } = useSelector(
@@ -201,6 +204,14 @@ const ProgrammeDesign_page = () => {
                 <ChevronRight />
               </Button>
             </div>
+            <Button
+              onClick={() => downloadSession()}
+              disabled={isdownloadPending}
+              className="w-fit py-1 h-7"
+            >
+              <Download />
+              download CSV
+            </Button>
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
               className="w-fit py-1 h-7"

@@ -2,6 +2,7 @@ declare type ModelSliceType = {
   loginModel: boolean;
   searchModal: boolean;
   title: string | null;
+  register:boolean
 };
 
 declare type HomeDesignStateType = {
@@ -155,6 +156,11 @@ declare type SpeakerListResponse = {
     speaker_id: string;
     created_on: string;
     profile_image: string;
+    attachments: {
+      filename: string;
+      base64: string;
+    }[];
+    email: string | null;
   })[];
 };
 
@@ -183,7 +189,14 @@ declare type AppConfig = {
     font_family: string;
     all_other_text: string;
   };
+  show_splash: boolean;
+  show_exhibitor_splash: boolean;
   splash: {
+    image: sting | File;
+    title: string;
+    subtitle: string;
+  };
+  exhibitor_splash: {
     image: sting | File;
     title: string;
     subtitle: string;
@@ -304,6 +317,11 @@ declare type SpeakerSetting = {
     booth_location: boolean;
     exhibitors_category_list: string[];
     open_link_new_tab: boolean;
+    splash: {
+      image: string;
+      subtitle: string;
+      title: string;
+    };
   };
 };
 
@@ -427,6 +445,7 @@ declare type OtpResponse = {
     firstname: string;
     lastname: string;
     grp: number;
+    is_verified: number;
   };
 };
 
@@ -571,6 +590,7 @@ declare type GlobalInfinitySpeakers = {
         filename: string;
         base64: string;
       }[];
+      email: string | null;
     })[];
   };
 };
@@ -596,5 +616,6 @@ declare type FindSpeakerById = {
       filename: string;
       base64: string;
     }[];
+    email: string | null;
   };
 };

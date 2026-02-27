@@ -142,3 +142,77 @@ export const useUploadExhibitorsCSV = () => {
 
   return { UploadExhibitorsCSV, isPending, error };
 };
+
+export const useUploadSplash = () => {
+  const {
+    mutate: UploadSplash,
+    isPending,
+    error,
+  } = useMutation<
+    LogoUpdateResponse,
+    AxiosError,
+    { form: FormData }
+  >({
+    mutationFn: async (data) => {
+      const res = await apiRequest(
+        "post",
+        `/exhibitors/splash/upload`,
+        data.form,
+      );
+      return res.response;
+    },
+    onSuccess: (data) => {
+      toast.success(data.header.message);
+    },
+    onError: (err) => {
+      toast.error(`Error splash screen: ${err.message}`);
+    },
+  });
+
+  return { UploadSplash, isPending, error };
+};
+
+export const useExhibitorsDownload = () => {
+  const { mutate: downloadExhibitor, isPending: isdownloadPending } = useMutation({
+    mutationKey: ["exhibitors_download"],
+    mutationFn: async () => {
+      const res = await apiRequest(
+        "get",
+        "/exhibitors/download-exhibitors",
+        null,
+        "blob",
+      );
+
+      const contentDisposition = res.headers["content-disposition"];
+      const blob = new Blob([res.response]);
+
+      // Extract filename safely
+      let filename = "exhibitors_list.csv";
+
+      if (contentDisposition?.includes("filename=")) {
+        filename = contentDisposition.split("filename=")[1].replace(/"/g, "");
+      }
+
+      const url = window.URL.createObjectURL(res.response);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = filename; // cleaner way
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      return blob;
+    },
+    onMutate: () => {
+      toast.info("File is preparing for download");
+    },
+    onSuccess: () => {
+      toast.success("File download successfully");
+    },
+  });
+
+  return { downloadExhibitor, isdownloadPending };
+};

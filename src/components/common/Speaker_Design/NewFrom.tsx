@@ -1,6 +1,4 @@
-import {
-  useCreateSpeaker,
-} from "@/api/speaker_design_api/speaker_design_api";
+import { useCreateSpeaker } from "@/api/speaker_design_api/speaker_design_api";
 import CustomForm from "@/components/global/CustomForm";
 import { setIsCreating } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch } from "@/redux/store";
@@ -28,6 +26,7 @@ const NewFrom = () => {
     formData.append("firstname", newData.firstname);
     formData.append("lastname", newData.lastname);
     formData.append("bio", newData.bio as string);
+    formData.append("email", newData.email as string);
     formData.append("company", newData.company as string);
     formData.append("designation", newData.designation as string);
     formData.append("external_link", newData?.external_link as string);
@@ -73,6 +72,11 @@ const NewFrom = () => {
       label: "Bio",
       type: "textarea",
       placeholder: "Enter detailed bio...",
+    },
+    {
+      name: "email",
+      label: "Email",
+      placeholder: "Enter a valid email address",
     },
     { name: "designation", label: "Designation" },
     { name: "company", label: "Company" },

@@ -28,6 +28,9 @@ import V2_UserProfile_page from "@/v2_pages/V2_UserProfile.page";
 import NewsDetail from "@/v2_pages/NewsDetail";
 import SpeakerDetails from "@/v2_pages/SpeakerDetails";
 import ExhibitorsDetails from "@/v2_pages/ExhibitorsDetails";
+import AttachmentPdf from "@/v2_pages/AttachmentPdf";
+import Auth_page from "@/v2_pages/Auth.page";
+import Onboarding_page from "@/v2_pages/Onboarding.page";
 
 const Router = createBrowserRouter(
   [
@@ -83,21 +86,25 @@ const Router = createBrowserRouter(
         },
         {
           path: "news/:id",
-          element:<NewsDetail/>
+          element: <NewsDetail />,
         },
         {
           path: "speaker/:id",
-          element:<SpeakerDetails/>
+          element: <SpeakerDetails />,
         },
         {
           path: "exhibitors/:id",
-          element:<ExhibitorsDetails/>
-        }
+          element: <ExhibitorsDetails />,
+        },
+        {
+          path: "attachment",
+          element: <AttachmentPdf />,
+        },
       ],
     },
     {
       path: "/",
-      element: <ProtectedRoute element={<AdminLayout />} adminOnly/>,
+      element: <ProtectedRoute element={<AdminLayout />} adminOnly />,
       children: [
         {
           path: "global-design",
@@ -124,8 +131,8 @@ const Router = createBrowserRouter(
           element: <ExhibitorsDesign_page />,
         },
         {
-          path:"venue-design/design-floor-plan/:id",
-          element:<V2_VenueDesign_page/>
+          path: "venue-design/design-floor-plan/:id",
+          element: <V2_VenueDesign_page />,
         },
         {
           path: "wtc-profile",
@@ -143,6 +150,14 @@ const Router = createBrowserRouter(
         },
       ],
     },
+    {
+      path: "/auth",
+      element: <Auth_page />,
+    },
+    {
+      path: "/onboarding",
+      element: <ProtectedRoute element={<Onboarding_page />} />,
+    }
     // {
     //   path: "/",
     //   element: <V2_rootlayout />,
@@ -169,7 +184,7 @@ const Router = createBrowserRouter(
     //     },
     //   ],
     // },
-  ]
+  ],
   // {
   //   basename: "/wtc/",
   // }

@@ -15,6 +15,7 @@ import {
   MapPin,
   CalendarDays,
   Clock,
+  Mail,
 } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -156,6 +157,17 @@ const SpeakerDetails = () => {
                     >
                       <ExternalLink className="w-5 h-5" />
                       Website
+                    </a>
+                  )}
+                  {speakerDetails.email && (
+                    <a
+                      href={`mailto:${speakerDetails.email}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
+                    >
+                      <Mail className="w-5 h-5" />
+                      Email
                     </a>
                   )}
                 </div>

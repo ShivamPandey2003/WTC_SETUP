@@ -18,12 +18,19 @@ const initialState: initialStateType = {
       primary_color: "",
       secondary_color: "",
     },
+    show_splash: true,
+    show_exhibitor_splash: true,
     logo: {
       url: "",
       name: "",
       logo_img: "",
     },
     splash: {
+      image: "",
+      title: "",
+      subtitle: "",
+    },
+    exhibitor_splash: {
       image: "",
       title: "",
       subtitle: "",

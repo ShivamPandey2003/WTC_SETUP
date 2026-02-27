@@ -1,39 +1,6 @@
 import { cn } from "@/lib/utils";
 import React, { useState, useEffect } from "react";
 
-// const slides = [
-//   {
-//     id: 1,
-//     title: "The Future Of",
-//     subtitle: "Innovation",
-//     description: "The next generation of technology awaits",
-//     buttonText: "Read more",
-//     image:
-//       "https://images.pexels.com/photos/380769/pexels-photo-380769.jpeg?auto=compress&cs=tinysrgb&w=1200",
-//     color: "from-emerald-600 to-emerald-800",
-//   },
-//   {
-//     id: 2,
-//     title: "World Tunnel",
-//     subtitle: "Congress 2026",
-//     description: "We Welcome You All To Montreal",
-//     buttonText: "More info",
-//     image:
-//       "https://images.pexels.com/photos/325185/pexels-photo-325185.jpeg?auto=compress&cs=tinysrgb&w=1200",
-//     color: "from-slate-600 to-slate-800",
-//   },
-//   {
-//     id: 3,
-//     title: "Global Summit",
-//     subtitle: "2026",
-//     description: "Join us for the event of the year",
-//     buttonText: "Learn more",
-//     image:
-//       "https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200",
-//     color: "from-blue-600 to-blue-800",
-//   },
-// ];
-
 export default function MiniSmallCarousel({slides}:{slides: News[]}) {
   const [index, setIndex] = useState(0);
 
@@ -57,7 +24,7 @@ export default function MiniSmallCarousel({slides}:{slides: News[]}) {
   };
 
   return (
-    <div className="relative w-full h-[250px] rounded-xl overflow-hidden shadow-md">
+    <div className="relative w-full h-[210px] rounded-xl overflow-hidden shadow-md">
       {/* Slides */}
       <div className="absolute inset-0">
         {slides.map((slide, i) => (

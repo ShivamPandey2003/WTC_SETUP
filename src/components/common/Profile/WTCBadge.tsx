@@ -36,7 +36,7 @@ export default function WTCBadge() {
 
       <div className="flex justify-center mb-3">
         <img
-          src={user_info.profile_image}
+          src={user_info.profile_image || "https://cdn-icons-png.flaticon.com/512/847/847969.png"}
           alt="User"
           className="w-32 h-32 rounded-full"
         />

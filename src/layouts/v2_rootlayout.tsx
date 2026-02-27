@@ -28,11 +28,11 @@ const V2_rootlayout = () => {
   const {} = useGetConferenceDetails();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setSpashScreen(false);
-    }, 4000);
+    // const timer = setTimeout(() => {
+    //   setSpashScreen(false);
+    // }, 4000);
 
-    return () => clearTimeout(timer);
+    // return () => clearTimeout(timer);
   }, [setSpashScreen]);
 
   const onClose = () => {
