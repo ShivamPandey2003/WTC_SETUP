@@ -1,3 +1,4 @@
+import { CustomPick } from "@/lib/utils";
 import { queryClient } from "@/provider/TanstackProvider";
 import {
   setIsCreating,
@@ -7,11 +8,11 @@ import {
   setSelected,
   setUploadCSV,
 } from "@/redux/HomeDesignSlice";
-import type { AppDispatch } from "@/redux/store";
+import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 
 export const useCreateNews = () => {
@@ -135,7 +136,6 @@ export const usePublishedNews = () => {
 };
 
 export const useUploadNewsCSV = () => {
-
   const dispatch = useDispatch<AppDispatch>();
 
   const {
@@ -158,4 +158,33 @@ export const useUploadNewsCSV = () => {
   });
 
   return { UploadNewsCSV, isPending, error };
+};
+
+export const useUpdateSplash = () => {
+  const { appConfig } = useSelector(
+    (state: RootState) => state.Global_DesignSlice,
+  );
+
+  const data = CustomPick(appConfig, ["show_splash", "show_exhibitor_splash"]);
+  const {
+    mutate: UpdateSplashActivation,
+    isPending,
+    error,
+  } = useMutation<LogoUpdateResponse, AxiosError>({
+    mutationFn: async () => {
+      const res = await apiRequest("post", `/general/splash/visibility`, {
+        exhibitor_splash: data.show_exhibitor_splash,
+        splash: data.show_splash,
+      });
+      return res.response;
+    },
+    onSuccess: (data) => {
+      toast.success(data.header.message);
+    },
+    onError: (err) => {
+      toast.error(`Error updating logo: ${err.message}`);
+    },
+  });
+
+  return { UpdateSplashActivation, isPending, error };
 };

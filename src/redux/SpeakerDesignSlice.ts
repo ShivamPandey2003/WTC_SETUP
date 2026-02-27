@@ -26,6 +26,7 @@ type ProgrammeDesignStateType = Omit<
       filename: string;
       base64: string;
     }[];
+    email: string | null;
   })[];
   SpeakerSettings: payload;
 };
@@ -72,6 +73,11 @@ const initialState: ProgrammeDesignStateType = {
       open_link_new_tab: false,
       allow_email_exposure: false,
       booth_location: false,
+      splash:{
+        image:"",
+        title:"",
+        subtitle:""
+      }
     },
   },
 };
@@ -95,6 +101,7 @@ const Speakers_DesignSlice = createSlice({
             filename: string;
             base64: string;
           }[];
+          email: string | null;
         })[]
       >,
     ) => {

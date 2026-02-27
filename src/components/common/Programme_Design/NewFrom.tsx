@@ -129,9 +129,9 @@ const NewFrom = () => {
     { name: "end_time", label: "End Time", type: "time" },
     {
       name: "attachments",
-      label: "Attachments",
+      label: "Paper",
       type: "file",
-      accept: "image/*",
+      accept: "application/pdf",
     },
     { name: "location", label: "Location" },
     { name: "external_link", label: "External Link" },

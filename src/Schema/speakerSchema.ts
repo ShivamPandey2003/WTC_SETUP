@@ -7,6 +7,7 @@ export const speakerSchema = z.object({
   designation: z.string().optional().nullable(),
   company: z.string().optional().nullable(),
   bio: z.string().optional().nullable(),
+  email: z.email("Invalid email address"),
   external_link: z.url().optional(),
   attachments: z
     .instanceof(FileList)
@@ -32,6 +33,7 @@ export const EditspeakerSchema = z.object({
   firstname: z.string().min(1, "First Name is required"),
   lastname: z.string().min(1, "Last Name is required"),
   designation: z.string().optional().nullable(),
+  // email: z.email("Invalid email address"),
   company: z.string().optional().nullable(),
   bio: z.string().optional().nullable(),
   external_link: z.url().optional(),
@@ -43,3 +45,5 @@ export const EditspeakerSchema = z.object({
 });
 
 export type SpeakerForm = z.infer<typeof speakerSchema>;
+
+export type EditSpeakerFrom = z.infer<typeof EditspeakerSchema>

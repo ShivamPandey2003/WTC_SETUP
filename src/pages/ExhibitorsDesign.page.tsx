@@ -5,7 +5,7 @@ import Section from "@/components/global/Section";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
-import { Loader, Plus, Upload } from "lucide-react";
+import { Download, Loader, Plus, Upload } from "lucide-react";
 import React, { useEffect } from "react";
 import CreateModal from "@/components/common/Exhibitors_Design/CreateModal";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,7 +26,11 @@ import { setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import CSVModel from "@/components/global/CSVModel";
-import { useUploadExhibitorsCSV } from "@/api/exhibitor_design_api/exhibitor_design_api";
+import {
+  useExhibitorsDownload,
+  useUploadExhibitorsCSV,
+  useUploadSplash,
+} from "@/api/exhibitor_design_api/exhibitor_design_api";
 import TextStyleRow from "@/components/global/TextStyleRow";
 import AddCategoryModel from "@/components/common/Exhibitors_Design/AddCategoryModel";
 import DeleteModal from "@/components/global/DeleteModel";
@@ -34,9 +38,14 @@ import { useDeleteCategory } from "@/api/programme_design_api/Programme_design_a
 
 const ExhibitorsDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
+  const [splashValue, setSplashValue] = React.useState<{
+    image: string | File;
+    title: string;
+    subtitle: string;
+  }>({ image: "", title: "", subtitle: "" });
   const { UploadExhibitorsCSV, isPending: isUploadPending } =
     useUploadExhibitorsCSV();
-  const {Category, isCategoryPending} = useCategoryList();
+  const { Category, isCategoryPending } = useCategoryList();
   const dispatch = useDispatch();
   const {
     SpeakerSettings: SettingValue,
@@ -46,7 +55,20 @@ const ExhibitorsDesign_page = () => {
   const { isCreating, Categorys, uploadCSV, deletingCategory } = useSelector(
     (state: RootState) => state.ExhibitorSlice,
   );
+  const {downloadExhibitor, isdownloadPending} = useExhibitorsDownload()
   const { DeleteCategory, isDeleteCategoryPending } = useDeleteCategory();
+  const { UploadSplash, isPending: isUploadSplashPending } = useUploadSplash();
+
+  const OnSave = () => {
+    const formData = new FormData();
+    formData.append("file", splashValue.image);
+    formData.append("title", splashValue.title);
+    formData.append("subtitle", splashValue.subtitle);
+
+    UploadSplash({
+      form: formData,
+    });
+  };
 
   useEffect(() => {
     const newState = Categorys.reduce(
@@ -59,6 +81,14 @@ const ExhibitorsDesign_page = () => {
 
     dispatch(setIsEditable(newState));
   }, [Categorys]);
+
+  useEffect(() => {
+    const splash = SettingValue?.response?.exhibitor_settings?.splash;
+
+    if (!splash || Object.keys(splash).length === 0) return;
+
+    setSplashValue(splash);
+  }, [SettingValue]);
 
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
@@ -105,6 +135,14 @@ const ExhibitorsDesign_page = () => {
         {Boolean(value === "Session Data") && (
           <div className="absolute right-10 flex items-center gap-4">
             <Button
+              onClick={() => downloadExhibitor()}
+              disabled={isdownloadPending}
+              className="w-fit py-1 h-7"
+            >
+              <Download />
+              download CSV
+            </Button>
+            <Button
               onClick={() => dispatch(setUploadCSV(true))}
               className="w-fit py-1 h-7"
             >
@@ -139,96 +177,152 @@ const ExhibitorsDesign_page = () => {
           </TabsList>
           <TabsContent value="General Settings">
             <div className="flex gap-4 items-start">
-              <Section
-                title="Basic info"
-                ClassName="w-full"
-                onSave={() => GeneralExhibitorsUpdate()}
-                show={true}
-                loading={isGeneralExhibitorsUpdatePending}
-              >
-                <TextStyleRow
-                  label={"Tab Title"}
-                  value={SpeakerSettings.exhibitors_tab}
-                  onChange={(e) =>
-                    dispatch(
-                      setSpeakerSettings({
-                        ...SpeakerSettings,
-                        exhibitors_tab: e,
-                      }),
-                    )
-                  }
-                  containerClassname="mb-8 w-[25rem]"
-                />
-                <div>
-                  <div className="flex items-center py-2">
-                    <div className="w-40 text-sm font-medium mr-8">
-                      {"Open links in new tab"}
+              <div className="w-full">
+                <Section
+                  title="Basic info"
+                  ClassName="w-full"
+                  onSave={() => GeneralExhibitorsUpdate()}
+                  show={true}
+                  loading={isGeneralExhibitorsUpdatePending}
+                >
+                  <TextStyleRow
+                    label={"Tab Title"}
+                    value={SpeakerSettings.exhibitors_tab}
+                    onChange={(e) =>
+                      dispatch(
+                        setSpeakerSettings({
+                          ...SpeakerSettings,
+                          exhibitors_tab: e,
+                        }),
+                      )
+                    }
+                    containerClassname="mb-8 w-[25rem]"
+                  />
+                  <div>
+                    <div className="flex items-center py-2">
+                      <div className="w-40 text-sm font-medium mr-8">
+                        {"Open links in new tab"}
+                      </div>
+                      <ToggleSwitch
+                        isOpen={
+                          SpeakerSettings.exhibitor_settings.open_link_new_tab
+                        }
+                        setIsOn={() =>
+                          dispatch(
+                            setSpeakerSettings({
+                              ...SpeakerSettings,
+                              exhibitor_settings: {
+                                ...SpeakerSettings.exhibitor_settings,
+                                open_link_new_tab:
+                                  !SpeakerSettings.exhibitor_settings
+                                    .open_link_new_tab,
+                              },
+                            }),
+                          )
+                        }
+                      />
                     </div>
-                    <ToggleSwitch
-                      isOpen={
-                        SpeakerSettings.exhibitor_settings.open_link_new_tab
-                      }
-                      setIsOn={() =>
-                        dispatch(
-                          setSpeakerSettings({
-                            ...SpeakerSettings,
-                            exhibitor_settings: {
-                              ...SpeakerSettings.exhibitor_settings,
-                              open_link_new_tab:
-                                !SpeakerSettings.exhibitor_settings
-                                  .open_link_new_tab,
-                            },
-                          }),
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="flex items-center py-2">
-                    <div className="w-40 text-sm font-medium mr-8">
-                      {"Allow email exposure"}
+                    <div className="flex items-center py-2">
+                      <div className="w-40 text-sm font-medium mr-8">
+                        {"Allow email exposure"}
+                      </div>
+                      <ToggleSwitch
+                        isOpen={
+                          SpeakerSettings.exhibitor_settings
+                            .allow_email_exposure
+                        }
+                        setIsOn={() =>
+                          dispatch(
+                            setSpeakerSettings({
+                              ...SpeakerSettings,
+                              exhibitor_settings: {
+                                ...SpeakerSettings.exhibitor_settings,
+                                allow_email_exposure:
+                                  !SpeakerSettings.exhibitor_settings
+                                    .allow_email_exposure,
+                              },
+                            }),
+                          )
+                        }
+                      />
                     </div>
-                    <ToggleSwitch
-                      isOpen={
-                        SpeakerSettings.exhibitor_settings.allow_email_exposure
-                      }
-                      setIsOn={() =>
-                        dispatch(
-                          setSpeakerSettings({
-                            ...SpeakerSettings,
-                            exhibitor_settings: {
-                              ...SpeakerSettings.exhibitor_settings,
-                              allow_email_exposure:
-                                !SpeakerSettings.exhibitor_settings
-                                  .allow_email_exposure,
-                            },
-                          }),
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="flex items-center py-2">
-                    <div className="w-40 text-sm font-medium mr-8">
-                      {"Booth Location Required"}
+                    <div className="flex items-center py-2">
+                      <div className="w-40 text-sm font-medium mr-8">
+                        {"Booth Location Required"}
+                      </div>
+                      <ToggleSwitch
+                        isOpen={
+                          SpeakerSettings.exhibitor_settings.booth_location
+                        }
+                        setIsOn={() =>
+                          dispatch(
+                            setSpeakerSettings({
+                              ...SpeakerSettings,
+                              exhibitor_settings: {
+                                ...SpeakerSettings.exhibitor_settings,
+                                booth_location:
+                                  !SpeakerSettings.exhibitor_settings
+                                    .booth_location,
+                              },
+                            }),
+                          )
+                        }
+                      />
                     </div>
-                    <ToggleSwitch
-                      isOpen={SpeakerSettings.exhibitor_settings.booth_location}
-                      setIsOn={() =>
-                        dispatch(
-                          setSpeakerSettings({
-                            ...SpeakerSettings,
-                            exhibitor_settings: {
-                              ...SpeakerSettings.exhibitor_settings,
-                              booth_location:
-                                !SpeakerSettings.exhibitor_settings
-                                  .booth_location,
-                            },
-                          }),
-                        )
-                      }
-                    />
                   </div>
-                </div>
-              </Section>
+                </Section>
+                <Section
+                  title="Splash Screen"
+                  ClassName="w-full"
+                  onSave={() => OnSave()}
+                  show={true}
+                  loading={isUploadSplashPending}
+                >
+                  <TextStyleRow
+                    label={"Title"}
+                    value={splashValue.title}
+                    onChange={(e) =>
+                      setSplashValue((pre) => ({ ...pre, title: e }))
+                    }
+                  />
+                  <TextStyleRow
+                    label={"Subtitle"}
+                    value={splashValue.subtitle}
+                    onChange={(e) =>
+                      setSplashValue((pre) => ({ ...pre, subtitle: e }))
+                    }
+                  />
+                  <div className="flex items-center gap-4 py-2">
+                    <div className="text-sm font-medium w-[220px] shrink-0">
+                      Background Image
+                    </div>
+                    <input
+                      type="file"
+                      multiple={false}
+                      accept={"image/*"}
+                      onChange={(e) =>
+                        setSplashValue((pre) => ({
+                          ...pre,
+                          image: e.target.files?.[0] as File,
+                        }))
+                      }
+                      className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    />
+                    {SettingValue.response.exhibitor_settings.splash.image && (
+                      <img
+                        src={
+                          typeof SettingValue.response.exhibitor_settings.splash
+                            .image === "string"
+                            ? (splashValue.image as string)
+                            : URL.createObjectURL(splashValue.image as File)
+                        }
+                        alt=""
+                        className="w-40 rounded-lg"
+                      />
+                    )}
+                  </div>
+                </Section>
+              </div>
               <Section
                 title="Exhibitor Categories & Order"
                 ClassName="w-full"
@@ -237,16 +331,18 @@ const ExhibitorsDesign_page = () => {
                 loading={false}
               >
                 <div className="">
-                  {Category?.response.filter(pre=>Boolean(pre.type)).map((data, index) => (
-                    <Custom_Text_Row
-                      type={data.type}
-                      key={index}
-                      id={data.id}
-                      index={String(index + 1)}
-                      value={data.name}
-                      color={data.color}
-                    />
-                  ))}
+                  {Category?.response
+                    .filter((pre) => Boolean(pre.type))
+                    .map((data, index) => (
+                      <Custom_Text_Row
+                        type={data.type}
+                        key={index}
+                        id={data.id}
+                        index={String(index + 1)}
+                        value={data.name}
+                        color={data.color}
+                      />
+                    ))}
                   <Button
                     onClick={() => dispatch(setCategoryModal(true))}
                     className="mt-4"

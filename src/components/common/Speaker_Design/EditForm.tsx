@@ -2,7 +2,7 @@ import { useEditSpeaker } from "@/api/speaker_design_api/speaker_design_api";
 import CustomForm from "@/components/global/CustomForm";
 import { setSelected } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { EditspeakerSchema, type SpeakerForm } from "@/Schema/speakerSchema";
+import { EditspeakerSchema, type EditSpeakerFrom } from "@/Schema/speakerSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -20,7 +20,7 @@ const EditFrom = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<SpeakerForm>({
+  } = useForm<EditSpeakerFrom>({
     resolver: zodResolver(EditspeakerSchema),
   });
 
@@ -32,13 +32,14 @@ const EditFrom = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { EditSpeaker, isPending: isEditSpeakerPending } = useEditSpeaker();
 
-  const onSubmit = (newData: SpeakerForm) => {
+  const onSubmit = (newData: EditSpeakerFrom) => {
     const formData = new FormData();
 
     formData.append("prefix", newData.prefix as string);
     formData.append("firstname", newData.firstname);
     formData.append("lastname", newData.lastname);
     formData.append("bio", newData.bio as string);
+    // formData.append("email", newData.email as string);
     formData.append("company", newData.company as string);
     formData.append("designation", newData.designation as string);
     formData.append("external_link", newData?.external_link as string);
@@ -55,7 +56,7 @@ const EditFrom = () => {
   const onClose = () => dispatch(setSelected(null));
 
   const fields: {
-    name: keyof SpeakerForm;
+    name: keyof EditSpeakerFrom;
     label: string;
     type?:
       | "text"
@@ -86,6 +87,11 @@ const EditFrom = () => {
       type: "textarea",
       placeholder: "Enter detailed bio...",
     },
+    // {
+    //   name: "email",
+    //   label: "Email",
+    //   placeholder: "Enter a valid email address",
+    // },
     { name: "designation", label: "Designation" },
     { name: "company", label: "Company" },
     {

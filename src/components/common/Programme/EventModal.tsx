@@ -127,14 +127,19 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
             </p>
 
             {selectedValue.attachments.file && (
-              <a href={selectedValue.attachments.file} target="_blank">
-                <div className="flex items-center gap-2 mb-5 text-sm text-gray-700">
-                  <FileText className="w-4 h-4" />
-                  <span className="hover:underline cursor-pointer">
-                    {selectedValue.attachments.filename}
-                  </span>
-                </div>
-              </a>
+              // <a href={selectedValue.attachments.file} target="_blank">
+              <div
+                onClick={() =>
+                  navigate(`/Attachment?url=${selectedValue.attachments.file}`)
+                }
+                className="flex items-center gap-2 mb-5 text-sm text-gray-700"
+              >
+                <FileText className="w-4 h-4" />
+                <span className="hover:underline cursor-pointer">
+                  {selectedValue.attachments.filename}
+                </span>
+              </div>
+              // </a>
             )}
 
             <div className="flex items-center gap-6">
@@ -186,7 +191,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
             </TabsList>
 
             {selectedValue.map((s) => (
-              <TabsContent value={s.id} className="h-[30rem]" key={s.id}>
+              <TabsContent value={s.id} className="h-120" key={s.id}>
                 <div className="flex items-start gap-4">
                   <img
                     src={s.bg_img ? `data:image/png;base64,${s.bg_img}` : dummy}
@@ -271,7 +276,10 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
 
                   <div className="flex items-center gap-6">
                     {s.speakers.map((speaker, index) => (
-                      <div key={index} className="flex flex-col items-center cursor-pointer">
+                      <div
+                        key={index}
+                        className="flex flex-col items-center cursor-pointer"
+                      >
                         <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center mb-2 overflow-hidden">
                           {!speaker ? (
                             <img

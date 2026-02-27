@@ -4,7 +4,13 @@ import Section from "@/components/global/Section";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
-import { Loader, Plus, SquareArrowOutUpRight, Upload } from "lucide-react";
+import {
+  Download,
+  Loader,
+  Plus,
+  SquareArrowOutUpRight,
+  Upload,
+} from "lucide-react";
 import React from "react";
 import CreateModal from "@/components/common/Speaker_Design/CreateModal";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +22,7 @@ import {
 } from "@/redux/SpeakerDesignSlice";
 import {
   useGetSpeakerSetting,
+  useSpeakerDownload,
   useUploadSpeakerCSV,
 } from "@/api/speaker_design_api/speaker_design_api";
 import { cn, normalizeLabel } from "@/lib/utils";
@@ -34,6 +41,7 @@ const SpeakersDesign_page = () => {
     isPending,
     error,
   } = useGetSpeakerSetting();
+  const {downloadSpeaker, isdownloadPending} = useSpeakerDownload()
   const { UploadSpeakerCSV, isPending: isUploadSpeakerCSV } =
     useUploadSpeakerCSV();
   const dispatch = useDispatch<AppDispatch>();
@@ -78,6 +86,10 @@ const SpeakersDesign_page = () => {
         />
         {Boolean(value === "Session Data") && (
           <div className="absolute right-10 flex items-center gap-4">
+            <Button onClick={() => downloadSpeaker()} disabled={isdownloadPending} className="w-fit py-1 h-7">
+              <Download />
+              download CSV
+            </Button>
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
               className="w-fit py-1 h-7"
@@ -121,7 +133,7 @@ const SpeakersDesign_page = () => {
                 loading={isUpdateSpeakerDesignPending}
               >
                 <div className={cn("flex items-center gap-4 py-2")}>
-                  <div className="text-sm font-[500] w-[175px] shrink-0">
+                  <div className="text-sm font-medium w-[175px] shrink-0">
                     {"Tab Title"}
                   </div>
                   <div
