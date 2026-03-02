@@ -42,7 +42,7 @@ const ExhibitorsDetails = () => {
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           <div className="relative px-6 py-6">
             <div className="flex flex-col sm:flex-row gap-8 items-start">
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl bg-white border-8 border-white shadow-2xl overflow-hidden">
                   <img
                     src={exhibitorData.logo}

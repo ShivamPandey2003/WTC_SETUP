@@ -12,7 +12,8 @@ type initialStateType = {
   userinfo: {
     firstname: string;
     lastname: string;
-    grp:number
+    grp: number;
+    is_verified: number;
   };
 };
 
@@ -25,7 +26,8 @@ const initialState: initialStateType = {
   userinfo: {
     firstname: "",
     lastname: "",
-    grp:0
+    grp: 0,
+    is_verified: 0,
   },
 };
 
@@ -60,7 +62,8 @@ const AuthSlice = createSlice({
       payload: PayloadAction<{
         firstname: string;
         lastname: string;
-        grp:number
+        grp: number;
+        is_verified: number;
       }>,
     ) => {
       state.userinfo = payload.payload;
@@ -75,6 +78,6 @@ export const {
   setResendCooldown,
   increaseResendCount,
   resetResendState,
-  setUserInfo
+  setUserInfo,
 } = AuthSlice.actions;
 export default AuthSlice.reducer;

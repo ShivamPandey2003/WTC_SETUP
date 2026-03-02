@@ -18,21 +18,21 @@ const V2_SplashScreen = ({ open, setOpen }: V2_SplashScreenProps) => {
     setOpen(false);
   };
 
-  if (!open) return null;
+  if (!open || !appConfig.show_splash) return null;
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 flex items-center justify-center z-[999] backdrop-blur-[2px]"
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-999 backdrop-blur-[2px]"
       onClick={handleClick}
     >
       <div
-        className="w-[40rem] h-[40rem] bg-cover bg-center relative rounded-2xl"
+        className="w-160 h-160 bg-cover bg-center relative rounded-2xl"
         style={{
           backgroundImage: `url(${appConfig.splash.image})`,
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="w-full h-full bg-gradient-to-r from-slate-900/80 to-slate-900/40 flex flex-col justify-end py-4 px-8 md:px-16 rounded-2xl">
+        <div className="w-full h-full bg-linear-to-r from-slate-900/70 to-slate-900/40 flex flex-col justify-end py-4 px-8 md:px-16 rounded-2xl">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2">
             {appConfig.splash.title}
           </h1>
@@ -42,9 +42,9 @@ const V2_SplashScreen = ({ open, setOpen }: V2_SplashScreenProps) => {
           <p className="text-xl md:text-2xl text-white/90 mb-8">
             {appConfig.splash.subtitle}
           </p>
-          <button className="bg-white/90 hover:bg-white text-slate-800 font-semibold px-8 py-3 rounded-full w-fit transition-colors duration-200">
+          {/* <button className="bg-white/90 hover:bg-white text-slate-800 font-semibold px-8 py-3 rounded-full w-fit transition-colors duration-200">
             More info
-          </button>
+          </button> */}
         </div>
         <X
           className=" absolute right-4 top-4 cursor-pointer text-white hover:text-slate-200"

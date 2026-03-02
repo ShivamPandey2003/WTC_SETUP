@@ -39,7 +39,7 @@ export default function ProfileForm() {
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      prefix: "Dr.",
+      prefix: "",
       firstName: user_info.firstname,
       lastName: user_info.lastname,
       gender: "Male",

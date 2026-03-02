@@ -18,9 +18,9 @@ export default function WTCBadge() {
       className={`w-[370px] rounded-lg shadow-lg p-5 text-center relative overflow-hidden border border-gray-100 bg-white`}
       style={{ backgroundImage: `url(${BgIMG})` }}
     >
-      <p className="text-[#111111BF] mb-2">Your WTC Badge</p>
+      <p className="text-[#111111BF] mb-2">Your ITA WTC Badge</p>
       <div className="flex w-full items-center justify-between mb-5">
-        <img src={LOGO} alt="WTC Logo" className="w-16 h-16 object-contain" />
+        <img src={LOGO} alt="ITA WTC Logo" className="w-16 h-16 object-contain" />
 
         <div className="text-xs text-gray-700 w-full flex flex-col items-end space-y-1">
           <div className="flex items-center space-x-1">
@@ -36,7 +36,7 @@ export default function WTCBadge() {
 
       <div className="flex justify-center mb-3">
         <img
-          src={user_info.profile_image}
+          src={user_info.profile_image || "https://cdn-icons-png.flaticon.com/512/847/847969.png"}
           alt="User"
           className="w-32 h-32 rounded-full"
         />

@@ -4,6 +4,7 @@ import {
 } from "@/api/global_api/global_api";
 import {
   useGetNewsList,
+  useUpdateSplash,
   useUploadNewsCSV,
 } from "@/api/home_design_api/Home_design_api";
 // import BannerPreview from "@/components/common/Home_Design/BannerPreview";
@@ -16,6 +17,7 @@ import Section from "@/components/global/Section";
 import TextStyleRow from "@/components/global/TextStyleRow";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import ToggleSwitch from "@/components/ui/ToggleSwitch";
 import { cn } from "@/lib/utils";
 import { setAppConfig } from "@/redux/GlobalDesignSlice";
 import { setIsCreating, setUploadCSV } from "@/redux/HomeDesignSlice";
@@ -37,6 +39,7 @@ const HomeDesign_page = () => {
   const { UpdateHomeDesign, isUpdateHomeDesignPending } = useHomeDesignUpdate();
   const { UploadNewsCSV, isPending } = useUploadNewsCSV();
   const { UploadLogo, isPending: SplashScreenIsUpdating } = useUploadLogo();
+  const {UpdateSplashActivation, isPending:isUpdateSplashActivation} = useUpdateSplash()
 
   const OnSave = () => {
     const formData = new FormData();
@@ -255,15 +258,57 @@ const HomeDesign_page = () => {
                   </div>
                 </Section>
               </div>
-              <Section
-                title="Carousel Preview"
-                ClassName="w-2/5"
-                onSave={() => UpdateHomeDesign()}
-                show={false}
-                loading={isUpdateHomeDesignPending}
-              >
-                <MiniSmallCarousel slides={NewsList.response.slice(0, 4)} />
-              </Section>
+              <div className="w-2/5">
+                <Section
+                  title="Carousel Preview"
+                  ClassName="w-full"
+                  onSave={() => UpdateHomeDesign()}
+                  show={false}
+                  loading={isUpdateHomeDesignPending}
+                >
+                  <MiniSmallCarousel slides={NewsList.response.slice(0, 4)} />
+                </Section>
+                <Section
+                  title="Splash Screen Activation"
+                  ClassName="w-full"
+                  onSave={() => UpdateSplashActivation()}
+                  show={true}
+                  loading={isUpdateSplashActivation}
+                >
+                  <div className="flex items-center py-2">
+                    <div className="w-40 text-sm font-medium mr-8">
+                      {"Activate Splash Screen"}
+                    </div>
+                    <ToggleSwitch
+                      isOpen={appConfig.show_splash}
+                      setIsOn={() =>
+                        dispatch(
+                          setAppConfig({
+                            ...appConfig,
+                            show_splash: !appConfig.show_splash,
+                          }),
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="flex items-center py-2">
+                    <div className="w-52 text-sm font-medium mr-8">
+                      {"Activate Exhibitor Splash Screen"}
+                    </div>
+                    <ToggleSwitch
+                      isOpen={appConfig.show_exhibitor_splash}
+                      setIsOn={() =>
+                        dispatch(
+                          setAppConfig({
+                            ...appConfig,
+                            show_exhibitor_splash: !appConfig.show_exhibitor_splash,
+                          }),
+                        )
+                      }
+                    />
+                  </div>
+                </Section>
+              </div>
             </div>
           </TabsContent>
           <TabsContent value="News">

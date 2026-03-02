@@ -7,6 +7,8 @@ export const SessionSchema = z.object({
   start_time: z.string().min(1, "Start time is required"),
   end_time: z.string().min(1, "End time is required"),
   floorID: z.string().min(1, "Floor is required"),
+  pdf_start_date: z.string().optional(),
+  pdf_end_date: z.string().optional(),
   venueID: z.string().min(1, "Venue is required"),
   speakers: z.string().min(1, "Speakers are required"),
   description: z.string().min(1, "Description is required"),
@@ -14,7 +16,10 @@ export const SessionSchema = z.object({
   attachments: z
     .instanceof(FileList)
     .optional()
-    .refine((files) => !files || files.length > 0, "At least one file is required"),
+    .refine(
+      (files) => !files || files.length > 0,
+      "At least one file is required",
+    ),
 });
 
 export const EditSessionSchema = z.object({
@@ -23,15 +28,15 @@ export const EditSessionSchema = z.object({
   location: z.string().min(1, "Location is required"),
   start_time: z.string().min(1, "Start time is required"),
   end_time: z.string().min(1, "End time is required"),
+  pdf_start_date: z.string().optional(),
+  pdf_end_date: z.string().optional(),
   floorID: z.string().min(1, "Floor is required"),
   venueID: z.string().min(1, "Venue is required"),
   speakers: z.string().min(1, "Speakers are required"),
   description: z.string().min(1, "Description is required"),
   external_link: z.string().url("Invalid URL").optional().or(z.literal("")),
-  attachments: z
-    .instanceof(FileList)
-    .optional()
-    // .refine((files) => !files || files.length > 0, "At least one file is required"),
+  attachments: z.instanceof(FileList).optional(),
+  // .refine((files) => !files || files.length > 0, "At least one file is required"),
 });
 
 // Infer the form type:

@@ -52,6 +52,7 @@ export const useUploadProfilePic = () => {
 
 export const useProfileUpdate = () => {
   const {
+    data:profileData,
     mutate: UpdateProfile,
     isPending,
     error,
@@ -68,5 +69,5 @@ export const useProfileUpdate = () => {
     },
   });
 
-  return { UpdateProfile, isPending, error };
+  return { profileData, UpdateProfile, isPending, error };
 };

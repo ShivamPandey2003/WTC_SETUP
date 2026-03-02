@@ -4,6 +4,7 @@ const initialState: ModelSliceType = {
   loginModel: false,
   searchModal: false,
   title: null,
+  register: false,
 };
 
 const ModelSlice = createSlice({
@@ -12,6 +13,10 @@ const ModelSlice = createSlice({
   reducers: {
     setLoginModel: (state, payload: PayloadAction<boolean>) => {
       state.loginModel = payload.payload;
+      return state;
+    },
+    setResgister: (state, payload: PayloadAction<boolean>) => {
+      state.register = payload.payload;
       return state;
     },
     setSearchModal: (state, payload: PayloadAction<boolean>) => {
@@ -23,5 +28,5 @@ const ModelSlice = createSlice({
   },
 });
 
-export const { setLoginModel, setSearchModal, setTitle } = ModelSlice.actions;
+export const { setLoginModel, setSearchModal, setTitle, setResgister } = ModelSlice.actions;
 export default ModelSlice.reducer;

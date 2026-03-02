@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { setExhibitors } from "@/redux/ExhibitorSlice";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
+import Exhi_SplashScreen from "@/v2_components/common/V2_Exhibitors/Exhi_SplashScreen";
 // import Exhibitors from "@/data/Exhibitors";
 import ExhibitorCard from "@/v2_components/common/V2_Exhibitors/ExhibitorCard";
 import ExhibitorModal from "@/v2_components/common/V2_Exhibitors/ExhibitorModal";
@@ -16,6 +17,7 @@ import { useNavigate } from "react-router";
 
 const V2_exhibitors_page = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [spashScreen, setSpashScreen] = useState<boolean>(true);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -74,6 +76,14 @@ const V2_exhibitors_page = () => {
   useEffect(() => {
     dispatch(setTitle(null));
   }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSpashScreen(false);
+    }, 6000);
+
+    return () => clearTimeout(timer);
+  }, [setSpashScreen]);
 
   if (status === "pending") {
     return (
@@ -152,6 +162,7 @@ const V2_exhibitors_page = () => {
           ""
         )}
       </div>
+      <Exhi_SplashScreen open={spashScreen} setOpen={setSpashScreen} />
     </div>
   );
 };

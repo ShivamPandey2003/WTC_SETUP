@@ -60,6 +60,8 @@ const NewFrom = () => {
     formData.append("end_time", newData.end_time);
     formData.append("start_date", formatToYYYYMMDD(slectedDate));
     formData.append("end_date", formatToYYYYMMDD(slectedDate));
+    formData.append("pdf_start_date", formatToYYYYMMDD(newData.pdf_start_date as string));
+    formData.append("pdf_end_date", formatToYYYYMMDD(newData.pdf_end_date as string));
     formData.append("location", newData.location);
     formData.append("external_link", newData?.external_link as string);
     formData.append("category", newData.category);
@@ -129,10 +131,12 @@ const NewFrom = () => {
     { name: "end_time", label: "End Time", type: "time" },
     {
       name: "attachments",
-      label: "Attachments",
+      label: "Paper",
       type: "file",
-      accept: "image/*",
+      accept: "application/pdf",
     },
+    { name: "pdf_start_date", label: "Paper Start Date", type: "date" },
+    { name: "pdf_end_date", label: "Paper End Date", type: "date" },
     { name: "location", label: "Location" },
     { name: "external_link", label: "External Link" },
     {
