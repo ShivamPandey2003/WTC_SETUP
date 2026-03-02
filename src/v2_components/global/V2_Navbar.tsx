@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { setLoginModel, setSearchModal, setTitle } from "@/redux/ModalSlice";
+import { setSearchModal, setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { ChevronLeft, Menu } from "lucide-react";
 import { useEffect, useState, type RefObject } from "react";
