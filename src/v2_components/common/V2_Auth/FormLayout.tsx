@@ -15,7 +15,7 @@ const FormLayout = () => {
     <div className="mt-4 min-w-md relative h-full">
       <h2 className="font-bold font-sans text-2xl text-center">
         Sign {register ? "up" : "in"} to{" "}
-        <span className="text-primary">WTC</span>
+        <span className="text-primary">ITA WTC</span>
       </h2>
       <p className="text-gray-700 text-center">
         {register
