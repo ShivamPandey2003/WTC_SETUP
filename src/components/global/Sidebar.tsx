@@ -33,7 +33,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
       label: "Logout",
       onClick: () => {
         localStorage.removeItem("token")
-        dispatch(setUserInfo({firstname:"", lastname:"", grp:0}))
+        dispatch(setUserInfo({firstname:"", lastname:"", grp:0, is_verified:0}))
         navigate('/')
       },
     },
