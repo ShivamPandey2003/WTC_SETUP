@@ -20,7 +20,7 @@ const Titlabar: React.FC<props> = ({ className, title, date, location }) => {
       )}
     >
       {(pathname !== "/venue" && pathname !=="/profile")&&<h2 className="font-semibold text-[20px]">{title??"Conference Programme"}</h2>}
-      {pathname === "/profile" && <h2 className="font-semibold text-[20px]">{"John Doe's"} {"WTC Profile"}</h2>}
+      {pathname === "/profile" && <h2 className="font-semibold text-[20px]">{"John Doe's"} {"ITA WTC Profile"}</h2>}
       <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-[90px]">
         <div className="flex items-center gap-2">
           <CalendarDays size={18} />

@@ -7,6 +7,8 @@ import { useEffect, useState, type RefObject } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { SearchTrigger } from "./SearchTrigger";
+import NewDropdown from "./V2_DropDown";
+import { setUserInfo } from "@/redux/AuthSlice";
 
 interface Prop {
   REF: RefObject<HTMLDivElement | null>;
@@ -18,9 +20,43 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
   const { pathname } = useLocation();
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const { userinfo } = useSelector((state: RootState) => state.AuthSlice);
   const { grp } = useSelector((state: RootState) => state.AuthSlice.userinfo);
-  const navigate = useNavigate();
+  const menu = [
+    ...(grp === 1
+      ? [
+          {
+            id: "Dashboard",
+            label: "Dashboard",
+            onClick: () => {
+              navigate("/global-design");
+              dispatch(setTitle(null));
+            },
+          },
+        ]
+      : []),
+    {
+      id: "Profile",
+      label: "Profile",
+      onClick: () => {
+        dispatch(setTitle(null));
+        navigate(grp === 1 ? "/wtc-profile" : "/user-profile");
+      },
+    },
+    {
+      id: "Logout",
+      label: "Logout",
+      onClick: () => {
+        localStorage.removeItem("token");
+        dispatch(
+          setUserInfo({ firstname: "", lastname: "", grp: 0, is_verified: 0 }),
+        );
+        navigate("/auth");
+      },
+    },
+  ];
   const { ArrayTabs } = useSelector((state: RootState) => state.Global_Slice);
   const { title } = useSelector((state: RootState) => state.model);
 
@@ -39,6 +75,8 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
       el.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  console.log(token)
 
   const TitleFetch = (e: string) => {
     switch (e) {
@@ -92,7 +130,25 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
           >
             Login
           </Button>
-        ) : grp !== 1 ? (
+        ) : (
+          <NewDropdown
+            className="w-full"
+            position="bottom-right"
+            trigger={
+              <button className="p-2 flex items-center gap-3 text-sm hover:bg-primary/50 transition-colors border-t border-white/20 cursor-pointer rounded-full bg-primary">
+                <span className="text-sm font-bold text-white">{`${userinfo.firstname[0]} ${userinfo.lastname[0]}`}</span>
+              </button>
+            }
+            items={menu as any[]}
+          />
+        )}
+      </div>
+    </header>
+  );
+};
+
+{
+  /* grp !== 1 ? (
           <Button
             onClick={() => {
               navigate("/user-profile");
@@ -112,10 +168,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
           >
             dashboard
           </Button>
-        )}
-      </div>
-    </header>
-  );
-};
+        )} */
+}
 
 export default V2_Navbar;

@@ -46,7 +46,7 @@ const UsersProfile_page = () => {
         style={{ backgroundImage: `url(${BgIMG})`, background:"white" }}
       >
         <div className="flex w-full items-center justify-between mb-5">
-          <img src={LOGO} alt="WTC Logo" className="w-16 h-16 object-contain" />
+          <img src={LOGO} alt="ITA WTC Logo" className="w-16 h-16 object-contain" />
 
           <div className="text-xs text-gray-700 w-full flex flex-col items-end space-y-1">
             <div className="flex items-center space-x-1">

@@ -42,7 +42,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
   return (
     <aside className="w-[153px] bg-primary text-white h-screen flex flex-col">
       <div className="p-4 text-center border-b border-white/20">
-        <h1 className="text-[20px] font-[600] leading-[15px]">WTC App</h1>
+        <h1 className="text-[20px] font-[600] leading-[15px]">ITA WTC App</h1>
         <p className="text-[14px] font-[600]">Designer</p>
       </div>
 
