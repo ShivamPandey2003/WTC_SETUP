@@ -9,6 +9,7 @@ import { useLocation, useNavigate, useParams } from "react-router";
 import { SearchTrigger } from "./SearchTrigger";
 import NewDropdown from "./V2_DropDown";
 import { setUserInfo } from "@/redux/AuthSlice";
+import { useGetProfile } from "@/api/Profile_api/Profile_api";
 
 interface Prop {
   REF: RefObject<HTMLDivElement | null>;
@@ -17,12 +18,12 @@ interface Prop {
 
 const V2_Navbar = ({ REF, setOpen }: Prop) => {
   const [showBackground, setShowBackground] = useState<boolean>(false);
+  const {Profile} = useGetProfile()
   const { pathname } = useLocation();
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const { userinfo } = useSelector((state: RootState) => state.AuthSlice);
   const { grp } = useSelector((state: RootState) => state.AuthSlice.userinfo);
   const menu = [
     ...(grp === 1
@@ -75,8 +76,6 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
       el.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  console.log(token)
 
   const TitleFetch = (e: string) => {
     switch (e) {
@@ -132,11 +131,11 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
           </Button>
         ) : (
           <NewDropdown
-            className="w-full"
+            className=""
             position="bottom-right"
             trigger={
               <button className="p-2 flex items-center gap-3 text-sm hover:bg-primary/50 transition-colors border-t border-white/20 cursor-pointer rounded-full bg-primary">
-                <span className="text-sm font-bold text-white">{`${userinfo.firstname[0]} ${userinfo.lastname[0]}`}</span>
+                <span className="text-sm font-bold text-white">{`${Profile?.response?.user_info.firstname[0]} ${Profile?.response?.user_info.lastname[0]}`}</span>
               </button>
             }
             items={menu as any[]}

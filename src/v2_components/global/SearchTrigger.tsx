@@ -27,9 +27,6 @@ export function SearchTrigger({ onClick }: SearchTriggerProps) {
       <span className="hidden sm:block text-gray-500 group-hover:text-gray-700 transition-colors">
         Search...
       </span>
-      <kbd className="hidden sm:inline-flex ml-auto px-2 py-1 text-xs font-semibold text-gray-500 bg-gray-100 border border-gray-300 rounded">
-        ⌘K
-      </kbd>
     </button>
   );
 }
