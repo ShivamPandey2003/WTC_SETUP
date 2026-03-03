@@ -133,9 +133,9 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
         className="w-full"
         position="top"
         trigger={
-          <button className="w-full p-4 flex items-center gap-3 text-sm hover:bg-white/10 transition-colors border-t border-white/20 cursor-pointer">
+          <button className="w-full p-4 px-2 flex items-center gap-3 text-sm hover:bg-white/10 transition-colors border-t border-white/20 cursor-pointer">
             <User size={18} />
-            <span className="text-xs">{`${userinfo.firstname} ${userinfo.lastname}`}</span>
+            <span className="text-xs max-w-[90px] truncate">{`${userinfo.firstname} ${userinfo.lastname}`}</span>
           </button>
         }
         items={menu}

@@ -210,7 +210,7 @@ const ProgrammeDesign_page = () => {
               className="w-fit py-1 h-7"
             >
               <Download />
-              download CSV
+              Download All
             </Button>
             <Button
               onClick={() => dispatch(setUploadCSV(true))}

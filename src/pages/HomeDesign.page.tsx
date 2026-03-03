@@ -4,6 +4,7 @@ import {
 } from "@/api/global_api/global_api";
 import {
   useGetNewsList,
+  useHeroCarusole,
   useUpdateSplash,
   useUploadNewsCSV,
 } from "@/api/home_design_api/Home_design_api";
@@ -39,7 +40,8 @@ const HomeDesign_page = () => {
   const { UpdateHomeDesign, isUpdateHomeDesignPending } = useHomeDesignUpdate();
   const { UploadNewsCSV, isPending } = useUploadNewsCSV();
   const { UploadLogo, isPending: SplashScreenIsUpdating } = useUploadLogo();
-  const {UpdateSplashActivation, isPending:isUpdateSplashActivation} = useUpdateSplash()
+  const {UpdateSplashActivation, isPending:isUpdateSplashActivation} = useUpdateSplash();
+  const {HeroCarusole} = useHeroCarusole();
 
   const OnSave = () => {
     const formData = new FormData();
@@ -52,7 +54,7 @@ const HomeDesign_page = () => {
     });
   };
 
-  if (!NewsList || !NewsList.response) {
+  if (!NewsList || !NewsList.response || !HeroCarusole || !HeroCarusole.response) {
     return null;
   }
 
@@ -266,7 +268,7 @@ const HomeDesign_page = () => {
                   show={false}
                   loading={isUpdateHomeDesignPending}
                 >
-                  <MiniSmallCarousel slides={NewsList.response.slice(0, 4)} />
+                  <MiniSmallCarousel slides={HeroCarusole.response} />
                 </Section>
                 <Section
                   title="Splash Screen Activation"

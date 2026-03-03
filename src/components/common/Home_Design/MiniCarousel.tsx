@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import React, { useState, useEffect } from "react";
 
-export default function MiniSmallCarousel({slides}:{slides: News[]}) {
+export default function MiniSmallCarousel({ slides }: { slides: Carusole[] }) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -31,30 +31,45 @@ export default function MiniSmallCarousel({slides}:{slides: News[]}) {
           <React.Fragment key={i}>
             <img
               key={i}
-              src={slide.bg_img?slide.bg_img:'https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200'}
+              src={
+                slide.bg_img
+                  ? slide.bg_img
+                  : "https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200"
+              }
               alt={slide.title}
               className={cn(
-                `absolute inset-0 w-full h-full object-cover transition-opacity duration-500`,
-                i === index ? "opacity-100" : "opacity-0"
+                `absolute inset-0 w-full h-full transition-opacity duration-500`,
+                i === index ? "opacity-100" : "opacity-0",
+                slide.type === 1 ? "object-contain" : "object-cover",
               )}
             />
             <div
               className={cn(
                 "absolute bottom-0 left-0 inset-0 bg-black/50 text-white text-xs px-2 py-0.5 rounded",
-                i === index ? "opacity-100" : "opacity-0"
+                i === index ? "opacity-100" : "opacity-0",
               )}
             >
               <div className="relative h-full flex items-end">
                 <div className="flex-1 px-4 sm:px-6 pb-4">
-                  <h2 className="text-white text-xl sm:text-2xl font-bold mb-2 drop-shadow-lg">
+                  <h2 className="text-white text-xl sm:text-2xl font-bold mb-2 drop-shadow-lg capitalize">
                     {Title(slide.title.split(" "))}
                   </h2>
-                  <h3 className="text-white text-lg sm:text-xl font-bold mb-2 drop-shadow-lg">
-                    {Title(slide.title.split(" "), slide.title.split(" ").length)}
+                  <h3 className="text-white text-lg sm:text-xl font-bold mb-2 drop-shadow-lg capitalize">
+                    {Title(
+                      slide.title.split(" "),
+                      slide.title.split(" ").length,
+                    )}
                   </h3>
-                  <p className="text-white text-base sm:text-base mb-2 drop-shadow-md line-clamp-2">
-                    {slide.description}
-                  </p>
+                  {slide.description && (
+                    <p className="text-white text-base sm:text-base mb-2 drop-shadow-md line-clamp-2">
+                      {slide.description}
+                    </p>
+                  )}
+                  {slide.email && (
+                    <p className="text-white text-base sm:text-base mb-2 drop-shadow-md line-clamp-2">
+                      {"Daimond Sponsor"}
+                    </p>
+                  )}
                   {/* <button className="px-1 sm:px-2 py-1 sm:py-1 bg-white text-gray-800 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg">
                     {"More Info"}
                   </button> */}
