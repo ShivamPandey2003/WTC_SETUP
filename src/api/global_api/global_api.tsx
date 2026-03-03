@@ -327,9 +327,10 @@ export const useUploadLogo = () => {
     { form: FormData; type: number; extra?: string }
   >({
     mutationFn: async (data) => {
+      const params = data.extra ? `${data.type}${data.extra}` : data.type;
       const res = await apiRequest(
         "post",
-        `global/settings/logo/update?main=${data.type}${data.extra}`,
+        `global/settings/logo/update?main=${params}`,
         data.form,
       );
       return res.response;

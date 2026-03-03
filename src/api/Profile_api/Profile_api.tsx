@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 export const useGetProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const token = localStorage.getItem("token");
   const {
     data: Profile,
     isPending,
@@ -24,6 +25,7 @@ export const useGetProfile = () => {
     },
     refetchOnWindowFocus: false,
     retry: 1,
+    enabled: !!token
   });
 
   return { Profile, isPending, error };

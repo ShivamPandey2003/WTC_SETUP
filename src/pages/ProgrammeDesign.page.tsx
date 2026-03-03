@@ -187,7 +187,7 @@ const ProgrammeDesign_page = () => {
                         variant={"ghost"}
                         className={cn(
                           "h-7 shrink-0",
-                          date === slectedDate && "bg-border text-primary",
+                          date === slectedDate && "bg-primary/20 text-primary",
                         )}
                       >
                         {date}

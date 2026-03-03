@@ -93,7 +93,7 @@ const GlobalDesign_page = () => {
               <LogoUpload
                 logoUrl={appConfig.sponsors.logo}
                 fileName={"Sponsor_Logo"}
-                type={0}
+                type={2}
                 title="Sponsor Logo"
                 recommend="500 × 100"
               />

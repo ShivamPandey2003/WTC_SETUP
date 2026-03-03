@@ -31,7 +31,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
         <span className="text-[10px] font-bold">Sponsored by</span>
         <img
           src={appConfig?.sponsors?.logo}
-          className="w-[128px] h-[40px] object-contain"
+          className="w-[128px] h-fit object-cover"
         />
       </div>
       <div className="mx-auto flex flex-col space-y-4">
@@ -49,8 +49,8 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
                   to={item.route}
                   className={({ isActive }) =>
                     cn(
-                      "bg-white text-black hover:bg-[#35825C] hover:text-white cursor-pointer inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive justify-start px-4 py-2 has-[>svg]:px-3",
-                      (isActive || isHomeActive) && "bg-[#35825C] text-white",
+                      "bg-white text-black hover:bg-primary hover:text-white cursor-pointer inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive justify-start px-4 py-2 has-[>svg]:px-3",
+                      (isActive || isHomeActive) && "bg-primary text-white",
                     )
                   }
                   onClick={() => setOpen?.()}
