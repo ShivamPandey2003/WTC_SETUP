@@ -188,3 +188,21 @@ export const useUpdateSplash = () => {
 
   return { UpdateSplashActivation, isPending, error };
 };
+
+export const useHeroCarusole = () => {
+  const {
+    data: HeroCarusole,
+    isPending: isHeroCarusole,
+    error: errorHeroCarusole,
+  } = useQuery<HeroCarusoleT, AxiosError>({
+    queryKey: ["hero_carusole"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "/main/carusole");
+      return res.response;
+    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  return { HeroCarusole, isHeroCarusole, errorHeroCarusole };
+};

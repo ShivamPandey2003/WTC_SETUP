@@ -1,6 +1,10 @@
 import NoData from "@/components/global/NoData";
+import { Skeleton } from "@/components/ui/skeleton";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
+import { apiRequest } from "@/services/apiService";
+import { useQuery } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 import { Copy, ExternalLink, Globe, Mail, Star } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,17 +22,40 @@ const ExhibitorsDetails = () => {
     [id, Exhibitors],
   );
 
+  const { data: ExhibitorFromAPI, isLoading } = useQuery<
+    FindExhibitorById,
+    AxiosError
+  >({
+    queryKey: ["exhibitor", id],
+    queryFn: async () => {
+      const res = await apiRequest("get", `/exhibitor/${id}`);
+      return res.response;
+    },
+    enabled: !exhibitorData && !!id, // only call API if not in redux
+    retry: 1,
+  });
+
+  const ExhibitorDetails = exhibitorData || ExhibitorFromAPI?.response;
+
   const handleCopyEmail = (str: string) => {
     navigator.clipboard.writeText(str);
   };
 
   useEffect(() => {
-    if (exhibitorData) {
-      dispatch(setTitle(exhibitorData.full_name));
+    if (ExhibitorDetails) {
+      dispatch(setTitle(ExhibitorDetails.full_name));
     }
-  }, [exhibitorData]);
+  }, [ExhibitorDetails]);
 
-  if (!exhibitorData) {
+  if (isLoading) {
+    return (
+      <div className="px-4 pb-4 mx-auto">
+        <Skeleton className="max-w-5xl mx-auto h-[85vh]" />
+      </div>
+    );
+  }
+
+  if (!ExhibitorDetails) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />
@@ -45,8 +72,8 @@ const ExhibitorsDetails = () => {
               <div className="shrink-0">
                 <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl bg-white border-8 border-white shadow-2xl overflow-hidden">
                   <img
-                    src={exhibitorData.logo}
-                    alt={exhibitorData.full_name}
+                    src={ExhibitorDetails.logo}
+                    alt={ExhibitorDetails.full_name}
                     className="w-full h-full object-contain p-2"
                   />
                 </div>
@@ -56,12 +83,16 @@ const ExhibitorsDetails = () => {
                 <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
                   <div>
                     <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-2 leading-tight">
-                      {exhibitorData.full_name}
+                      {ExhibitorDetails.full_name}
                     </h1>
                     <div className="flex items-center gap-2 mt-3">
                       <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
                       <span className="text-sm font-semibold text-amber-600 bg-amber-50 px-3 py-1 rounded-full">
-                        {exhibitorData.SponsorType} Exhibitor
+                        {ExhibitorDetails &&
+                          ("SponsorType" in ExhibitorDetails
+                            ? ExhibitorDetails.SponsorType
+                            :"category" in ExhibitorDetails && ExhibitorDetails.category)}{" "}
+                        Exhibitor
                       </span>
                     </div>
                   </div>
@@ -69,21 +100,21 @@ const ExhibitorsDetails = () => {
 
                 <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
                   <a
-                    href={`mailto:${exhibitorData.email}`}
+                    href={`mailto:${ExhibitorDetails.email}`}
                     className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
                   >
                     <Mail className="w-5 h-5" />
                     Email
                   </a>
                   <button
-                    onClick={() => handleCopyEmail(exhibitorData.email)}
+                    onClick={() => handleCopyEmail(ExhibitorDetails.email)}
                     className="inline-flex items-center gap-2 px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-lg transition-all duration-200 cursor-pointer"
                   >
                     <Copy className="w-5 h-5" />
                     Copy Email
                   </button>
                   <a
-                    href={exhibitorData.url}
+                    href={ExhibitorDetails.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
@@ -108,7 +139,7 @@ const ExhibitorsDetails = () => {
                     </h3>
                   </div>
                   <p className="text-slate-700 text-lg font-medium">
-                    {exhibitorData.email}
+                    {ExhibitorDetails.email}
                   </p>
                 </div>
 
@@ -120,7 +151,7 @@ const ExhibitorsDetails = () => {
                     </h3>
                   </div>
                   <a
-                    href={exhibitorData.url}
+                    href={ExhibitorDetails.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-cyan-600 hover:text-cyan-700 font-medium flex items-center gap-2 group"

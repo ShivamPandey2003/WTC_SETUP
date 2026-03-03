@@ -2,7 +2,7 @@ declare type ModelSliceType = {
   loginModel: boolean;
   searchModal: boolean;
   title: string | null;
-  register:boolean
+  register: boolean;
 };
 
 declare type HomeDesignStateType = {
@@ -552,6 +552,8 @@ declare type TabsResponse = {
 declare type MapT = {
   id: string;
   label: string;
+  design_type: boolean;
+  iframe_url: string;
   floor_level: number;
   image: string;
   map_list: Shape[];
@@ -617,5 +619,39 @@ declare type FindSpeakerById = {
       base64: string;
     }[];
     email: string | null;
+  };
+};
+
+declare type Carusole = {
+  id: string;
+  title: string;
+  url: string | null;
+  email: string | null;
+  bg_img: string;
+  description: string | null;
+  type: number;
+};
+
+declare type HeroCarusoleT = {
+  header: ResponseHeader;
+  response: Carusole[];
+};
+
+declare type FindExhibitorById = {
+  header: ResponseHeader;
+  response: {
+    exhibitor_id: string;
+    full_name: string;
+    email: string;
+    url: string;
+    ads: boolean;
+    category: string;
+    logo: string;
+    attachments: {
+      filename: string;
+      base64: string;
+    }[];
+    description: string | null;
+    created_at: string;
   };
 };

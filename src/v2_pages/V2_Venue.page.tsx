@@ -244,12 +244,30 @@ const V2_Venue_page = () => {
                   <option value="">{"Select an option"}</option>
                   {V2_Global_FloorMapList &&
                     V2_Global_FloorMapList.response.map((opt) => (
-                      <option key={opt.id} value={opt.id} className="cursor-pointer">
+                      <option
+                        key={opt.id}
+                        value={opt.id}
+                        className="cursor-pointer"
+                      >
                         {opt.label}
                       </option>
                     ))}
                 </select>
               </div>
+              {V2_Global_FloorMapList?.response.find(
+                (pre) => pre.id === selectedId,
+              )?.iframe_url && (
+                <a
+                  target="_blank"
+                  href={
+                    V2_Global_FloorMapList?.response.find(
+                      (pre) => pre.id === selectedId,
+                    )?.iframe_url as string
+                  }
+                >
+                  <Button className="capitalize" size={"sm"}>Interactive Floor plan</Button>
+                </a>
+              )}
             </div>
             <a
               href="/FloorPlan.pdf"
@@ -260,7 +278,20 @@ const V2_Venue_page = () => {
             </a>
           </div>
           <div className="w-full">
-            <Map_V2 id={selectedId} />
+            {V2_Global_FloorMapList?.response.find(
+              (pre) => pre.id === selectedId,
+            )?.image ? (
+              <Map_V2 id={selectedId} />
+            ) : (
+              <iframe
+                src={
+                  V2_Global_FloorMapList?.response.find(
+                    (pre) => pre.id === selectedId,
+                  )?.iframe_url as string
+                }
+                className="w-full h-[65vh] mt-2"
+              />
+            )}
           </div>
         </div>
       )}

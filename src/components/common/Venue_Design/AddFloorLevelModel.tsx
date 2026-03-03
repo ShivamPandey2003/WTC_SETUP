@@ -3,9 +3,13 @@ import CustomForm from "@/components/global/CustomForm";
 import Modal from "@/components/ui/Modal";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { setFloorLevelModal } from "@/redux/venueDesignV2Slice";
-import { FloorLevelSchema, type FloorLevelSchemaType } from "@/Schema/FloorLevelSchema";
+import {
+  FloorLevelSchema,
+  type FloorLevelSchemaType,
+} from "@/Schema/FloorLevelSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
 const AddFloorLevelModel = () => {
@@ -13,21 +17,39 @@ const AddFloorLevelModel = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset
-  } = useForm<FloorLevelSchemaType>({ resolver: zodResolver(FloorLevelSchema) });
+    reset,
+    control,
+  } = useForm({ resolver: zodResolver(FloorLevelSchema) });
   const dispatch = useDispatch<AppDispatch>();
-  const {FloorLevelModal} = useSelector((state:RootState)=>state.Venue_Design_V2)
-  const {CreateFloorLevel, isPending} = useCreateFloorLevel()
+  const { FloorLevelModal } = useSelector(
+    (state: RootState) => state.Venue_Design_V2,
+  );
+  const [url, setUrl] = useState<boolean>(false);
+  const { CreateFloorLevel, isPending } = useCreateFloorLevel();
+  const designType = useWatch({
+    control,
+    name: "design_type",
+  });
 
-  const onSubmit = (newData: FloorLevelSchemaType)=>{
+  const onSubmit = (newData: FloorLevelSchemaType) => {
     const formData = new FormData();
-    formData.append("label", newData.label)
-    formData.append("floor_level", String(newData.floor_level))
-    formData.append("file", newData.file?.[0] as Blob)
+    formData.append("label", newData.label);
+    formData.append("floor_level", String(newData.floor_level));
+    formData.append("design_type", String(newData.design_type));
+    if (url) {
+      formData.append("iframe_url", newData.iframe_url as string);
+    } else {
+      formData.append("file", newData.file?.[0] as Blob);
+    }
 
-    CreateFloorLevel(formData)
+    CreateFloorLevel(formData);
     reset();
-  }
+  };
+
+  useEffect(() => {
+    const value = String(designType) === "true";
+    setUrl(value);
+  }, [designType]);
 
   const fields: {
     name: keyof FloorLevelSchemaType;
@@ -40,18 +62,45 @@ const AddFloorLevelModel = () => {
       | "checkbox"
       | "date"
       | "array-string"
-      | "array-attachment";
+      | "array-attachment"
+      | "select";
     placeholder?: string;
     accept?: string;
+    options?: { label: string; value: string }[];
   }[] = [
     { name: "label", label: "Label", placeholder: "Enter Floor label" },
-    { name: "floor_level", label: "Floor Level", placeholder: "Enter Floor level", type:"number" },
     {
-      name: "file",
-      label: "File",
-      type: "file",
-      accept: "image/*",
-    }
+      name: "floor_level",
+      label: "Floor Level",
+      placeholder: "Enter Floor level",
+      type: "number",
+    },
+    {
+      name: "design_type",
+      label: "Design Type",
+      type: "select",
+      options: [
+        { label: "Iframe", value: "true" },
+        { label: "File", value: "false" },
+      ],
+    },
+
+    ...(url
+      ? [
+          {
+            name: "iframe_url" as const,
+            label: "Url",
+            type: "text" as const,
+          },
+        ]
+      : [
+          {
+            name: "file" as const,
+            label: "File",
+            type: "file" as const,
+            accept: "image/*",
+          },
+        ]),
   ];
 
   return (
