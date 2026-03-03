@@ -14,7 +14,7 @@ import CustomTable from "@/components/common/Home_Design/Table";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
 import CSVModel from "@/components/global/CSVModel";
 import Section from "@/components/global/Section";
-import TextStyleRow from "@/components/global/TextStyleRow";
+// import TextStyleRow from "@/components/global/TextStyleRow";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
@@ -123,7 +123,7 @@ const HomeDesign_page = () => {
                       }),
                     )
                   }
-                  className="bg-[#1111110D] w-[23rem] font-semibold px-5 py-1 text-sm text-black rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
+                  className="bg-[#1111110D] w-[23rem] font-semibold px-5 py-1 text-sm text-black rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
                 />
               </Section>
               <Section
@@ -199,7 +199,7 @@ const HomeDesign_page = () => {
                   show={true}
                   loading={SplashScreenIsUpdating}
                 >
-                  <TextStyleRow
+                  {/* <TextStyleRow
                     label={"Title"}
                     value={appConfig.splash.title}
                     onChange={(e) =>
@@ -210,8 +210,8 @@ const HomeDesign_page = () => {
                         }),
                       )
                     }
-                  />
-                  <TextStyleRow
+                  /> */}
+                  {/* <TextStyleRow
                     label={"Subtitle"}
                     value={appConfig.splash.subtitle}
                     onChange={(e) =>
@@ -222,8 +222,8 @@ const HomeDesign_page = () => {
                         }),
                       )
                     }
-                  />
-                  <div className="flex items-center gap-4 py-2">
+                  /> */}
+                  <div className="flex items-start gap-4 py-2">
                     <div className="text-sm font-[500] w-[220px] shrink-0">
                       Background Image
                     </div>

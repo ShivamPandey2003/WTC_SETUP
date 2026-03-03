@@ -292,7 +292,7 @@ const ExhibitorsDesign_page = () => {
                       setSplashValue((pre) => ({ ...pre, subtitle: e }))
                     }
                   />
-                  <div className="flex items-center gap-4 py-2">
+                  <div className="flex items-start gap-4 py-2">
                     <div className="text-sm font-medium w-[220px] shrink-0">
                       Background Image
                     </div>

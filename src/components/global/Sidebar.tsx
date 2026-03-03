@@ -24,6 +24,11 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
   const dispatch = useDispatch<AppDispatch>()
   const menu = [
     {
+      id: "Home",
+      label: "Home",
+      onClick: () => navigate("/"),
+    },
+    {
       id: "Profile",
       label: "Admin Profile",
       onClick: () => navigate("/wtc-profile"),
@@ -39,6 +44,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
     },
   ];
 
+
   return (
     <aside className="w-[153px] bg-primary text-white h-screen flex flex-col">
       <div className="p-4 text-center border-b border-white/20">
@@ -51,7 +57,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
           className={cn(
             `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "global"
-              ? "bg-white text-[#318061]"
+              ? "bg-white text-primary"
               : "hover:bg-white/10",
           )}
           onClick={() => navigate("/global-design")}
@@ -64,7 +70,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
           className={cn(
             `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "home"
-              ? "bg-white text-[#318061]"
+              ? "bg-white text-primary"
               : "hover:bg-white/10",
           )}
           onClick={() => navigate("/home-design")}
@@ -77,7 +83,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
           className={cn(
             `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "programme"
-              ? "bg-white text-[#318061]"
+              ? "bg-white text-primary"
               : "hover:bg-white/10",
           )}
           onClick={() => navigate("/programme-design")}
@@ -89,7 +95,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
           className={cn(
             `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "speakers"
-              ? "bg-white text-[#318061]"
+              ? "bg-white text-primary"
               : "hover:bg-white/10",
           )}
           onClick={() => navigate("/speakers-design")}
@@ -101,7 +107,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
           className={cn(
             `w-full px-4 py-2 mb-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "venue"
-              ? "bg-white text-[#318061]"
+              ? "bg-white text-primary"
               : "hover:bg-white/10",
           )}
           onClick={() => navigate("/venue-design")}
@@ -113,7 +119,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
           className={cn(
             `w-full px-4 py-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
             activeItem === "exhibitors"
-              ? "bg-white text-[#318061]"
+              ? "bg-white text-primary"
               : "hover:bg-white/10",
           )}
           onClick={() => navigate("/exhibitors-design")}

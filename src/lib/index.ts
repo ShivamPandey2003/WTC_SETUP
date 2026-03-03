@@ -26,7 +26,6 @@ export const toMin = (t: string): number => {
 
 function groupByTime(events: Programme[]): Record<number, Programme[]> {
   const groups: Record<number, Programme[]> = {};
-  // console.log(events)
   if (!events || events.length === 0) return groups;
 
   const sorted = [...events].sort(
@@ -73,7 +72,6 @@ function alignGroup(events: Programme[], nextEvents: (Programme | Placeholder)[]
 }
 
 export function buildTimeline(events: Programme[]): TimelineOutput {
-  // console.log(events)
   const groups = groupByTime(events);
   const output: TimelineOutput = {};
 
