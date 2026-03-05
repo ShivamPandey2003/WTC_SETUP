@@ -1,4 +1,5 @@
 import {
+  useGlobalDesign,
   useHomeDesignUpdate,
   useUploadLogo,
 } from "@/api/global_api/global_api";
@@ -29,6 +30,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const HomeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
+   const {isGlobalDesignPending} = useGlobalDesign();
   const { NewsList } = useGetNewsList();
   const dispatch = useDispatch<AppDispatch>();
   const { isCreating, uploadCSV } = useSelector(
@@ -54,7 +56,7 @@ const HomeDesign_page = () => {
     });
   };
 
-  if (!NewsList || !NewsList.response || !HeroCarusole || !HeroCarusole.response) {
+  if (!NewsList || !NewsList.response || !HeroCarusole || !HeroCarusole.response || isGlobalDesignPending) {
     return null;
   }
 
@@ -165,7 +167,7 @@ const HomeDesign_page = () => {
                           <div
                             key={value}
                             className={cn(
-                              "flex items-center gap-2 bg-[#1111110D] px-3 py-1 text-sm text-black font-semibold rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors cursor-pointer",
+                              "flex items-center gap-2 bg-[#1111110D] px-3 py-1 text-sm text-black font-semibold rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors cursor-pointer capitalize",
                               appConfig.home_design[
                                 value as keyof typeof appConfig.home_design
                               ] && "text-primary",
@@ -188,7 +190,7 @@ const HomeDesign_page = () => {
                             {appConfig.home_design[
                               value as keyof typeof appConfig.home_design
                             ] && <Check size={20} />}
-                            {value}
+                            {value.replaceAll("_", " ")}
                           </div>
                         ))}
                     </div>

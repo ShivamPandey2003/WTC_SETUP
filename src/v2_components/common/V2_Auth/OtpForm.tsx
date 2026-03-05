@@ -121,7 +121,7 @@ const OtpForm = () => {
           className={`text-primary text-sm font-medium mt-4 transition-colors ${
             isDisabled
               ? "opacity-50 cursor-not-allowed"
-              : "hover:text-green-800"
+              : "hover:text-green-800 cursor-pointer"
           }`}
         >
           {resendCooldownEnd === Infinity

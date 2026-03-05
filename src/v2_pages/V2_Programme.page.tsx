@@ -1,23 +1,30 @@
 import { useGetProgrammeList } from "@/api/global_api/global_api";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
+import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
 import EventGrid from "@/v2_components/common/V2_Programme/EventGrid";
 import { Check, Loader } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-
 
 const V2_Programme_page = () => {
   const { ProgrammeList, isPending, error } = useGetProgrammeList();
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const dispatch = useDispatch<AppDispatch>();
 
-    useEffect(() => {
-      dispatch(setTitle(null));
-    }, []);
+  const toggleCategory = (name: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(name) ? prev.filter((c) => c !== name) : [...prev, name],
+    );
+  };
+
+  useEffect(() => {
+    dispatch(setTitle(null));
+  }, []);
 
   if (isPending) {
     return (
@@ -55,9 +62,13 @@ const V2_Programme_page = () => {
 
   return (
     <div className="px-4 mx-auto">
-      <div className="hidden sm:flex flex-wrap gap-4 items-center ml-16 mt-4 mb-6">
-        {ProgrammeList.response.all_categories.map((item) => (
+      <div className="hidden sm:flex flex-wrap gap-4 items-center ml-4 mt-4 mb-6">
+        <Button className="py-0 h-6 text-sm mr-12" size={"sm"} onClick={()=>setSelectedCategories([])}>Clear All</Button>
+        {ProgrammeList.response.all_categories.map((item) =>{ 
+          const active = selectedCategories.includes(item.name)
+          return(
           <div
+            onClick={() => toggleCategory(item.name)}
             key={item.name}
             className={cn(
               "flex items-center justify-center p-1 rounded-lg border min-w-20 w-fit gap-2 text-xs cursor-pointer",
@@ -68,12 +79,12 @@ const V2_Programme_page = () => {
               color: "white",
             }}
           >
-            <Check size={15} />
+           {!active && <Check size={15} />}
             <span>{item.name}</span>
           </div>
-        ))}
+        )})}
       </div>
-      <EventGrid />
+      <EventGrid selectedCategories={selectedCategories} />
     </div>
   );
 };

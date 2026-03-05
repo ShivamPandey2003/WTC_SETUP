@@ -144,7 +144,7 @@ export const useUploadSpeakerCSV = () => {
     error,
   } = useMutation<LogoUpdateResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
-      const res = await apiRequest("post", `/programme/upload/sessions`, data);
+      const res = await apiRequest("post", `/speakers/upload/speakers`, data);
       return res.response;
     },
     onSuccess: (data) => {

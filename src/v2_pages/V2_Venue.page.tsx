@@ -34,6 +34,7 @@ const V2_Venue_page = () => {
   const [searchParams] = useSearchParams();
   const { Venue, isPending, error } = useGetVenue();
   const dispatch = useDispatch<AppDispatch>();
+  const [IFrameLoading, setIFrameLoading] = useState<boolean>(true);
   const {
     Venue: venue,
     conference_location,
@@ -265,7 +266,9 @@ const V2_Venue_page = () => {
                     )?.iframe_url as string
                   }
                 >
-                  <Button className="capitalize" size={"sm"}>Interactive Floor plan</Button>
+                  <Button className="capitalize" size={"sm"}>
+                    Interactive Floor plan
+                  </Button>
                 </a>
               )}
             </div>
@@ -282,6 +285,10 @@ const V2_Venue_page = () => {
               (pre) => pre.id === selectedId,
             )?.image ? (
               <Map_V2 id={selectedId} />
+            ) : IFrameLoading ? (
+              <div className="w-full h-[65vh] flex flex-col items-center justify-center">
+                <Loader className="text-primary animate-spin" size={30} />
+              </div>
             ) : (
               <iframe
                 src={
@@ -289,6 +296,7 @@ const V2_Venue_page = () => {
                     (pre) => pre.id === selectedId,
                   )?.iframe_url as string
                 }
+                onLoad={() => setIFrameLoading(false)}
                 className="w-full h-[65vh] mt-2"
               />
             )}

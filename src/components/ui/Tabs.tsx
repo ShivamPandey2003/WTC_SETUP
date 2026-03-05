@@ -146,7 +146,8 @@ const TabsTrigger = ({
       onClick={() => onTabChange?.(value)}
       className={cn(
         tabTriggerVariants({ variant, active: isActive }),
-        className
+        className,
+        "cursor-pointer"
       )}
     >
       {children}

@@ -15,7 +15,7 @@ export default function WTCBadge() {
 
   return (
     <div
-      className={`w-[370px] rounded-lg shadow-lg p-5 text-center relative overflow-hidden border border-gray-100 bg-white`}
+      className={`w-[370px] rounded-lg shadow-lg p-4 text-center relative overflow-hidden border border-gray-100 bg-white`}
       style={{ backgroundImage: `url(${BgIMG})` }}
     >
       <p className="text-[#111111BF] mb-2">Your ITA WTC Badge</p>
@@ -45,7 +45,7 @@ export default function WTCBadge() {
       <div>
         <h2 className="font-bold text-xl text-green-800">{`${user_info.firstname} ${user_info.lastname}`}</h2>
         <p className="text-gray-600 text-sm">{user_info.designation}</p>
-        <p className="text-gray-500 text-sm mb-5">{user_info.company_name}</p>
+        <p className="text-gray-500 text-sm mb-4">{user_info.company_name}</p>
       </div>
 
       <div className="flex items-center justify-center">

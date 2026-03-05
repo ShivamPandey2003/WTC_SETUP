@@ -9,6 +9,7 @@ import { Copy, ExternalLink, Globe, Mail, Star } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import { toast } from "sonner";
 
 const ExhibitorsDetails = () => {
   const { id } = useParams();
@@ -39,6 +40,7 @@ const ExhibitorsDetails = () => {
 
   const handleCopyEmail = (str: string) => {
     navigator.clipboard.writeText(str);
+    toast.success("Email Copied Successfully")
   };
 
   useEffect(() => {
@@ -106,13 +108,6 @@ const ExhibitorsDetails = () => {
                     <Mail className="w-5 h-5" />
                     Email
                   </a>
-                  <button
-                    onClick={() => handleCopyEmail(ExhibitorDetails.email)}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-lg transition-all duration-200 cursor-pointer"
-                  >
-                    <Copy className="w-5 h-5" />
-                    Copy Email
-                  </button>
                   <a
                     href={ExhibitorDetails.url}
                     target="_blank"
@@ -137,6 +132,7 @@ const ExhibitorsDetails = () => {
                     <h3 className="text-lg font-semibold text-slate-900">
                       Email Address
                     </h3>
+                    <Copy className="w-5 h-5 cursor-pointer" onClick={() => handleCopyEmail(ExhibitorDetails.email)} />
                   </div>
                   <p className="text-slate-700 text-lg font-medium">
                     {ExhibitorDetails.email}

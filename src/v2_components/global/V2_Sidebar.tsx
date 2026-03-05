@@ -56,7 +56,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
                   onClick={() => setOpen?.()}
                 >
                   <item.Icon />
-                  <span className="max-w-[80px] line-clamp-1">{value}</span>
+                  <span className="max-w-[80px] overflow-hidden text-ellipsis">{value}</span>
                 </NavLink>
               );
             })}

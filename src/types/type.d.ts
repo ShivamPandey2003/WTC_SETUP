@@ -10,6 +10,7 @@ declare type HomeDesignStateType = {
   isDeleting: string | null;
   isPublished: string | null;
   isCreating: boolean;
+  unpublish:string | null;
   news: News[];
   uploadCSV: boolean;
 };
@@ -35,6 +36,7 @@ declare type News = {
   is_published: boolean;
   tile_space: string;
   bg_img: null | string;
+  created_on: string
 };
 
 declare type ResponseHeader = {

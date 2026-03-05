@@ -4,6 +4,7 @@ import {
   setIsCreating,
   setIsDeleting,
   setIsPublished,
+  setIsUnpublished,
   setNews,
   setSelected,
   setUploadCSV,
@@ -117,15 +118,18 @@ export const usePublishedNews = () => {
     mutate: PulishedNew,
     isPending,
     error,
-  } = useMutation<DeleteNewsResponse, AxiosError, { id: string }>({
-    mutationFn: async ({ id }) => {
-      const res = await apiRequest("post", `news/publish/${id}`);
+  } = useMutation<DeleteNewsResponse, AxiosError, { id: string, is_publish:number }>({
+    mutationFn: async ({ id, is_publish}) => {
+      const data = new FormData()
+      data.append("is_publish", String(is_publish))
+      const res = await apiRequest("post", `news/publish/${id}`, data);
       return res.response;
     },
     onSuccess: () => {
       toast.success("News Published successfully");
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
       dispatch(setIsPublished(null));
+      dispatch(setIsUnpublished(null));
     },
     onError: (err) => {
       toast.error(`Error Publishing news: ${err.message}`);
