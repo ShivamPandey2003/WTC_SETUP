@@ -47,10 +47,12 @@ const V2_Home_page = () => {
     return newNewsData;
   }, [AllNews]);
 
-  const CarusolData = useMemo(
-    () => shuffleArray(HeroCarusole?.response as Carusole[]),
-    [HeroCarusole],
-  );
+  const CarusolData = useMemo(() => {
+    if (HeroCarusole?.response) {
+      return shuffleArray(HeroCarusole.response);
+    }
+    return[]
+  }, [HeroCarusole]);
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
