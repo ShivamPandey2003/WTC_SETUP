@@ -21,13 +21,20 @@ import { SearchModal } from "@/v2_components/global/SearchModal";
 const V2_rootlayout = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState<boolean>(false);
-  const [spashScreen, setSpashScreen] = useState<boolean>(true);
-  const { loginModel, searchModal } = useSelector((state: RootState) => state.model);
+  const [spashScreen, setSpashScreen] = useState<boolean>(false);
+  const { loginModel, searchModal } = useSelector(
+    (state: RootState) => state.model,
+  );
   const dispatch = useDispatch<AppDispatch>();
   const {} = useGlobalDesign();
   const {} = useGetConferenceDetails();
 
   useEffect(() => {
+    const isShowed = sessionStorage.getItem("App_Splash");
+    if (!isShowed) {
+      setSpashScreen(true);
+      sessionStorage.setItem("App_Splash", JSON.stringify(true));
+    }
     const timer = setTimeout(() => {
       setSpashScreen(false);
     }, 4000);
@@ -53,7 +60,7 @@ const V2_rootlayout = () => {
         className={cn(
           "sm:hidden fixed top-0 left-0 h-full w-fit p-4 bg-[#92D5A1] z-[999]",
           "transform transition-transform duration-300",
-          open ? "translate-x-0" : "-translate-x-full"
+          open ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <div className="relative flex h-full items-center">
@@ -63,7 +70,12 @@ const V2_rootlayout = () => {
           <V2_Sidebar_Context setOpen={() => setOpen(false)} />
         </div>
       </aside>
-      {searchModal && <SearchModal isOpen={searchModal} onClose={()=>dispatch(setSearchModal(false))} />}
+      {searchModal && (
+        <SearchModal
+          isOpen={searchModal}
+          onClose={() => dispatch(setSearchModal(false))}
+        />
+      )}
       <LoginModal2 isOpen={loginModel} onClose={() => onClose()} />
       <V2_SplashScreen open={spashScreen} setOpen={setSpashScreen} />
     </div>

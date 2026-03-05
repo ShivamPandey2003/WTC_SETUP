@@ -17,7 +17,7 @@ import { useNavigate } from "react-router";
 
 const V2_exhibitors_page = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [spashScreen, setSpashScreen] = useState<boolean>(true);
+  const [spashScreen, setSpashScreen] = useState<boolean>(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -78,6 +78,11 @@ const V2_exhibitors_page = () => {
   }, []);
 
   useEffect(() => {
+    const isShowed = sessionStorage.getItem("Exhibitor_Splash");
+    if (!isShowed) {
+      setSpashScreen(true);
+      sessionStorage.setItem("Exhibitor_Splash", JSON.stringify(true));
+    }
     const timer = setTimeout(() => {
       setSpashScreen(false);
     }, 6000);
