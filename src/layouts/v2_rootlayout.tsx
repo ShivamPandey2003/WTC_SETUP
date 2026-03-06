@@ -58,7 +58,7 @@ const V2_rootlayout = () => {
       </div>
       <aside
         className={cn(
-          "sm:hidden fixed top-0 left-0 h-full w-fit p-4 bg-[#92D5A1] z-[999]",
+          "sm:hidden fixed top-0 left-0 h-full w-fit p-4 bg-gray-100 shadow z-[999]",
           "transform transition-transform duration-300",
           open ? "translate-x-0" : "-translate-x-full",
         )}
