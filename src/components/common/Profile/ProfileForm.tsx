@@ -43,10 +43,10 @@ export default function ProfileForm() {
       firstName: user_info.firstname,
       lastName: user_info.lastname,
       gender: "Male",
-      company: user_info.company_name,
-      designation: user_info.designation,
+      company: user_info.company_name as string,
+      designation: user_info.designation as string,
       email: user_info.email,
-      linkedin: user_info.linkedin_url,
+      linkedin: user_info.linkedin_url as string,
     },
   });
 
@@ -60,7 +60,7 @@ export default function ProfileForm() {
       designation: data.designation as string,
       linkedin_url: data.linkedin,
       // user_image: image as string,
-      phone_number: user_info.phone_number,
+      phone_number: user_info.phone_number as string,
     });
     // alert("Saved!");
   };
@@ -198,7 +198,7 @@ export default function ProfileForm() {
           />
         </div>
 
-        <div className="flex items-center">
+        {/* <div className="flex items-center">
           <label className="block text-sm font-medium text-gray-600 w-[170px]">
             Email
           </label>
@@ -212,7 +212,7 @@ export default function ProfileForm() {
               <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
           </div>
-        </div>
+        </div> */}
 
         <div className="flex items-center">
           <label className="block text-sm font-medium text-gray-600 w-[170px]">

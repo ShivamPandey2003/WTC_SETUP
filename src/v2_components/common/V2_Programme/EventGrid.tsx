@@ -1,13 +1,17 @@
 import React from "react";
 // import Programmes from "@/data/Programmes";
-import { generateTimeArray, getDateRange } from "@/lib/extra";
+import { generateTimeArray, getDateRange, type OutputItem } from "@/lib/extra";
 import { cn } from "@/lib/utils";
 import { formatDates_V2 } from "@/lib";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
 import EventModal from "@/components/common/Programme/EventModal";
 
-const EventGrid = () => {
+type Props = {
+  selectedCategories: string[];
+};
+
+const EventGrid = ({ selectedCategories }: Props) => {
   const { Programmes } = useSelector((state: RootState) => state.ExtraSlice);
   const Dates = getDateRange(Programmes.start_date, Programmes.end_date);
   const Times = generateTimeArray(Programmes.start_time, Programmes.end_time);
@@ -29,6 +33,16 @@ const EventGrid = () => {
     return r2.top - r1.top;
   }
 
+  const eventHasFilteredCategory = (event: OutputItem, filters: string[]) => {
+    if (filters.length === 0) return true;
+
+    if (event.type === "array") {
+      return event.Item.some((e) => !filters.includes(e.title));
+    }
+
+    return !filters.includes(event.title);
+  };
+
   React.useLayoutEffect(() => {
     const pos: Record<string, { top: number; height: number }> = {};
 
@@ -43,7 +57,7 @@ const EventGrid = () => {
           const top =
             getPxDistance(
               Programmes.start_time.slice(0, 5),
-              event.start.slice(0, 5)
+              event.start.slice(0, 5),
             ) ?? 0;
           pos[event.id] = { top: top, height };
         } else if (event.type === "array" && event.Item) {
@@ -51,12 +65,12 @@ const EventGrid = () => {
             const height =
               getPxDistance(
                 Combine?.start.slice(0, 5),
-                Combine?.end.slice(0, 5)
+                Combine?.end.slice(0, 5),
               ) ?? 0;
             const top =
               getPxDistance(
                 Programmes.start_time.slice(0, 5),
-                Combine?.start.slice(0, 5)
+                Combine?.start.slice(0, 5),
               ) ?? 0;
 
             pos[event.id] = { top: top, height };
@@ -67,7 +81,7 @@ const EventGrid = () => {
           const top =
             getPxDistance(
               Programmes.start_time.slice(0, 5),
-              event.start.slice(0, 5)
+              event.start.slice(0, 5),
             ) ?? 0;
           pos[event.id] = { top: top, height };
         }
@@ -86,7 +100,7 @@ const EventGrid = () => {
   return (
     <div className="relative">
       <div className="absolute left-0 top-0 z-50 flex flex-col space-y-4 px-4 border-r border-border bg-[#F2F2F2]">
-        <div className="mb-14"/>
+        <div className="mb-14" />
         {Times.map((item) => (
           <div
             key={item}
@@ -113,17 +127,22 @@ const EventGrid = () => {
             <React.Fragment key={i}>
               <div key={item} className="min-w-[190px] relative">
                 <div className="flex gap-1">
-                  <div className="flex flex-col gap-0.5 w-full relative"
-                  style={{ height: Times.length * 40 }}>
+                  <div
+                    className="flex flex-col gap-0.5 w-full relative"
+                    style={{ height: Times.length * 40 }}
+                  >
                     {[...Programmes.data[item]]
                       .sort((a, b) => a.start.localeCompare(b.start))
+                      .filter((event) =>
+                        eventHasFilteredCategory(event, selectedCategories),
+                      )
                       .map((event, i) => {
                         if (event.type === "normal") {
                           return (
                             <div
                               key={event.id}
                               className={cn(
-                                "text-white p-1 rounded-xl flex items-center justify-center text-center text-sm absolute w-[150px] cursor-pointer"
+                                "text-white p-1 rounded-xl flex items-center justify-center text-center text-sm absolute w-[150px] cursor-pointer",
                               )}
                               style={{
                                 top: `${
@@ -155,7 +174,7 @@ const EventGrid = () => {
                                     "text-white p-1 rounded-xl flex items-center justify-center text-center text-[9px] cursor-pointer",
                                   )}
                                   style={{
-                                    width:`${100 / event.Item.length}%`,
+                                    width: `${100 / event.Item.length}%`,
                                     height: `${
                                       positions[event.id]?.height || 0
                                     }px`,
@@ -173,7 +192,7 @@ const EventGrid = () => {
                             <div
                               key={event.id}
                               className={cn(
-                                "text-white p-1 rounded-xl flex items-center justify-center text-center text-sm absolute w-[150px] cursor-pointer"
+                                "text-white p-1 rounded-xl flex items-center justify-center text-center text-sm absolute w-[150px] cursor-pointer",
                               )}
                               style={{
                                 top: `${
@@ -198,7 +217,7 @@ const EventGrid = () => {
                           <div
                             key={item.id}
                             className={cn(
-                              "rounded-xl flex w-[30px] items-center justify-center text-white cursor-pointer"
+                              "rounded-xl flex w-[30px] items-center justify-center text-white cursor-pointer",
                             )}
                             style={{
                               marginTop: `${
@@ -222,11 +241,13 @@ const EventGrid = () => {
           ))}
         </div>
       </div>
-      {seleted && <EventModal
-        isOpen={Boolean(seleted)}
-        onClose={() => setSelected(null)}
-        id={seleted as string | string[]}
-      />}
+      {seleted && (
+        <EventModal
+          isOpen={Boolean(seleted)}
+          onClose={() => setSelected(null)}
+          id={seleted as string | string[]}
+        />
+      )}
     </div>
   );
 };

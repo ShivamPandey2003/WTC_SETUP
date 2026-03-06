@@ -98,7 +98,7 @@ const AddFloorLevelModel = () => {
             name: "file" as const,
             label: "File",
             type: "file" as const,
-            accept: "image/*",
+            accept: "image/png,image/jpg,image/webp",
           },
         ]),
   ];

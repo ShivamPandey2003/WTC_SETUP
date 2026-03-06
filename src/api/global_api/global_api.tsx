@@ -388,16 +388,30 @@ export const useVenueDesignUpdate = () => {
     "venue",
   ]);
 
-  const data = {
-    ...venue,
-    venue_tab,
-    floor_plan: "",
-    visa_title: "",
-    visa_sub_title: "",
-    visa_description: "",
-    travel_title: "",
-    travel_description: "",
-  };
+  const { image, ...rest } = venue;
+
+  const data =
+    typeof image === "string"
+      ? {
+          ...rest,
+          venue_tab,
+          floor_plan: "",
+          visa_title: "",
+          visa_sub_title: "",
+          visa_description: "",
+          travel_title: "",
+          travel_description: "",
+        }
+      : {
+          ...venue,
+          venue_tab,
+          floor_plan: "",
+          visa_title: "",
+          visa_sub_title: "",
+          visa_description: "",
+          travel_title: "",
+          travel_description: "",
+        };
 
   const formData = new FormData();
 

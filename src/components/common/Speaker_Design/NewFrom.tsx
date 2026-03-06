@@ -84,13 +84,13 @@ const NewFrom = () => {
       name: "profile_image",
       label: "Profile image",
       type: "file",
-      accept: "image/*",
+      accept: "image/png,image/jpg,image/webp",
     },
     {
       name: "attachments",
       label: "Attachments",
       type: "file",
-      accept: "image/*",
+      accept: "application/pdf",
     },
     { name: "external_link", label: "External Link" },
     {

@@ -58,7 +58,7 @@ const EditFloorLevelModel = ({ id }: EditFloorLevelModelProp) => {
   const onSubmit = (newData: FloorLevelSchemaType) => {
     const formData = new FormData();
     formData.append("label", newData.label);
-    formData.append("floor_level", String(newData.floor_level));
+    formData.append("floor_level", String(Value?.design_type));
     formData.append("file", newData.file?.[0] as Blob);
 
     EditFloorLevel({ id: id, data: formData });
@@ -91,16 +91,6 @@ const EditFloorLevelModel = ({ id }: EditFloorLevelModelProp) => {
       placeholder: "Enter Floor level",
       type: "number",
     },
-    {
-      name: "design_type",
-      label: "Design Type",
-      type: "select",
-      options: [
-        { label: "Iframe", value: "true" },
-        { label: "File", value: "false" },
-      ],
-    },
-
     ...(url
       ? [
           {
@@ -114,7 +104,7 @@ const EditFloorLevelModel = ({ id }: EditFloorLevelModelProp) => {
             name: "file" as const,
             label: "File",
             type: "file" as const,
-            accept: "image/*",
+            accept: "image/png,image/jpg,image/webp",
           },
         ]),
   ];

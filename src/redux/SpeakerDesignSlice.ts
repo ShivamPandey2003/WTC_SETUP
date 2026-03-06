@@ -37,6 +37,7 @@ const initialState: ProgrammeDesignStateType = {
   isDeleting: null,
   isCreating: false,
   uploadCSV: false,
+  unpublish: null,
   SpeakerSettings: {
     carusole_display: [],
     conference_title: "",

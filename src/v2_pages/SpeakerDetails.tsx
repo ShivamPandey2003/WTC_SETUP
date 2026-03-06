@@ -115,12 +115,12 @@ const SpeakerDetails = () => {
                           {speakerDetails.company}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-slate-600">
+                      {speakerDetails.total_sessions > 0 && <div className="flex items-center gap-2 text-slate-600">
                         <Lectern className="w-5 h-5 text-slate-400" />
                         <span className="font-medium">
                           {speakerDetails.total_sessions}
                         </span>
-                      </div>
+                      </div>}
                     </div>
                   </div>
                 </div>

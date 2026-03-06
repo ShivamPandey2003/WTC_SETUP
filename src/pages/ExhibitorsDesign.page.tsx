@@ -55,7 +55,7 @@ const ExhibitorsDesign_page = () => {
   const { isCreating, Categorys, uploadCSV, deletingCategory } = useSelector(
     (state: RootState) => state.ExhibitorSlice,
   );
-  const {downloadExhibitor, isdownloadPending} = useExhibitorsDownload()
+  const { downloadExhibitor, isdownloadPending } = useExhibitorsDownload();
   const { DeleteCategory, isDeleteCategoryPending } = useDeleteCategory();
   const { UploadSplash, isPending: isUploadSplashPending } = useUploadSplash();
 
@@ -311,8 +311,7 @@ const ExhibitorsDesign_page = () => {
                     {SettingValue.response.exhibitor_settings.splash.image && (
                       <img
                         src={
-                          typeof SettingValue.response.exhibitor_settings.splash
-                            .image === "string"
+                          typeof splashValue.image === "string"
                             ? (splashValue.image as string)
                             : URL.createObjectURL(splashValue.image as File)
                         }

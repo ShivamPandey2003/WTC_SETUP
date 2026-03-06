@@ -14,6 +14,7 @@ export const FormSchema = newsSchema.omit({
   is_published: true,
   id: true,
   created_by: true,
+  tile_space:true
 });
 
 type FormData = z.infer<typeof FormSchema>;
@@ -35,7 +36,7 @@ const NewFrom = () => {
 
     formData.append("title", newData.title);
     formData.append("description", newData.description as string);
-    formData.append("tile_space", newData.tile_space as string);
+    formData.append("tile_space", "1x");
     formData.append("attachment", newData.attachments?.[0] as Blob);
 
     CreateNews(formData);
@@ -59,20 +60,10 @@ const NewFrom = () => {
       placeholder: "Enter detailed description...",
     },
     {
-      name: "tile_space",
-      label: "Tile Space",
-      placeholder: "example:- 2x",
-      type: "select",
-      options: [
-        { label: "1x", value: "1x" },
-        { label: "2x", value: "2x" },
-      ],
-    },
-    {
       name: "attachments",
       label: "Attachments",
       type: "file",
-      accept: "image/*",
+      accept: "image/png,image/jpg,image/webp",
     },
   ];
 

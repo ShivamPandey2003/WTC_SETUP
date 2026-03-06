@@ -10,6 +10,7 @@ import {
   UserRound,
   Navigation,
   Boxes,
+  Compass,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
@@ -117,7 +118,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
         </button>
         <button
           className={cn(
-            `w-full px-4 py-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
+            `w-full px-4 py-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer mb-2`,
             activeItem === "exhibitors"
               ? "bg-white text-primary"
               : "hover:bg-white/10",
@@ -126,6 +127,15 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
         >
           <Boxes size={18} />
           <span>Exhibitors</span>
+        </button>
+        <button
+          className={cn(
+            `w-full px-4 py-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer hover:bg-white/10`,
+          )}
+          onClick={() => navigate("/")}
+        >
+          <Compass size={18} />
+          <span>Client View</span>
         </button>
       </nav>
 

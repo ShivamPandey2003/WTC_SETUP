@@ -14,6 +14,7 @@ const initialState: ProgrammeDesignStateType = {
   categoryModal: false,
   slectedDate:`${formatDate(`${new Date()}`)}`,
   uploadCSV: false,
+  unpublish:null
 };
 
 const Programme_DesignSlice = createSlice({

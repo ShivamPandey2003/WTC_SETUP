@@ -17,10 +17,11 @@ const VenueDesign_page = () => {
   const [attachment, setAttachment] = React.useState<string | File>(
     "/FloorPlan.pdf",
   );
+
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
-  const {} = useGetSpeakerSetting();
+  const {isPending} = useGetSpeakerSetting();
 
   const { UpdateVenueDesign, isUpdateVenueDesignPending } =
     useVenueDesignUpdate();
@@ -32,6 +33,10 @@ const VenueDesign_page = () => {
 
     setAttachment(file);
   };
+
+  if(isPending){
+    return null
+  }
 
   return (
     <div className="flex-1 overflow-y-auto">

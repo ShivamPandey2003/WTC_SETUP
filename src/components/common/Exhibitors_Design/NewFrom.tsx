@@ -70,7 +70,7 @@ const NewFrom = () => {
       placeholder: "https://example.com",
     },
     { name: "email", label: "Email", placeholder: "example@mail.com" },
-    { name: "logo", label: "Logo", type: "file", accept: "image/*" },
+    { name: "logo", label: "Logo", type: "file", accept: "image/png,image/jpg,image/webp" },
     {
       name: "category",
       label: "Category",

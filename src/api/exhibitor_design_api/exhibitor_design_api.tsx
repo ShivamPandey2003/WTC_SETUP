@@ -127,7 +127,7 @@ export const useUploadExhibitorsCSV = () => {
     error,
   } = useMutation<LogoUpdateResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
-      const res = await apiRequest("post", `/news/upload/news_list`, data);
+      const res = await apiRequest("post", `/exhibitors/upload/exhibitors`, data);
       return res.response;
     },
     onSuccess: (data) => {
