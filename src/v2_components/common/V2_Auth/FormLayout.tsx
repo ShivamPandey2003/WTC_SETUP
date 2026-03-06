@@ -12,7 +12,7 @@ const FormLayout = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   return (
-    <div className="mt-4 min-w-md relative h-full">
+    <div className="mt-4 sm:min-w-md relative h-full">
       <h2 className="font-bold font-sans text-2xl text-center">
         Sign {register ? "up" : "in"} to{" "}
         <span className="text-primary">ITA WTC</span>

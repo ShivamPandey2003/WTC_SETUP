@@ -241,8 +241,8 @@ const V2_Venue_page = () => {
       )}
       {currentTab === "floor plan" && (
         <div className="w-full rounded-xl p-6 bg-white h-fit">
-          <div className="flex items-center justify-between">
-            <div className={cn("flex items-center gap-4")}>
+          <div className="flex items-start sm:items-center justify-between">
+            <div className={cn("flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4")}>
               <div className="text-sm font-[500] w-[100px] shrink-0">
                 {normalizeLabel("Floor Levels")}
               </div>
