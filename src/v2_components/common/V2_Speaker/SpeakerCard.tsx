@@ -23,7 +23,7 @@ export default function SpeakerCard({
 }: TeamMemberCardProps) {
   return (
     <div
-      className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 w-[250px] sm:min-w-[15rem] cursor-pointer"
+      className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 w-[250px] min-h-[325px] sm:min-w-[15rem] cursor-pointer"
       onClick={onClick}
     >
       <div className="h-[14rem] overflow-hidden bg-gray-200">

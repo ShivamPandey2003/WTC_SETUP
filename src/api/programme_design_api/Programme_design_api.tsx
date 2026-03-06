@@ -75,7 +75,7 @@ export const useDeleteSession = () => {
       toast.success("Session deleted successfully");
       dispatch(setIsDeleting(null));
       queryClient.invalidateQueries({ queryKey: ["sessionList"] });
-    }
+    },
   });
 
   return { DeleteSession, isPending, error };
@@ -105,7 +105,7 @@ export const useAddCategory = () => {
       queryClient.invalidateQueries({ queryKey: ["category-list"] });
       dispatch(setCategoryModal(false));
       dispatch(exhibitorCategoryModal(false));
-    }
+    },
   });
 
   return { AddCategory, isAddCategoryPending, error };
@@ -132,7 +132,7 @@ export const useDeleteCategory = () => {
       toast.success("Category delete successfully");
       queryClient.invalidateQueries({ queryKey: ["category-list"] });
       dispatch(setDeletingCategory(null));
-    }
+    },
   });
 
   return { DeleteCategory, isDeleteCategoryPending, error };
@@ -189,7 +189,7 @@ export const useEditCategory = () => {
           [vari.id]: false,
         }),
       );
-    }
+    },
   });
 
   return { EditCategory, isEditCategoryPending, error };
@@ -211,7 +211,7 @@ export const useEditSession = () => {
       toast.success("Session edited successfully");
       queryClient.invalidateQueries({ queryKey: ["sessionList"] });
       dispatch(setSelected(null));
-    }
+    },
   });
 
   return { EditSession, isPending, error };
@@ -233,7 +233,7 @@ export const useUploadSessionsCSV = () => {
       toast.success(data.header.message);
       queryClient.invalidateQueries({ queryKey: ["sessionList"] });
       dispatch(setUploadCSV(false));
-    }
+    },
   });
 
   return { UploadNewsCSV, isPending, error };
@@ -247,53 +247,80 @@ export const useNotifyProgramme = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    }
+    },
   });
 
   return { notify: mutate, isPending };
 };
 
 export const useSessionDownload = () => {
-  const { mutate: downloadSession, isPending: isdownloadPending } = useMutation({
-    mutationKey: ["session_download"],
-    mutationFn: async () => {
+  const { mutate: downloadSession, isPending: isdownloadPending } = useMutation(
+    {
+      mutationKey: ["session_download"],
+      mutationFn: async () => {
+        const res = await apiRequest(
+          "get",
+          "/programme/download",
+          null,
+          "blob",
+        );
+
+        const contentDisposition = res.headers["content-disposition"];
+        const blob = new Blob([res.response]);
+
+        // Extract filename safely
+        let filename = "programme_list.csv";
+
+        if (contentDisposition?.includes("filename=")) {
+          filename = contentDisposition.split("filename=")[1].replace(/"/g, "");
+        }
+
+        const url = window.URL.createObjectURL(res.response);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = filename; // cleaner way
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        return blob;
+      },
+      onMutate: () => {
+        toast.info("File is preparing for download");
+      },
+      onSuccess: () => {
+        toast.success("File download successfully");
+      },
+    },
+  );
+
+  return { downloadSession, isdownloadPending };
+};
+
+export const useGetAttachment = (session_id: string, type:number=0) => {
+  const {
+    data: Attachment,
+    isPending,
+    error,
+  } = useQuery<string, AxiosError>({
+    queryKey: ["Session_Attachment", session_id],
+    queryFn: async () => {
       const res = await apiRequest(
         "get",
-        "/programme/download",
+        `/program/attachment/${session_id}?type=${type}`,
         null,
         "blob",
       );
-
-      const contentDisposition = res.headers["content-disposition"];
-      const blob = new Blob([res.response]);
-
-      // Extract filename safely
-      let filename = "programme_list.csv";
-
-      if (contentDisposition?.includes("filename=")) {
-        filename = contentDisposition.split("filename=")[1].replace(/"/g, "");
-      }
-
       const url = window.URL.createObjectURL(res.response);
-      const link = document.createElement("a");
-
-      link.href = url;
-      link.download = filename; // cleaner way
-      document.body.appendChild(link);
-      link.click();
-
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
-      return blob;
+      return url;
     },
-    onMutate: () => {
-      toast.info("File is preparing for download");
-    },
-    onSuccess: () => {
-      toast.success("File download successfully");
-    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+    enabled: !!session_id,
   });
 
-  return { downloadSession, isdownloadPending };
+  return { Attachment, isPending, error };
 };

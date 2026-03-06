@@ -301,6 +301,8 @@ declare type SpeakerSetting = {
   conference_end_date: string;
   conference_start_time: string;
   conference_end_time: string;
+  pdf_end_date:string;
+  pdf_start_date:string
   conference_location: string;
   speaker_info: {
     exhibitors_setting: boolean;
@@ -335,7 +337,7 @@ declare type SpeakerSettingResponse = {
 declare type Programme = {
   attachments: {
     filename: string;
-    file: string;
+    has_attachment: boolean;
   };
   id: string;
   title: string;

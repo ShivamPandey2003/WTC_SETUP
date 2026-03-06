@@ -445,6 +445,8 @@ export const useProgrameDesignUpdate = () => {
     "category_filter",
     "category_labels",
     "programme_tab",
+    "pdf_end_date",
+    "pdf_start_date"
   ]);
 
   const {

@@ -126,12 +126,10 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
               {selectedValue.description}
             </p>
 
-            {selectedValue.attachments.file && (
+            {selectedValue.attachments.has_attachment && (
               // <a href={selectedValue.attachments.file} target="_blank">
               <div
-                onClick={() =>
-                  navigate(`/Attachment?url=${selectedValue.attachments.file}`)
-                }
+                onClick={() => navigate(`/Attachment/${selectedValue.id}`, {state:{Title:selectedValue.attachments.filename}})}
                 className="flex items-center gap-2 mb-5 text-sm text-gray-700"
               >
                 <FileText className="w-4 h-4" />
@@ -263,15 +261,18 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                   <p className="text-sm text-gray-600 leading-relaxed mb-4">
                     {s.description}
                   </p>
-                  {s.attachments.file && (
-                    <a href={s.attachments.file} target="_blank">
-                      <div className="flex items-center gap-2 mb-5 text-sm text-gray-700">
-                        <FileText className="w-4 h-4" />
-                        <span className="hover:underline cursor-pointer">
-                          {s.attachments.filename}
-                        </span>
-                      </div>
-                    </a>
+                  {s.attachments.has_attachment && (
+                    // <a href={s.attachments.file} target="_blank">
+                    <div
+                      onClick={() => navigate(`/Attachment/${s.id}`, {state:{Title:s.attachments.filename}})}
+                      className="flex items-center gap-2 mb-5 text-sm text-gray-700"
+                    >
+                      <FileText className="w-4 h-4" />
+                      <span className="hover:underline cursor-pointer">
+                        {s.attachments.filename}
+                      </span>
+                    </div>
+                    // </a>
                   )}
 
                   <div className="flex items-center gap-6">
