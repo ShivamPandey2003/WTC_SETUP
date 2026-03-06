@@ -115,8 +115,6 @@ const V2_Venue_page = () => {
     );
   }
 
-  console.log(Venue)
-
   return (
     <div className="px-4 mx-auto pb-4">
       <div className="p-1 bg-white w-fit rounded-full flex gap-2 mb-4">
@@ -138,95 +136,106 @@ const V2_Venue_page = () => {
       {currentTab === "getting there" && (
         <div className="grid lg:grid-cols-2 gap-4">
           <div className="col-span-1 space-y-4">
-            <div className="bg-white rounded-3xl overflow-hidden shadow-sm">
-              <img
-                src={Venue.response.bg_venue}
-                alt="BG"
-                className="w-full h-90 object-cover"
-              />
+            <div
+              className={cn(
+                "bg-white rounded-3xl overflow-hidden shadow-sm",
+                Venue.response.bg_venue ? "bg-white" : "bg-gray-300 h-90",
+              )}
+            >
+              {Venue.response.bg_venue && (
+                <img
+                  src={Venue.response.bg_venue}
+                  alt="BG"
+                  className="w-full h-90 object-cover"
+                />
+              )}
             </div>
             <TextCard />
           </div>
           <div className="bg-white rounded-3xl h-fit overflow-hidden shadow-sm p-6">
-            <LoadScriptNext
-              loadingElement={<Skeleton className="w-full h-80 mb-8" />}
-              googleMapsApiKey={apiKey}
-            >
-              <GoogleMap
-                mapContainerClassName="w-full h-[20rem] mb-8"
-                center={{
-                  lat: parseCoordinate(venue.getting_there.latitude),
-                  lng: parseCoordinate(venue.getting_there.longitude),
-                }}
-                options={{
-                  disableDefaultUI: true,
-                }}
-                zoom={12}
-              >
-                <Marker
-                  position={{
-                    lat: parseCoordinate(venue.getting_there.latitude),
-                    lng: parseCoordinate(venue.getting_there.longitude),
-                  }}
-                />
-              </GoogleMap>
-            </LoadScriptNext>
-            {/* <img
-              src={MapText}
-              alt="MapText"
-              className="w-full h-[20rem] object-cover object-top mb-8"
-            /> */}
-            <div className="h-1/2">
-              <div className="flex justify-between mb-8">
-                <div className="flex gap-6">
-                  <Navigation strokeWidth={"1px"} />
-                  <div>
-                    <h3 className="text-lg font-bold">{conference_location}</h3>
-                    {/* <p className="w-60 text-sm">
+            {venue.getting_there.latitude.trim() &&
+            venue.getting_there.longitude.trim() ? (
+              <>
+                <LoadScriptNext
+                  loadingElement={<Skeleton className="w-full h-80 mb-8" />}
+                  googleMapsApiKey={apiKey}
+                >
+                  <GoogleMap
+                    mapContainerClassName="w-full h-[20rem] mb-8"
+                    center={{
+                      lat: parseCoordinate(venue.getting_there.latitude),
+                      lng: parseCoordinate(venue.getting_there.longitude),
+                    }}
+                    options={{
+                      disableDefaultUI: true,
+                    }}
+                    zoom={12}
+                  >
+                    <Marker
+                      position={{
+                        lat: parseCoordinate(venue.getting_there.latitude),
+                        lng: parseCoordinate(venue.getting_there.longitude),
+                      }}
+                    />
+                  </GoogleMap>
+                </LoadScriptNext>
+                <div className="h-1/2">
+                  <div className="flex justify-between mb-8">
+                    <div className="flex gap-6">
+                      <Navigation strokeWidth={"1px"} />
+                      <div>
+                        <h3 className="text-lg font-bold">
+                          {conference_location}
+                        </h3>
+                        {/* <p className="w-60 text-sm">
                       1001 Pl. Jean-Paul-Riopelle, Montréal, QC H2Y 0A3, Canada
                     </p> */}
+                      </div>
+                    </div>
+                    <Button
+                      onClick={openInGoogleMaps}
+                      className="rounded-full bg-[#E5F6DD] text-[#666666] hover:bg-[#c9fcb0] hover:text-[#555555] text-sm w-36"
+                    >
+                      Open in Maps
+                    </Button>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex gap-6">
+                      <Calendar strokeWidth={"1px"} />
+                      <div>
+                        <h3 className="text-lg font-bold">
+                          {`${formatDate(conference_start_date)} - ${formatDate(
+                            conference_end_date,
+                          )}`}
+                        </h3>
+                        <p className="w-60 text-sm">{`${normalizeTime(conference_start_time)} - ${normalizeTime(conference_end_time)}`}</p>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() =>
+                        addToGoogleCalendar({
+                          title: conference_title,
+                          start: formatForGoogleCalendar(
+                            conference_start_date,
+                            conference_start_time,
+                          ),
+                          end: formatForGoogleCalendar(
+                            conference_end_date,
+                            conference_end_time,
+                          ),
+                          location: conference_location,
+                        })
+                      }
+                      className="rounded-full bg-[#E5F6DD] text-[#666666] hover:bg-[#c9fcb0] hover:text-[#555555] text-sm w-36"
+                    >
+                      Add to calendar
+                    </Button>
                   </div>
                 </div>
-                <Button
-                  onClick={openInGoogleMaps}
-                  className="rounded-full bg-[#E5F6DD] text-[#666666] hover:bg-[#c9fcb0] hover:text-[#555555] text-sm w-36"
-                >
-                  Open in Maps
-                </Button>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex gap-6">
-                  <Calendar strokeWidth={"1px"} />
-                  <div>
-                    <h3 className="text-lg font-bold">
-                      {`${formatDate(conference_start_date)} - ${formatDate(
-                        conference_end_date,
-                      )}`}
-                    </h3>
-                    <p className="w-60 text-sm">{`${normalizeTime(conference_start_time)} - ${normalizeTime(conference_end_time)}`}</p>
-                  </div>
-                </div>
-                <Button
-                  onClick={() =>
-                    addToGoogleCalendar({
-                      title: conference_title,
-                      start: formatForGoogleCalendar(
-                        conference_start_date,
-                        conference_start_time,
-                      ),
-                      end: formatForGoogleCalendar(
-                        conference_end_date,
-                        conference_end_time,
-                      ),
-                      location: conference_location,
-                    })
-                  }
-                  className="rounded-full bg-[#E5F6DD] text-[#666666] hover:bg-[#c9fcb0] hover:text-[#555555] text-sm w-36"
-                >
-                  Add to calendar
-                </Button>
-              </div>
-            </div>
+              </>
+            ) : (
+              <Skeleton className="min-h-[69vh] shadow rounded-xl bg-gray-300" />
+            )}
           </div>
         </div>
       )}
@@ -286,7 +295,7 @@ const V2_Venue_page = () => {
               (pre) => pre.id === selectedId,
             )?.image ? (
               <Map_V2 id={selectedId} />
-            ) :(
+            ) : (
               <iframe
                 src={
                   V2_Global_FloorMapList?.response.find(
