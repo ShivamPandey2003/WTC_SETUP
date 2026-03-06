@@ -26,10 +26,7 @@ export const useUploadFloorPlan = () => {
     onSuccess: (data) => {
       toast.success(data.header.message);
       queryClient.invalidateQueries({ queryKey: ["Floor-Plan"] });
-    },
-    onError: (err) => {
-      toast.error(`Error updating logo: ${err.message}`);
-    },
+    }
   });
 
   return { UploadFloorPlan, isPending, error };
@@ -76,10 +73,7 @@ export const useSaveFloorPlanData = () => {
       toast.success(data.header.message);
       navigate("/venue-design");
       // queryClient.invalidateQueries({ queryKey: ["Floor-Plan"] });
-    },
-    onError: (err) => {
-      toast.error(`Error saving floor plan: ${err.message}`);
-    },
+    }
   });
 
   return { SaveFloorPlanData, isPending, error };
@@ -167,10 +161,7 @@ export const useCreateFloorLevel = () => {
       toast.success("Floor Level created successfully");
       queryClient.invalidateQueries({ queryKey: ["map-list_V2"] });
       dispatch(setFloorLevelModal(false));
-    },
-    onError: (err) => {
-      toast.error(`Error creating Floor Level: ${err.message}`);
-    },
+    }
   });
 
   return { CreateFloorLevel, isPending, error };
@@ -189,10 +180,7 @@ export const useDeleteFloorLevel = () => {
     onSuccess: () => {
       toast.success("Floor Level delete successfully");
       queryClient.invalidateQueries({ queryKey: ["map-list_V2"] });
-    },
-    onError: (err) => {
-      toast.error(`Error delete Floor Level: ${err.message}`);
-    },
+    }
   });
 
   return { DeleteFloorLevel, isPending, error };
@@ -217,10 +205,7 @@ export const useEditFloorLevel = () => {
       toast.success("Floor Level Edit successfully");
       queryClient.invalidateQueries({ queryKey: ["map-list_V2"] });
       dispatch(setEditFloorLevelModal(false));
-    },
-    onError: (err) => {
-      toast.error(`Error Edit Floor Level: ${err.message}`);
-    },
+    }
   });
 
   return { EditFloorLevel, isPending, error };

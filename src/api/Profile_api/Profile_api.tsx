@@ -43,10 +43,7 @@ export const useUploadProfilePic = () => {
     },
     onSuccess: () => {
       toast.success("Profile pic update successfully");
-    },
-    onError: (err) => {
-      toast.error(`Error updating profile pic: ${err.message}`);
-    },
+    }
   });
 
   return { UploadPic, isPending, error };
@@ -65,10 +62,7 @@ export const useProfileUpdate = () => {
     },
     onSuccess: () => {
       toast.success("Profile Update successfully");
-    },
-    onError: (err) => {
-      toast.error(`Error updating profile: ${err.message}`);
-    },
+    }
   });
 
   return { profileData, UpdateProfile, isPending, error };

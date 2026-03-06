@@ -32,9 +32,6 @@ export const useCreateSession = () => {
       dispatch(setIsCreating(false));
       queryClient.invalidateQueries({ queryKey: ["sessionList"] });
     },
-    onError: (err) => {
-      toast.error(`Error creating session: ${err.message}`);
-    },
   });
 
   return { CreateSession, isPending, error };
@@ -78,10 +75,7 @@ export const useDeleteSession = () => {
       toast.success("Session deleted successfully");
       dispatch(setIsDeleting(null));
       queryClient.invalidateQueries({ queryKey: ["sessionList"] });
-    },
-    onError: (err) => {
-      toast.error(`Error deleting session: ${err.message}`);
-    },
+    }
   });
 
   return { DeleteSession, isPending, error };
@@ -111,10 +105,7 @@ export const useAddCategory = () => {
       queryClient.invalidateQueries({ queryKey: ["category-list"] });
       dispatch(setCategoryModal(false));
       dispatch(exhibitorCategoryModal(false));
-    },
-    onError: (err) => {
-      toast.error(`Error adding category: ${err.message}`);
-    },
+    }
   });
 
   return { AddCategory, isAddCategoryPending, error };
@@ -141,10 +132,7 @@ export const useDeleteCategory = () => {
       toast.success("Category delete successfully");
       queryClient.invalidateQueries({ queryKey: ["category-list"] });
       dispatch(setDeletingCategory(null));
-    },
-    onError: (err) => {
-      toast.error(`Error deleting category: ${err.message}`);
-    },
+    }
   });
 
   return { DeleteCategory, isDeleteCategoryPending, error };
@@ -201,10 +189,7 @@ export const useEditCategory = () => {
           [vari.id]: false,
         }),
       );
-    },
-    onError: (err) => {
-      toast.error(`Error editing category: ${err.message}`);
-    },
+    }
   });
 
   return { EditCategory, isEditCategoryPending, error };
@@ -226,10 +211,7 @@ export const useEditSession = () => {
       toast.success("Session edited successfully");
       queryClient.invalidateQueries({ queryKey: ["sessionList"] });
       dispatch(setSelected(null));
-    },
-    onError: (err) => {
-      toast.error(`Error editing session: ${err.message}`);
-    },
+    }
   });
 
   return { EditSession, isPending, error };
@@ -251,10 +233,7 @@ export const useUploadSessionsCSV = () => {
       toast.success(data.header.message);
       queryClient.invalidateQueries({ queryKey: ["sessionList"] });
       dispatch(setUploadCSV(false));
-    },
-    onError: (err) => {
-      toast.error(`Error updating logo: ${err.message}`);
-    },
+    }
   });
 
   return { UploadNewsCSV, isPending, error };
@@ -268,10 +247,7 @@ export const useNotifyProgramme = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    },
-    onError: (err) => {
-      toast.error(`Error sending notification: ${err.message}`);
-    },
+    }
   });
 
   return { notify: mutate, isPending };

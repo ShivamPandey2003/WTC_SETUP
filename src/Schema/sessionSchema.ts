@@ -22,7 +22,7 @@ export const SessionSchema = z.object({
     )
     .refine((files) => {
       if (!files || files.length === 0) return true;
-      return ["pdf"].includes(files[0].type);
+      return ["application/pdf"].includes(files[0].type);
     }, "Only PDF are allowed"),
 });
 
@@ -44,7 +44,7 @@ export const EditSessionSchema = z.object({
     .optional()
     .refine((files) => {
       if (!files || files.length === 0) return true;
-      return ["pdf"].includes(files[0].type);
+      return ["application/pdf"].includes(files[0].type);
     }, "Only PDF are allowed"),
   // .refine((files) => !files || files.length > 0, "At least one file is required"),
 });

@@ -19,7 +19,7 @@ export const speakerSchema = z.object({
     )
     .refine((files) => {
       if (!files || files.length === 0) return true;
-      return ["pdf"].includes(files[0].type);
+      return ["application/pdf"].includes(files[0].type);
     }, "Only PDF are allowed"),
   profile_image: z
     .instanceof(FileList)
@@ -50,7 +50,7 @@ export const EditspeakerSchema = z.object({
     .optional()
     .refine((files) => {
       if (!files || files.length === 0) return true;
-      return ["pdf"].includes(files[0].type);
+      return ["application/pdf"].includes(files[0].type);
     }, "Only PDF are allowed"),
   profile_image: z
     .custom<FileList | undefined>()
