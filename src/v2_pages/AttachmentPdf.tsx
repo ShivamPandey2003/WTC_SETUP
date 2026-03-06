@@ -1,39 +1,73 @@
 import * as pdfjsLib from "pdfjs-dist";
-import { useEffect, useRef } from "react";
-import { useSearchParams } from "react-router";
+import { useEffect, useRef, useState } from "react";
 import workerSrc from "pdfjs-dist/build/pdf.worker.min?url";
+import { useLocation, useParams } from "react-router";
+import { useGetAttachment } from "@/api/programme_design_api/Programme_design_api";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
 
 const AttachmentPdf = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [searchpage] = useSearchParams();
+  const { id } = useParams();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(true);
+  const {state} = useLocation()
 
-  const url = searchpage.get("url");
+  const { Attachment, isPending } = useGetAttachment(id as string, state.type as number);
 
   useEffect(() => {
+    if (!Attachment) return;
+
     const loadPdf = async () => {
-      const pdf = await pdfjsLib.getDocument(url as string).promise;
-      const page = await pdf.getPage(1);
+      setLoading(true);
 
-      const viewport = page.getViewport({ scale: 1.5 });
-      const canvas = canvasRef.current!;
-      const context = canvas.getContext("2d")!;
+      const pdf = await pdfjsLib.getDocument(Attachment as string).promise;
 
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
+      const container = containerRef.current!;
+      container.innerHTML = ""; // clear previous render
 
-      await page.render({
-        canvasContext: context,
-        viewport,
-        canvas: canvas,
-      }).promise;
+      console.log("working1")
+
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+
+        const viewport = page.getViewport({ scale: 1.5 });
+
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d")!;
+
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        console.log("working page no", pageNum)
+
+        container.appendChild(canvas);
+
+        await page.render({
+          canvasContext: context,
+          viewport,
+          canvas,
+        }).promise;
+      }
+
+      setLoading(false);
     };
 
     loadPdf();
-  }, [url]);
+  }, [Attachment]);
 
-  return <canvas ref={canvasRef} />;
+  return (
+    <div className="flex flex-col items-center gap-6 py-6 relative">
+      {(loading || isPending ) && (
+        <div className="absolute flex items-center justify-center">
+          <div className="animate-spin h-8 w-8 border-4 border-gray-300 border-t-primary rounded-full" />
+        </div>
+      )}
+
+      <div
+        ref={containerRef}
+        className={`flex flex-col gap-6 ${loading ? "opacity-0" : "opacity-100"}`}
+      />
+    </div>
+  );
 };
 
 export default AttachmentPdf;

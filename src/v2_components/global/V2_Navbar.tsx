@@ -18,11 +18,11 @@ interface Prop {
 
 const V2_Navbar = ({ REF, setOpen }: Prop) => {
   const [showBackground, setShowBackground] = useState<boolean>(false);
-  const {Profile} = useGetProfile()
-  const { pathname } = useLocation();
+  const { Profile } = useGetProfile();
+  const { pathname, state } = useLocation();
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const { grp } = useSelector((state: RootState) => state.AuthSlice.userinfo);
   const menu = [
@@ -112,9 +112,15 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
             }}
           />
         )}
-        <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize text-ellipsis whitespace-nowrap overflow-hidden max-w-[100px] sm:max-w-[300px] md:max-w-[600px]">
-          {TitleFetch(pathname.split("/")[1])} {title ? `/ ${title}` : ""}
-        </h2>
+        {state ? (
+          <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize text-ellipsis whitespace-nowrap overflow-hidden max-w-[100px] sm:max-w-[300px] md:max-w-[600px]">
+            {state.Title}
+          </h2>
+        ) : (
+          <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize text-ellipsis whitespace-nowrap overflow-hidden max-w-[100px] sm:max-w-[300px] md:max-w-[600px]">
+            {TitleFetch(pathname.split("/")[1])} {title ? `/ ${title}` : ""}
+          </h2>
+        )}
       </div>
       <div className="flex items-center gap-4">
         {(pathname === "/" ||
@@ -125,7 +131,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
         {!token ? (
           <Button
             onClick={() => navigate("/auth")}
-            className="px-8 py-4 rounded-full bg-[#318061] cursor-pointer"
+            className="px-8 py-4 rounded-full bg-primary cursor-pointer"
           >
             Login
           </Button>

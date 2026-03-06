@@ -16,6 +16,7 @@ import {
   CalendarDays,
   Clock,
   Mail,
+  File,
 } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -115,12 +116,14 @@ const SpeakerDetails = () => {
                           {speakerDetails.company}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-slate-600">
-                        <Lectern className="w-5 h-5 text-slate-400" />
-                        <span className="font-medium">
-                          {speakerDetails.total_sessions}
-                        </span>
-                      </div>
+                      {speakerDetails.total_sessions > 0 && (
+                        <div className="flex items-center gap-2 text-slate-600">
+                          <Lectern className="w-5 h-5 text-slate-400" />
+                          <span className="font-medium">
+                            {speakerDetails.total_sessions}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -188,23 +191,27 @@ const SpeakerDetails = () => {
                     Attachments
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {speakerDetails.attachments.map((attachment, index) => (
-                      <div
-                        key={index}
-                        className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300"
-                      >
-                        <img
-                          src={attachment.base64}
-                          alt={attachment.filename}
-                          className="w-full h-64 object-cover transform group-hover:scale-105 transition-transform duration-300"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                          <span className="text-white text-sm font-medium truncate">
-                            {attachment.filename}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
+                    {speakerDetails.attachments.map((attachment, index) => {
+                      return (
+                        <a
+                          href={attachment.base64}
+                          target="_blank"
+                        >
+                          <div
+                            // onClick={()=>navigate(`/attachment/${speakerDetails.speaker_id}`, {state:{Title:attachment.filename, type:1}})}
+                            key={index}
+                            className="group cursor-pointer relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300"
+                          >
+                            <div className="flex items-end p-4 gap-2">
+                              <File size={20} />
+                              <span className="text-black text-sm font-medium truncate max-w-[220px]">
+                                {attachment.filename}
+                              </span>
+                            </div>
+                          </div>
+                        </a>
+                      );
+                    })}
                   </div>
                 </div>
               )}

@@ -210,7 +210,7 @@ const ProgrammeDesign_page = () => {
               className="w-fit py-1 h-7"
             >
               <Download />
-              download CSV
+              Download All
             </Button>
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
@@ -268,7 +268,15 @@ const ProgrammeDesign_page = () => {
                   containerClassname="w-[25rem]"
                 />
                 {Object.entries(SpeakerSettings)
-                  .filter(([key]) => key.includes("conference"))
+                  .filter(
+                    ([key]) =>
+                      key.includes("conference") || key.includes("pdf"),
+                  )
+                  .sort(([a], [b]) => {
+                    if (a.includes("location")) return 1; // move to end
+                    if (b.includes("location")) return -1;
+                    return 0;
+                  })
                   .map(([key, value], i) => (
                     <TextStyleRow
                       key={i}

@@ -2,9 +2,11 @@ import {
   useGetExhibitorsList,
   useInfiniteNews,
 } from "@/api/global_api/global_api";
+import { useHeroCarusole } from "@/api/home_design_api/Home_design_api";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
+import { shuffleArray } from "@/lib/utils";
 import { setNews } from "@/redux/ExtraSlice";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
@@ -16,32 +18,8 @@ import { Loader } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-// const slides2 = [
-//   {
-//     id: 1,
-//     title: "Diamond",
-//     image:
-//       "https://upload.wikimedia.org/wikipedia/commons/7/79/Epiroc_Logo.png",
-//     url: "https://www.epiroc.com",
-//   },
-//   {
-//     id: 2,
-//     title: "Diamond",
-//     image:
-//       "https://upload.wikimedia.org/wikipedia/en/thumb/d/dd/Trimble_logo.svg/500px-Trimble_logo.svg.png",
-//     url: "https://www.trimble.com",
-//   },
-//   {
-//     id: 3,
-//     title: "Diamond",
-//     image:
-//       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Bentley_Systems_wordmark.svg/500px-Bentley_Systems_wordmark.svg.png",
-//     url: "https://www.bentley.com",
-//   },
-// ];
 
 const V2_Home_page = () => {
-  // const [selected, setSelected] = useState<string | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch<AppDispatch>();
@@ -59,6 +37,7 @@ const V2_Home_page = () => {
     isPending: isExhibitorsListLoading,
     error: ExhibitorListError,
   } = useGetExhibitorsList();
+  const { HeroCarusole, isHeroCarusole, errorHeroCarusole } = useHeroCarusole();
 
   const NewsList = useMemo(() => {
     if (!AllNews) return [];
@@ -67,6 +46,13 @@ const V2_Home_page = () => {
 
     return newNewsData;
   }, [AllNews]);
+
+  const CarusolData = useMemo(() => {
+    if (HeroCarusole?.response) {
+      return shuffleArray(HeroCarusole.response);
+    }
+    return [];
+  }, [HeroCarusole]);
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
@@ -96,7 +82,7 @@ const V2_Home_page = () => {
     dispatch(setTitle(null));
   }, []);
 
-  if (status === "pending" || isExhibitorsListLoading) {
+  if (status === "pending" || isExhibitorsListLoading || isHeroCarusole) {
     return (
       <div className="mx-[7.5%]">
         <div className="grid grid-cols-1 lg:grid-cols-3 justify-center gap-6 md:gap-8">
@@ -112,42 +98,43 @@ const V2_Home_page = () => {
     );
   }
 
-  if (status === "error" || ExhibitorListError) {
+  if (status === "error" || ExhibitorListError || errorHeroCarusole) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <ErrorDisplay
           title="News Feed Error"
-          message={String(error?.message ?? ExhibitorListError?.message)}
+          message={String(
+            error?.message ??
+              ExhibitorListError?.message ??
+              errorHeroCarusole?.message,
+          )}
         />
       </div>
     );
   }
 
-  if (
-    !AllNews ||
-    !AllNews.pages ||
-    !AllNews.pages.length ||
-    !NewsList.length ||
-    !ExhibitorList ||
-    !ExhibitorList.response
-  ) {
+  if (!AllNews || !AllNews.pages || !AllNews.pages.length || !NewsList.length) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />
       </div>
     );
   }
+
   return (
     <div className="px-4 pb-4 mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <HeroCarousel
-            slides={NewsList.slice(0, 4)}
-            onClick={(str) => navigation(`/news/${str}`)}
-          />
+          {HeroCarusole?.response &&
+          HeroCarusole.response.length > 0 &&
+          CarusolData.length > 0 ? (
+            <HeroCarousel slides={CarusolData} />
+          ) : (
+            <Skeleton className="h-[350px] md:h-[530px] shadow rounded-xl bg-gray-300" />
+          )}
         </div>
         <div className="space-y-4">
-          {NewsList.slice(4, 6).map((item, index) => (
+          {NewsList.slice(0, 2).map((item, index) => (
             <NewsCard
               key={index}
               {...item}
@@ -160,7 +147,7 @@ const V2_Home_page = () => {
       </div>
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {NewsList.slice(6, 8).map((item, index) => (
+          {NewsList.slice(2, 4).map((item, index) => (
             <NewsCard
               key={index}
               {...item}
@@ -170,14 +157,20 @@ const V2_Home_page = () => {
           ))}
         </div>
         <div>
-          <SponserCarousal
-            slides={ExhibitorList.response}
-            intervalTime={7000}
-          />
+          {ExhibitorList &&
+          ExhibitorList.response &&
+          ExhibitorList.response.length > 0 ? (
+            <SponserCarousal
+              slides={ExhibitorList.response}
+              intervalTime={7000}
+            />
+          ) : (
+            <Skeleton className="min-h-[255px] shadow rounded-xl bg-gray-300" />
+          )}
         </div>
       </div>
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {NewsList.slice(8, NewsList.length).map((item, index) => (
+        {NewsList.slice(4, NewsList.length).map((item, index) => (
           <NewsCard
             key={index}
             {...item}

@@ -1,14 +1,13 @@
 import {
+  useGetProfile,
   useProfileUpdate,
   useUploadProfilePic,
 } from "@/api/Profile_api/Profile_api";
 import { Button } from "@/components/ui/Button";
-import type { RootState } from "@/redux/store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoaderCircle } from "lucide-react";
+import { Loader2, LoaderCircle } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { z } from "zod";
 
@@ -17,38 +16,35 @@ const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   gender: z.enum(["Male", "Female", "Other"]),
-  company: z.string().optional(),
-  designation: z.string().optional(),
-  email: z.email("Invalid email"),
-  linkedin: z.url("Invalid URL"),
+  company: z.string().nullable().optional(),
+  designation: z.string().nullable().optional(),
+  linkedin: z.url("Invalid URL").nullable(),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 const OnboardingForm = () => {
-  const { user_info } = useSelector((state: RootState) => state.Profile_Slice);
+  const { Profile, isPending: ProfilePending } = useGetProfile();
   const { UploadPic, isPending } = useUploadProfilePic();
   const { UpdateProfile, profileData } = useProfileUpdate();
-  const [image, setImage] = useState<string | null>(user_info.profile_image);
+  const [image, setImage] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      prefix: "",
-      firstName: user_info.firstname,
-      lastName: user_info.lastname,
-      gender: "Male",
-      company: user_info.company_name,
-      designation: user_info.designation,
-      email: user_info.email,
-      linkedin: user_info.linkedin_url,
-    },
   });
+
+  useEffect(() => {
+    if (!Profile) return;
+    if (!Profile.response.user_info) return;
+    const user = Profile.response.user_info;
+    reset({ firstName: user.firstname, lastName: user.lastname });
+  }, [Profile, reset]);
 
   const onSubmit = (data: FormData) => {
     UpdateProfile({
@@ -58,9 +54,9 @@ const OnboardingForm = () => {
       gender: data.gender,
       company_name: data.company as string,
       designation: data.designation as string,
-      linkedin_url: data.linkedin,
+      linkedin_url: data.linkedin as string,
       // user_image: image as string,
-      phone_number: user_info.phone_number,
+      phone_number: Profile?.response.user_info.phone_number as string,
     });
     // alert("Saved!");
   };
@@ -84,6 +80,14 @@ const OnboardingForm = () => {
       navigate("/");
     }
   }, [profileData]);
+
+  if (ProfilePending) {
+    return (
+      <div className="h-[30vh] flex items-center justify-center">
+        <Loader2 size={24} className={`text-primary animate-spin`} />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full mx-auto mt-4 bg-white rounded-xl space-y-2 relative">
@@ -204,7 +208,7 @@ const OnboardingForm = () => {
           />
         </div>
 
-        <div className="flex items-center justify-center">
+        {/* <div className="flex items-center justify-center">
           <label className="block text-sm font-medium text-gray-600 w-[170px]">
             Email
           </label>
@@ -218,7 +222,7 @@ const OnboardingForm = () => {
               <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
           </div>
-        </div>
+        </div> */}
 
         <div className="flex items-center justify-center">
           <label className="block text-sm font-medium text-gray-600 w-[170px]">

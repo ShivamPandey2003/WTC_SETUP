@@ -5,11 +5,11 @@ type ProfileT = {
     firstname: string;
     lastname: string;
     email: string;
-    designation: string;
-    company_name: string;
-    linkedin_url: string;
-    phone_number: string;
-    profile_image: string;
+    designation: string | null;
+    company_name: string | null;
+    linkedin_url: string | null;
+    phone_number: string | null;
+    profile_image: string | null;
   };
   qr_image: string;
 };

@@ -4,6 +4,7 @@ import {
   setIsCreating,
   setIsDeleting,
   setIsPublished,
+  setIsUnpublished,
   setNews,
   setSelected,
   setUploadCSV,
@@ -30,10 +31,7 @@ export const useCreateNews = () => {
       toast.success("News created successfully");
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
       dispatch(setIsCreating(false));
-    },
-    onError: (err) => {
-      toast.error(`Error creating news: ${err.message}`);
-    },
+    }
   });
 
   return { CreateNews, isPending, error };
@@ -55,10 +53,7 @@ export const useEditNews = () => {
       toast.success("News edited successfully");
       dispatch(setSelected(null));
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
-    },
-    onError: (err) => {
-      toast.error(`Error editing news: ${err.message}`);
-    },
+    }
   });
 
   return { EditNews, isPending, error };
@@ -102,10 +97,7 @@ export const useDeleteNews = () => {
       toast.success("News deleted successfully");
       dispatch(setIsDeleting(null));
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
-    },
-    onError: (err) => {
-      toast.error(`Error deleting news: ${err.message}`);
-    },
+    }
   });
 
   return { DeleteNews, isPending, error };
@@ -117,19 +109,19 @@ export const usePublishedNews = () => {
     mutate: PulishedNew,
     isPending,
     error,
-  } = useMutation<DeleteNewsResponse, AxiosError, { id: string }>({
-    mutationFn: async ({ id }) => {
-      const res = await apiRequest("post", `news/publish/${id}`);
+  } = useMutation<DeleteNewsResponse, AxiosError, { id: string, is_publish:number }>({
+    mutationFn: async ({ id, is_publish}) => {
+      const data = new FormData()
+      data.append("is_publish", String(is_publish))
+      const res = await apiRequest("post", `news/publish/${id}`, data);
       return res.response;
     },
     onSuccess: () => {
       toast.success("News Published successfully");
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
       dispatch(setIsPublished(null));
-    },
-    onError: (err) => {
-      toast.error(`Error Publishing news: ${err.message}`);
-    },
+      dispatch(setIsUnpublished(null));
+    }
   });
 
   return { PulishedNew, isPending, error };
@@ -151,10 +143,7 @@ export const useUploadNewsCSV = () => {
       toast.success(data.header.message);
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
       dispatch(setUploadCSV(false));
-    },
-    onError: (err) => {
-      toast.error(`Error updating logo: ${err.message}`);
-    },
+    }
   });
 
   return { UploadNewsCSV, isPending, error };
@@ -180,11 +169,26 @@ export const useUpdateSplash = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    },
-    onError: (err) => {
-      toast.error(`Error updating logo: ${err.message}`);
-    },
+    }
   });
 
   return { UpdateSplashActivation, isPending, error };
+};
+
+export const useHeroCarusole = () => {
+  const {
+    data: HeroCarusole,
+    isPending: isHeroCarusole,
+    error: errorHeroCarusole,
+  } = useQuery<HeroCarusoleT, AxiosError>({
+    queryKey: ["hero_carusole"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "/main/carusole");
+      return res.response;
+    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  return { HeroCarusole, isHeroCarusole, errorHeroCarusole };
 };

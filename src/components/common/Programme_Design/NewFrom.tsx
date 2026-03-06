@@ -60,8 +60,6 @@ const NewFrom = () => {
     formData.append("end_time", newData.end_time);
     formData.append("start_date", formatToYYYYMMDD(slectedDate));
     formData.append("end_date", formatToYYYYMMDD(slectedDate));
-    formData.append("pdf_start_date", formatToYYYYMMDD(newData.pdf_start_date as string));
-    formData.append("pdf_end_date", formatToYYYYMMDD(newData.pdf_end_date as string));
     formData.append("location", newData.location);
     formData.append("external_link", newData?.external_link as string);
     formData.append("category", newData.category);
@@ -135,8 +133,6 @@ const NewFrom = () => {
       type: "file",
       accept: "application/pdf",
     },
-    { name: "pdf_start_date", label: "Paper Start Date", type: "date" },
-    { name: "pdf_end_date", label: "Paper End Date", type: "date" },
     { name: "location", label: "Location" },
     { name: "external_link", label: "External Link" },
     {
@@ -169,12 +165,14 @@ const NewFrom = () => {
       label: "Floor",
       type: "select",
       placeholder: "Select Floor",
-      options: V2_FloorMapList?.response.map((item) => {
-        return {
-          label: `${item.label}`,
-          value: item.id,
-        };
-      }),
+      options: V2_FloorMapList?.response
+        .filter((pre) => !pre.design_type)
+        .map((item) => {
+          return {
+            label: `${item.label}`,
+            value: item.id,
+          };
+        }),
     },
     {
       name: "venueID",

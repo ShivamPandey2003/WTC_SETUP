@@ -32,9 +32,6 @@ export const useCreateSession = () => {
       dispatch(setIsCreating(false));
       queryClient.invalidateQueries({ queryKey: ["sessionList"] });
     },
-    onError: (err) => {
-      toast.error(`Error creating session: ${err.message}`);
-    },
   });
 
   return { CreateSession, isPending, error };
@@ -79,9 +76,6 @@ export const useDeleteSession = () => {
       dispatch(setIsDeleting(null));
       queryClient.invalidateQueries({ queryKey: ["sessionList"] });
     },
-    onError: (err) => {
-      toast.error(`Error deleting session: ${err.message}`);
-    },
   });
 
   return { DeleteSession, isPending, error };
@@ -112,9 +106,6 @@ export const useAddCategory = () => {
       dispatch(setCategoryModal(false));
       dispatch(exhibitorCategoryModal(false));
     },
-    onError: (err) => {
-      toast.error(`Error adding category: ${err.message}`);
-    },
   });
 
   return { AddCategory, isAddCategoryPending, error };
@@ -141,9 +132,6 @@ export const useDeleteCategory = () => {
       toast.success("Category delete successfully");
       queryClient.invalidateQueries({ queryKey: ["category-list"] });
       dispatch(setDeletingCategory(null));
-    },
-    onError: (err) => {
-      toast.error(`Error deleting category: ${err.message}`);
     },
   });
 
@@ -202,9 +190,6 @@ export const useEditCategory = () => {
         }),
       );
     },
-    onError: (err) => {
-      toast.error(`Error editing category: ${err.message}`);
-    },
   });
 
   return { EditCategory, isEditCategoryPending, error };
@@ -226,9 +211,6 @@ export const useEditSession = () => {
       toast.success("Session edited successfully");
       queryClient.invalidateQueries({ queryKey: ["sessionList"] });
       dispatch(setSelected(null));
-    },
-    onError: (err) => {
-      toast.error(`Error editing session: ${err.message}`);
     },
   });
 
@@ -252,9 +234,6 @@ export const useUploadSessionsCSV = () => {
       queryClient.invalidateQueries({ queryKey: ["sessionList"] });
       dispatch(setUploadCSV(false));
     },
-    onError: (err) => {
-      toast.error(`Error updating logo: ${err.message}`);
-    },
   });
 
   return { UploadNewsCSV, isPending, error };
@@ -269,55 +248,79 @@ export const useNotifyProgramme = () => {
     onSuccess: (data) => {
       toast.success(data.header.message);
     },
-    onError: (err) => {
-      toast.error(`Error sending notification: ${err.message}`);
-    },
   });
 
   return { notify: mutate, isPending };
 };
 
 export const useSessionDownload = () => {
-  const { mutate: downloadSession, isPending: isdownloadPending } = useMutation({
-    mutationKey: ["session_download"],
-    mutationFn: async () => {
+  const { mutate: downloadSession, isPending: isdownloadPending } = useMutation(
+    {
+      mutationKey: ["session_download"],
+      mutationFn: async () => {
+        const res = await apiRequest(
+          "get",
+          "/programme/download",
+          null,
+          "blob",
+        );
+
+        const contentDisposition = res.headers["content-disposition"];
+        const blob = new Blob([res.response]);
+
+        // Extract filename safely
+        let filename = "programme_list.csv";
+
+        if (contentDisposition?.includes("filename=")) {
+          filename = contentDisposition.split("filename=")[1].replace(/"/g, "");
+        }
+
+        const url = window.URL.createObjectURL(res.response);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = filename; // cleaner way
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        return blob;
+      },
+      onMutate: () => {
+        toast.info("File is preparing for download");
+      },
+      onSuccess: () => {
+        toast.success("File download successfully");
+      },
+    },
+  );
+
+  return { downloadSession, isdownloadPending };
+};
+
+export const useGetAttachment = (session_id: string, type:number=0) => {
+  const {
+    data: Attachment,
+    isPending,
+    error,
+  } = useQuery<string, AxiosError>({
+    queryKey: ["Session_Attachment", session_id],
+    queryFn: async () => {
       const res = await apiRequest(
         "get",
-        "/programme/download",
+        `/program/attachment/${session_id}?type=${type}`,
         null,
         "blob",
       );
-
-      const contentDisposition = res.headers["content-disposition"];
-      const blob = new Blob([res.response]);
-
-      // Extract filename safely
-      let filename = "programme_list.csv";
-
-      if (contentDisposition?.includes("filename=")) {
-        filename = contentDisposition.split("filename=")[1].replace(/"/g, "");
-      }
-
       const url = window.URL.createObjectURL(res.response);
-      const link = document.createElement("a");
-
-      link.href = url;
-      link.download = filename; // cleaner way
-      document.body.appendChild(link);
-      link.click();
-
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
-      return blob;
+      return url;
     },
-    onMutate: () => {
-      toast.info("File is preparing for download");
-    },
-    onSuccess: () => {
-      toast.success("File download successfully");
-    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+    enabled: !!session_id,
   });
 
-  return { downloadSession, isdownloadPending };
+  return { Attachment, isPending, error };
 };

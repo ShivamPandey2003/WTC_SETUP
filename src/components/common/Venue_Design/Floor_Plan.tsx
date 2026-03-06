@@ -42,7 +42,11 @@ const Floor_Plan = () => {
       );
 
       if (value) {
-        setFloorPlan(value.image);
+        if (value.image) {
+          setFloorPlan(value.image);
+        } else {
+          setFloorPlan(value.iframe_url);
+        }
       }
     }
   }, [selectedId]);
@@ -77,6 +81,7 @@ const Floor_Plan = () => {
                 <Button
                   variant={"link"}
                   onClick={() => dispatch(setFloorLevelModal(true))}
+                  className="capitalize"
                 >
                   <Plus size={16} />
                   Add
@@ -84,6 +89,7 @@ const Floor_Plan = () => {
                 <Button
                   variant={"link"}
                   onClick={() => dispatch(setEditFloorLevelModal(true))}
+                  className="capitalize"
                 >
                   <Pencil size={16} />
                   Edit selected floor
@@ -91,7 +97,7 @@ const Floor_Plan = () => {
                 <Button
                   disabled={isPending}
                   variant={"link"}
-                  className={cn(!isPending && "text-[#B85555]")}
+                  className={cn(!isPending && "text-[#B85555]", "capitalize")}
                   onClick={() => DeleteFloorLevel({ id: selectedId })}
                 >
                   {!isPending ? (
@@ -113,16 +119,28 @@ const Floor_Plan = () => {
               <LoaderCircle className="animate-spin text-primary" />
             </div>
           )}
-          <Button onClick={GoToDesign}>Go To Design Floor Plan</Button>
+          {!V2_FloorMapList?.response.find((pre) => pre.id === selectedId)
+            ?.design_type ? (
+            <Button onClick={GoToDesign} className="capitalize">
+              Go To Design Floor Plan
+            </Button>
+          ) : (
+            <a target="_blank" href={floorPlan as string}>
+              <Button className="capitalize">Interactive Floor plan</Button>
+            </a>
+          )}
         </div>
         {V2_isFloorMapListPending ? (
           <Skeleton className="w-full h-[60vh]" />
-        ) : (
+        ) : V2_FloorMapList?.response.find((pre) => pre.id === selectedId)
+            ?.image ? (
           <img
             src={floorPlan ? floorPlan : ""}
             alt="Stage"
             className="object-contain w-full h-[60vh]"
           />
+        ) : (
+          <iframe src={floorPlan as string} className="w-full h-[60vh]" />
         )}
       </div>
       <AddFloorLevelModel />

@@ -34,7 +34,8 @@ const EditFrom = () => {
 
   useEffect(() => {
     if (!value) return;
-    reset({ ...value, category: value.categoryId } as any);
+    const {logo, ...rest} = value
+    reset({ ...rest, logo:undefined, category: value.categoryId } as any);
   }, [value, reset]);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -44,8 +45,10 @@ const EditFrom = () => {
     formData.append("url", newData.url as string);
     formData.append("email", newData.email as string);
     formData.append("category", newData.category as string);
-    formData.append("file", newData.logo?.[0] as Blob);
     formData.append("ads", String(newData?.ads));
+    if(newData.logo?.[0]){
+      formData.append("file", newData.logo?.[0] as Blob);
+    }
     EditExhibitor({ form: formData, id: `${selected}` });
   };
 
@@ -83,7 +86,7 @@ const EditFrom = () => {
       placeholder: "https://example.com",
     },
     { name: "email", label: "Email", placeholder: "example@mail.com" },
-    { name: "logo", label: "Logo", type: "file", accept: "image/*" },
+    { name: "logo", label: "Logo", type: "file", accept: "image/png,image/jpg,image/webp" },
     {
       name: "category",
       label: "Category",

@@ -88,7 +88,7 @@ const SpeakersDesign_page = () => {
           <div className="absolute right-10 flex items-center gap-4">
             <Button onClick={() => downloadSpeaker()} disabled={isdownloadPending} className="w-fit py-1 h-7">
               <Download />
-              download CSV
+              Download All
             </Button>
             <Button
               onClick={() => dispatch(setUploadCSV(true))}

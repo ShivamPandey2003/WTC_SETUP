@@ -2,7 +2,7 @@ declare type ModelSliceType = {
   loginModel: boolean;
   searchModal: boolean;
   title: string | null;
-  register:boolean
+  register: boolean;
 };
 
 declare type HomeDesignStateType = {
@@ -10,6 +10,7 @@ declare type HomeDesignStateType = {
   isDeleting: string | null;
   isPublished: string | null;
   isCreating: boolean;
+  unpublish:string | null;
   news: News[];
   uploadCSV: boolean;
 };
@@ -35,6 +36,7 @@ declare type News = {
   is_published: boolean;
   tile_space: string;
   bg_img: null | string;
+  created_on: string
 };
 
 declare type ResponseHeader = {
@@ -299,6 +301,8 @@ declare type SpeakerSetting = {
   conference_end_date: string;
   conference_start_time: string;
   conference_end_time: string;
+  pdf_end_date:string;
+  pdf_start_date:string
   conference_location: string;
   speaker_info: {
     exhibitors_setting: boolean;
@@ -333,7 +337,7 @@ declare type SpeakerSettingResponse = {
 declare type Programme = {
   attachments: {
     filename: string;
-    file: string;
+    has_attachment: boolean;
   };
   id: string;
   title: string;
@@ -552,6 +556,8 @@ declare type TabsResponse = {
 declare type MapT = {
   id: string;
   label: string;
+  design_type: boolean;
+  iframe_url: string;
   floor_level: number;
   image: string;
   map_list: Shape[];
@@ -617,5 +623,39 @@ declare type FindSpeakerById = {
       base64: string;
     }[];
     email: string | null;
+  };
+};
+
+declare type Carusole = {
+  id: string;
+  title: string;
+  url: string | null;
+  email: string | null;
+  bg_img: string;
+  description: string | null;
+  type: number;
+};
+
+declare type HeroCarusoleT = {
+  header: ResponseHeader;
+  response: Carusole[];
+};
+
+declare type FindExhibitorById = {
+  header: ResponseHeader;
+  response: {
+    exhibitor_id: string;
+    full_name: string;
+    email: string;
+    url: string;
+    ads: boolean;
+    category: string;
+    logo: string;
+    attachments: {
+      filename: string;
+      base64: string;
+    }[];
+    description: string | null;
+    created_at: string;
   };
 };

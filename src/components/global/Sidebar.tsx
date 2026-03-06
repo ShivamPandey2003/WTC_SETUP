@@ -10,6 +10,7 @@ import {
   UserRound,
   Navigation,
   Boxes,
+  Compass,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
@@ -23,11 +24,11 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
   const {userinfo} = useSelector((state:RootState)=>state.AuthSlice)
   const dispatch = useDispatch<AppDispatch>()
   const menu = [
-    {
-      id: "Home",
-      label: "Home",
-      onClick: () => navigate("/"),
-    },
+    // {
+    //   id: "Home",
+    //   label: "Home",
+    //   onClick: () => navigate("/"),
+    // },
     {
       id: "Profile",
       label: "Admin Profile",
@@ -117,7 +118,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
         </button>
         <button
           className={cn(
-            `w-full px-4 py-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer`,
+            `w-full px-4 py-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer mb-2`,
             activeItem === "exhibitors"
               ? "bg-white text-primary"
               : "hover:bg-white/10",
@@ -127,15 +128,24 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
           <Boxes size={18} />
           <span>Exhibitors</span>
         </button>
+        <button
+          className={cn(
+            `w-full px-4 py-2 flex items-center gap-3 text-sm transition-colors rounded-[5px] cursor-pointer hover:bg-white/10`,
+          )}
+          onClick={() => navigate("/")}
+        >
+          <Compass size={18} />
+          <span className="">Web View</span>
+        </button>
       </nav>
 
       <NewDropdown
         className="w-full"
         position="top"
         trigger={
-          <button className="w-full p-4 flex items-center gap-3 text-sm hover:bg-white/10 transition-colors border-t border-white/20 cursor-pointer">
+          <button className="w-full p-4 px-2 flex items-center gap-3 text-sm hover:bg-white/10 transition-colors border-t border-white/20 cursor-pointer">
             <User size={18} />
-            <span className="text-xs">{`${userinfo.firstname} ${userinfo.lastname}`}</span>
+            <span className="text-xs max-w-[90px] truncate">{`${userinfo.firstname} ${userinfo.lastname}`}</span>
           </button>
         }
         items={menu}

@@ -1,4 +1,10 @@
-import { CircleUserRound, Pencil, Trash2, Upload } from "lucide-react";
+import {
+  CircleUserRound,
+  Download,
+  Pencil,
+  Trash2,
+  Upload,
+} from "lucide-react";
 import DeleteModel from "../../global/DeleteModel";
 import UploadModal from "@/components/global/UploadModel";
 import EditModal from "./EditModal";
@@ -7,6 +13,7 @@ import type { AppDispatch, RootState } from "@/redux/store";
 import {
   setIsDeleting,
   setIsPublished,
+  setIsUnpublished,
   setSelected,
 } from "@/redux/HomeDesignSlice";
 import {
@@ -17,16 +24,23 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
+import UnPublishModal from "@/components/global/UnPublishModel";
+import { useMemo } from "react";
 
 const CustomTable = () => {
   const { NewsList, isNewsListPending, errorInNewsList } = useGetNewsList();
   const { DeleteNews, isPending: isDeletePending } = useDeleteNews();
   const { PulishedNew, isPending: isPublishPending } = usePublishedNews();
 
-  const { selected, isDeleting, isPublished } = useSelector(
+  const { selected, isDeleting, isPublished, unpublish } = useSelector(
     (state: RootState) => state.Home_Design,
   );
   const dispatch = useDispatch<AppDispatch>();
+
+  const NewsData = useMemo(() => {
+    if (!NewsList) return [];
+    return NewsList.response;
+  }, [NewsList]);
 
   if (isNewsListPending) {
     return [1, 2, 3, 4].map((val) => (
@@ -91,7 +105,7 @@ const CustomTable = () => {
             </tr>
           </thead>
           <tbody>
-            {NewsList.response.map((item, index) => (
+            {NewsData.map((item, index) => (
               <tr key={item.id} className="bg-white border">
                 <td className="px-6 py-2">{index + 1}</td>
                 <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">
@@ -100,7 +114,13 @@ const CustomTable = () => {
                 <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[350px]">
                   {item.description}
                 </td>
-                <td className="px-6 py-2">{"Oct 12, 2025"}</td>
+                <td className="px-6 py-2">
+                  {new Date(item.created_on).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </td>
                 {/* <td className="px-6 py-2">{item["Created On"]}</td> */}
                 <td className="px-6 py-2">
                   <div
@@ -108,7 +128,7 @@ const CustomTable = () => {
                     style={{
                       backgroundImage: item.bg_img
                         ? `url(${item.bg_img})`
-                        : "url('https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200')",
+                        : "url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_7mgjv5xIroykW4GmzzVH4me4sM9rU7WvbQ&s')",
                     }}
                   />
                 </td>
@@ -125,17 +145,25 @@ const CustomTable = () => {
                     size={18}
                     className="cursor-pointer"
                   />
-                  <Trash2
-                    onClick={() => dispatch(setIsDeleting(item.id))}
-                    color="#B85555"
-                    size={18}
-                    className="cursor-pointer"
-                  />
-                  {!item.is_published && (
-                    <Upload
-                      onClick={() => dispatch(setIsPublished(item.id))}
+                  {!item.is_published ? (
+                    <>
+                      <Trash2
+                        onClick={() => dispatch(setIsDeleting(item.id))}
+                        color="#B85555"
+                        size={18}
+                        className="cursor-pointer"
+                      />
+                      <Upload
+                        onClick={() => dispatch(setIsPublished(item.id))}
+                        size={18}
+                        className="cursor-pointer"
+                      />
+                    </>
+                  ) : (
+                    <Download
                       size={18}
                       className="cursor-pointer"
+                      onClick={() => dispatch(setIsUnpublished(item.id))}
                     />
                   )}
                 </td>
@@ -144,7 +172,6 @@ const CustomTable = () => {
           </tbody>
         </table>
       </div>
-
       <DeleteModel
         isOpen={Boolean(isDeleting)}
         onClose={() => dispatch(setIsDeleting(null))}
@@ -154,12 +181,22 @@ const CustomTable = () => {
       <UploadModal
         isOpen={Boolean(isPublished)}
         onClose={() => dispatch(setIsPublished(null))}
-        onConfirm={() => PulishedNew({ id: isPublished as string })}
+        onConfirm={() =>
+          PulishedNew({ id: isPublished as string, is_publish: 1 })
+        }
         isAction={isPublishPending}
       />
       <EditModal
         isOpen={Boolean(selected)}
         onClose={() => dispatch(setSelected(null))}
+      />
+      <UnPublishModal
+        isOpen={Boolean(unpublish)}
+        onClose={() => dispatch(setIsUnpublished(null))}
+        onConfirm={() =>
+          PulishedNew({ id: unpublish as string, is_publish: 0 })
+        }
+        isAction={isPublishPending}
       />
     </div>
   );

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { allowedTypes } from "./exhibitorSchema";
 
 export const speakerSchema = z.object({
   prefix: z.string().optional().nullable(),
@@ -15,14 +16,21 @@ export const speakerSchema = z.object({
     .refine(
       (files) => !files || files.length > 0,
       "At least one file is required",
-    ),
+    )
+    .refine((files) => {
+      if (!files || files.length === 0) return true;
+      return ["application/pdf"].includes(files[0].type);
+    }, "Only PDF are allowed"),
   profile_image: z
     .instanceof(FileList)
     .optional()
-    .refine(
-      (files) => !files || files.length > 0,
-      "At least one file is required",
-    ),
+    .refine((files) => {
+      if (!files || files.length > 0) return true;
+    }, "At least one file is required")
+    .refine((files) => {
+      if (!files || files.length === 0) return true;
+      return allowedTypes.includes(files[0].type);
+    }, "Only PNG, JPG, WEBP images are allowed"),
   linkedin_url: z.url().optional(),
   whatsapp_url: z.url().optional(),
   keyNote: z.boolean(),
@@ -37,8 +45,20 @@ export const EditspeakerSchema = z.object({
   company: z.string().optional().nullable(),
   bio: z.string().optional().nullable(),
   external_link: z.url().optional(),
-  attachments: z.instanceof(FileList).optional(),
-  profile_image: z.instanceof(FileList).optional(),
+  attachments: z
+    .custom<FileList | undefined>()
+    .optional()
+    .refine((files) => {
+      if (!files || files.length === 0) return true;
+      return ["application/pdf"].includes(files[0].type);
+    }, "Only PDF are allowed"),
+  profile_image: z
+    .custom<FileList | undefined>()
+    .optional()
+    .refine((files) => {
+      if (!files || files.length === 0) return true;
+      return allowedTypes.includes(files[0].type);
+    }, "Only PNG, JPG, WEBP images are allowed"),
   linkedin_url: z.url().optional(),
   whatsapp_url: z.url().optional(),
   keyNote: z.boolean(),
@@ -46,4 +66,4 @@ export const EditspeakerSchema = z.object({
 
 export type SpeakerForm = z.infer<typeof speakerSchema>;
 
-export type EditSpeakerFrom = z.infer<typeof EditspeakerSchema>
+export type EditSpeakerFrom = z.infer<typeof EditspeakerSchema>;

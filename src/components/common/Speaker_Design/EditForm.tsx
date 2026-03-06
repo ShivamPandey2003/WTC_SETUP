@@ -26,7 +26,8 @@ const EditFrom = () => {
 
   useEffect(() => {
     if (!value) return;
-    reset({ ...value } as any);
+    const {profile_image, attachments, ...rest} = value
+    reset({ ...rest, profile_image:undefined, attachments:undefined } as any);
   }, [value, reset]);
 
   const dispatch = useDispatch<AppDispatch>();
@@ -43,11 +44,15 @@ const EditFrom = () => {
     formData.append("company", newData.company as string);
     formData.append("designation", newData.designation as string);
     formData.append("external_link", newData?.external_link as string);
-    formData.append("attachments", newData.attachments?.[0] as Blob);
-    formData.append("profile_image", newData.profile_image?.[0] as Blob);
     formData.append("keyNote", String(newData.keyNote));
     formData.append("linkedin_url", newData.linkedin_url as string);
     formData.append("whatsapp_url", newData.whatsapp_url as string);
+    if(newData.attachments?.[0]){
+      formData.append("attachments", newData.attachments?.[0] as Blob);
+    }
+    if(newData.profile_image?.[0]){
+      formData.append("profile_image", newData.profile_image?.[0] as Blob);
+    }
 
     formData.append("id", selected as string);
     EditSpeaker(formData);
@@ -98,13 +103,13 @@ const EditFrom = () => {
       name: "profile_image",
       label: "Profile image",
       type: "file",
-      accept: "image/*",
+      accept: "image/png,image/jpg,image/webp",
     },
     {
       name: "attachments",
       label: "Attachments",
       type: "file",
-      accept: "image/*",
+      accept: "application/pdf",
     },
     { name: "external_link", label: "External Link" },
     {

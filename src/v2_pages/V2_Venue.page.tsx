@@ -115,6 +115,8 @@ const V2_Venue_page = () => {
     );
   }
 
+  console.log(Venue)
+
   return (
     <div className="px-4 mx-auto pb-4">
       <div className="p-1 bg-white w-fit rounded-full flex gap-2 mb-4">
@@ -180,9 +182,9 @@ const V2_Venue_page = () => {
                   <Navigation strokeWidth={"1px"} />
                   <div>
                     <h3 className="text-lg font-bold">{conference_location}</h3>
-                    <p className="w-60 text-sm">
+                    {/* <p className="w-60 text-sm">
                       1001 Pl. Jean-Paul-Riopelle, Montréal, QC H2Y 0A3, Canada
-                    </p>
+                    </p> */}
                   </div>
                 </div>
                 <Button
@@ -244,12 +246,32 @@ const V2_Venue_page = () => {
                   <option value="">{"Select an option"}</option>
                   {V2_Global_FloorMapList &&
                     V2_Global_FloorMapList.response.map((opt) => (
-                      <option key={opt.id} value={opt.id} className="cursor-pointer">
+                      <option
+                        key={opt.id}
+                        value={opt.id}
+                        className="cursor-pointer"
+                      >
                         {opt.label}
                       </option>
                     ))}
                 </select>
               </div>
+              {V2_Global_FloorMapList?.response.find(
+                (pre) => pre.id === selectedId,
+              )?.iframe_url && (
+                <a
+                  target="_blank"
+                  href={
+                    V2_Global_FloorMapList?.response.find(
+                      (pre) => pre.id === selectedId,
+                    )?.iframe_url as string
+                  }
+                >
+                  <Button className="capitalize" size={"sm"}>
+                    Interactive Floor plan
+                  </Button>
+                </a>
+              )}
             </div>
             <a
               href="/FloorPlan.pdf"
@@ -260,7 +282,20 @@ const V2_Venue_page = () => {
             </a>
           </div>
           <div className="w-full">
-            <Map_V2 id={selectedId} />
+            {V2_Global_FloorMapList?.response.find(
+              (pre) => pre.id === selectedId,
+            )?.image ? (
+              <Map_V2 id={selectedId} />
+            ) :(
+              <iframe
+                src={
+                  V2_Global_FloorMapList?.response.find(
+                    (pre) => pre.id === selectedId,
+                  )?.iframe_url as string
+                }
+                className="w-full h-[65vh] mt-2"
+              />
+            )}
           </div>
         </div>
       )}

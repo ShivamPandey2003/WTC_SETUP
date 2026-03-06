@@ -55,10 +55,7 @@ export const useCreateExhibitor = () => {
       toast.success("Exhibitor created successfully");
       dispatch(setIsCreating(false));
       queryClient.invalidateQueries({ queryKey: ["exhibitor-design-list"] });
-    },
-    onError: (err) => {
-      toast.error(`Error creating exhibitor: ${err.message}`);
-    },
+    }
   });
 
   return { CreateExhibitor, isCreatePending, error };
@@ -79,10 +76,7 @@ export const useDeleteExibitor = () => {
       toast.success(data.header.message);
       dispatch(setIsDeleting(null));
       queryClient.invalidateQueries({ queryKey: ["exhibitor-design-list"] });
-    },
-    onError: (err) => {
-      toast.error(`Error deleting exhibitor: ${err.message}`);
-    },
+    }
   });
 
   return { DeleteExibitor, isPending, error };
@@ -108,10 +102,7 @@ export const useEditExhibitor = () => {
       toast.success(data.header.message);
       dispatch(setSelected(null));
       queryClient.invalidateQueries({ queryKey: ["exhibitor-design-list"] });
-    },
-    onError: (err) => {
-      toast.error(`Error edit exhibitor: ${err.message}`);
-    },
+    }
   });
 
   return { EditExhibitor, isEditPending, error };
@@ -127,17 +118,14 @@ export const useUploadExhibitorsCSV = () => {
     error,
   } = useMutation<LogoUpdateResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
-      const res = await apiRequest("post", `/news/upload/news_list`, data);
+      const res = await apiRequest("post", `/exhibitors/upload/exhibitors`, data);
       return res.response;
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
       queryClient.invalidateQueries({ queryKey: ["exhibitor-design-list"] });
       dispatch(setUploadCSV(false));
-    },
-    onError: (err) => {
-      toast.error(`Error updating logo: ${err.message}`);
-    },
+    }
   });
 
   return { UploadExhibitorsCSV, isPending, error };
@@ -163,10 +151,7 @@ export const useUploadSplash = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    },
-    onError: (err) => {
-      toast.error(`Error splash screen: ${err.message}`);
-    },
+    }
   });
 
   return { UploadSplash, isPending, error };
