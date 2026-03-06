@@ -25,8 +25,6 @@ const AttachmentPdf = () => {
       const container = containerRef.current!;
       container.innerHTML = ""; // clear previous render
 
-      console.log("working1")
-
       for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
         const page = await pdf.getPage(pageNum);
 
@@ -37,7 +35,6 @@ const AttachmentPdf = () => {
 
         canvas.width = viewport.width;
         canvas.height = viewport.height;
-        console.log("working page no", pageNum)
 
         container.appendChild(canvas);
 
