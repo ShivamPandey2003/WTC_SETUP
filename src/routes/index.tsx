@@ -97,7 +97,7 @@ const Router = createBrowserRouter(
           element: <ExhibitorsDetails />,
         },
         {
-          path: "attachment",
+          path: "attachment/:id",
           element: <AttachmentPdf />,
         },
       ],

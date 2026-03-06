@@ -15,11 +15,15 @@ const formSchema = z.object({
   prefix: z.string().optional(),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
-  gender: z.enum(["Male", "Female", "Other"]),
+  gender: z.enum(["Male", "Female", "Other"], "Select a valid gender"),
   company: z.string().optional(),
   designation: z.string().optional(),
   email: z.email("Invalid email"),
-  linkedin: z.url("Invalid URL"),
+  linkedin: z.string().refine((text) => {
+    if (!text.trim()) return true;
+    return [".com", ".in", ".ca"].some((domain) => text.includes(domain));
+  }, "Invalid url"),
+  phone_number: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -27,10 +31,9 @@ type FormData = z.infer<typeof formSchema>;
 export default function ProfileForm() {
   const { user_info } = useSelector((state: RootState) => state.Profile_Slice);
   const { UploadPic, isPending } = useUploadProfilePic();
-  const { UpdateProfile } = useProfileUpdate();
-  const [image, setImage] = useState<string | null>(
-    user_info.profile_image
-  );
+  const { UpdateProfile, isPending: updateProfileIsPending } =
+    useProfileUpdate();
+  const [image, setImage] = useState<string | null>(user_info.profile_image);
 
   const {
     register,
@@ -42,13 +45,15 @@ export default function ProfileForm() {
       prefix: "",
       firstName: user_info.firstname,
       lastName: user_info.lastname,
-      gender: "Male",
+      // gender: "",
       company: user_info.company_name as string,
       designation: user_info.designation as string,
       email: user_info.email,
       linkedin: user_info.linkedin_url as string,
     },
   });
+
+  console.log(errors);
 
   const onSubmit = (data: FormData) => {
     UpdateProfile({
@@ -60,7 +65,7 @@ export default function ProfileForm() {
       designation: data.designation as string,
       linkedin_url: data.linkedin,
       // user_image: image as string,
-      phone_number: user_info.phone_number as string,
+      phone_number: data.phone_number as string,
     });
     // alert("Saved!");
   };
@@ -166,14 +171,20 @@ export default function ProfileForm() {
           <label className="block text-sm font-medium text-gray-600 w-[170px]">
             Gender
           </label>
-          <select
-            {...register("gender")}
-            className="w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
-          >
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
+          <div>
+            <select
+              {...register("gender")}
+              className="w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
+            >
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+            {errors.gender && (
+              <p className="text-red-500 text-sm">{errors.gender.message}</p>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center">
@@ -198,12 +209,13 @@ export default function ProfileForm() {
           />
         </div>
 
-        {/* <div className="flex items-center">
+        <div className="flex items-center">
           <label className="block text-sm font-medium text-gray-600 w-[170px]">
             Email
           </label>
           <div>
             <input
+              disabled
               {...register("email")}
               className="w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
               placeholder="Email"
@@ -212,7 +224,25 @@ export default function ProfileForm() {
               <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
           </div>
-        </div> */}
+        </div>
+
+        <div className="flex items-center">
+          <label className="block text-sm font-medium text-gray-600 w-[170px]">
+            Phone Number
+          </label>
+          <div>
+            <input
+              {...register("phone_number")}
+              className="w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
+              placeholder="+1xxxxxxxx"
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm">
+                {errors.phone_number?.message}
+              </p>
+            )}
+          </div>
+        </div>
 
         <div className="flex items-center">
           <label className="block text-sm font-medium text-gray-600 w-[170px]">
@@ -231,6 +261,7 @@ export default function ProfileForm() {
         </div>
         {/* <div className="w-full flex"> */}
         <Button
+          disabled={updateProfileIsPending}
           type="submit"
           className="w-[100px] py-1 h-7 absolute top-4 right-4"
         >

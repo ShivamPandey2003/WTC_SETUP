@@ -24,11 +24,11 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
   const {userinfo} = useSelector((state:RootState)=>state.AuthSlice)
   const dispatch = useDispatch<AppDispatch>()
   const menu = [
-    {
-      id: "Home",
-      label: "Home",
-      onClick: () => navigate("/"),
-    },
+    // {
+    //   id: "Home",
+    //   label: "Home",
+    //   onClick: () => navigate("/"),
+    // },
     {
       id: "Profile",
       label: "Admin Profile",
@@ -135,7 +135,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
           onClick={() => navigate("/")}
         >
           <Compass size={18} />
-          <span>Client View</span>
+          <span className="">Web View</span>
         </button>
       </nav>
 

@@ -308,10 +308,7 @@ export const useAppConfigUpdate = () => {
     onSuccess: (data) => {
       toast.success(data.header.message);
       queryClient.invalidateQueries({ queryKey: ["global-design"] });
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
+    }
   });
   return { updateAppConfig, isUpdateAppConfigPending, errorInUpdateAppConfig };
 };
@@ -337,10 +334,7 @@ export const useUploadLogo = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    },
-    onError: (err) => {
-      toast.error(`Error updating logo: ${err.message}`);
-    },
+    }
   });
 
   return { UploadLogo, isPending, error };
@@ -366,10 +360,7 @@ export const useSpeakerDesignUpdate = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    },
-    onError: (err) => {
-      toast.error(`Error updating logo: ${err.message}`);
-    },
+    }
   });
 
   return {
@@ -430,10 +421,7 @@ export const useVenueDesignUpdate = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    },
-    onError: (err) => {
-      toast.error(`Error updating logo: ${err.message}`);
-    },
+    }
   });
 
   return {
@@ -457,6 +445,8 @@ export const useProgrameDesignUpdate = () => {
     "category_filter",
     "category_labels",
     "programme_tab",
+    "pdf_end_date",
+    "pdf_start_date"
   ]);
 
   const {
@@ -472,10 +462,7 @@ export const useProgrameDesignUpdate = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    },
-    onError: (err) => {
-      toast.error(`Error updating logo: ${err.message}`);
-    },
+    }
   });
 
   return {
@@ -531,10 +518,7 @@ export const useGeneralExhibitorsUpdate = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    },
-    onError: (err) => {
-      toast.error(`Error updating settings: ${err.message}`);
-    },
+    }
   });
 
   return { GeneralExhibitorsUpdate, isGeneralExhibitorsUpdatePending, error };
@@ -659,10 +643,7 @@ export const useHomeDesignUpdate = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["global-design"] });
       toast.success(data.header.message);
-    },
-    onError: (err) => {
-      toast.error(`Error updating logo: ${err.message}`);
-    },
+    }
   });
 
   return {

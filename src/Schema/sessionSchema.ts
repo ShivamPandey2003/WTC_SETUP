@@ -7,8 +7,6 @@ export const SessionSchema = z.object({
   start_time: z.string().min(1, "Start time is required"),
   end_time: z.string().min(1, "End time is required"),
   floorID: z.string().optional(),
-  pdf_start_date: z.string().optional(),
-  pdf_end_date: z.string().optional(),
   venueID: z.string().optional(),
   speakers: z.string().min(1, "Speakers are required"),
   description: z.string().min(1, "Description is required"),
@@ -22,7 +20,7 @@ export const SessionSchema = z.object({
     )
     .refine((files) => {
       if (!files || files.length === 0) return true;
-      return ["pdf"].includes(files[0].type);
+      return ["application/pdf"].includes(files[0].type);
     }, "Only PDF are allowed"),
 });
 
@@ -32,8 +30,6 @@ export const EditSessionSchema = z.object({
   location: z.string().min(1, "Location is required"),
   start_time: z.string().min(1, "Start time is required"),
   end_time: z.string().min(1, "End time is required"),
-  pdf_start_date: z.string().optional(),
-  pdf_end_date: z.string().optional(),
   floorID: z.string().optional(),
   venueID: z.string().optional(),
   speakers: z.string().min(1, "Speakers are required"),
@@ -44,7 +40,7 @@ export const EditSessionSchema = z.object({
     .optional()
     .refine((files) => {
       if (!files || files.length === 0) return true;
-      return ["pdf"].includes(files[0].type);
+      return ["application/pdf"].includes(files[0].type);
     }, "Only PDF are allowed"),
   // .refine((files) => !files || files.length > 0, "At least one file is required"),
 });

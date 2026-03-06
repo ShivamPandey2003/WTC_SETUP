@@ -16,7 +16,10 @@ export const ExhibitorSchema = z.object({
     .refine(
       (files) => !files || files.length > 0,
       "At least one file is required",
-    ),
+    ).refine((files) => {
+      if (!files || files.length === 0) return true;
+      return allowedTypes.includes(files[0].type);
+    }, "Only PNG, JPG, WEBP images are allowed"),
   category: z.string().min(2, "Category is required"),
   ads: z.boolean(),
 });

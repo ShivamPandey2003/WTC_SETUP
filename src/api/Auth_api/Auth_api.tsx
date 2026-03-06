@@ -41,10 +41,7 @@ export const useSendOtp = () => {
       }
       dispatch(setStep("otp"));
       dispatch(increaseResendCount());
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
+    }
   });
 
   return { sendOtp, isSendingOtp };
@@ -84,10 +81,7 @@ export const useVerifyOtp = () => {
       dispatch(setStep("email"));
       dispatch(setOtp(["", "", "", "", "", ""]));
       dispatch(setLoginModel(false));
-    },
-    onError: (error) => {
-      toast.error(error.message || "Invalid OTP");
-    },
+    }
   });
 
   return { verifyOtp, isVerifying };
@@ -120,10 +114,7 @@ export const useResendOtp = () => {
       }
 
       toast.success("OTP Resent!");
-    },
-    onError: (error) => {
-      toast.error(error.message || "NOT WORKING OTP");
-    },
+    }
   });
 
   return { Resend, isResendPending };
@@ -141,10 +132,7 @@ export const useUserRegistration = () => {
         toast.success("User signed up successfully!");
         dispatch(setEmail(variables.email));
         dispatch(setResgister(false));
-      },
-      onError: (error) => {
-        toast.error(error.message);
-      },
+      }
     });
 
   return { userRegistration, isUserRegistrationPending };

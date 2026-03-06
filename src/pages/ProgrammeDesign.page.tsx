@@ -268,7 +268,15 @@ const ProgrammeDesign_page = () => {
                   containerClassname="w-[25rem]"
                 />
                 {Object.entries(SpeakerSettings)
-                  .filter(([key]) => key.includes("conference"))
+                  .filter(
+                    ([key]) =>
+                      key.includes("conference") || key.includes("pdf"),
+                  )
+                  .sort(([a], [b]) => {
+                    if (a.includes("location")) return 1; // move to end
+                    if (b.includes("location")) return -1;
+                    return 0;
+                  })
                   .map(([key, value], i) => (
                     <TextStyleRow
                       key={i}

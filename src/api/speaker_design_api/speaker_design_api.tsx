@@ -30,10 +30,7 @@ export const useCreateSpeaker = () => {
       toast.success("Speaker created successfully");
       queryClient.invalidateQueries({ queryKey: ["speakerList"] });
       dispatch(setIsCreating(false));
-    },
-    onError: (err) => {
-      toast.error(`Error creating speaker: ${err.message}`);
-    },
+    }
   });
 
   return { CreateSpeaker, isPending, error };
@@ -55,10 +52,7 @@ export const useEditSpeaker = () => {
       toast.success("Speaker edited successfully");
       queryClient.invalidateQueries({ queryKey: ["speakerList"] });
       dispatch(setSelected(null));
-    },
-    onError: (err) => {
-      toast.error(`Error editing speaker: ${err.message}`);
-    },
+    }
   });
 
   return { EditSpeaker, isPending, error };
@@ -102,10 +96,7 @@ export const useDeleteSpeaker = () => {
       toast.success("Speaker deleted successfully");
       dispatch(setIsDeleting(null));
       queryClient.invalidateQueries({ queryKey: ["speakerList"] });
-    },
-    onError: (err) => {
-      toast.error(`Error deleting speaker: ${err.message}`);
-    },
+    }
   });
 
   return { DeleteSpeaker, isPending, error };
@@ -151,10 +142,7 @@ export const useUploadSpeakerCSV = () => {
       toast.success(data.header.message);
       queryClient.invalidateQueries({ queryKey: ["speakerList"] });
       dispatch(setUploadCSV(false));
-    },
-    onError: (err) => {
-      toast.error(`Error updating logo: ${err.message}`);
-    },
+    }
   });
 
   return { UploadSpeakerCSV, isPending, error };
