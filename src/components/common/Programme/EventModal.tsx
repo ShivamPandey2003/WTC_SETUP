@@ -126,7 +126,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
               {selectedValue.description}
             </p>
 
-            {selectedValue.attachments.has_attachment && (
+            {(selectedValue.attachments && selectedValue.attachments.has_attachment) && (
               // <a href={selectedValue.attachments.file} target="_blank">
               <div
                 onClick={() => navigate(`/Attachment/${selectedValue.id}`, {state:{Title:selectedValue.attachments.filename}})}

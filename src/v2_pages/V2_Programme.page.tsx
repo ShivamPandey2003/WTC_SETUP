@@ -52,7 +52,7 @@ const V2_Programme_page = () => {
     );
   }
 
-  if (!ProgrammeList || !ProgrammeList.response) {
+  if (!ProgrammeList || !ProgrammeList.response || !ProgrammeList.response.programme.length) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />

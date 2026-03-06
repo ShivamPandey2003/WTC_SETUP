@@ -5,16 +5,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { setTitle } from "@/redux/ModalSlice";
 import { setSpeaker } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch } from "@/redux/store";
-// import { teamMembers } from "@/data/Speaker";
 import SpeakerCard from "@/v2_components/common/V2_Speaker/SpeakerCard";
-// import SpeakerModal from "@/v2_components/common/V2_Speaker/SpeakerModal";
 import { Loader } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 
 const V2_Speakers_page = () => {
-  // const [selectedId, setSelectedId] = useState<string | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -84,7 +81,7 @@ const V2_Speakers_page = () => {
     );
   }
 
-  if (!AllSpeakers || !AllSpeakers.pages || !AllSpeakers.pages.length) {
+  if (!AllSpeakers || !AllSpeakers.pages || !AllSpeakers.pages.length || !SpeakersList.length) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />

@@ -67,7 +67,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
 
 const V2_Sidebar = () => {
   return (
-    <aside className="hidden p-4 sm:flex items-center relative border-r border-border shadow">
+    <aside className="hidden p-4 sm:flex items-center relative border-r border-border shadow min-w-[150px]">
       <V2_Sidebar_Context />
     </aside>
   );

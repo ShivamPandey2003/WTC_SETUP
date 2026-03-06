@@ -58,8 +58,13 @@ const EditFloorLevelModel = ({ id }: EditFloorLevelModelProp) => {
   const onSubmit = (newData: FloorLevelSchemaType) => {
     const formData = new FormData();
     formData.append("label", newData.label);
-    formData.append("floor_level", String(Value?.design_type));
-    formData.append("file", newData.file?.[0] as Blob);
+    formData.append("floor_level", String(newData.floor_level));
+    if(newData.file?.[0]){
+      formData.append("file", newData.file?.[0] as Blob);
+    }
+    if(newData.iframe_url){
+      formData.append("iframe_url", newData.iframe_url);
+    }
 
     EditFloorLevel({ id: id, data: formData });
 
