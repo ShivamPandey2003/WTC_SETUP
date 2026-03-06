@@ -102,7 +102,7 @@ const OtpForm = () => {
             onChange={(e) => handleOtpChange(index, e.target.value)}
             onKeyDown={(e) => handleOtpKeyDown(index, e)}
             onPaste={index === 0 ? handleOtpPaste : undefined}
-            className={`w-14 h-14 text-center text-xl font-semibold bg-gray-50 border ${
+            className={`w-12 h-12 sm:w-14 sm:h-14 text-center text-xl font-semibold bg-gray-50 border ${
               otpErrors.otp ? "border-red-500" : "border-gray-300"
             } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary`}
           />

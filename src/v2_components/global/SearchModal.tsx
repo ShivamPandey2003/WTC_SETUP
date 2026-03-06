@@ -108,13 +108,13 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     <img
                       src={item.bg_img as string}
                       alt={item.title}
-                      className="h-[10rem] w-[15rem] rounded-2xl"
+                      className="h-[7rem] sm:h-[10rem] w-[11rem] sm:w-[15rem] rounded-2xl"
                     />
                     <div className="">
-                      <h2 className="mb-2 line-clamp-2 font-bold text-xl">
+                      <h2 className="mb-2 line-clamp-2 font-bold sm:text-xl">
                         {item.title}
                       </h2>
-                      <p className="line-clamp-4 text-sm">{item.description}</p>
+                      <p className="line-clamp-4 text-xs sm:text-sm">{item.description}</p>
                     </div>
                   </div>
                 );
@@ -131,13 +131,13 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     <img
                       src={item.user_img as string}
                       alt={item.name}
-                      className="h-[10rem] w-[15rem] rounded-2xl object-cover"
+                      className="h-[7rem] sm:h-[10rem] w-[11rem] sm:w-[15rem] rounded-2xl object-cover"
                     />
                     <div className="">
-                      <h2 className="mb-2 line-clamp-2 font-bold text-xl">
+                      <h2 className="mb-2 line-clamp-2 font-bold sm:text-xl">
                         {item.name}
                       </h2>
-                      <p className="line-clamp-4 text-sm">{item.bio}</p>
+                      <p className="line-clamp-4 text-xs sm:text-sm">{item.bio}</p>
                     </div>
                   </div>
                 );
@@ -158,19 +158,19 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                             <img
                               src={value.logo as string}
                               alt={value.full_name}
-                              className="h-[10rem] w-[15rem] rounded-2xl object-contain bg-gray-300"
+                              className="h-[7rem] sm:h-[10rem] w-[11rem] sm:w-[15rem] rounded-2xl object-contain bg-gray-300"
                             />
                             <div className="">
-                              <h2 className="mb-2 line-clamp-2 font-bold text-xl">
+                              <h2 className="mb-2 line-clamp-2 font-bold sm:text-xl">
                                 {value.full_name}
                               </h2>
-                              <p className="line-clamp-4 text-sm">
+                              <p className="line-clamp-4 text-xs sm:text-sm">
                                 {value.email}
                               </p>
-                              <p className="line-clamp-4 text-sm">
+                              <p className="line-clamp-4 text-xs sm:text-sm">
                                 {value.url}
                               </p>
-                              <p className="line-clamp-4 text-sm">
+                              <p className="line-clamp-4 text-xs sm:text-sm">
                                 Type: {str}
                               </p>
                             </div>

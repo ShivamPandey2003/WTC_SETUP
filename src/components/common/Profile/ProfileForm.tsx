@@ -83,7 +83,7 @@ export default function ProfileForm() {
   const handleRemoveImage = () => setImage(null);
 
   return (
-    <div className="w-4/5 mx-auto p-6 bg-white rounded-xl space-y-4 relative">
+    <div className="w-full sm:w-4/5 mx-auto p-6 bg-white rounded-xl space-y-4 relative">
       {/* Profile Image */}
       <div className="flex items-end">
         {isPending ? (
@@ -122,25 +122,25 @@ export default function ProfileForm() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-        <div className="flex items-center">
-          <label className="text-sm font-medium text-gray-600 w-[170px]">
+        <div className="flex flex-col sm:flex-row sm:items-center">
+          <label className="text-sm font-medium text-gray-600 sm:w-[170px]">
             Name Prefix
           </label>
           <input
             {...register("prefix")}
-            className="border border-[#ddd] outline-0 rounded-md p-2 w-[500px]"
+            className="border border-[#ddd] outline-0 rounded-md p-2 w-full sm:w-[500px]"
             placeholder="Dr."
           />
         </div>
 
-        <div className="flex items-center">
-          <label className="block text-sm font-medium text-gray-600 w-[170px]">
+        <div className="flex flex-col sm:flex-row sm:items-center">
+          <label className="block text-sm font-medium text-gray-600 sm:w-[170px]">
             First Name
           </label>
           <div>
             <input
               {...register("firstName")}
-              className="w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
+              className="w-full sm:w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
               placeholder="First Name"
             />
             {errors.firstName && (
@@ -149,14 +149,14 @@ export default function ProfileForm() {
           </div>
         </div>
 
-        <div className="flex items-center">
-          <label className="block text-sm font-medium text-gray-600 w-[170px]">
+        <div className="flex flex-col sm:flex-row sm:items-center">
+          <label className="block text-sm font-medium text-gray-600 sm:w-[170px]">
             Last Name
           </label>
           <div>
             <input
               {...register("lastName")}
-              className="w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
+              className="w-full sm:w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
               placeholder="Last Name"
             />
             {errors.lastName && (
@@ -165,14 +165,14 @@ export default function ProfileForm() {
           </div>
         </div>
 
-        <div className="flex items-center">
-          <label className="block text-sm font-medium text-gray-600 w-[170px]">
+        <div className="flex flex-col sm:flex-row sm:items-center">
+          <label className="block text-sm font-medium text-gray-600 sm:w-[170px]">
             Gender
           </label>
           <div>
             <select
               {...register("gender")}
-              className="w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
+              className="w-full sm:w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
             >
               <option value="">Select Gender</option>
               <option value="Male">Male</option>
@@ -185,37 +185,37 @@ export default function ProfileForm() {
           </div>
         </div>
 
-        <div className="flex items-center">
-          <label className="block text-sm font-medium text-gray-600 w-[170px]">
+        <div className="flex flex-col sm:flex-row sm:items-center">
+          <label className="block text-sm font-medium text-gray-600 sm:w-[170px]">
             Company Name
           </label>
           <input
             {...register("company")}
-            className="w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
+            className="w-full sm:w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
             placeholder="Company"
           />
         </div>
 
-        <div className="flex items-center">
-          <label className="block text-sm font-medium text-gray-600 w-[170px]">
+        <div className="flex flex-col sm:flex-row sm:items-center">
+          <label className="block text-sm font-medium text-gray-600 sm:w-[170px]">
             Designation
           </label>
           <input
             {...register("designation")}
-            className="w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
+            className="w-full sm:w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
             placeholder="Designation"
           />
         </div>
 
-        <div className="flex items-center">
-          <label className="block text-sm font-medium text-gray-600 w-[170px]">
+        <div className="flex flex-col sm:flex-row sm:items-center">
+          <label className="block text-sm font-medium text-gray-600 sm:w-[170px]">
             Email
           </label>
           <div>
             <input
               disabled
               {...register("email")}
-              className="w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
+              className="w-full sm:w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
               placeholder="Email"
             />
             {errors.email && (
@@ -224,14 +224,14 @@ export default function ProfileForm() {
           </div>
         </div>
 
-        <div className="flex items-center">
-          <label className="block text-sm font-medium text-gray-600 w-[170px]">
+        <div className="flex flex-col sm:flex-row sm:items-center">
+          <label className="block text-sm font-medium text-gray-600 sm:w-[170px]">
             Phone Number
           </label>
           <div>
             <input
               {...register("phone_number")}
-              className="w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
+              className="w-full sm:w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
               placeholder="+1xxxxxxxx"
             />
             {errors.email && (
@@ -242,14 +242,14 @@ export default function ProfileForm() {
           </div>
         </div>
 
-        <div className="flex items-center">
-          <label className="block text-sm font-medium text-gray-600 w-[170px]">
+        <div className="flex flex-col sm:flex-row sm:items-center">
+          <label className="block text-sm font-medium text-gray-600 sm:w-[170px]">
             LinkedIn
           </label>
           <div>
             <input
               {...register("linkedin")}
-              className="w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
+              className="w-full sm:w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
               placeholder="LinkedIn URL"
             />
             {errors.linkedin && (
