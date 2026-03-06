@@ -60,7 +60,7 @@ const V2_exhibitors_page = () => {
   }, [handleObserver]);
 
   useEffect(() => {
-    if (!ExhibitorList.length) return;
+    if (!ExhibitorList.length || !Object.keys(ExhibitorList[0]).length) return;
 
     dispatch(
       setExhibitors(
@@ -114,7 +114,7 @@ const V2_exhibitors_page = () => {
     );
   }
 
-  if (!ExhibitorList || !ExhibitorList.length) {
+  if (!ExhibitorList || !ExhibitorList.length || !Object.keys(ExhibitorList[0]).length) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />

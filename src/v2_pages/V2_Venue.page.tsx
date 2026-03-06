@@ -34,7 +34,6 @@ const V2_Venue_page = () => {
   const [searchParams] = useSearchParams();
   const { Venue, isPending, error } = useGetVenue();
   const dispatch = useDispatch<AppDispatch>();
-  const [IFrameLoading, setIFrameLoading] = useState<boolean>(true);
   const {
     Venue: venue,
     conference_location,
@@ -116,6 +115,8 @@ const V2_Venue_page = () => {
     );
   }
 
+  console.log(Venue)
+
   return (
     <div className="px-4 mx-auto pb-4">
       <div className="p-1 bg-white w-fit rounded-full flex gap-2 mb-4">
@@ -181,9 +182,9 @@ const V2_Venue_page = () => {
                   <Navigation strokeWidth={"1px"} />
                   <div>
                     <h3 className="text-lg font-bold">{conference_location}</h3>
-                    <p className="w-60 text-sm">
+                    {/* <p className="w-60 text-sm">
                       1001 Pl. Jean-Paul-Riopelle, Montréal, QC H2Y 0A3, Canada
-                    </p>
+                    </p> */}
                   </div>
                 </div>
                 <Button
@@ -285,18 +286,13 @@ const V2_Venue_page = () => {
               (pre) => pre.id === selectedId,
             )?.image ? (
               <Map_V2 id={selectedId} />
-            ) : IFrameLoading ? (
-              <div className="w-full h-[65vh] flex flex-col items-center justify-center">
-                <Loader className="text-primary animate-spin" size={30} />
-              </div>
-            ) : (
+            ) :(
               <iframe
                 src={
                   V2_Global_FloorMapList?.response.find(
                     (pre) => pre.id === selectedId,
                   )?.iframe_url as string
                 }
-                onLoad={() => setIFrameLoading(false)}
                 className="w-full h-[65vh] mt-2"
               />
             )}

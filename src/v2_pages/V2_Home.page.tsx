@@ -51,7 +51,7 @@ const V2_Home_page = () => {
     if (HeroCarusole?.response) {
       return shuffleArray(HeroCarusole.response);
     }
-    return[]
+    return [];
   }, [HeroCarusole]);
 
   const handleObserver = useCallback(
@@ -113,27 +113,25 @@ const V2_Home_page = () => {
     );
   }
 
-  if (
-    !AllNews ||
-    !AllNews.pages ||
-    !AllNews.pages.length ||
-    !NewsList.length ||
-    !ExhibitorList ||
-    !ExhibitorList.response ||
-    !HeroCarusole?.response ||
-    !HeroCarusole.response.length
-  ) {
+  if (!AllNews || !AllNews.pages || !AllNews.pages.length || !NewsList.length) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />
       </div>
     );
   }
+
   return (
     <div className="px-4 pb-4 mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <HeroCarousel slides={CarusolData} />
+          {HeroCarusole?.response &&
+          HeroCarusole.response.length > 0 &&
+          CarusolData.length > 0 ? (
+            <HeroCarousel slides={CarusolData} />
+          ) : (
+            <Skeleton className="h-[350px] md:h-[530px] shadow rounded-xl bg-gray-300" />
+          )}
         </div>
         <div className="space-y-4">
           {NewsList.slice(0, 2).map((item, index) => (
@@ -159,10 +157,16 @@ const V2_Home_page = () => {
           ))}
         </div>
         <div>
-          <SponserCarousal
-            slides={ExhibitorList.response}
-            intervalTime={7000}
-          />
+          {ExhibitorList &&
+          ExhibitorList.response &&
+          ExhibitorList.response.length > 0 ? (
+            <SponserCarousal
+              slides={ExhibitorList.response}
+              intervalTime={7000}
+            />
+          ) : (
+            <Skeleton className="min-h-[255px] shadow rounded-xl bg-gray-300" />
+          )}
         </div>
       </div>
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
