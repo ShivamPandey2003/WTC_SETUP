@@ -53,8 +53,6 @@ export default function ProfileForm() {
     },
   });
 
-  console.log(errors);
-
   const onSubmit = (data: FormData) => {
     UpdateProfile({
       name_prefix: data.prefix as string,

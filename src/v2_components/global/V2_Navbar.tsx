@@ -25,6 +25,13 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const { grp } = useSelector((state: RootState) => state.AuthSlice.userinfo);
+  const { News } = useSelector((state: RootState) => state.ExtraSlice);
+  const { speakers } = useSelector(
+    (state: RootState) => state.Speaker_DesignSlice,
+  );
+  const { Exhibitors } = useSelector(
+    (state: RootState) => state.ExhibitorSlice,
+  );
   const menu = [
     ...(grp === 1
       ? [
@@ -123,9 +130,9 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
         )}
       </div>
       <div className="flex items-center gap-4">
-        {(pathname === "/" ||
-          pathname === "/speaker" ||
-          pathname === "/exhibitors") && (
+        {((pathname === "/" && News.length > 0) ||
+          (pathname === "/speaker" && speakers.length > 0) ||
+          (pathname === "/exhibitors" && Exhibitors.length > 0)) && (
           <SearchTrigger onClick={() => dispatch(setSearchModal(true))} />
         )}
         {!token ? (
