@@ -2,7 +2,11 @@ import { Download, Save } from "lucide-react";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
 import Modal from "../ui/Modal";
-import React from "react";
+import React, { useEffect } from "react";
+import { useUploadNewsImages } from "@/api/home_design_api/Home_design_api";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/redux/store";
+import { setResponseData, setResponseModal } from "@/redux/ModalSlice";
 
 type EditModalProps = {
   title: string;
@@ -11,7 +15,9 @@ type EditModalProps = {
   isLoading?: boolean;
   onSubmit: (e: FormData) => void;
   description: string;
-  path:string;
+  path: string;
+  ImageDescription?: string;
+  type: number;
 };
 
 const CSVModel = ({
@@ -21,9 +27,14 @@ const CSVModel = ({
   isLoading,
   onSubmit,
   description,
-  path
+  path,
+  ImageDescription,
+  type,
 }: EditModalProps) => {
   const [file, setFile] = React.useState<File | null>(null);
+  const [Type, setType] = React.useState<"CSV" | "IMAGE">("CSV");
+  const { UploadBulkImages, isPending, data } = useUploadNewsImages();
+  const dispatch = useDispatch<AppDispatch>()
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -35,16 +46,32 @@ const CSVModel = ({
     if (file) {
       const formData = new FormData();
       formData.append("file", file);
-      onSubmit(formData);
+      if (Type === "CSV") {
+        onSubmit(formData);
+      } else {
+        UploadBulkImages({ type: type, form: formData });
+      }
     }
   };
 
   const downloadTemplate = () => {
-  const link = document.createElement("a");
-  link.href = path;
-  link.download = "template.csv";
-  link.click();
-};
+    const link = document.createElement("a");
+    link.href = path;
+    link.download = "template.csv";
+    link.click();
+  };
+
+  useEffect(()=>{
+    if(!data)return;
+
+    if(data.response.length){
+      dispatch(setResponseData(data.response))
+      dispatch(setResponseModal(true))
+      setType("CSV")
+      onClose()
+    }
+
+  },[data])
 
   return (
     <Modal
@@ -56,28 +83,52 @@ const CSVModel = ({
       classname="p-0"
     >
       <div className="bg-primary w-full rounded-t-lg px-8 text-white py-3 text-xl font-[600]">
-        {`Import ${title} from CSV`}
+        {`Upload ${title}`}
       </div>
       <div className="p-4">
-        <h3 className="mb-4 text-stone-700">{description}</h3>
-        <div className="mt-2 flex items-center gap-2">
-          <Input
-            type="file"
-            accept=".csv"
-            onChange={handleFileChange}
-            className="flex-1"
-          />
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={downloadTemplate}
-            className="flex items-center gap-2 hover:text-white"
+        <h3 className="mb-4 text-stone-700">
+          {Type === "CSV" ? description : ImageDescription}
+        </h3>
+        <div>
+          <select
+            className="w-full border border-gray-400 outline-0 p-1.5 rounded-md"
+            value={Type}
+            onChange={(e) => setType(e.target.value as "CSV" | "IMAGE")}
           >
-            <Download className="h-4 w-4" />
-            Template
-          </Button>
+            <option value="CSV">CSV</option>
+            <option value="IMAGE">IMAGES</option>
+          </select>
         </div>
+        {Type === "CSV" ? (
+          <div className="mt-2 flex items-center gap-2">
+            <Input
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              disabled={isPending || isLoading}
+              className="flex-1 border border-gray-400 outline-0 ring-0"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={downloadTemplate}
+              className="flex items-center gap-2 hover:text-white"
+            >
+              <Download className="h-4 w-4" />
+              Template
+            </Button>
+          </div>
+        ) : (
+          <div className="mt-2 flex items-center gap-2">
+            <Input
+              type="file"
+              accept=".zip"
+              onChange={handleFileChange}
+              className="flex-1"
+            />
+          </div>
+        )}
       </div>
       <div className="flex items-center justify-end gap-2 p-4">
         <Button
@@ -85,11 +136,15 @@ const CSVModel = ({
           type="button"
           className="text-black"
           onClick={onClose}
-          disabled={isLoading}
+          disabled={isLoading || isPending}
         >
           Cancel
         </Button>
-        <Button type="submit" disabled={isLoading} onClick={handleSubmit}>
+        <Button
+          type="submit"
+          disabled={isLoading || isPending}
+          onClick={handleSubmit}
+        >
           <Save size={16} />
           Submit
         </Button>

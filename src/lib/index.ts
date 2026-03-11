@@ -93,7 +93,7 @@ export function buildTimeline(events: Programme[]): TimelineOutput {
       });
     }
     else {
-        const next = output[i - 1] || [];
+      const next = output[i - 1] || [];
       output[i] = alignGroup(current, next);
     }
   }
@@ -122,12 +122,12 @@ export function formatDuration(period: string): string {
   return output || "0 minutes";
 }
 
-export const CompareDates = (date1:string, date2:string)=>{
+export const CompareDates = (date1: string, date2: string) => {
 
-const d1 = new Date(date1);
-const d2 = new Date(date2);
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
 
-  if(d1 < d2){
+  if (d1 < d2) {
     return true
   }
 
@@ -155,7 +155,23 @@ export function formatDates_V2(dates: string[]): FormattedDate[] {
   });
 }
 
-export const Normalize = (b64: string):string =>
+export const Normalize = (b64: string): string =>
   b64
     .replace(/^data:image\/\w+;base64,/, "") // remove prefix
-    .replace(/\s/g, ""); 
+    .replace(/\s/g, "");
+
+export const normalizeIds = (data: FailedNewsEntry[]): FailedNewsEntry[] => {
+  return data.map((item) => {
+    const newItem: any = {};
+
+    Object.keys(item).forEach((key) => {
+      if (key.toLowerCase().includes("id") && key !== "id") {
+        newItem["id"] = item[key];
+      } else {
+        newItem[key] = item[key];
+      }
+    });
+
+    return newItem;
+  });
+};

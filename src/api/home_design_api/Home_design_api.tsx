@@ -31,7 +31,7 @@ export const useCreateNews = () => {
       toast.success("News created successfully");
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
       dispatch(setIsCreating(false));
-    }
+    },
   });
 
   return { CreateNews, isPending, error };
@@ -53,7 +53,7 @@ export const useEditNews = () => {
       toast.success("News edited successfully");
       dispatch(setSelected(null));
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
-    }
+    },
   });
 
   return { EditNews, isPending, error };
@@ -97,7 +97,7 @@ export const useDeleteNews = () => {
       toast.success("News deleted successfully");
       dispatch(setIsDeleting(null));
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
-    }
+    },
   });
 
   return { DeleteNews, isPending, error };
@@ -109,10 +109,14 @@ export const usePublishedNews = () => {
     mutate: PulishedNew,
     isPending,
     error,
-  } = useMutation<DeleteNewsResponse, AxiosError, { id: string, is_publish:number }>({
-    mutationFn: async ({ id, is_publish}) => {
-      const data = new FormData()
-      data.append("is_publish", String(is_publish))
+  } = useMutation<
+    DeleteNewsResponse,
+    AxiosError,
+    { id: string; is_publish: number }
+  >({
+    mutationFn: async ({ id, is_publish }) => {
+      const data = new FormData();
+      data.append("is_publish", String(is_publish));
       const res = await apiRequest("post", `news/publish/${id}`, data);
       return res.response;
     },
@@ -121,7 +125,7 @@ export const usePublishedNews = () => {
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
       dispatch(setIsPublished(null));
       dispatch(setIsUnpublished(null));
-    }
+    },
   });
 
   return { PulishedNew, isPending, error };
@@ -134,16 +138,27 @@ export const useUploadNewsCSV = () => {
     mutate: UploadNewsCSV,
     isPending,
     error,
-  } = useMutation<LogoUpdateResponse, AxiosError, FormData>({
+  } = useMutation<any, AxiosError, FormData>({
     mutationFn: async (data) => {
       const res = await apiRequest("post", `/news/upload/news_list`, data);
       return res.response;
     },
     onSuccess: (data) => {
-      toast.success(data.header.message);
+      const blob = new Blob([data], { type: "text/csv;charset=utf-8;" });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "news_upload_result.csv");
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      toast.success("CSV downloaded successfully");
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
       dispatch(setUploadCSV(false));
-    }
+    },
   });
 
   return { UploadNewsCSV, isPending, error };
@@ -169,7 +184,7 @@ export const useUpdateSplash = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    }
+    },
   });
 
   return { UpdateSplashActivation, isPending, error };
@@ -191,4 +206,24 @@ export const useHeroCarusole = () => {
   });
 
   return { HeroCarusole, isHeroCarusole, errorHeroCarusole };
+};
+
+export const useUploadNewsImages = () => {
+  const {
+    mutate: UploadBulkImages,
+    isPending,
+    data,
+    isError,
+  } = useMutation<
+    BulkImageResponse,
+    AxiosError,
+    { type: number; form: FormData }
+  >({
+    mutationFn: async ({ type, form }) => {
+      const res = await apiRequest("post", `/upload/images?type=${type}`, form);
+      return res.response;
+    },
+  });
+
+  return { UploadBulkImages, isPending, data, isError };
 };

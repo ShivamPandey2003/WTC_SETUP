@@ -3,6 +3,8 @@ declare type ModelSliceType = {
   searchModal: boolean;
   title: string | null;
   register: boolean;
+  responseModal: boolean;
+  responseData: FailedNewsEntry[]
 };
 
 declare type HomeDesignStateType = {
@@ -10,7 +12,7 @@ declare type HomeDesignStateType = {
   isDeleting: string | null;
   isPublished: string | null;
   isCreating: boolean;
-  unpublish:string | null;
+  unpublish: string | null;
   news: News[];
   uploadCSV: boolean;
 };
@@ -301,8 +303,8 @@ declare type SpeakerSetting = {
   conference_end_date: string;
   conference_start_time: string;
   conference_end_time: string;
-  pdf_end_date:string;
-  pdf_start_date:string
+  pdf_end_date: string;
+  pdf_start_date: string
   conference_location: string;
   speaker_info: {
     exhibitors_setting: boolean;
@@ -659,3 +661,14 @@ declare type FindExhibitorById = {
     created_at: string;
   };
 };
+
+declare type FailedNewsEntry = {
+  filename: string;
+  status: string;
+  comment: string;
+} & Record<string, string>;
+
+declare type BulkImageResponse = {
+  header: ResponseHeader;
+  response: FailedNewsEntry[]
+}

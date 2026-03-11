@@ -30,7 +30,7 @@ export default function TextStyleRow({
       >
         <input
           type="text"
-          value={value}
+          value={value ?? ""}
           onChange={(e) => onChange(e.target.value)}
           className="focus:outline-none text-center bg-transparent"
         />

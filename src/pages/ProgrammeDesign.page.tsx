@@ -52,6 +52,8 @@ import {
 import Custom_Text_Row from "@/components/common/Exhibitors_Design/Custom_Text_Row";
 import DeleteModal from "@/components/global/DeleteModel";
 import { setDeletingCategory } from "@/redux/ExhibitorSlice";
+import { setResponseModal } from "@/redux/ModalSlice";
+import ErrorModal from "@/components/global/ErrorModal";
 
 const ProgrammeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
@@ -67,11 +69,12 @@ const ProgrammeDesign_page = () => {
   const { isCreating, slectedDate, uploadCSV } = useSelector(
     (state: RootState) => state.Programme_Design,
   );
-  const { isCreating: isSpeakerCreating } = useSelector(
+  const { isCreating: isSpeakerCreating, SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
-  const { SpeakerSettings } = useSelector(
-    (state: RootState) => state.Speaker_DesignSlice,
+
+  const { responseModal, responseData } = useSelector(
+    (state: RootState) => state.model,
   );
 
   const { deletingCategory } = useSelector(
@@ -210,14 +213,14 @@ const ProgrammeDesign_page = () => {
               className="w-fit py-1 h-7"
             >
               <Download />
-              Download All
+              Download
             </Button>
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
               className="w-fit py-1 h-7"
             >
               <Upload />
-              Upload CSV
+              Upload
             </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}
@@ -402,7 +405,16 @@ const ProgrammeDesign_page = () => {
         onSubmit={UploadNewsCSV}
         description="Upload CSV file to create Sessions entries. CSV Columns: title, category, location, start_date, end_date, start_time, end_time, speakers, external_link, description"
         path="/session_entry.csv"
+        type={3}
+        ImageDescription="Upload a ZIP file containing pdf for Sessions entries. The pdf file names should match the corresponding Sessions IDs."
       />
+      {responseModal && (
+        <ErrorModal
+          isOpen={responseModal}
+          onClose={() => dispatch(setResponseModal(false))}
+          data={responseData}
+        />
+      )}
     </div>
   );
 };
