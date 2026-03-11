@@ -15,6 +15,7 @@ import MiniSmallCarousel from "@/components/common/Home_Design/MiniCarousel";
 import CustomTable from "@/components/common/Home_Design/Table";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
 import CSVModel from "@/components/global/CSVModel";
+import ErrorModal from "@/components/global/ErrorModal";
 import Section from "@/components/global/Section";
 // import TextStyleRow from "@/components/global/TextStyleRow";
 import { Button } from "@/components/ui/Button";
@@ -23,6 +24,7 @@ import ToggleSwitch from "@/components/ui/ToggleSwitch";
 import { cn } from "@/lib/utils";
 import { setAppConfig } from "@/redux/GlobalDesignSlice";
 import { setIsCreating, setUploadCSV } from "@/redux/HomeDesignSlice";
+import { setResponseModal } from "@/redux/ModalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { Check, Plus, SquareArrowOutUpRight, Upload } from "lucide-react";
 import React from "react";
@@ -30,11 +32,14 @@ import { useDispatch, useSelector } from "react-redux";
 
 const HomeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
-   const {isGlobalDesignPending} = useGlobalDesign();
+  const { isGlobalDesignPending } = useGlobalDesign();
   const { NewsList } = useGetNewsList();
   const dispatch = useDispatch<AppDispatch>();
   const { isCreating, uploadCSV } = useSelector(
     (state: RootState) => state.Home_Design,
+  );
+  const { responseModal, responseData } = useSelector(
+    (state: RootState) => state.model,
   );
   const { appConfig } = useSelector(
     (state: RootState) => state.Global_DesignSlice,
@@ -42,8 +47,9 @@ const HomeDesign_page = () => {
   const { UpdateHomeDesign, isUpdateHomeDesignPending } = useHomeDesignUpdate();
   const { UploadNewsCSV, isPending } = useUploadNewsCSV();
   const { UploadLogo, isPending: SplashScreenIsUpdating } = useUploadLogo();
-  const {UpdateSplashActivation, isPending:isUpdateSplashActivation} = useUpdateSplash();
-  const {HeroCarusole} = useHeroCarusole();
+  const { UpdateSplashActivation, isPending: isUpdateSplashActivation } =
+    useUpdateSplash();
+  const { HeroCarusole } = useHeroCarusole();
 
   const OnSave = () => {
     const formData = new FormData();
@@ -56,7 +62,13 @@ const HomeDesign_page = () => {
     });
   };
 
-  if (!NewsList || !NewsList.response || !HeroCarusole || !HeroCarusole.response || isGlobalDesignPending) {
+  if (
+    !NewsList ||
+    !NewsList.response ||
+    !HeroCarusole ||
+    !HeroCarusole.response ||
+    isGlobalDesignPending
+  ) {
     return null;
   }
 
@@ -76,7 +88,7 @@ const HomeDesign_page = () => {
               className="w-fit py-1 h-7"
             >
               <Upload />
-              Upload CSV
+              Upload
             </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}
@@ -305,7 +317,8 @@ const HomeDesign_page = () => {
                         dispatch(
                           setAppConfig({
                             ...appConfig,
-                            show_exhibitor_splash: !appConfig.show_exhibitor_splash,
+                            show_exhibitor_splash:
+                              !appConfig.show_exhibitor_splash,
                           }),
                         )
                       }
@@ -331,8 +344,17 @@ const HomeDesign_page = () => {
         isLoading={isPending}
         onSubmit={UploadNewsCSV}
         description="Upload CSV file to create News entries. CSV Columns: title, description, tile_space"
+        ImageDescription="Upload a ZIP file containing images for News entries. The image file names should match the corresponding News IDs."
         path="/new-entry.csv"
+        type={5}
       />
+      {responseModal && (
+        <ErrorModal
+          isOpen={responseModal}
+          onClose={() => dispatch(setResponseModal(false))}
+          data={responseData}
+        />
+      )}
     </div>
   );
 };

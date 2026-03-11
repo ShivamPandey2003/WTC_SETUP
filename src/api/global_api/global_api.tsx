@@ -5,7 +5,6 @@ import {
 } from "@/lib/extra";
 import { CustomPick } from "@/lib/utils";
 import { queryClient } from "@/provider/TanstackProvider";
-import { setCategory } from "@/redux/ExhibitorSlice";
 import { setAppConfig } from "@/redux/GlobalDesignSlice";
 import {
   setArrayTabs,
@@ -471,7 +470,6 @@ export const useProgrameDesignUpdate = () => {
 };
 
 export const useCategoryList = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const { data: Category, isPending: isCategoryPending } = useQuery<
     CategoryListResponse,
     AxiosError
@@ -482,7 +480,6 @@ export const useCategoryList = () => {
       return res.response;
     },
     select: (data) => {
-      dispatch(setCategory(data.response.filter((pre) => pre.type === 1)));
       return data;
     },
     retry: 1,

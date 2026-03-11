@@ -5,6 +5,8 @@ const initialState: ModelSliceType = {
   searchModal: false,
   title: null,
   register: false,
+  responseModal: false,
+  responseData: []
 };
 
 const ModelSlice = createSlice({
@@ -25,8 +27,14 @@ const ModelSlice = createSlice({
     setTitle: (state, payload: PayloadAction<string | null>) => {
       state.title = payload.payload;
     },
+    setResponseModal: (state, payload: PayloadAction<boolean>) => {
+      state.responseModal = payload.payload
+    },
+    setResponseData: (state, payload: PayloadAction<FailedNewsEntry[]>) => {
+      state.responseData = payload.payload
+    }
   },
 });
 
-export const { setLoginModel, setSearchModal, setTitle, setResgister } = ModelSlice.actions;
+export const { setLoginModel, setSearchModal, setTitle, setResgister, setResponseModal, setResponseData } = ModelSlice.actions;
 export default ModelSlice.reducer;
