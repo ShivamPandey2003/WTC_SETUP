@@ -135,7 +135,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
           onClick={() => navigate("/")}
         >
           <Compass size={18} />
-          <span className="">Web View</span>
+          <span className="">Live View</span>
         </button>
       </nav>
 
