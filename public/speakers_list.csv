@@ -1,2 +1,2 @@
-firstname,lastname,prefix,designation,company,bio,external_link,keyNote
-Aakash,Bohra,Mr.,CEO,KEM,Some bio ,http://sbc.com/,TRUE
+prefix,firstname,lastname,designation,company,bio,external_link,keyNote,email,linkden_url
+Mr.,Jhon,Doe,Developer,ITA WTC,Some bio ,http://wtc.com/,TRUE,user@wt.com,https://wtc.linkden.com
