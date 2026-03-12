@@ -33,7 +33,7 @@ const V2_rootlayout = () => {
     const isShowed = sessionStorage.getItem("App_Splash");
     if (!isShowed) {
       setSpashScreen(true);
-      sessionStorage.setItem("App_Splash", JSON.stringify(true));
+      // sessionStorage.setItem("App_Splash", JSON.stringify(true));
     }
     // const timer = setTimeout(() => {
     //   setSpashScreen(false);
