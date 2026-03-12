@@ -1,8 +1,3 @@
-import {
-  getDateRange,
-  getEarliestAndLatest,
-  transformSessions,
-} from "@/lib/extra";
 import { CustomPick } from "@/lib/utils";
 import { queryClient } from "@/provider/TanstackProvider";
 import { setCategory } from "@/redux/ExhibitorSlice";
@@ -19,11 +14,8 @@ import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import { nanoid } from "nanoid";
 import {
   setNews,
-  setProgrammes,
-  type ProgrammeRecord,
 } from "@/redux/ExtraSlice";
 
 export const useGlobalDesign = () => {
@@ -159,7 +151,6 @@ export const useInfiniteSpeakers = () => {
 };
 
 export const useGetProgrammeList = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const {
     data: ProgrammeList,
     isPending,
@@ -172,65 +163,6 @@ export const useGetProgrammeList = () => {
       return res.response;
     },
     select: (data) => {
-      const value: ProgrammeRecord = {
-        start_date: "",
-        start_time: "",
-        end_date: "",
-        end_time: "",
-        data: {},
-      };
-
-      const parseDate = (dateStr: string): Date => {
-        const [y, m, d] = dateStr.split("-").map(Number);
-        return new Date(y, m - 1, d); // Safe, no timezone issues
-      };
-
-      const formatYMD = (date: Date): string => {
-        return date.toLocaleDateString("en-CA"); // YYYY-MM-DD
-      };
-
-      const dates = data.response.programme.map((item) =>
-        parseDate(item.start_date),
-      );
-
-      const earliest = new Date(Math.min(...dates.map((d) => d.getTime())));
-      const latest = new Date(Math.max(...dates.map((d) => d.getTime())));
-      const Time = getEarliestAndLatest(data.response.programme);
-
-      value.start_date = formatYMD(earliest);
-      value.end_date = formatYMD(latest);
-      value.start_time = Time.earliest;
-      value.end_time = Time.latest;
-
-      const dateRange = getDateRange(value.start_date, value.end_date);
-      dateRange.forEach((item) => {
-        const val = data.response.programme
-          .filter((e) => e.start_date === item)
-          .map((Datas) => {
-            const detail = Object.entries(Datas.categories).map(([_, set]) => {
-              return {
-                name: set.name,
-                color: set.color,
-              };
-            });
-            return {
-              session_id: Datas.id,
-              id: nanoid(),
-              title: detail[0]?.name,
-              color: detail[0]?.color,
-              start_time: Datas.start_time,
-              end_time: Datas.end_time,
-              type: "normal",
-            };
-          });
-        value.data = {
-          [item]: transformSessions(val as any),
-          ...value.data,
-        };
-      });
-      console.log(data)
-      dispatch(setProgrammes(value));
-      dispatch(setProgramme(data.response.programme));
       return data;
     },
     refetchOnWindowFocus: false,

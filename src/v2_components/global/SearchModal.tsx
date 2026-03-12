@@ -3,6 +3,7 @@ import { LoaderCircle, Search, X } from "lucide-react";
 import { useInfiniteSearch } from "@/api/global_api/global_api";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useLocation, useNavigate } from "react-router";
+import ExPlaceholderImg from '@/assets/Images/EXPlaceholder.jpg'
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -112,7 +113,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     }}
                   >
                     <img
-                      src={item.bg_img as string}
+                      src={item.bg_img ?? ExPlaceholderImg }
                       alt={item.title}
                       className="h-[7rem] sm:h-[10rem] w-[11rem] sm:w-[15rem] rounded-2xl"
                     />
@@ -137,7 +138,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     }}
                   >
                     <img
-                      src={item.user_img as string}
+                      src={item.user_img ?? ExPlaceholderImg}
                       alt={item.name}
                       className="h-[7rem] sm:h-[10rem] w-[11rem] sm:w-[15rem] rounded-2xl object-cover"
                     />
@@ -166,7 +167,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                             }}
                           >
                             <img
-                              src={value.logo as string}
+                              src={value.logo ?? ExPlaceholderImg}
                               alt={value.full_name}
                               className="h-[7rem] sm:h-[10rem] w-[11rem] sm:w-[15rem] rounded-2xl object-contain bg-gray-300"
                             />

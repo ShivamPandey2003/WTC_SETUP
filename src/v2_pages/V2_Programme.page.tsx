@@ -3,11 +3,19 @@ import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  getDateRange,
+  getEarliestAndLatest,
+  transformSessions,
+} from "@/lib/extra";
 import { cn } from "@/lib/utils";
+import { setProgrammes, type ProgrammeRecord } from "@/redux/ExtraSlice";
+import { setProgramme } from "@/redux/GlobalSlice";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
 import EventGrid from "@/v2_components/common/V2_Programme/EventGrid";
 import { Check, Loader } from "lucide-react";
+import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -21,6 +29,69 @@ const V2_Programme_page = () => {
       prev.includes(name) ? prev.filter((c) => c !== name) : [...prev, name],
     );
   };
+
+  useEffect(() => {
+    if (!ProgrammeList) return;
+
+    const value: ProgrammeRecord = {
+      start_date: "",
+      start_time: "",
+      end_date: "",
+      end_time: "",
+      data: {},
+    };
+
+    const parseDate = (dateStr: string): Date => {
+      const [y, m, d] = dateStr.split("-").map(Number);
+      return new Date(y, m - 1, d); // Safe, no timezone issues
+    };
+
+    const formatYMD = (date: Date): string => {
+      return date.toLocaleDateString("en-CA"); // YYYY-MM-DD
+    };
+
+    const dates = ProgrammeList.response.programme.map((item) =>
+      parseDate(item.start_date),
+    );
+
+    const earliest = new Date(Math.min(...dates.map((d) => d.getTime())));
+    const latest = new Date(Math.max(...dates.map((d) => d.getTime())));
+    const Time = getEarliestAndLatest(ProgrammeList.response.programme);
+
+    value.start_date = formatYMD(earliest);
+    value.end_date = formatYMD(latest);
+    value.start_time = Time.earliest;
+    value.end_time = Time.latest;
+
+    const dateRange = getDateRange(value.start_date, value.end_date);
+    dateRange.forEach((item) => {
+      const val = ProgrammeList.response.programme
+        .filter((e) => e.start_date === item)
+        .map((Datas) => {
+          const detail = Object.entries(Datas.categories).map(([_, set]) => {
+            return {
+              name: set.name,
+              color: set.color,
+            };
+          });
+          return {
+            session_id: Datas.id,
+            id: nanoid(),
+            title: detail[0]?.name,
+            color: detail[0]?.color,
+            start_time: Datas.start_time,
+            end_time: Datas.end_time,
+            type: "normal",
+          };
+        });
+      value.data = {
+        [item]: transformSessions(val as any),
+        ...value.data,
+      };
+    });
+    dispatch(setProgrammes(value));
+    dispatch(setProgramme(ProgrammeList.response.programme));
+  }, [ProgrammeList]);
 
   useEffect(() => {
     dispatch(setTitle(null));
@@ -52,7 +123,11 @@ const V2_Programme_page = () => {
     );
   }
 
-  if (!ProgrammeList || !ProgrammeList.response || !ProgrammeList.response.programme.length) {
+  if (
+    !ProgrammeList ||
+    !ProgrammeList.response ||
+    !ProgrammeList.response.programme.length
+  ) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />
@@ -64,26 +139,26 @@ const V2_Programme_page = () => {
     <div className="px-4 mx-auto">
       <div className="hidden sm:flex justify-between items-center ml-4 mt-4 mb-6">
         <div className="flex gap-4 flex-wrap">
-        {ProgrammeList.response.all_categories.map((item) => {
-          const active = selectedCategories.includes(item.name);
-          return (
-            <div
-              onClick={() => toggleCategory(item.name)}
-              key={item.name}
-              className={cn(
-                "flex items-center justify-center p-1 rounded-lg border min-w-20 w-fit gap-2 text-xs cursor-pointer",
-              )}
-              style={{
-                background: item.color,
-                borderColor: item.color,
-                color: "white",
-              }}
-            >
-              {!active && <Check size={15} />}
-              <span>{item.name}</span>
-            </div>
-          );
-        })}
+          {ProgrammeList.response.all_categories.map((item) => {
+            const active = selectedCategories.includes(item.name);
+            return (
+              <div
+                onClick={() => toggleCategory(item.name)}
+                key={item.name}
+                className={cn(
+                  "flex items-center justify-center p-1 rounded-lg border min-w-20 w-fit gap-2 text-xs cursor-pointer",
+                )}
+                style={{
+                  background: item.color,
+                  borderColor: item.color,
+                  color: "white",
+                }}
+              >
+                {!active && <Check size={15} />}
+                <span>{item.name}</span>
+              </div>
+            );
+          })}
         </div>
         <Button
           className="py-0 h-6 text-sm hover:text-white"

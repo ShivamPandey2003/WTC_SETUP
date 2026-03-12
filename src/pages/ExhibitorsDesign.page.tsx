@@ -58,7 +58,6 @@ const ExhibitorsDesign_page = () => {
     (state: RootState) => state.ExhibitorSlice,
   );
 
-  console.log(SettingValue)
   const { downloadExhibitor, isdownloadPending } = useExhibitorsDownload();
   const { DeleteCategory, isDeleteCategoryPending } = useDeleteCategory();
   const { UploadSplash, isPending: isUploadSplashPending } = useUploadSplash();
