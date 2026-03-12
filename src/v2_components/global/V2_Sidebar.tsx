@@ -31,7 +31,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
         <span className="text-[10px] font-bold">Sponsored by</span>
         <img
           src={appConfig?.sponsors?.logo}
-          className="w-[128px] h-fit object-cover"
+          className="w-[128px] object-cover"
         />
       </div>
       <div className="mx-auto flex flex-col space-y-4">
