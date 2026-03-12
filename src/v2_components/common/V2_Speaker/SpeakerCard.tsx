@@ -1,4 +1,5 @@
 import Linkedin from "@/assets/Icons/Linkedin";
+import PlaceholderImage from "@/assets/Images/placeholder.webp";
 
 interface TeamMemberCardProps extends CreateSpeakerRequestT {
   onClick: () => void;
@@ -31,7 +32,7 @@ export default function SpeakerCard({
           src={
             profile_image
               ? profile_image
-              : "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=600"
+              : PlaceholderImage
           }
           alt={prefix + " " + firstname + " " + lastname}
           className="w-full h-full object-cover"
