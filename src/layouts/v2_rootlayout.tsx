@@ -63,7 +63,7 @@ const V2_rootlayout = () => {
           open ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <div className="relative flex h-full items-center">
+        <div className="relative flex flex-col gap-4 h-full items-center">
           <div className="absolute right-0 top-0 z-[999]">
             <X className="cursor-pointer" onClick={() => setOpen(false)} />
           </div>

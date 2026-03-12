@@ -21,7 +21,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
   return (
     <>
       <div
-        className="absolute top-2 cursor-pointer"
+        className="cursor-pointer"
         onClick={() => navigate("/")}
       >
         <img
@@ -67,7 +67,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
 
 const V2_Sidebar = () => {
   return (
-    <aside className="hidden p-4 sm:flex items-center relative border-r border-border shadow min-w-[150px]">
+    <aside className="hidden p-4 sm:flex flex-col gap-4 items-center relative border-r border-border shadow min-w-[150px]">
       <V2_Sidebar_Context />
     </aside>
   );
