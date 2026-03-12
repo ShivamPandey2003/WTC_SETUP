@@ -49,7 +49,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
                   to={item.route}
                   className={({ isActive }) =>
                     cn(
-                      "bg-white text-black hover:bg-primary hover:text-white cursor-pointer inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive justify-start px-4 py-2 has-[>svg]:px-3",
+                      "bg-gray-100 sm:bg-white text-black hover:bg-primary hover:text-white cursor-pointer inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive justify-start px-4 py-2 has-[>svg]:px-3",
                       (isActive || isHomeActive) && "bg-primary text-white",
                     )
                   }
@@ -67,7 +67,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
 
 const V2_Sidebar = () => {
   return (
-    <aside className="hidden p-4 sm:flex flex-col gap-4 items-center relative border-r border-border shadow min-w-[150px]">
+    <aside className="hidden p-4 sm:flex flex-col space-y-8 items-center relative border-r border-border shadow min-w-[150px]">
       <V2_Sidebar_Context />
     </aside>
   );
