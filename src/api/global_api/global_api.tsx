@@ -202,7 +202,6 @@ export const useGetProgrammeList = () => {
       value.end_time = Time.latest;
 
       const dateRange = getDateRange(value.start_date, value.end_date);
-
       dateRange.forEach((item) => {
         const val = data.response.programme
           .filter((e) => e.start_date === item)
@@ -228,10 +227,9 @@ export const useGetProgrammeList = () => {
           ...value.data,
         };
       });
-
+      console.log(data)
       dispatch(setProgrammes(value));
       dispatch(setProgramme(data.response.programme));
-
       return data;
     },
     refetchOnWindowFocus: false,

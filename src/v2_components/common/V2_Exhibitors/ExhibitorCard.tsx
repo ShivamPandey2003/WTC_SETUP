@@ -15,7 +15,7 @@ export default function ExhibitorCard({
 }: ExhibitorCardProps) {
   return (
     <div
-      className={`rounded-lg overflow-hidden shadow-md border border-border w-[20rem] max-w-full sm:max-w-[17.5rem] md:max-w-xs cursor-pointer`}
+      className={`rounded-lg bg-white overflow-hidden shadow-md border border-border w-[20rem] max-w-full sm:max-w-[17.5rem] md:max-w-xs cursor-pointer`}
       onClick={onClick}
     >
       <div
@@ -29,7 +29,7 @@ export default function ExhibitorCard({
       </div>
 
       <div className="bg-white p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-4">{full_name}</h3>
+        <h3 className="text-xl font-bold text-gray-900 mb-4 line-clamp-1">{full_name}</h3>
 
         <div className="flex items-center justify-between">
           <p className="text-sm text-gray-700">Booth Hall C · Booth 21</p>

@@ -43,17 +43,17 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
       onClose={() => onClose(null)}
       size="lg"
       showCloseButton
-      classname="overflow-y-auto"
+      classname="overflow-y-auto max-h-[70vh] custom-scrollbar"
     >
       {!selectedValue ? (
         <div>No such data found</div>
       ) : !Array.isArray(selectedValue) ? (
         <div className="w-full">
-          <div className="flex items-start gap-4">
+          <div className="flex flex-col sm:flex-row items-start gap-4">
             <img
               src={selectedValue.bg_img ? selectedValue.bg_img : dummy}
               alt={selectedValue.title}
-              className="w-[200px] h-[118px] rounded-lg object-cover opacity-80"
+              className="w-full sm:w-[200px] h-[118px] rounded-lg object-cover opacity-80"
             />
             <div className="">
               <h2 className="text-xl font-bold text-primary mb-2">
@@ -130,7 +130,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
               // <a href={selectedValue.attachments.file} target="_blank">
               <div
                 onClick={() => navigate(`/Attachment/${selectedValue.id}`, {state:{Title:selectedValue.attachments.filename}})}
-                className="flex items-center gap-2 mb-5 text-sm text-gray-700"
+                className="flex flex-col sm:flex-row sm:items-center gap-2 mb-5 text-sm text-gray-700"
               >
                 <FileText className="w-4 h-4" />
                 <span className="hover:underline cursor-pointer">
@@ -190,11 +190,11 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
 
             {selectedValue.map((s) => (
               <TabsContent value={s.id} className="h-120" key={s.id}>
-                <div className="flex items-start gap-4">
+                <div className="flex flex-col sm:flex-row items-start gap-4">
                   <img
                     src={s.bg_img ? `data:image/png;base64,${s.bg_img}` : dummy}
                     alt={s.title}
-                    className="w-[200px] h-[118px] rounded-lg object-cover opacity-80"
+                    className="w-full sm:w-[200px] h-[118px] rounded-lg object-cover opacity-80"
                   />
                   <div className="">
                     <h2 className="text-xl font-bold text-primary mb-2">
@@ -265,7 +265,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                     // <a href={s.attachments.file} target="_blank">
                     <div
                       onClick={() => navigate(`/Attachment/${s.id}`, {state:{Title:s.attachments.filename}})}
-                      className="flex items-center gap-2 mb-5 text-sm text-gray-700"
+                      className="flex flex-col sm:flex-row items-center gap-2 mb-5 text-sm text-gray-700"
                     >
                       <FileText className="w-4 h-4" />
                       <span className="hover:underline cursor-pointer">
