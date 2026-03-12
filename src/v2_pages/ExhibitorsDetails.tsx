@@ -10,6 +10,7 @@ import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { toast } from "sonner";
+import ExPlaceholderImg from '@/assets/Images/EXPlaceholder.jpg'
 
 const ExhibitorsDetails = () => {
   const { id } = useParams();
@@ -74,7 +75,7 @@ const ExhibitorsDetails = () => {
               <div className="shrink-0">
                 <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl bg-white border-8 border-white shadow-2xl overflow-hidden">
                   <img
-                    src={ExhibitorDetails.logo}
+                    src={ExhibitorDetails.logo??ExPlaceholderImg}
                     alt={ExhibitorDetails.full_name}
                     className="w-full h-full object-contain p-2"
                   />
