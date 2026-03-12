@@ -44,8 +44,6 @@ const AddFloorLevelModel = () => {
     CreateFloorLevel(formData);
   };
 
-  console.log(designType)
-
   useEffect(() => {
     const value = String(designType) === "true";
     setUrl(value);
