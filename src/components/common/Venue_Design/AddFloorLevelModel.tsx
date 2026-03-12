@@ -35,7 +35,7 @@ const AddFloorLevelModel = () => {
     const formData = new FormData();
     formData.append("label", newData.label);
     formData.append("floor_level", String(newData.floor_level));
-    formData.append("design_type", String(newData.design_type));
+    formData.append("design_type", String(designType));
     if (url) {
       formData.append("iframe_url", newData.iframe_url as string);
     } else {
@@ -43,8 +43,9 @@ const AddFloorLevelModel = () => {
     }
 
     CreateFloorLevel(formData);
-    reset();
   };
+
+  console.log(designType)
 
   useEffect(() => {
     const value = String(designType) === "true";

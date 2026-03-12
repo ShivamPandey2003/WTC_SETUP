@@ -180,16 +180,13 @@ const V2_Venue_page = () => {
                   </GoogleMap>
                 </LoadScriptNext>
                 <div className="h-1/2">
-                  <div className="flex justify-between mb-8">
+                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 justify-between mb-8">
                     <div className="flex gap-6">
                       <Navigation strokeWidth={"1px"} />
                       <div>
                         <h3 className="text-lg font-bold">
                           {conference_location}
                         </h3>
-                        {/* <p className="w-60 text-sm">
-                      1001 Pl. Jean-Paul-Riopelle, Montréal, QC H2Y 0A3, Canada
-                    </p> */}
                       </div>
                     </div>
                     <Button
@@ -199,7 +196,7 @@ const V2_Venue_page = () => {
                       Open in Maps
                     </Button>
                   </div>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:items-center justify-between">
                     <div className="flex gap-6">
                       <Calendar strokeWidth={"1px"} />
                       <div>
@@ -244,7 +241,7 @@ const V2_Venue_page = () => {
           <div className="flex items-start sm:items-center justify-between">
             <div className={cn("flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4")}>
               <div className="text-sm font-[500] w-[100px] shrink-0">
-                {normalizeLabel("Floor Levels")}
+                {normalizeLabel("Floor Level")}
               </div>
               <div className="flex items-center gap-4">
                 <select

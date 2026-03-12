@@ -21,6 +21,10 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     route: pathname,
   });
 
+  const removeEmptyObjects = (arr: any[]) => {
+    return arr.filter((obj) => Object.keys(obj).length !== 0);
+  };
+
   const NewsList = useMemo(() => {
     if (!AllNews) return [];
     const newNewsData = AllNews.pages.flatMap(
@@ -28,8 +32,10 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     );
     if (!newNewsData.length) return [];
 
-    return newNewsData;
-  }, [AllNews]);
+    const result = removeEmptyObjects(newNewsData);
+
+    return result;
+  }, [AllNews, removeEmptyObjects]);
 
   const title =
     pathname === "/"
@@ -114,7 +120,9 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       <h2 className="mb-2 line-clamp-2 font-bold sm:text-xl">
                         {item.title}
                       </h2>
-                      <p className="line-clamp-4 text-xs sm:text-sm">{item.description}</p>
+                      <p className="line-clamp-4 text-xs sm:text-sm">
+                        {item.description}
+                      </p>
                     </div>
                   </div>
                 );
@@ -137,7 +145,9 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       <h2 className="mb-2 line-clamp-2 font-bold sm:text-xl">
                         {item.name}
                       </h2>
-                      <p className="line-clamp-4 text-xs sm:text-sm">{item.bio}</p>
+                      <p className="line-clamp-4 text-xs sm:text-sm">
+                        {item.bio}
+                      </p>
                     </div>
                   </div>
                 );
