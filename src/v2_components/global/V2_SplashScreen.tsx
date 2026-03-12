@@ -26,7 +26,10 @@ const V2_SplashScreen = ({ open, setOpen }: V2_SplashScreenProps) => {
       onClick={handleClick}
     >
       <div
-        className="relative rounded-2xl overflow-hidden max-w-[728px] w-full mx-4"
+        className="relative rounded-2xl overflow-hidden w-full max-w-sm sm:max-w-md md:max-w-[728px] mx-4"
+        style={{
+          // aspectRatio: "2/1",
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         <img
