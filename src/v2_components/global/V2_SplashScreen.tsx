@@ -26,7 +26,7 @@ const V2_SplashScreen = ({ open, setOpen }: V2_SplashScreenProps) => {
       onClick={handleClick}
     >
       <div
-        className="relative rounded-2xl overflow-hidden w-full max-h-10/12 max-w-sm sm:max-w-xl mx-4"
+        className="relative rounded-2xl overflow-hidden w-full max-h-10/12 max-w-sm md:max-w-xl mx-4"
         onClick={(e) => e.stopPropagation()}
       >
         <img
