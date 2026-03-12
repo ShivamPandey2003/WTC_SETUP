@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import workerSrc from "pdfjs-dist/build/pdf.worker.min?url";
 import { useLocation, useParams } from "react-router";
 import { useGetAttachment } from "@/api/programme_design_api/Programme_design_api";
+import { cn } from "@/lib/utils";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
 
@@ -52,7 +53,7 @@ const AttachmentPdf = () => {
   }, [Attachment]);
 
   return (
-    <div className="flex flex-col items-center gap-6 py-6 relative">
+    <div className="flex flex-col items-center gap-6 py-6 relative w-full max-w-full overflow-auto">
       {(loading || isPending ) && (
         <div className="absolute flex items-center justify-center">
           <div className="animate-spin h-8 w-8 border-4 border-gray-300 border-t-primary rounded-full" />
@@ -61,7 +62,7 @@ const AttachmentPdf = () => {
 
       <div
         ref={containerRef}
-        className={`flex flex-col gap-6 ${loading ? "opacity-0" : "opacity-100"}`}
+        className={cn(`flex flex-col gap-6`, loading ? "opacity-0" : "opacity-100")}
       />
     </div>
   );
