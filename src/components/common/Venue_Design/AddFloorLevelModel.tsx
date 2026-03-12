@@ -17,7 +17,6 @@ const AddFloorLevelModel = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
     control,
   } = useForm({ resolver: zodResolver(FloorLevelSchema) });
   const dispatch = useDispatch<AppDispatch>();
