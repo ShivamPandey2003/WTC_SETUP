@@ -26,13 +26,13 @@ const V2_SplashScreen = ({ open, setOpen }: V2_SplashScreenProps) => {
       onClick={handleClick}
     >
       <div
-        className="relative rounded-2xl overflow-hidden w-full max-h-10/12 max-w-sm mx-4"
+        className="relative rounded-2xl overflow-hidden w-full max-h-10/12 max-w-sm sm:max-w-xl mx-4"
         onClick={(e) => e.stopPropagation()}
       >
         <img
           src={appConfig.splash.image}
           alt="Splash Screen"
-          className="sm:max-w-md md:max-w-[728px] h-full object-cover"
+          className="sm:max-w-md md:max-w-[728px] w-full h-full object-cover"
         />
         <X
           className="absolute right-4 top-4 cursor-pointer text-white hover:text-slate-200"
