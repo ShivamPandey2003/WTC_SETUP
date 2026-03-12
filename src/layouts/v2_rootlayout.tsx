@@ -64,10 +64,10 @@ const V2_rootlayout = () => {
         )}
       >
         <div className="relative flex h-full items-center">
-          <div className=" absolute right-0 top-0 z-[999]">
+          <div className="absolute right-0 top-0 z-[999]">
             <X className="cursor-pointer" onClick={() => setOpen(false)} />
           </div>
-          <V2_Sidebar_Context setOpen={() => setOpen(false)} />
+          {open && <V2_Sidebar_Context setOpen={() => setOpen(false)} />}
         </div>
       </aside>
       {searchModal && (
