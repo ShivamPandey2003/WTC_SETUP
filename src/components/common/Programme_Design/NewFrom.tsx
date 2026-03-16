@@ -35,6 +35,7 @@ const NewFrom = () => {
     handleSubmit,
     formState: { errors },
     control,
+    setValue,
   } = useForm<SessionForm>({
     resolver: zodResolver(SessionSchema),
   });
@@ -55,7 +56,7 @@ const NewFrom = () => {
       return `${year}-${month}-${day}`;
     }
     formData.append("title", newData.title);
-    formData.append("description", newData.description);
+    formData.append("description", newData?.description as string);
     formData.append("start_time", newData.start_time);
     formData.append("end_time", newData.end_time);
     formData.append("start_date", formatToYYYYMMDD(slectedDate));
@@ -64,8 +65,12 @@ const NewFrom = () => {
     formData.append("external_link", newData?.external_link as string);
     formData.append("category", newData.category);
     formData.append("speakers", newData.speakers);
-    formData.append("attachment", newData.attachments?.[0] as Blob);
     formData.append("venueID", `${newData.floorID}__${newData.venueID}`);
+    if (newData.attachments && newData.attachments?.length > 0) {
+      Array.from(newData.attachments).forEach((file) => {
+        formData.append("attachment", file);
+      });
+    }
 
     CreateSession(formData);
   };
@@ -130,7 +135,7 @@ const NewFrom = () => {
     {
       name: "attachments",
       label: "Paper",
-      type: "file",
+      type: "array-attachment",
       accept: "application/pdf",
     },
     { name: "location", label: "Location" },
@@ -191,6 +196,7 @@ const NewFrom = () => {
       errors={errors}
       isLoading={isCreateSessionPending}
       onClose={onClose}
+      setValue={setValue}
     />
   );
 };

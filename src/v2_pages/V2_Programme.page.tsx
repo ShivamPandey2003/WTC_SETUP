@@ -65,10 +65,10 @@ const V2_Programme_page = () => {
       <div className="hidden sm:flex justify-between items-center ml-4 mt-4 mb-6">
         <div className="flex gap-4 flex-wrap">
         {ProgrammeList.response.all_categories.map((item) => {
-          const active = selectedCategories.includes(item.name);
+          const active = selectedCategories.includes(item.id);
           return (
             <div
-              onClick={() => toggleCategory(item.name)}
+              onClick={() => toggleCategory(item.id)}
               key={item.name}
               className={cn(
                 "flex items-center justify-center p-1 rounded-lg border min-w-20 w-fit gap-2 text-xs cursor-pointer",

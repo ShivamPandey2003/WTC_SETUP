@@ -10,6 +10,7 @@ export const ExhibitorSchema = z.object({
   full_name: z.string().min(2, "Full name is required"),
   url: z.url(),
   email: z.email(),
+  show_mail: z.boolean(),
   logo: z
     .instanceof(FileList)
     .optional()
@@ -28,6 +29,7 @@ export const EditExhibitorSchema = z.object({
   full_name: z.string().min(2, "Full name is required"),
   url: z.url(),
   email: z.email(),
+  show_mail: z.boolean(),
   logo: z
     .custom<FileList | undefined>()
     .optional().refine((files) => {

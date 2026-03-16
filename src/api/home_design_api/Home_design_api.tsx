@@ -227,3 +227,50 @@ export const useUploadNewsImages = () => {
 
   return { UploadBulkImages, isPending, data, isError };
 };
+
+export const useNewsDownload = () => {
+  const { mutate: downloadNews, isPending: isdownloadPending } = useMutation(
+    {
+      mutationKey: ["session_download"],
+      mutationFn: async () => {
+        const res = await apiRequest(
+          "get",
+          "/news/download-news",
+          null,
+          "blob",
+        );
+
+        const contentDisposition = res.headers["content-disposition"];
+        const blob = new Blob([res.response]);
+
+        // Extract filename safely
+        let filename = "news_list.csv";
+
+        if (contentDisposition?.includes("filename=")) {
+          filename = contentDisposition.split("filename=")[1].replace(/"/g, "");
+        }
+
+        const url = window.URL.createObjectURL(res.response);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = filename; // cleaner way
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        return blob;
+      },
+      onMutate: () => {
+        toast.info("File is preparing for download");
+      },
+      onSuccess: () => {
+        toast.success("File download successfully");
+      },
+    },
+  );
+
+  return { downloadNews, isdownloadPending };
+};

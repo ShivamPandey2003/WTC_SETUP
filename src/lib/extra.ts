@@ -27,6 +27,7 @@ export const getDateRange = (start: string, end: string): string[] => {
 
 export interface Session {
   session_id: string;
+  categoryId: string;
   id: string;
   title: string;
   color: string;
@@ -37,6 +38,7 @@ export interface Session {
 
 export interface NormalItem {
   session_id: string;
+  categoryId: string;
   id: string;
   title: string;
   start: string;
@@ -47,6 +49,7 @@ export interface NormalItem {
 
 export interface MergeItem {
   session_id: string[];
+  categoryId: string;
   id: string;
   title: string;
   start: string;
@@ -61,6 +64,7 @@ export interface GroupItem {
   start: string;
   end: string;
   Item: {
+    categoryId: string;
     session_id: string;
     id: string;
     title: string;
@@ -141,6 +145,7 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
         start: group[0].start_time,
         end: group[0].end_time,
         Item: group.map((s) => ({
+          categoryId: s.categoryId,
           session_id: s.session_id,
           id: s.id,
           title: s.title,
@@ -181,6 +186,7 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
 
         result.push({
           id: nanoid(),
+          categoryId: cluster[0].categoryId,
           type: "merge",
           title: cluster[0].title,
           color: cluster[0].color,
@@ -193,6 +199,7 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
         const s = cluster[0];
         result.push({
           session_id: s.session_id,
+          categoryId: s.categoryId,
           id: s.id,
           title: s.title,
           start: s.start_time,

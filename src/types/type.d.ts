@@ -210,11 +210,7 @@ declare type AppConfig = {
   };
   home_design: {
     home_title: string;
-    upcoming_session: boolean;
-    gold_exhibitors_session: boolean;
-    keynote_speaker_session: boolean;
-    advertisements: boolean;
-    exhibitors_with_ad: boolean;
+    categories: any[]
   };
 };
 
@@ -338,9 +334,10 @@ declare type SpeakerSettingResponse = {
 
 declare type Programme = {
   attachments: {
+    id:string;
     filename: string;
     has_attachment: boolean;
-  };
+  }[];
   id: string;
   title: string;
   location: string;

@@ -37,10 +37,10 @@ const EventGrid = ({ selectedCategories }: Props) => {
     if (filters.length === 0) return true;
 
     if (event.type === "array") {
-      return event.Item.some((e) => !filters.includes(e.title));
+      return event.Item.some((e) => !filters.includes(e.categoryId));
     }
 
-    return !filters.includes(event.title);
+    return !filters.includes(event.categoryId);
   };
 
   React.useLayoutEffect(() => {

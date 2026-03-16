@@ -36,6 +36,8 @@ const Map_V2 = ({ id }: prop) => {
     (state: RootState) => state.Venue_Design_V2,
   );
 
+  console.log(GlobalMap)
+
   useEffect(() => {
     const value = GlobalMap.find((pre) => pre.id === id);
     if (!value) return;
@@ -280,6 +282,7 @@ const Map_V2 = ({ id }: prop) => {
         id={tooltip?.id as string}
         x={tooltip?.x as number}
         y={tooltip?.y as number}
+        filterId={id}
         onClose={closeTooltip}
       />
     </div>

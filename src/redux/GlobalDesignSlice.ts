@@ -40,11 +40,7 @@ const initialState: initialStateType = {
     },
     home_design: {
       home_title: "",
-      upcoming_session: false,
-      gold_exhibitors_session: false,
-      keynote_speaker_session: false,
-      advertisements: false,
-      exhibitors_with_ad: false,
+      categories:[]
     },
   },
 };
