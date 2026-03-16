@@ -1,2 +1,3 @@
-prefix,firstname,lastname,designation,company,bio,external_link,keyNote,email,linkden_url
+Prefix,First Name,Last Name,Designation,Company,Bio,External Link,Key Note,Email,Linkden
 Mr.,Jhon,Doe,Developer,ITA WTC,Some bio ,http://wtc.com/,TRUE,user@wt.com,https://wtc.linkden.com
+Mr.,Jhon2,Doe2,Developer,ITA WTC,Some bio ,http://wtc.com/,TRUE,user2@wt.com,https://wtc.linkden.com

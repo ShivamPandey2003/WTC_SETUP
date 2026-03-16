@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { cn, normalizeLabel } from "@/lib/utils";
 import { setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
+import TextEditor from "@/v2_components/global/TextEditor";
 import { Link } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,7 +22,7 @@ const VenueDesign_page = () => {
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
-  const {isPending} = useGetSpeakerSetting();
+  const { isPending } = useGetSpeakerSetting();
 
   const { UpdateVenueDesign, isUpdateVenueDesignPending } =
     useVenueDesignUpdate();
@@ -34,8 +35,8 @@ const VenueDesign_page = () => {
     setAttachment(file);
   };
 
-  if(isPending){
-    return null
+  if (isPending) {
+    return null;
   }
 
   return (
@@ -137,7 +138,7 @@ const VenueDesign_page = () => {
                 <div className="text-sm font-[500] w-[220px] shrink-0">
                   {normalizeLabel("getting_there_description")}
                 </div>
-                <textarea
+                {/* <textarea
                   value={SpeakerSettings.venue.getting_there_description}
                   // rows={3}
                   onChange={(e) =>
@@ -152,6 +153,19 @@ const VenueDesign_page = () => {
                     )
                   }
                   className="bg-[#1111110D] py-1 px-8 w-[30rem] min-h-[7rem] h-fit rounded-[7px] border-transparent text-sm text-gray-600 hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
+                /> */}
+                <TextEditor
+                  save={(e) =>
+                    dispatch(
+                      setSpeakerSettings({
+                        ...SpeakerSettings,
+                        venue: {
+                          ...SpeakerSettings.venue,
+                          getting_there_description: e,
+                        },
+                      }),
+                    )
+                  }
                 />
               </div>
               <div className={cn("flex items-center gap-4 py-2 w-full")}>

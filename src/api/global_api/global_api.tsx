@@ -206,8 +206,9 @@ export const useGetProgrammeList = () => {
         const val = data.response.programme
           .filter((e) => e.start_date === item)
           .map((Datas) => {
-            const detail = Object.entries(Datas.categories).map(([_, set]) => {
+            const detail = Object.entries(Datas.categories).map(([key, set]) => {
               return {
+                id:key,
                 name: set.name,
                 color: set.color,
               };
@@ -215,6 +216,7 @@ export const useGetProgrammeList = () => {
             return {
               session_id: Datas.id,
               id: nanoid(),
+              categoryId: detail[0].id,
               title: detail[0]?.name,
               color: detail[0]?.color,
               start_time: Datas.start_time,
@@ -227,7 +229,6 @@ export const useGetProgrammeList = () => {
           ...value.data,
         };
       });
-      console.log(data)
       dispatch(setProgrammes(value));
       dispatch(setProgramme(data.response.programme));
       return data;

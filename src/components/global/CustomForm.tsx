@@ -87,10 +87,23 @@ const CustomForm = <T extends Record<string, any>>({
 
   const handleAddAttachment = (fieldName: string, files: FileList | null) => {
     if (!files) return;
-    setArrayAttachments((prev) => ({
-      ...prev,
-      [fieldName]: [...(prev[fieldName] || []), ...Array.from(files)],
-    }));
+
+  const newFiles = [
+    ...(arrayAttachments[fieldName] || []),
+    ...Array.from(files),
+  ];
+
+  setArrayAttachments((prev) => ({
+    ...prev,
+    [fieldName]: newFiles,
+  }));
+
+  if (setValue) {
+    setValue(fieldName as any, newFiles as any, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  }
   };
 
   const handleRemoveAttachment = (fieldName: string, index: number) => {
