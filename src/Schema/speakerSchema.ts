@@ -31,8 +31,8 @@ export const speakerSchema = z.object({
       if (!files || files.length === 0) return true;
       return allowedTypes.includes(files[0].type);
     }, "Only PNG, JPG, WEBP images are allowed"),
-  linkedin_url: z.url().optional(),
-  whatsapp_url: z.url().optional(),
+  linkedin_url: z.url().optional().or(z.literal("")),
+  whatsapp_url: z.url().optional().or(z.literal("")),
   keyNote: z.boolean(),
 });
 
@@ -59,8 +59,8 @@ export const EditspeakerSchema = z.object({
       if (!files || files.length === 0) return true;
       return allowedTypes.includes(files[0].type);
     }, "Only PNG, JPG, WEBP images are allowed"),
-  linkedin_url: z.url().optional(),
-  whatsapp_url: z.url().optional(),
+  linkedin_url: z.url().optional().or(z.literal("")),
+  whatsapp_url: z.url().optional().or(z.literal("")),
   keyNote: z.boolean(),
 });
 

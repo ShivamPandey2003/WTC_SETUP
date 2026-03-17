@@ -23,7 +23,8 @@ type FieldConfig<T extends Record<string, any>> = {
     | "array-string"
     | "array-attachment"
     | "time"
-    | "select";
+    | "select"
+    | "color";
   placeholder?: string;
   accept?: string;
   options?: { label: string; value: string }[];
@@ -88,22 +89,22 @@ const CustomForm = <T extends Record<string, any>>({
   const handleAddAttachment = (fieldName: string, files: FileList | null) => {
     if (!files) return;
 
-  const newFiles = [
-    ...(arrayAttachments[fieldName] || []),
-    ...Array.from(files),
-  ];
+    const newFiles = [
+      ...(arrayAttachments[fieldName] || []),
+      ...Array.from(files),
+    ];
 
-  setArrayAttachments((prev) => ({
-    ...prev,
-    [fieldName]: newFiles,
-  }));
+    setArrayAttachments((prev) => ({
+      ...prev,
+      [fieldName]: newFiles,
+    }));
 
-  if (setValue) {
-    setValue(fieldName as any, newFiles as any, {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-  }
+    if (setValue) {
+      setValue(fieldName as any, newFiles as any, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
   };
 
   const handleRemoveAttachment = (fieldName: string, index: number) => {
@@ -137,7 +138,10 @@ const CustomForm = <T extends Record<string, any>>({
 
   return (
     <div className="relative">
-      <form onSubmit={handleFormSubmit} className="space-y-4 max-h-[69vh] overflow-auto custom-scrollbar pb-12 px-6 pt-6">
+      <form
+        onSubmit={handleFormSubmit}
+        className="space-y-4 max-h-[69vh] overflow-auto custom-scrollbar pb-12 px-6 pt-6"
+      >
         {fields.map((field) => (
           <div key={field.name} className="flex items-start gap-3 ">
             {
@@ -313,6 +317,15 @@ const CustomForm = <T extends Record<string, any>>({
                       className="h-24 rounded border object-cover"
                     />
                   )}
+                </div>
+              ) : field.type === "color" ? (
+                <div className="flex items-center gap-3">
+                  <input type="color" {...register(field.name)} />
+                  <input
+                    type="text"
+                    {...register(field.name)}
+                    className="w-full rounded outline-0 border-[1px] border-gray-200 px-2 py-1 focus:border-primary"
+                  />
                 </div>
               ) : (
                 <input

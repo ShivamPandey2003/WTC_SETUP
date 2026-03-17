@@ -2,7 +2,7 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { FORMAT_TEXT_COMMAND, $getSelection } from "lexical";
 import { $setBlocksType } from "@lexical/selection";
 import { $createHeadingNode } from "@lexical/rich-text";
-import { Bold, Italic, Underline } from "lucide-react";
+import { ImUnderline, ImBold, ImItalic  } from "react-icons/im";
 
 export default function Toolbar() {
   const [editor] = useLexicalComposerContext();
@@ -15,27 +15,27 @@ export default function Toolbar() {
   };
 
   return (
-    <div className="flex gap-2 mb-3 border-b p-2 bg-white items-center">
-      <button onClick={() => setHeading("h1")}>H1</button>
-      <button onClick={() => setHeading("h2")}>H2</button>
-      <button onClick={() => setHeading("h3")}>H3</button>
+    <div className="flex gap-3 mb-3 border-b p-2 bg-white items-center rounded-t-[7px]">
+      <button onClick={() => setHeading("h1")} className="cursor-pointer font-bold text-gray-700">H1</button>
+      <button onClick={() => setHeading("h2")} className="cursor-pointer font-bold text-gray-700">H2</button>
+      <button onClick={() => setHeading("h3")} className="cursor-pointer font-bold text-gray-700">H3</button>
 
       <button
-        onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold")}
+        onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold")} className="cursor-pointer text-gray-700"
       >
-        <Bold size={18}/>
+        <ImBold size={16}/>
       </button>
 
       <button
-        onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic")}
+        onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic")} className="cursor-pointer text-gray-700"
       >
-        <Italic size={18}/>
+        <ImItalic size={16}/>
       </button>
 
       <button
-        onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline")}
+        onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline")} className="cursor-pointer text-gray-700"
       >
-        <Underline size={20}/>
+        <ImUnderline size={18}/>
       </button>
     </div>
   );

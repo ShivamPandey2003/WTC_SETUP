@@ -83,11 +83,11 @@ const V2_exhibitors_page = () => {
       setSpashScreen(true);
       sessionStorage.setItem("Exhibitor_Splash", JSON.stringify(true));
     }
-    // const timer = setTimeout(() => {
-    //   setSpashScreen(false);
-    // }, 6000);
+    const timer = setTimeout(() => {
+      setSpashScreen(false);
+    }, 6000);
 
-    // return () => clearTimeout(timer);
+    return () => clearTimeout(timer);
   }, [setSpashScreen]);
 
   if (status === "pending") {

@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 // import { ChevronLeft, ChevronRight } from "lucide-react";
+import ExPlaceholderImg from '@/assets/Images/EXPlaceholder.jpg'
 
 interface HeroCarouselProps {
   slides: Carusole[];
@@ -55,6 +56,8 @@ export default function HeroCarousel({
   const onClick = (id:string, type:number)=>{
     if(type === 1){
       navigation(`/exhibitors/${id}`)
+    }else if (type === 3){
+      navigation(`/speaker/${id}`)
     }else{
       navigation(`/news/${id}`)
     }
@@ -91,7 +94,7 @@ export default function HeroCarousel({
               style={{
                 backgroundImage: slide.bg_img
                   ? `url(${slide.bg_img})`
-                  : "url('https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200')",
+                  : `url(${ExPlaceholderImg})`,
               }}
             >
               <div className="w-full h-full bg-gradient-to-r from-slate-900/80 to-slate-900/40 flex flex-col justify-end py-4 px-8 md:px-16">
@@ -119,13 +122,13 @@ export default function HeroCarousel({
                 >
                   {slide.description}
                 </p>}
-                {slide.email && <p
+                {slide.type === 1 && <p
                   className={cn(
                     "text-xl md:text-2xl text-white/90 mb-8 line-clamp-2",
                     descriptionClassName,
                   )}
                 >
-                  {"Daimond Sponsor"}
+                  {"Diamond Sponsor"}
                 </p>}
                 {/* <button
                 className={cn(
