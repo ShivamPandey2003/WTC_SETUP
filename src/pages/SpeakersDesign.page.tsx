@@ -167,8 +167,9 @@ const SpeakersDesign_page = () => {
                     />
                   </div>
                 </div>
-                {Object.entries(SpeakerSettings.speaker_info).map(
-                  ([key, value], i) => (
+                {Object.entries(SpeakerSettings.speaker_info)
+                  .filter(([key]) => key !== "exhibitors_setting")
+                  .map(([key, value], i) => (
                     <div className="flex items-center py-2 gap-8" key={i}>
                       <div className="w-40 text-sm font-medium">
                         {normalizeLabel(key)}
@@ -188,8 +189,7 @@ const SpeakersDesign_page = () => {
                         }
                       />
                     </div>
-                  ),
-                )}
+                  ))}
               </Section>
               <Section title="Speaker Data" ClassName="w-full">
                 <div className="text-sm text-gray-700 flex gap-1">

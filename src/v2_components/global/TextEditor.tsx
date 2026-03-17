@@ -29,7 +29,6 @@ export default function TextEditor({save}:TextEditorProp) {
     editorState.read(() => {
       const html = $generateHtmlFromNodes(editor);
       save(html)
-      console.log("HTML OUTPUT:", html);
     });
   };
 

@@ -8,7 +8,7 @@ import {
 } from "@/redux/ExhibitorSlice";
 import type { RootState } from "@/redux/store";
 import { Check, Loader, Pencil, Trash2, X } from "lucide-react";
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 interface Custom_Text_RowProp {
@@ -40,9 +40,9 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
 
   const { EditCategory, isEditCategoryPending } = useEditCategory();
 
-  useEffect(()=>{
-    setTempColor(color)
-  },[color])
+  useEffect(() => {
+    setTempColor(color);
+  }, [color]);
 
   // Sync when edit mode starts
   useEffect(() => {
@@ -67,7 +67,16 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
       />
 
       {/* COLOR PREVIEW */}
-      <ColorDiv tempColor={tempColor} />
+      <input
+        type="color"
+        className={cn(
+          "w-[50px] h-[30px] rounded-[7px]",
+        )}
+        disabled={!isEditable[id]}
+        value={isEditable[id] ? tempColor : color}
+        onChange={(e) => setTempColor(e.target.value)}
+      />
+
       {/* COLOR INPUT */}
       <input
         className={cn(
@@ -163,14 +172,5 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
     </div>
   );
 };
-
-const ColorDiv = memo(({tempColor}:{tempColor:string}) => {
-  return (
-    <div
-      className="w-6 h-6 rounded border border-gray-300"
-      style={{ backgroundColor: tempColor }}
-    />
-  );
-});
 
 export default Custom_Text_Row;

@@ -71,7 +71,6 @@ const NewFrom = () => {
       placeholder: "https://example.com",
     },
     { name: "email", label: "Email", placeholder: "example@mail.com" },
-    { name: "show_mail", label: "Show mail", type: "checkbox"},
     { name: "logo", label: "Logo", type: "file", accept: "image/png,image/jpg,image/webp" },
     {
       name: "category",
@@ -85,6 +84,7 @@ const NewFrom = () => {
         }),
     },
     { name: "ads", label: "Ads", type: "checkbox" },
+    { name: "show_mail", label: "Show mail", type: "checkbox"},
   ];
 
   return (
