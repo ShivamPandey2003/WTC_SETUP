@@ -28,7 +28,6 @@ export default function TextEditor({save}:TextEditorProp) {
   const handleChange = (editorState: EditorState, editor: any) => {
     editorState.read(() => {
       const html = $generateHtmlFromNodes(editor);
-      console.log(html)
       save(html)
     });
   };
