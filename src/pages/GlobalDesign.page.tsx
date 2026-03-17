@@ -106,7 +106,7 @@ const GlobalDesign_page = () => {
             show={true}
             loading={isUpdateAppConfigPending}
           >
-            {Object.entries(appConfig.text_style).map(([key, value], i) => (
+            {Object.entries(appConfig.text_style).filter(([key])=>key !== "font_family").map(([key, value], i) => (
               <TextStyleRow
                 key={i}
                 label={normalizeLabel(key)}
