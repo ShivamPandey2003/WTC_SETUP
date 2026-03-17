@@ -20,6 +20,9 @@ importers:
       '@lexical/rich-text':
         specifier: ^0.41.0
         version: 0.41.0
+      '@lexical/selection':
+        specifier: ^0.41.0
+        version: 0.41.0
       '@react-google-maps/api':
         specifier: ^2.20.7
         version: 2.20.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
