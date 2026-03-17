@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import ExPlaceholderImg from "@/assets/Images/EXPlaceholder.jpg";
 // import { cn } from "@/lib/utils";
 
 interface HeroCarouselProps {
@@ -46,20 +47,24 @@ const SponserCarousal = ({
             <a href={slide.url} target="_blank" rel="noopener noreferrer">
               <div
                 className="w-full h-full bg-contain bg-no-repeat bg-center"
-                style={{ backgroundImage: `url(${slide.logo})` }}
+                style={{
+                  backgroundImage: slide.logo
+                    ? `url(${slide.logo})`
+                    : `url(${ExPlaceholderImg})`,
+                }}
               >
                 <div className="w-full h-full flex flex-col justify-end py-4 px-2 md:px-4">
                   <h2 className="text-base font-bold text-primary mb-1">
                     {slide.full_name}
                   </h2>
                   <h2 className="text-base font-bold text-primary mb-1">
-                    Daimond Sponsor
+                    Diamond Sponsor
                   </h2>
                 </div>
               </div>
             </a>
           </div>
-        ) : null
+        ) : null,
       )}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
         {slides.map((_, index) => (

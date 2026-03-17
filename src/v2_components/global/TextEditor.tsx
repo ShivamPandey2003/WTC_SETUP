@@ -35,14 +35,14 @@ export default function TextEditor({save}:TextEditorProp) {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="border border-gray-100 rounded bg-[#1111110D] max-w-[260px]">
+      <div className="border border-gray-100 rounded-[7px] bg-[#1111110D] max-w-[260px]">
         <Toolbar />
 
         <RichTextPlugin
           contentEditable={
             <ContentEditable className="outline-none min-h-[150px] p-3 min-w-[260px]" />
           }
-        //   placeholder={<div className="text-gray-400">Start typing...</div>}
+          // placeholder={<div className="text-gray-400">Start typing...</div>}
           ErrorBoundary={LexicalErrorBoundary}
         />
 

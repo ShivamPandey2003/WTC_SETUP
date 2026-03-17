@@ -2,6 +2,7 @@ import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
+import ExPlaceholderImg from '@/assets/Images/EXPlaceholder.jpg'
 import { apiRequest } from "@/services/apiService";
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -74,7 +75,7 @@ const ExhibitorsDetails = () => {
               <div className="shrink-0">
                 <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl bg-white border-8 border-white shadow-2xl overflow-hidden">
                   <img
-                    src={ExhibitorDetails.logo}
+                    src={ExhibitorDetails.logo?? ExPlaceholderImg}
                     alt={ExhibitorDetails.full_name}
                     className="w-full h-full object-contain p-2"
                   />
@@ -101,13 +102,13 @@ const ExhibitorsDetails = () => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
-                  <a
+                  {ExhibitorDetails.email.trim() && <a
                     href={`mailto:${ExhibitorDetails.email}`}
                     className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
                   >
                     <Mail className="w-5 h-5" />
                     Email
-                  </a>
+                  </a>}
                   <a
                     href={ExhibitorDetails.url}
                     target="_blank"
@@ -126,7 +127,7 @@ const ExhibitorsDetails = () => {
                 Contact Information
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-100">
+                {ExhibitorDetails.email.trim() && <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-100">
                   <div className="flex items-center gap-3 mb-3">
                     <Mail className="w-6 h-6 text-blue-600" />
                     <h3 className="text-lg font-semibold text-slate-900">
@@ -137,7 +138,7 @@ const ExhibitorsDetails = () => {
                   <p className="text-slate-700 text-lg font-medium">
                     {ExhibitorDetails.email}
                   </p>
-                </div>
+                </div>}
 
                 <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-100">
                   <div className="flex items-center gap-3 mb-3">

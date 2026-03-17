@@ -66,7 +66,7 @@ const ProgrammeDesign_page = () => {
   const { downloadSession, isdownloadPending } = useSessionDownload();
   const { UploadNewsCSV, isPending: isUploadSessionsCSV } =
     useUploadSessionsCSV();
-  const { isCreating, slectedDate, uploadCSV } = useSelector(
+  const { isCreating, slectedDate, uploadCSV, session=[] } = useSelector(
     (state: RootState) => state.Programme_Design,
   );
   const { isCreating: isSpeakerCreating, SpeakerSettings } = useSelector(
@@ -207,14 +207,14 @@ const ProgrammeDesign_page = () => {
                 <ChevronRight />
               </Button>
             </div>
-            <Button
+            {session.length > 0 && <Button
               onClick={() => downloadSession()}
               disabled={isdownloadPending}
               className="w-fit py-1 h-7"
             >
               <Download />
               Download
-            </Button>
+            </Button>}
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
               className="w-fit py-1 h-7"

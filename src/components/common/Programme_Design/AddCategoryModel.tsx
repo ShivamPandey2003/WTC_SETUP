@@ -45,12 +45,13 @@ const AddCategoryModel = () => {
       | "file"
       | "checkbox"
       | "date"
+      | "color"
       | "array-string"
       | "array-attachment";
     placeholder?: string;
   }[] = [
     { name: "name", label: "Name", placeholder: "Enter category name" },
-    { name: "color", label: "Color", placeholder: "ex: #ffffff" },
+    { name: "color", label: "Color", placeholder: "ex: #ffffff", type:"color" },
   ];
 
   return (

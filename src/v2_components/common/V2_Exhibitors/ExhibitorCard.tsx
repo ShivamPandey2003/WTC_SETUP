@@ -1,3 +1,5 @@
+import ExPlaceholderImg from '@/assets/Images/EXPlaceholder.jpg'
+
 interface ExhibitorCardProps {
   logo: string;
   full_name: string;
@@ -22,7 +24,7 @@ export default function ExhibitorCard({
         className={`bg-gray-300 p-8 flex items-center justify-center min-h-32`}
       >
         <img
-          src={logo}
+          src={logo??ExPlaceholderImg}
           alt={full_name}
           className="h-12 object-contain"
         />

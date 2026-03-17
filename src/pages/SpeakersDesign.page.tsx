@@ -35,7 +35,7 @@ import { setResponseModal } from "@/redux/ModalSlice";
 
 const SpeakersDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
-  const { isCreating, SpeakerSettings, uploadCSV } = useSelector(
+  const { isCreating, SpeakerSettings, uploadCSV, speakers } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
   const { responseModal, responseData } = useSelector(
@@ -91,14 +91,16 @@ const SpeakersDesign_page = () => {
         />
         {Boolean(value === "Session Data") && (
           <div className="absolute right-10 flex items-center gap-4">
-            <Button
-              onClick={() => downloadSpeaker()}
-              disabled={isdownloadPending}
-              className="w-fit py-1 h-7"
-            >
-              <Download />
-              Download
-            </Button>
+            {speakers.length > 0 && (
+              <Button
+                onClick={() => downloadSpeaker()}
+                disabled={isdownloadPending}
+                className="w-fit py-1 h-7"
+              >
+                <Download />
+                Download
+              </Button>
+            )}
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
               className="w-fit py-1 h-7"

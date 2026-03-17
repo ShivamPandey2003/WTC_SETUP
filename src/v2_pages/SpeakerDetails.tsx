@@ -5,6 +5,7 @@ import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import PlaceholderImage from "@/assets/Images/placeholder.webp";
 import {
   Briefcase,
   Building2,
@@ -84,7 +85,7 @@ const SpeakerDetails = () => {
               <div className="flex-shrink-0">
                 <div className="relative p-4">
                   <img
-                    src={speakerDetails.profile_image}
+                    src={speakerDetails.profile_image?? PlaceholderImage}
                     alt={`${speakerDetails.firstname} ${speakerDetails.lastname}`}
                     className="w-48 h-48 sm:w-56 sm:h-56 rounded-2xl object-cover shadow-2xl"
                   />

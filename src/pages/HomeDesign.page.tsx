@@ -44,7 +44,7 @@ const HomeDesign_page = () => {
   const { AllCategory, isPending: isCategoriesPending } = useGetCategoryAll();
   const { NewsList } = useGetNewsList();
   const dispatch = useDispatch<AppDispatch>();
-  const { isCreating, uploadCSV } = useSelector(
+  const { isCreating, uploadCSV, news=[] } = useSelector(
     (state: RootState) => state.Home_Design,
   );
   const { responseModal, responseData } = useSelector(
@@ -94,14 +94,14 @@ const HomeDesign_page = () => {
         />
         {Boolean(value === "News") && (
           <div className="absolute right-10 flex items-center gap-4">
-            <Button
+            {news.length > 0 && <Button
               onClick={() => downloadNews()}
               disabled={isdownloadPending}
               className="w-fit py-1 h-7"
             >
               <Download />
               Download
-            </Button>
+            </Button>}
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
               className="w-fit py-1 h-7"
