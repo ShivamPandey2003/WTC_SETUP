@@ -58,6 +58,8 @@ export default function HeroCarousel({
       navigation(`/exhibitors/${id}`)
     }else if (type === 3){
       navigation(`/speaker/${id}`)
+    }else if (type === 2){
+      navigation(`/programme`)
     }else{
       navigation(`/news/${id}`)
     }

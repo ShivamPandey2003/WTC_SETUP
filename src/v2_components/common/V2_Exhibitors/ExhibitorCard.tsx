@@ -33,9 +33,9 @@ export default function ExhibitorCard({
       <div className="bg-white p-6">
         <h3 className="text-xl font-bold text-gray-900 mb-4 line-clamp-1">{full_name}</h3>
 
-        <div className="flex items-center justify-between">
+        {/* <div className="flex items-center justify-between">
           <p className="text-sm text-gray-700">Booth Hall C · Booth 21</p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

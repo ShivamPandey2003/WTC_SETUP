@@ -56,9 +56,13 @@ const ExhibitorsDesign_page = () => {
     error,
   } = useGetSpeakerSetting();
   const { GlobalDesign, isGlobalDesignPending } = useGlobalDesign();
-  const { isCreating, Categorys, uploadCSV, deletingCategory, Exhibitors=[] } = useSelector(
-    (state: RootState) => state.ExhibitorSlice,
-  );
+  const {
+    isCreating,
+    Categorys,
+    uploadCSV,
+    deletingCategory,
+    Exhibitors = [],
+  } = useSelector((state: RootState) => state.ExhibitorSlice);
   const { responseModal, responseData } = useSelector(
     (state: RootState) => state.model,
   );
@@ -140,14 +144,16 @@ const ExhibitorsDesign_page = () => {
         />
         {Boolean(value === "Session Data") && (
           <div className="absolute right-10 flex items-center gap-4">
-            {Exhibitors.length > 0 &&<Button
-              onClick={() => downloadExhibitor()}
-              disabled={isdownloadPending}
-              className="w-fit py-1 h-7"
-            >
-              <Download />
-              Download
-            </Button>}
+            {Exhibitors.length > 0 && (
+              <Button
+                onClick={() => downloadExhibitor()}
+                disabled={isdownloadPending}
+                className="w-fit py-1 h-7"
+              >
+                <Download />
+                Download
+              </Button>
+            )}
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
               className="w-fit py-1 h-7"
@@ -210,6 +216,7 @@ const ExhibitorsDesign_page = () => {
                         {"Open links in new tab"}
                       </div>
                       <ToggleSwitch
+                        disable={true}
                         isOpen={
                           SpeakerSettings.exhibitor_settings.open_link_new_tab
                         }
@@ -257,6 +264,7 @@ const ExhibitorsDesign_page = () => {
                         {"Booth Location Required"}
                       </div>
                       <ToggleSwitch
+                        disable={true}
                         isOpen={
                           SpeakerSettings.exhibitor_settings.booth_location
                         }

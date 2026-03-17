@@ -20,7 +20,9 @@ const AddCategoryModel = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset
+    reset,
+    control,
+    setValue
   } = useForm<Category>({ resolver: zodResolver(CategorySchema) });
   const {AddCategory, isAddCategoryPending} = useAddCategory()
   const dispatch = useDispatch<AppDispatch>();
@@ -74,6 +76,8 @@ const AddCategoryModel = () => {
             errors={errors}
             isLoading={isAddCategoryPending}
             onClose={() => dispatch(setCategoryModal(false))}
+            setValue={setValue}
+            control={control}
           />
         </div>
       </div>
