@@ -45,14 +45,17 @@ const EditFrom = () => {
 
   useEffect(() => {
     if (!value) return;
+    const {attachments, ...rest} = value
     reset({
-      ...value,
+      ...rest,
       speakers: value.speakers[0],
       venueID: value?.venue?.id ? value.venue.id.split("__")[1] : "",
       floorID: value?.venue?.id ? value?.venue?.id.split("__")[0] : "",
       category: value.category[0],
     });
   }, [value, reset]);
+
+  console.log(value)
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -81,7 +84,7 @@ const EditFrom = () => {
     formData.append("external_link", newData?.external_link as string);
     formData.append("category", newData.category);
     formData.append("speakers", newData.speakers);
-    if(newData.bg_image){
+    if(newData.bg_image?.[0]){
       formData.append("bg_image", newData.bg_image[0] as Blob);
     }
     if (newData.attachments && newData.attachments?.length > 0) {
@@ -92,6 +95,8 @@ const EditFrom = () => {
     if (newData.floorID) {
       formData.append("venueID", `${newData.floorID}__${newData.venueID}`);
     }
+
+    console.log(newData.attachments)
 
     formData.append("id", selected as string);
     EditSession(formData);

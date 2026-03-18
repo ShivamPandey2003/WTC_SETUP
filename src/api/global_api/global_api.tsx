@@ -418,7 +418,9 @@ export const useVenueDesignUpdate = () => {
   const formData = new FormData();
 
   Object.entries(data).forEach(([key, value]) => {
-    formData.append(key, value);
+    if(value !== null){
+      formData.append(key, value);
+    }
   });
 
   const {

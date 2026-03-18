@@ -13,10 +13,6 @@ export const speakerSchema = z.object({
   attachments: z
     .instanceof(FileList)
     .optional()
-    .refine(
-      (files) => !files || files.length > 0,
-      "At least one file is required",
-    )
     .refine((files) => {
       if (!files || files.length === 0) return true;
       return ["application/pdf"].includes(files[0].type);
@@ -24,9 +20,6 @@ export const speakerSchema = z.object({
   profile_image: z
     .instanceof(FileList)
     .optional()
-    .refine((files) => {
-      if (!files || files.length > 0) return true;
-    }, "At least one file is required")
     .refine((files) => {
       if (!files || files.length === 0) return true;
       return allowedTypes.includes(files[0].type);
