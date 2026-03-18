@@ -81,6 +81,9 @@ const EditFrom = () => {
     formData.append("external_link", newData?.external_link as string);
     formData.append("category", newData.category);
     formData.append("speakers", newData.speakers);
+    if(newData.bg_image){
+      formData.append("bg_image", newData.bg_image[0] as Blob);
+    }
     if (newData.attachments && newData.attachments?.length > 0) {
       Array.from(newData.attachments).forEach((file) => {
         formData.append("attachment", file);
@@ -156,6 +159,12 @@ const EditFrom = () => {
       label: "Paper",
       type: "array-attachment",
       accept: "application/pdf",
+    },
+    {
+      name: "bg_image",
+      label: "Image",
+      type: "file",
+      accept: "image/png,image/jpg,image/webp",
     },
     { name: "location", label: "Location" },
     { name: "external_link", label: "External Link" },

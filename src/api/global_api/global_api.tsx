@@ -206,13 +206,15 @@ export const useGetProgrammeList = () => {
         const val = data.response.programme
           .filter((e) => e.start_date === item)
           .map((Datas) => {
-            const detail = Object.entries(Datas.categories).map(([key, set]) => {
-              return {
-                id:key,
-                name: set.name,
-                color: set.color,
-              };
-            });
+            const detail = Object.entries(Datas.categories).map(
+              ([key, set]) => {
+                return {
+                  id: key,
+                  name: set.name,
+                  color: set.color,
+                };
+              },
+            );
             return {
               session_id: Datas.id,
               id: nanoid(),
@@ -228,9 +230,11 @@ export const useGetProgrammeList = () => {
           [item]: transformSessions(val as any),
           ...value.data,
         };
+
       });
       dispatch(setProgrammes(value));
       dispatch(setProgramme(data.response.programme));
+
       return data;
     },
     refetchOnWindowFocus: false,
@@ -306,7 +310,7 @@ export const useAppConfigUpdate = () => {
     onSuccess: (data) => {
       toast.success(data.header.message);
       queryClient.invalidateQueries({ queryKey: ["global-design"] });
-    }
+    },
   });
   return { updateAppConfig, isUpdateAppConfigPending, errorInUpdateAppConfig };
 };
@@ -332,7 +336,7 @@ export const useUploadLogo = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    }
+    },
   });
 
   return { UploadLogo, isPending, error };
@@ -358,7 +362,7 @@ export const useSpeakerDesignUpdate = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    }
+    },
   });
 
   return {
@@ -419,7 +423,7 @@ export const useVenueDesignUpdate = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    }
+    },
   });
 
   return {
@@ -444,7 +448,7 @@ export const useProgrameDesignUpdate = () => {
     "category_labels",
     "programme_tab",
     "pdf_end_date",
-    "pdf_start_date"
+    "pdf_start_date",
   ]);
 
   const {
@@ -460,7 +464,7 @@ export const useProgrameDesignUpdate = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    }
+    },
   });
 
   return {
@@ -514,7 +518,7 @@ export const useGeneralExhibitorsUpdate = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    }
+    },
   });
 
   return { GeneralExhibitorsUpdate, isGeneralExhibitorsUpdatePending, error };
@@ -639,7 +643,7 @@ export const useHomeDesignUpdate = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["global-design"] });
       toast.success(data.header.message);
-    }
+    },
   });
 
   return {
