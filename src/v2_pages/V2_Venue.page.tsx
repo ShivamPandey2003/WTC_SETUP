@@ -107,6 +107,8 @@ const V2_Venue_page = () => {
     );
   }
 
+  console.log(V2_Global_FloorMapList?.response);
+
   if (!Venue || !Venue.response) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
@@ -239,7 +241,11 @@ const V2_Venue_page = () => {
       {currentTab === "floor plan" && (
         <div className="w-full rounded-xl p-6 bg-white h-fit">
           <div className="flex items-start sm:items-center justify-between">
-            <div className={cn("flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4")}>
+            <div
+              className={cn(
+                "flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4",
+              )}
+            >
               <div className="text-sm font-[500] w-[100px] shrink-0">
                 {normalizeLabel("Floor Level")}
               </div>
@@ -288,9 +294,14 @@ const V2_Venue_page = () => {
             </a>
           </div>
           <div className="w-full">
-            {V2_Global_FloorMapList?.response.find(
-              (pre) => pre.id === selectedId,
-            )?.image ? (
+            {V2_Global_FloorMapList?.response &&
+            V2_Global_FloorMapList?.response.length === 0 ? (
+              <div className="w-full h-[65vh] mt-2 flex items-center justify-center">
+                <NoData />
+              </div>
+            ) : V2_Global_FloorMapList?.response.find(
+                (pre) => pre.id === selectedId,
+              )?.image ? (
               <Map_V2 id={selectedId} />
             ) : (
               <iframe

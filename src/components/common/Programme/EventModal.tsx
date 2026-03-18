@@ -51,7 +51,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
         <div className="w-full">
           <div className="flex flex-col sm:flex-row items-start gap-4">
             <img
-              src={selectedValue.bg_img ? selectedValue.bg_img : dummy}
+              src={selectedValue.bg_image ? selectedValue.bg_image : dummy}
               alt={selectedValue.title}
               className="w-full sm:w-[200px] h-[118px] rounded-lg object-cover opacity-80"
             />
@@ -203,7 +203,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
               <TabsContent value={s.id} className="h-120" key={s.id}>
                 <div className="flex flex-col sm:flex-row items-start gap-4">
                   <img
-                    src={s.bg_img ? `data:image/png;base64,${s.bg_img}` : dummy}
+                    src={s.bg_image ? s.bg_image : dummy}
                     alt={s.title}
                     className="w-full sm:w-[200px] h-[118px] rounded-lg object-cover opacity-80"
                   />

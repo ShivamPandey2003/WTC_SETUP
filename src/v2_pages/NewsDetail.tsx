@@ -4,6 +4,7 @@ import type { AppDispatch, RootState } from "@/redux/store";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import ExPlaceholderImg from "@/assets/Images/EXPlaceholder.jpg";
 
 const NewsDetail = () => {
   const { id } = useParams();
@@ -32,7 +33,7 @@ const NewsDetail = () => {
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           <div className="relative h-96 sm:h-[28rem] overflow-hidden group">
             <img
-              src={NewsData.bg_img as string}
+              src={NewsData.bg_img ? NewsData.bg_img : ExPlaceholderImg}
               alt={NewsData.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />

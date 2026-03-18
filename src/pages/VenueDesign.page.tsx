@@ -155,6 +155,7 @@ const VenueDesign_page = () => {
                   className="bg-[#1111110D] py-1 px-8 w-[30rem] min-h-[7rem] h-fit rounded-[7px] border-transparent text-sm text-gray-600 hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors"
                 /> */}
                 <TextEditor
+                  initialHtml={SpeakerSettings.venue.getting_there_description}
                   save={(e) =>
                     dispatch(
                       setSpeakerSettings({
