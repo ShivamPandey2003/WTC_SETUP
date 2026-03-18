@@ -223,7 +223,7 @@ const SpeakersDesign_page = () => {
         onSubmit={UploadSpeakerCSV}
         description="Upload CSV file to create Speaker entries. CSV Columns: firstname, lastname, prefix, designation, company, bio, external_link, keyNote"
         path="/speakers_list.csv"
-        type={1}
+        type={[4,1]}
         ImageDescription="Upload a ZIP file containing images for Speakers entries. The image file names should match the corresponding Speakers IDs."
       />
       {responseModal && (

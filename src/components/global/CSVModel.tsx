@@ -17,7 +17,7 @@ type EditModalProps = {
   description: string;
   path: string;
   ImageDescription?: string;
-  type: number;
+  type: number | number[];
 };
 
 const CSVModel = ({
@@ -34,7 +34,8 @@ const CSVModel = ({
   const [file, setFile] = React.useState<File | null>(null);
   const [Type, setType] = React.useState<"CSV" | "IMAGE">("CSV");
   const { UploadBulkImages, isPending, data } = useUploadNewsImages();
-  const dispatch = useDispatch<AppDispatch>()
+  const [selectedType, setSelectedType] = React.useState<number>(0);
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -48,6 +49,8 @@ const CSVModel = ({
       formData.append("file", file);
       if (Type === "CSV") {
         onSubmit(formData);
+      }else if(Array.isArray(type)){
+        UploadBulkImages({ type: selectedType, form: formData });
       } else {
         UploadBulkImages({ type: type, form: formData });
       }
@@ -62,16 +65,21 @@ const CSVModel = ({
   };
 
   useEffect(()=>{
-    if(!data)return;
-
-    if(data.response.length){
-      dispatch(setResponseData(data.response))
-      dispatch(setResponseModal(true))
-      setType("CSV")
-      onClose()
+    if(Array.isArray(type)){
+      setSelectedType(type[0])
     }
+  },[type, setSelectedType])
 
-  },[data])
+  useEffect(() => {
+    if (!data) return;
+
+    if (data.response.length) {
+      dispatch(setResponseData(data.response));
+      dispatch(setResponseModal(true));
+      setType("CSV");
+      onClose();
+    }
+  }, [data]);
 
   return (
     <Modal
@@ -89,7 +97,7 @@ const CSVModel = ({
         <h3 className="mb-4 text-stone-700">
           {Type === "CSV" ? description : ImageDescription}
         </h3>
-        <div>
+        <div className="mb-2">
           <select
             className="w-full border border-gray-400 outline-0 p-1.5 rounded-md"
             value={Type}
@@ -99,8 +107,20 @@ const CSVModel = ({
             <option value="IMAGE">IMAGES</option>
           </select>
         </div>
+        {Array.isArray(type) && Type === "IMAGE" && (
+          <div>
+            <select
+              className="w-full border border-gray-400 outline-0 p-1.5 rounded-md"
+              value={selectedType}
+              onChange={(e) => setSelectedType(Number(e.target.value))}
+            >
+              <option value={type[0]}>Attachment</option>
+              <option value={type[1]}>Images</option>
+            </select>
+          </div>
+        )}
         {Type === "CSV" ? (
-          <div className="mt-2 flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <Input
               type="file"
               accept=".csv"

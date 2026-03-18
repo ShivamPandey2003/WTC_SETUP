@@ -405,7 +405,7 @@ const ProgrammeDesign_page = () => {
         onSubmit={UploadNewsCSV}
         description="Upload CSV file to create Sessions entries. CSV Columns: title, category, location, start_date, end_date, start_time, end_time, speakers, external_link, description"
         path="/session_entry.csv"
-        type={3}
+        type={[3,6]}
         ImageDescription="Upload a ZIP file containing pdf for Sessions entries. The pdf file names should match the corresponding Sessions IDs."
       />
       {responseModal && (

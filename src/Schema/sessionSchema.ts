@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { allowedTypes } from "./exhibitorSchema";
 
 export const SessionSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -11,6 +12,13 @@ export const SessionSchema = z.object({
   speakers: z.string().min(1, "Speakers are required"),
   description: z.string().optional(),
   external_link: z.string().url("Invalid URL").optional().or(z.literal("")),
+  bg_image: z
+    .custom<FileList | undefined>()
+    .optional()
+    .refine((files) => {
+      if (!files || files.length === 0) return true;
+      return allowedTypes.includes(files[0].type);
+    }, "Only PNG, JPG, WEBP images are allowed"),
   attachments: z.custom<FileList | undefined>()
     .optional()
     .refine((files) => {
@@ -30,6 +38,13 @@ export const EditSessionSchema = z.object({
   speakers: z.string().min(1, "Speakers are required"),
   description: z.string().optional(),
   external_link: z.string().url("Invalid URL").optional().or(z.literal("")),
+  bg_image: z
+    .custom<FileList | undefined>()
+    .optional()
+    .refine((files) => {
+      if (!files || files.length === 0) return true;
+      return allowedTypes.includes(files[0].type);
+    }, "Only PNG, JPG, WEBP images are allowed"),
   attachments: z
     .custom<FileList | undefined>()
     .optional()
