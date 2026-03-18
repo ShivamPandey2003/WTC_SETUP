@@ -82,7 +82,7 @@ const NewFrom = () => {
     { name: "company", label: "Company" },
     {
       name: "profile_image",
-      label: "Profile image",
+      label: "Profile Image",
       type: "file",
       accept: "image/png,image/jpg,image/webp",
     },

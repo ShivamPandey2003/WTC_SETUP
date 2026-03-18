@@ -143,7 +143,7 @@ const NewFrom = () => {
     },
     {
       name: "bg_image",
-      label: "Image",
+      label: "Session Image",
       type: "file",
       accept: "image/png,image/jpg,image/webp",
     },

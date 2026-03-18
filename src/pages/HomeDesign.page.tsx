@@ -400,7 +400,7 @@ const HomeDesign_page = () => {
         isLoading={isPending}
         onSubmit={UploadNewsCSV}
         description="Upload CSV file to create News entries. CSV Columns: title, description, tile_space"
-        ImageDescription="Upload a ZIP file containing images for News entries. The image file names should match the corresponding News IDs."
+        ImageDescription="Upload a ZIP file containing images for News entries. The image file names should match the corresponding Images IDs."
         path="/new-entry.csv"
         type={5}
       />
