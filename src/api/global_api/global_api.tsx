@@ -230,7 +230,6 @@ export const useGetProgrammeList = () => {
           [item]: transformSessions(val as any),
           ...value.data,
         };
-
       });
       dispatch(setProgrammes(value));
       dispatch(setProgramme(data.response.programme));
@@ -298,13 +297,23 @@ export const useAppConfigUpdate = () => {
     logo: (({ url, logo_img, ...rest }) => rest)(appConfig.logo),
   };
 
+  const NewData = CustomPick(cleanData.text_style, [
+    "all_other_text",
+    "heading_1",
+    "heading_2",
+    "heading_3",
+  ]);
+
   const {
     mutate: updateAppConfig,
     isPending: isUpdateAppConfigPending,
     error: errorInUpdateAppConfig,
   } = useMutation<ProfilePicResponse, AxiosError>({
     mutationFn: async () => {
-      const res = await apiRequest("post", "global/settings/update", cleanData);
+      const res = await apiRequest("post", "global/settings/update", {
+        ...cleanData,
+        text_style: NewData,
+      });
       return res.response;
     },
     onSuccess: (data) => {

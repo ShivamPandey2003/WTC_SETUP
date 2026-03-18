@@ -17,7 +17,7 @@ type EditModalProps = {
   description: string;
   path: string;
   ImageDescription?: string;
-  type: number | number[];
+  type: number | { ATTACHMENT: number; IMAGE: number };
 };
 
 const CSVModel = ({
@@ -32,9 +32,8 @@ const CSVModel = ({
   type,
 }: EditModalProps) => {
   const [file, setFile] = React.useState<File | null>(null);
-  const [Type, setType] = React.useState<"CSV" | "IMAGE">("CSV");
+  const [Type, setType] = React.useState<"CSV" | "IMAGE" | "ATTACHMENT">("CSV");
   const { UploadBulkImages, isPending, data } = useUploadNewsImages();
-  const [selectedType, setSelectedType] = React.useState<number>(0);
   const dispatch = useDispatch<AppDispatch>();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,10 +48,10 @@ const CSVModel = ({
       formData.append("file", file);
       if (Type === "CSV") {
         onSubmit(formData);
-      }else if(Array.isArray(type)){
-        UploadBulkImages({ type: selectedType, form: formData });
-      } else {
-        UploadBulkImages({ type: type, form: formData });
+      } else if (Type === "IMAGE" && Object.keys(type).length > 0) {
+        UploadBulkImages({ type: type[Type as keyof typeof type], form: formData });
+      } else if (Type === "ATTACHMENT" && Object.keys(type).length > 0) {
+        UploadBulkImages({ type: type[Type as keyof typeof type], form: formData });
       }
     }
   };
@@ -63,12 +62,6 @@ const CSVModel = ({
     link.download = "template.csv";
     link.click();
   };
-
-  useEffect(()=>{
-    if(Array.isArray(type)){
-      setSelectedType(type[0])
-    }
-  },[type, setSelectedType])
 
   useEffect(() => {
     if (!data) return;
@@ -103,22 +96,13 @@ const CSVModel = ({
             value={Type}
             onChange={(e) => setType(e.target.value as "CSV" | "IMAGE")}
           >
-            <option value="CSV">CSV</option>
-            <option value="IMAGE">IMAGES</option>
+            <option value="CSV">{"Upload Entries (CSV)"}</option>
+            <option value="IMAGE">{"Upload Images (ZIP)"}</option>
+            {Object.keys(type).length > 0 && (
+              <option value="ATTACHMENT">{"Upload Attachments (ZIP)"}</option>
+            )}
           </select>
         </div>
-        {Array.isArray(type) && Type === "IMAGE" && (
-          <div>
-            <select
-              className="w-full border border-gray-400 outline-0 p-1.5 rounded-md"
-              value={selectedType}
-              onChange={(e) => setSelectedType(Number(e.target.value))}
-            >
-              <option value={type[0]}>Attachment</option>
-              <option value={type[1]}>Images</option>
-            </select>
-          </div>
-        )}
         {Type === "CSV" ? (
           <div className="flex items-center gap-2">
             <Input
@@ -133,7 +117,7 @@ const CSVModel = ({
               variant="outline"
               size="sm"
               onClick={downloadTemplate}
-              className="flex items-center gap-2 hover:text-white"
+              className="flex items-center gap-2 hover:text-white border-gray-400"
             >
               <Download className="h-4 w-4" />
               Template

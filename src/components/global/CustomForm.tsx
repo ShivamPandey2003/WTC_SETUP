@@ -169,7 +169,7 @@ const CustomForm = <T extends Record<string, any>>({
               <div key={idx} className="flex">
                 {item.map((value) => (
                   <div className="flex items-center w-1/2">
-                    <div className="w-24 text-sm font-medium">
+                    <div className="w-28 text-sm font-medium">
                       {value.label}
                     </div>
                     <input

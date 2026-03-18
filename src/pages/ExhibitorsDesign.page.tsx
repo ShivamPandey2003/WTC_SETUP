@@ -385,7 +385,7 @@ const ExhibitorsDesign_page = () => {
         onSubmit={UploadExhibitorsCSV}
         description="Upload CSV file to create Exhibitor entries. CSV Columns: full_name, url, email, category, ads"
         path="/exhibitors_listing.csv"
-        ImageDescription="Upload a ZIP file containing images for Exhibitors entries. The image file names should match the corresponding Exhibitors IDs."
+        ImageDescription="Upload a ZIP file containing images for Exhibitors entries. The image file names should match the corresponding Images IDs."
         type={2}
       />
       {responseModal && (

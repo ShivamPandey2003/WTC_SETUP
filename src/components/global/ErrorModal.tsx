@@ -3,6 +3,7 @@ import Modal from "../ui/Modal";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { normalizeIds } from "@/lib";
+import Papa from "papaparse";
 
 interface FailedNewsModalProps {
   isOpen: boolean;
@@ -16,15 +17,14 @@ export default function FailedNewsModal({
   data,
 }: FailedNewsModalProps) {
   const newData = normalizeIds(data);
+  const csv = Papa.unparse(newData);
   const download = () => {
-    const blob = new Blob([JSON.stringify(data)], {
-      type: "application/json;charset=utf-8;",
-    });
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", "result.json");
+    link.setAttribute("download", "result.csv");
 
     document.body.appendChild(link);
     link.click();
@@ -106,14 +106,14 @@ export default function FailedNewsModal({
       </div>
 
       <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
-        {data.filter((pre) => pre.status === "Failed").length > 0 && (
+        {
           <span className="text-sm text-gray-600">
             Total failed entries:{" "}
             <span className="font-semibold text-gray-900">
               {data.filter((pre) => pre.status === "Failed").length}
             </span>
           </span>
-        )}
+        }
         <div className="flex gap-2">
           <button
             onClick={download}
