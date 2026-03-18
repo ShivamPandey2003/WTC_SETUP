@@ -2,7 +2,6 @@ import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
-import ExPlaceholderImg from '@/assets/Images/EXPlaceholder.jpg'
 import { apiRequest } from "@/services/apiService";
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";

@@ -142,7 +142,7 @@ const V2_Venue_page = () => {
                 Venue.response.bg_venue ? "bg-white" : "bg-gray-300 h-90",
               )}
             >
-              {Venue.response.bg_venue && (
+              {Venue.response.bg_venue && Venue.response.bg_venue.trim() && (
                 <img
                   src={Venue.response.bg_venue}
                   alt="BG"
@@ -153,7 +153,7 @@ const V2_Venue_page = () => {
             <TextCard />
           </div>
           <div className="bg-white rounded-3xl h-fit overflow-hidden shadow-sm p-6">
-            {venue.getting_there.latitude.trim() &&
+            {venue.getting_there.latitude && venue.getting_there.longitude && venue.getting_there.latitude.trim() &&
             venue.getting_there.longitude.trim() ? (
               <>
                 <LoadScriptNext
