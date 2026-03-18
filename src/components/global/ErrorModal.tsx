@@ -24,7 +24,14 @@ export default function FailedNewsModal({
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", "result.csv");
+    link.setAttribute(
+      "download",
+      `Entries_result_${new Date().toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      })}.csv`,
+    );
 
     document.body.appendChild(link);
     link.click();
