@@ -1,8 +1,3 @@
-import {
-  getDateRange,
-  getEarliestAndLatest,
-  transformSessions,
-} from "@/lib/extra";
 import { CustomPick } from "@/lib/utils";
 import { queryClient } from "@/provider/TanstackProvider";
 import { setAppConfig } from "@/redux/GlobalDesignSlice";
@@ -18,11 +13,8 @@ import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import { nanoid } from "nanoid";
 import {
   setNews,
-  setProgrammes,
-  type ProgrammeRecord,
 } from "@/redux/ExtraSlice";
 
 export const useGlobalDesign = () => {
@@ -158,7 +150,6 @@ export const useInfiniteSpeakers = () => {
 };
 
 export const useGetProgrammeList = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const {
     data: ProgrammeList,
     isPending,
