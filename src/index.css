@@ -23,6 +23,19 @@
 
 :root {
   @apply bg-background;
+  font-size: var(--app-normal-text);
+}
+
+h1{
+  font-size: var(--app-heading-1);
+}
+
+h2{
+  font-size: var(--app-heading-2);
+}
+
+h3{
+  font-size: var(--app-heading-3);
 }
 
 * {

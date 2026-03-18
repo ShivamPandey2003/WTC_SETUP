@@ -1,6 +1,5 @@
 import { CustomPick } from "@/lib/utils";
 import { queryClient } from "@/provider/TanstackProvider";
-import { setCategory } from "@/redux/ExhibitorSlice";
 import { setAppConfig } from "@/redux/GlobalDesignSlice";
 import {
   setArrayTabs,
@@ -163,6 +162,69 @@ export const useGetProgrammeList = () => {
       return res.response;
     },
     select: (data) => {
+      const value: ProgrammeRecord = {
+        start_date: "",
+        start_time: "",
+        end_date: "",
+        end_time: "",
+        data: {},
+      };
+
+      const parseDate = (dateStr: string): Date => {
+        const [y, m, d] = dateStr.split("-").map(Number);
+        return new Date(y, m - 1, d); // Safe, no timezone issues
+      };
+
+      const formatYMD = (date: Date): string => {
+        return date.toLocaleDateString("en-CA"); // YYYY-MM-DD
+      };
+
+      const dates = data.response.programme.map((item) =>
+        parseDate(item.start_date),
+      );
+
+      const earliest = new Date(Math.min(...dates.map((d) => d.getTime())));
+      const latest = new Date(Math.max(...dates.map((d) => d.getTime())));
+      const Time = getEarliestAndLatest(data.response.programme);
+
+      value.start_date = formatYMD(earliest);
+      value.end_date = formatYMD(latest);
+      value.start_time = Time.earliest;
+      value.end_time = Time.latest;
+
+      const dateRange = getDateRange(value.start_date, value.end_date);
+      dateRange.forEach((item) => {
+        const val = data.response.programme
+          .filter((e) => e.start_date === item)
+          .map((Datas) => {
+            const detail = Object.entries(Datas.categories).map(
+              ([key, set]) => {
+                return {
+                  id: key,
+                  name: set.name,
+                  color: set.color,
+                };
+              },
+            );
+            return {
+              session_id: Datas.id,
+              id: nanoid(),
+              categoryId: detail[0].id,
+              title: detail[0]?.name,
+              color: detail[0]?.color,
+              start_time: Datas.start_time,
+              end_time: Datas.end_time,
+              type: "normal",
+            };
+          });
+        value.data = {
+          [item]: transformSessions(val as any),
+          ...value.data,
+        };
+      });
+      dispatch(setProgrammes(value));
+      dispatch(setProgramme(data.response.programme));
+
       return data;
     },
     refetchOnWindowFocus: false,
@@ -226,19 +288,29 @@ export const useAppConfigUpdate = () => {
     logo: (({ url, logo_img, ...rest }) => rest)(appConfig.logo),
   };
 
+  const NewData = CustomPick(cleanData.text_style, [
+    "all_other_text",
+    "heading_1",
+    "heading_2",
+    "heading_3",
+  ]);
+
   const {
     mutate: updateAppConfig,
     isPending: isUpdateAppConfigPending,
     error: errorInUpdateAppConfig,
   } = useMutation<ProfilePicResponse, AxiosError>({
     mutationFn: async () => {
-      const res = await apiRequest("post", "global/settings/update", cleanData);
+      const res = await apiRequest("post", "global/settings/update", {
+        ...cleanData,
+        text_style: NewData,
+      });
       return res.response;
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
       queryClient.invalidateQueries({ queryKey: ["global-design"] });
-    }
+    },
   });
   return { updateAppConfig, isUpdateAppConfigPending, errorInUpdateAppConfig };
 };
@@ -264,7 +336,7 @@ export const useUploadLogo = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    }
+    },
   });
 
   return { UploadLogo, isPending, error };
@@ -290,7 +362,7 @@ export const useSpeakerDesignUpdate = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    }
+    },
   });
 
   return {
@@ -351,7 +423,7 @@ export const useVenueDesignUpdate = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    }
+    },
   });
 
   return {
@@ -376,7 +448,7 @@ export const useProgrameDesignUpdate = () => {
     "category_labels",
     "programme_tab",
     "pdf_end_date",
-    "pdf_start_date"
+    "pdf_start_date",
   ]);
 
   const {
@@ -392,7 +464,7 @@ export const useProgrameDesignUpdate = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    }
+    },
   });
 
   return {
@@ -403,7 +475,6 @@ export const useProgrameDesignUpdate = () => {
 };
 
 export const useCategoryList = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const { data: Category, isPending: isCategoryPending } = useQuery<
     CategoryListResponse,
     AxiosError
@@ -414,7 +485,6 @@ export const useCategoryList = () => {
       return res.response;
     },
     select: (data) => {
-      dispatch(setCategory(data.response.filter((pre) => pre.type === 1)));
       return data;
     },
     retry: 1,
@@ -448,7 +518,7 @@ export const useGeneralExhibitorsUpdate = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    }
+    },
   });
 
   return { GeneralExhibitorsUpdate, isGeneralExhibitorsUpdatePending, error };
@@ -573,7 +643,7 @@ export const useHomeDesignUpdate = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["global-design"] });
       toast.success(data.header.message);
-    }
+    },
   });
 
   return {

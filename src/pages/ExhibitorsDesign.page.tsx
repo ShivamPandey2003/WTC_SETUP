@@ -36,6 +36,8 @@ import TextStyleRow from "@/components/global/TextStyleRow";
 import AddCategoryModel from "@/components/common/Exhibitors_Design/AddCategoryModel";
 import DeleteModal from "@/components/global/DeleteModel";
 import { useDeleteCategory } from "@/api/programme_design_api/Programme_design_api";
+import { setResponseModal } from "@/redux/ModalSlice";
+import ErrorModal from "@/components/global/ErrorModal";
 
 const ExhibitorsDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
@@ -53,9 +55,16 @@ const ExhibitorsDesign_page = () => {
     isPending,
     error,
   } = useGetSpeakerSetting();
-  const {GlobalDesign, isGlobalDesignPending} = useGlobalDesign()
-  const { isCreating, Categorys, uploadCSV, deletingCategory } = useSelector(
-    (state: RootState) => state.ExhibitorSlice,
+  const { GlobalDesign, isGlobalDesignPending } = useGlobalDesign();
+  const {
+    isCreating,
+    Categorys,
+    uploadCSV,
+    deletingCategory,
+    Exhibitors = [],
+  } = useSelector((state: RootState) => state.ExhibitorSlice);
+  const { responseModal, responseData } = useSelector(
+    (state: RootState) => state.model,
   );
 
   const { downloadExhibitor, isdownloadPending } = useExhibitorsDownload();
@@ -86,10 +95,10 @@ const ExhibitorsDesign_page = () => {
   }, [Categorys]);
 
   useEffect(() => {
-    if(!GlobalDesign?.response) return;
-    const splash = GlobalDesign.response.exhibitor_splash
+    if (!GlobalDesign?.response) return;
+    const splash = GlobalDesign.response.exhibitor_splash;
     setSplashValue(splash);
-  }, [SettingValue]);
+  }, [GlobalDesign]);
 
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
@@ -135,20 +144,22 @@ const ExhibitorsDesign_page = () => {
         />
         {Boolean(value === "Session Data") && (
           <div className="absolute right-10 flex items-center gap-4">
-            <Button
-              onClick={() => downloadExhibitor()}
-              disabled={isdownloadPending}
-              className="w-fit py-1 h-7"
-            >
-              <Download />
-              Download All
-            </Button>
+            {Exhibitors.length > 0 && (
+              <Button
+                onClick={() => downloadExhibitor()}
+                disabled={isdownloadPending}
+                className="w-fit py-1 h-7"
+              >
+                <Download />
+                Download
+              </Button>
+            )}
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
               className="w-fit py-1 h-7"
             >
               <Upload />
-              Upload CSV
+              Upload
             </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}
@@ -205,6 +216,7 @@ const ExhibitorsDesign_page = () => {
                         {"Open links in new tab"}
                       </div>
                       <ToggleSwitch
+                        disable={true}
                         isOpen={
                           SpeakerSettings.exhibitor_settings.open_link_new_tab
                         }
@@ -252,6 +264,7 @@ const ExhibitorsDesign_page = () => {
                         {"Booth Location Required"}
                       </div>
                       <ToggleSwitch
+                        disable={true}
                         isOpen={
                           SpeakerSettings.exhibitor_settings.booth_location
                         }
@@ -372,7 +385,16 @@ const ExhibitorsDesign_page = () => {
         onSubmit={UploadExhibitorsCSV}
         description="Upload CSV file to create Exhibitor entries. CSV Columns: full_name, url, email, category, ads"
         path="/exhibitors_listing.csv"
+        ImageDescription="Upload a ZIP file containing images for Exhibitors entries. The image file names should match the corresponding Images IDs."
+        type={2}
       />
+      {responseModal && (
+        <ErrorModal
+          isOpen={responseModal}
+          onClose={() => dispatch(setResponseModal(false))}
+          data={responseData}
+        />
+      )}
       <DeleteModal
         isOpen={Boolean(deletingCategory)}
         onClose={() => dispatch(setDeletingCategory(null))}

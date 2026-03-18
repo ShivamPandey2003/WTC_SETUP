@@ -46,6 +46,7 @@ const EditFrom = () => {
     formData.append("email", newData.email as string);
     formData.append("category", newData.category as string);
     formData.append("ads", String(newData?.ads));
+    formData.append("show_mail", String(newData?.show_mail));
     if(newData.logo?.[0]){
       formData.append("file", newData.logo?.[0] as Blob);
     }
@@ -99,6 +100,7 @@ const EditFrom = () => {
         }),
     },
     { name: "ads", label: "Ads", type: "checkbox" },
+    { name: "show_mail", label: "Show mail", type: "checkbox" },
   ];
 
   return (

@@ -1,7 +1,11 @@
 import { useEditCategory } from "@/api/programme_design_api/Programme_design_api";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { setCategory, setDeletingCategory, setIsEditable } from "@/redux/ExhibitorSlice";
+import {
+  setCategory,
+  setDeletingCategory,
+  setIsEditable,
+} from "@/redux/ExhibitorSlice";
 import type { RootState } from "@/redux/store";
 import { Check, Loader, Pencil, Trash2, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
@@ -36,6 +40,10 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
 
   const { EditCategory, isEditCategoryPending } = useEditCategory();
 
+  useEffect(() => {
+    setTempColor(color);
+  }, [color]);
+
   // Sync when edit mode starts
   useEffect(() => {
     if (isEditable[id]) {
@@ -59,14 +67,22 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
       />
 
       {/* COLOR PREVIEW */}
-      <div
-        className="w-6 h-6 rounded border border-gray-300"
-        style={{ backgroundColor: tempColor }}
+      <input
+        type="color"
+        className={cn(
+          "w-[50px] h-[30px] rounded-[7px]",
+        )}
+        disabled={!isEditable[id]}
+        value={isEditable[id] ? tempColor : color}
+        onChange={(e) => setTempColor(e.target.value)}
       />
 
       {/* COLOR INPUT */}
       <input
-        className={cn("w-[100px] h-[30px] rounded-[7px] px-2", isEditable[id] && "outline-1")}
+        className={cn(
+          "w-[100px] h-[30px] rounded-[7px] px-2",
+          isEditable[id] && "outline-1",
+        )}
         disabled={!isEditable[id]}
         value={isEditable[id] ? tempColor : color}
         onChange={(e) => setTempColor(e.target.value)}
@@ -89,7 +105,11 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
             Edit
           </Button>
 
-          <Button className="text-[#B85555]" variant="link" onClick={()=>dispatch(setDeletingCategory(id))}>
+          <Button
+            className="text-[#B85555]"
+            variant="link"
+            onClick={() => dispatch(setDeletingCategory(id))}
+          >
             <Trash2 />
             Delete
           </Button>

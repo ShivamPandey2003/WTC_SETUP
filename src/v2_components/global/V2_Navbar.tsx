@@ -148,7 +148,9 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
             position="bottom-right"
             trigger={
               <button className="p-2 flex items-center gap-3 text-sm hover:bg-primary/50 transition-colors border-t border-white/20 cursor-pointer rounded-full bg-primary">
-                {Profile && <span className="text-sm font-bold text-white">{`${Profile?.response?.user_info.firstname[0]} ${Profile?.response?.user_info.lastname[0]}`}</span>}
+                {Profile && (
+                  <span className="text-sm font-bold text-white">{`${Profile?.response?.user_info.firstname[0]} ${Profile?.response?.user_info.lastname[0]}`}</span>
+                )}
               </button>
             }
             items={menu as any[]}

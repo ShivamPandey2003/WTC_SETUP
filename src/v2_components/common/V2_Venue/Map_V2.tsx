@@ -280,6 +280,7 @@ const Map_V2 = ({ id }: prop) => {
         id={tooltip?.id as string}
         x={tooltip?.x as number}
         y={tooltip?.y as number}
+        filterId={id}
         onClose={closeTooltip}
       />
     </div>

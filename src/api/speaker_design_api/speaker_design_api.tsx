@@ -30,7 +30,7 @@ export const useCreateSpeaker = () => {
       toast.success("Speaker created successfully");
       queryClient.invalidateQueries({ queryKey: ["speakerList"] });
       dispatch(setIsCreating(false));
-    }
+    },
   });
 
   return { CreateSpeaker, isPending, error };
@@ -52,7 +52,7 @@ export const useEditSpeaker = () => {
       toast.success("Speaker edited successfully");
       queryClient.invalidateQueries({ queryKey: ["speakerList"] });
       dispatch(setSelected(null));
-    }
+    },
   });
 
   return { EditSpeaker, isPending, error };
@@ -96,7 +96,7 @@ export const useDeleteSpeaker = () => {
       toast.success("Speaker deleted successfully");
       dispatch(setIsDeleting(null));
       queryClient.invalidateQueries({ queryKey: ["speakerList"] });
-    }
+    },
   });
 
   return { DeleteSpeaker, isPending, error };
@@ -126,68 +126,75 @@ export const useGetSpeakerSetting = () => {
 };
 
 export const useUploadSpeakerCSV = () => {
-
   const dispatch = useDispatch<AppDispatch>();
 
   const {
     mutate: UploadSpeakerCSV,
     isPending,
     error,
-  } = useMutation<LogoUpdateResponse, AxiosError, FormData>({
+  } = useMutation<any, AxiosError, FormData>({
     mutationFn: async (data) => {
       const res = await apiRequest("post", `/speakers/upload/speakers`, data);
       return res.response;
     },
     onSuccess: (data) => {
-      toast.success(data.header.message);
+      const blob = new Blob([data], { type: "text/csv;charset=utf-8;" });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "speakers_upload_result.csv");
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      toast.success("CSV downloaded successfully");
       queryClient.invalidateQueries({ queryKey: ["speakerList"] });
       dispatch(setUploadCSV(false));
-    }
+    },
   });
 
   return { UploadSpeakerCSV, isPending, error };
 };
 
 export const useSpeakerDownload = () => {
-  const { mutate: downloadSpeaker, isPending: isdownloadPending } = useMutation({
-    mutationKey: ["speaker_download"],
-    mutationFn: async () => {
-      const res = await apiRequest(
-        "get",
-        "/speakers/download",
-        null,
-        "blob",
-      );
+  const { mutate: downloadSpeaker, isPending: isdownloadPending } = useMutation(
+    {
+      mutationKey: ["speaker_download"],
+      mutationFn: async () => {
+        const res = await apiRequest("get", "/speakers/download", null, "blob");
 
-      const contentDisposition = res.headers["content-disposition"];
-      const blob = new Blob([res.response]);
+        const contentDisposition = res.headers["content-disposition"];
+        const blob = new Blob([res.response]);
 
-      let filename = "speaker_list.csv";
+        let filename = "speaker_list.csv";
 
-      if (contentDisposition?.includes("filename=")) {
-        filename = contentDisposition.split("filename=")[1].replace(/"/g, "");
-      }
+        if (contentDisposition?.includes("filename=")) {
+          filename = contentDisposition.split("filename=")[1].replace(/"/g, "");
+        }
 
-      const url = window.URL.createObjectURL(res.response);
-      const link = document.createElement("a");
+        const url = window.URL.createObjectURL(res.response);
+        const link = document.createElement("a");
 
-      link.href = url;
-      link.download = filename; // cleaner way
-      document.body.appendChild(link);
-      link.click();
+        link.href = url;
+        link.download = filename; // cleaner way
+        document.body.appendChild(link);
+        link.click();
 
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
 
-      return blob;
+        return blob;
+      },
+      onMutate: () => {
+        toast.info("File is preparing for download");
+      },
+      onSuccess: () => {
+        toast.success("File download successfully");
+      },
     },
-    onMutate: () => {
-      toast.info("File is preparing for download");
-    },
-    onSuccess: () => {
-      toast.success("File download successfully");
-    },
-  });
+  );
 
   return { downloadSpeaker, isdownloadPending };
 };

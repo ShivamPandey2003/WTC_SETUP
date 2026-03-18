@@ -38,6 +38,7 @@ const EditFrom = () => {
     control,
     reset,
     formState: { errors },
+    setValue,
   } = useForm<z.infer<typeof EditSessionSchema>>({
     resolver: zodResolver(EditSessionSchema),
   });
@@ -47,8 +48,8 @@ const EditFrom = () => {
     reset({
       ...value,
       speakers: value.speakers[0],
-      venueID: value?.venue?.id.split("__")[1] ?? "",
-      floorID: value?.venue?.id.split("__")[0] ?? "",
+      venueID: value?.venue?.id ? value.venue.id.split("__")[1] : "",
+      floorID: value?.venue?.id ? value?.venue?.id.split("__")[0] : "",
       category: value.category[0],
     });
   }, [value, reset]);
@@ -71,7 +72,7 @@ const EditFrom = () => {
     }
 
     formData.append("title", newData.title);
-    formData.append("description", newData.description);
+    formData.append("description", newData?.description as string);
     formData.append("start_time", newData.start_time);
     formData.append("end_time", newData.end_time);
     formData.append("start_date", formatToYYYYMMDD(slectedDate));
@@ -80,8 +81,13 @@ const EditFrom = () => {
     formData.append("external_link", newData?.external_link as string);
     formData.append("category", newData.category);
     formData.append("speakers", newData.speakers);
-    if (newData.attachments?.[0]) {
-      formData.append("attachment", newData.attachments?.[0] as Blob);
+    if(newData.bg_image){
+      formData.append("bg_image", newData.bg_image[0] as Blob);
+    }
+    if (newData.attachments && newData.attachments?.length > 0) {
+      Array.from(newData.attachments).forEach((file) => {
+        formData.append("attachment", file);
+      });
     }
     if (newData.floorID) {
       formData.append("venueID", `${newData.floorID}__${newData.venueID}`);
@@ -151,8 +157,14 @@ const EditFrom = () => {
     {
       name: "attachments",
       label: "Paper",
-      type: "file",
+      type: "array-attachment",
       accept: "application/pdf",
+    },
+    {
+      name: "bg_image",
+      label: "Image",
+      type: "file",
+      accept: "image/png,image/jpg,image/webp",
     },
     { name: "location", label: "Location" },
     { name: "external_link", label: "External Link" },
@@ -210,6 +222,7 @@ const EditFrom = () => {
       errors={errors}
       isLoading={isEditSessionPending}
       onClose={onClose}
+      setValue={setValue}
     />
   );
 };

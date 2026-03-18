@@ -224,13 +224,24 @@ export const useUploadSessionsCSV = () => {
     mutate: UploadNewsCSV,
     isPending,
     error,
-  } = useMutation<LogoUpdateResponse, AxiosError, FormData>({
+  } = useMutation<any, AxiosError, FormData>({
     mutationFn: async (data) => {
       const res = await apiRequest("post", `/programme/upload/sessions`, data);
       return res.response;
     },
     onSuccess: (data) => {
-      toast.success(data.header.message);
+      const blob = new Blob([data], { type: "text/csv;charset=utf-8;" });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "sessions_upload_result.csv");
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      toast.success("CSV downloaded successfully");
       queryClient.invalidateQueries({ queryKey: ["sessionList"] });
       dispatch(setUploadCSV(false));
     },
@@ -300,7 +311,7 @@ export const useSessionDownload = () => {
   return { downloadSession, isdownloadPending };
 };
 
-export const useGetAttachment = (session_id: string, type:number=0) => {
+export const useGetAttachment = (session_id: string, type: number = 0) => {
   const {
     data: Attachment,
     isPending,

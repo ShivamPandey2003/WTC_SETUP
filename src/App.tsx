@@ -20,6 +20,24 @@ function App() {
         appConfig.color_schema.secondary_color
       );
     }
+    if(appConfig.text_style){
+      document.documentElement.style.setProperty(
+        "--app-heading-1",
+        appConfig.text_style.heading_1
+      );
+      document.documentElement.style.setProperty(
+        "--app-heading-2",
+        appConfig.text_style.heading_2
+      )
+      document.documentElement.style.setProperty(
+        "--app-heading-3",
+        appConfig.text_style.heading_3
+      )
+      document.documentElement.style.setProperty(
+        "--app-normal-text",
+        appConfig.text_style.all_other_text
+      )
+    }
   }, [appConfig]);
 
   return (

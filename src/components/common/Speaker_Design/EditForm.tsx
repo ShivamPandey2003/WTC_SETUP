@@ -2,7 +2,10 @@ import { useEditSpeaker } from "@/api/speaker_design_api/speaker_design_api";
 import CustomForm from "@/components/global/CustomForm";
 import { setSelected } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { EditspeakerSchema, type EditSpeakerFrom } from "@/Schema/speakerSchema";
+import {
+  EditspeakerSchema,
+  type EditSpeakerFrom,
+} from "@/Schema/speakerSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -26,8 +29,20 @@ const EditFrom = () => {
 
   useEffect(() => {
     if (!value) return;
-    const {profile_image, attachments, ...rest} = value
-    reset({ ...rest, profile_image:undefined, attachments:undefined } as any);
+    const {
+      profile_image,
+      attachments,
+      whatsapp_url,
+      linkedin_url = "",
+      ...rest
+    } = value;
+    reset({
+      ...rest,
+      profile_image: undefined,
+      attachments: undefined,
+      whatsapp_url: whatsapp_url ? whatsapp_url : "",
+      linkedin_url: linkedin_url ? linkedin_url : "",
+    } as any);
   }, [value, reset]);
 
   const dispatch = useDispatch<AppDispatch>();
@@ -47,10 +62,10 @@ const EditFrom = () => {
     formData.append("keyNote", String(newData.keyNote));
     formData.append("linkedin_url", newData.linkedin_url as string);
     formData.append("whatsapp_url", newData.whatsapp_url as string);
-    if(newData.attachments?.[0]){
+    if (newData.attachments?.[0]) {
       formData.append("attachments", newData.attachments?.[0] as Blob);
     }
-    if(newData.profile_image?.[0]){
+    if (newData.profile_image?.[0]) {
       formData.append("profile_image", newData.profile_image?.[0] as Blob);
     }
 
@@ -101,7 +116,7 @@ const EditFrom = () => {
     { name: "company", label: "Company" },
     {
       name: "profile_image",
-      label: "Profile image",
+      label: "Profile Image",
       type: "file",
       accept: "image/png,image/jpg,image/webp",
     },

@@ -139,26 +139,26 @@ const V2_Programme_page = () => {
     <div className="px-4 mx-auto">
       <div className="hidden sm:flex justify-between items-center ml-4 mt-4 mb-6">
         <div className="flex gap-4 flex-wrap">
-          {ProgrammeList.response.all_categories.map((item) => {
-            const active = selectedCategories.includes(item.name);
-            return (
-              <div
-                onClick={() => toggleCategory(item.name)}
-                key={item.name}
-                className={cn(
-                  "flex items-center justify-center p-1 rounded-lg border min-w-20 w-fit gap-2 text-xs cursor-pointer",
-                )}
-                style={{
-                  background: item.color,
-                  borderColor: item.color,
-                  color: "white",
-                }}
-              >
-                {!active && <Check size={15} />}
-                <span>{item.name}</span>
-              </div>
-            );
-          })}
+        {ProgrammeList.response.all_categories.map((item) => {
+          const active = selectedCategories.includes(item.id);
+          return (
+            <div
+              onClick={() => toggleCategory(item.id)}
+              key={item.name}
+              className={cn(
+                "flex items-center justify-center p-1 rounded-lg border min-w-20 w-fit gap-2 text-xs cursor-pointer",
+              )}
+              style={{
+                background: item.color,
+                borderColor: item.color,
+                color: "white",
+              }}
+            >
+              {!active && <Check size={15} />}
+              <span>{item.name}</span>
+            </div>
+          );
+        })}
         </div>
         <Button
           className="py-0 h-6 text-sm hover:text-white"

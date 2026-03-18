@@ -28,8 +28,8 @@ export const useGetExhibitorsList = () => {
     select: (data) => {
       dispatch(
         setExhibitors(
-          data.response.seq.flatMap((string) => [...data.response[string]])
-        )
+          data.response.seq.flatMap((string) => [...data.response[string]]),
+        ),
       );
       return data;
     },
@@ -55,7 +55,7 @@ export const useCreateExhibitor = () => {
       toast.success("Exhibitor created successfully");
       dispatch(setIsCreating(false));
       queryClient.invalidateQueries({ queryKey: ["exhibitor-design-list"] });
-    }
+    },
   });
 
   return { CreateExhibitor, isCreatePending, error };
@@ -76,7 +76,7 @@ export const useDeleteExibitor = () => {
       toast.success(data.header.message);
       dispatch(setIsDeleting(null));
       queryClient.invalidateQueries({ queryKey: ["exhibitor-design-list"] });
-    }
+    },
   });
 
   return { DeleteExibitor, isPending, error };
@@ -91,7 +91,7 @@ export const useEditExhibitor = () => {
   } = useMutation<
     ProfilePicResponse,
     AxiosError,
-    {form:FormData, id: string }
+    { form: FormData; id: string }
   >({
     mutationFn: async (data) => {
       const { id, form } = data;
@@ -102,30 +102,44 @@ export const useEditExhibitor = () => {
       toast.success(data.header.message);
       dispatch(setSelected(null));
       queryClient.invalidateQueries({ queryKey: ["exhibitor-design-list"] });
-    }
+    },
   });
 
   return { EditExhibitor, isEditPending, error };
 };
 
 export const useUploadExhibitorsCSV = () => {
-
   const dispatch = useDispatch<AppDispatch>();
 
   const {
     mutate: UploadExhibitorsCSV,
     isPending,
     error,
-  } = useMutation<LogoUpdateResponse, AxiosError, FormData>({
+  } = useMutation<any, AxiosError, FormData>({
     mutationFn: async (data) => {
-      const res = await apiRequest("post", `/exhibitors/upload/exhibitors`, data);
+      const res = await apiRequest(
+        "post",
+        `/exhibitors/upload/exhibitors`,
+        data,
+      );
       return res.response;
     },
     onSuccess: (data) => {
-      toast.success(data.header.message);
+      const blob = new Blob([data], { type: "text/csv;charset=utf-8;" });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "exhibitors_upload_result.csv");
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      toast.success("CSV downloaded successfully");
       queryClient.invalidateQueries({ queryKey: ["exhibitor-design-list"] });
       dispatch(setUploadCSV(false));
-    }
+    },
   });
 
   return { UploadExhibitorsCSV, isPending, error };
@@ -136,11 +150,7 @@ export const useUploadSplash = () => {
     mutate: UploadSplash,
     isPending,
     error,
-  } = useMutation<
-    LogoUpdateResponse,
-    AxiosError,
-    { form: FormData }
-  >({
+  } = useMutation<LogoUpdateResponse, AxiosError, { form: FormData }>({
     mutationFn: async (data) => {
       const res = await apiRequest(
         "post",
@@ -151,53 +161,54 @@ export const useUploadSplash = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
-    }
+    },
   });
 
   return { UploadSplash, isPending, error };
 };
 
 export const useExhibitorsDownload = () => {
-  const { mutate: downloadExhibitor, isPending: isdownloadPending } = useMutation({
-    mutationKey: ["exhibitors_download"],
-    mutationFn: async () => {
-      const res = await apiRequest(
-        "get",
-        "/exhibitors/download-exhibitors",
-        null,
-        "blob",
-      );
+  const { mutate: downloadExhibitor, isPending: isdownloadPending } =
+    useMutation({
+      mutationKey: ["exhibitors_download"],
+      mutationFn: async () => {
+        const res = await apiRequest(
+          "get",
+          "/exhibitors/download-exhibitors",
+          null,
+          "blob",
+        );
 
-      const contentDisposition = res.headers["content-disposition"];
-      const blob = new Blob([res.response]);
+        const contentDisposition = res.headers["content-disposition"];
+        const blob = new Blob([res.response]);
 
-      // Extract filename safely
-      let filename = "exhibitors_list.csv";
+        // Extract filename safely
+        let filename = "exhibitors_list.csv";
 
-      if (contentDisposition?.includes("filename=")) {
-        filename = contentDisposition.split("filename=")[1].replace(/"/g, "");
-      }
+        if (contentDisposition?.includes("filename=")) {
+          filename = contentDisposition.split("filename=")[1].replace(/"/g, "");
+        }
 
-      const url = window.URL.createObjectURL(res.response);
-      const link = document.createElement("a");
+        const url = window.URL.createObjectURL(res.response);
+        const link = document.createElement("a");
 
-      link.href = url;
-      link.download = filename; // cleaner way
-      document.body.appendChild(link);
-      link.click();
+        link.href = url;
+        link.download = filename; // cleaner way
+        document.body.appendChild(link);
+        link.click();
 
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
 
-      return blob;
-    },
-    onMutate: () => {
-      toast.info("File is preparing for download");
-    },
-    onSuccess: () => {
-      toast.success("File download successfully");
-    },
-  });
+        return blob;
+      },
+      onMutate: () => {
+        toast.info("File is preparing for download");
+      },
+      onSuccess: () => {
+        toast.success("File download successfully");
+      },
+    });
 
   return { downloadExhibitor, isdownloadPending };
 };

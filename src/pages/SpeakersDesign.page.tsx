@@ -30,18 +30,23 @@ import { useSpeakerDesignUpdate } from "@/api/global_api/global_api";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import CSVModel from "@/components/global/CSVModel";
+import ErrorModal from "@/components/global/ErrorModal";
+import { setResponseModal } from "@/redux/ModalSlice";
 
 const SpeakersDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
-  const { isCreating, SpeakerSettings, uploadCSV } = useSelector(
+  const { isCreating, SpeakerSettings, uploadCSV, speakers } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
+  );
+  const { responseModal, responseData } = useSelector(
+    (state: RootState) => state.model,
   );
   const {
     SpeakerSettings: SpeakerSettingValues,
     isPending,
     error,
   } = useGetSpeakerSetting();
-  const {downloadSpeaker, isdownloadPending} = useSpeakerDownload()
+  const { downloadSpeaker, isdownloadPending } = useSpeakerDownload();
   const { UploadSpeakerCSV, isPending: isUploadSpeakerCSV } =
     useUploadSpeakerCSV();
   const dispatch = useDispatch<AppDispatch>();
@@ -86,16 +91,22 @@ const SpeakersDesign_page = () => {
         />
         {Boolean(value === "Session Data") && (
           <div className="absolute right-10 flex items-center gap-4">
-            <Button onClick={() => downloadSpeaker()} disabled={isdownloadPending} className="w-fit py-1 h-7">
-              <Download />
-              Download All
-            </Button>
+            {speakers.length > 0 && (
+              <Button
+                onClick={() => downloadSpeaker()}
+                disabled={isdownloadPending}
+                className="w-fit py-1 h-7"
+              >
+                <Download />
+                Download
+              </Button>
+            )}
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
               className="w-fit py-1 h-7"
             >
               <Upload />
-              Upload CSV
+              Upload
             </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}
@@ -156,8 +167,9 @@ const SpeakersDesign_page = () => {
                     />
                   </div>
                 </div>
-                {Object.entries(SpeakerSettings.speaker_info).map(
-                  ([key, value], i) => (
+                {Object.entries(SpeakerSettings.speaker_info)
+                  .filter(([key]) => key !== "exhibitors_setting")
+                  .map(([key, value], i) => (
                     <div className="flex items-center py-2 gap-8" key={i}>
                       <div className="w-40 text-sm font-medium">
                         {normalizeLabel(key)}
@@ -177,8 +189,7 @@ const SpeakersDesign_page = () => {
                         }
                       />
                     </div>
-                  ),
-                )}
+                  ))}
               </Section>
               <Section title="Speaker Data" ClassName="w-full">
                 <div className="text-sm text-gray-700 flex gap-1">
@@ -212,7 +223,16 @@ const SpeakersDesign_page = () => {
         onSubmit={UploadSpeakerCSV}
         description="Upload CSV file to create Speaker entries. CSV Columns: firstname, lastname, prefix, designation, company, bio, external_link, keyNote"
         path="/speakers_list.csv"
+        type={{ATTACHMENT:4, IMAGE:1}}
+        ImageDescription="Upload a ZIP file containing images for Speakers entries. The image file names should match the corresponding Images IDs."
       />
+      {responseModal && (
+        <ErrorModal
+          isOpen={responseModal}
+          onClose={() => dispatch(setResponseModal(false))}
+          data={responseData}
+        />
+      )}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { allowedTypes } from "./exhibitorSchema";
 
 export const SessionSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -9,15 +10,17 @@ export const SessionSchema = z.object({
   floorID: z.string().optional(),
   venueID: z.string().optional(),
   speakers: z.string().min(1, "Speakers are required"),
-  description: z.string().min(1, "Description is required"),
+  description: z.string().optional(),
   external_link: z.string().url("Invalid URL").optional().or(z.literal("")),
-  attachments: z
-    .instanceof(FileList)
+  bg_image: z
+    .custom<FileList | undefined>()
     .optional()
-    .refine(
-      (files) => !files || files.length > 0,
-      "At least one file is required",
-    )
+    .refine((files) => {
+      if (!files || files.length === 0) return true;
+      return allowedTypes.includes(files[0].type);
+    }, "Only PNG, JPG, WEBP images are allowed"),
+  attachments: z.custom<FileList | undefined>()
+    .optional()
     .refine((files) => {
       if (!files || files.length === 0) return true;
       return ["application/pdf"].includes(files[0].type);
@@ -33,8 +36,15 @@ export const EditSessionSchema = z.object({
   floorID: z.string().optional(),
   venueID: z.string().optional(),
   speakers: z.string().min(1, "Speakers are required"),
-  description: z.string().min(1, "Description is required"),
+  description: z.string().optional(),
   external_link: z.string().url("Invalid URL").optional().or(z.literal("")),
+  bg_image: z
+    .custom<FileList | undefined>()
+    .optional()
+    .refine((files) => {
+      if (!files || files.length === 0) return true;
+      return allowedTypes.includes(files[0].type);
+    }, "Only PNG, JPG, WEBP images are allowed"),
   attachments: z
     .custom<FileList | undefined>()
     .optional()

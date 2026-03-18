@@ -20,7 +20,9 @@ const AddCategoryModel = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset
+    reset,
+    control,
+    setValue
   } = useForm<Category>({ resolver: zodResolver(CategorySchema) });
   const {AddCategory, isAddCategoryPending} = useAddCategory()
   const dispatch = useDispatch<AppDispatch>();
@@ -46,11 +48,12 @@ const AddCategoryModel = () => {
       | "checkbox"
       | "date"
       | "array-string"
+      | "color"
       | "array-attachment";
     placeholder?: string;
   }[] = [
     { name: "name", label: "Name", placeholder: "Enter category name" },
-    { name: "color", label: "Color", placeholder: "ex: #ffffff" },
+    { name: "color", label: "Color", placeholder: "ex: #ffffff", type:'color' },
   ];
 
   return (
@@ -73,6 +76,8 @@ const AddCategoryModel = () => {
             errors={errors}
             isLoading={isAddCategoryPending}
             onClose={() => dispatch(setCategoryModal(false))}
+            control={control}
+            setValue={setValue}
           />
         </div>
       </div>

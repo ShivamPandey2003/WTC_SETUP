@@ -126,19 +126,30 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
               {selectedValue.description}
             </p>
 
-            {(selectedValue.attachments && selectedValue.attachments.has_attachment) && (
-              // <a href={selectedValue.attachments.file} target="_blank">
-              <div
-                onClick={() => navigate(`/Attachment/${selectedValue.id}`, {state:{Title:selectedValue.attachments.filename}})}
-                className="flex flex-col sm:flex-row sm:items-center gap-2 mb-5 text-sm text-gray-700"
-              >
-                <FileText className="w-4 h-4" />
-                <span className="hover:underline cursor-pointer">
-                  {selectedValue.attachments.filename}
-                </span>
-              </div>
+            {
+              selectedValue.attachments &&
+                selectedValue.attachments.length > 0 &&
+                // <a href={selectedValue.attachments.file} target="_blank">
+                selectedValue.attachments
+                  .filter((p) => p.has_attachment)
+                  .map((e) => (
+                    <div
+                      key={e.id}
+                      onClick={() =>
+                        navigate(`/Attachment/${e.id}`, {
+                          state: { Title: e.filename },
+                        })
+                      }
+                      className="flex flex-col sm:flex-row sm:items-center gap-2 mb-5 text-sm text-gray-700"
+                    >
+                      <FileText className="w-4 h-4" />
+                      <span className="hover:underline cursor-pointer">
+                        {e.filename}
+                      </span>
+                    </div>
+                  ))
               // </a>
-            )}
+            }
 
             <div className="flex items-center gap-6">
               {selectedValue.speakers.map((speaker, index) => (
@@ -261,19 +272,29 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                   <p className="text-sm text-gray-600 leading-relaxed mb-4">
                     {s.description}
                   </p>
-                  {s.attachments.has_attachment && (
+                  {s.attachments &&
+                    s.attachments.length > 0 &&
                     // <a href={s.attachments.file} target="_blank">
-                    <div
-                      onClick={() => navigate(`/Attachment/${s.id}`, {state:{Title:s.attachments.filename}})}
-                      className="flex flex-col sm:flex-row items-center gap-2 mb-5 text-sm text-gray-700"
-                    >
-                      <FileText className="w-4 h-4" />
-                      <span className="hover:underline cursor-pointer">
-                        {s.attachments.filename}
-                      </span>
-                    </div>
+                    s.attachments
+                      .filter((p) => p.has_attachment)
+                      .map((e) => (
+                        <div
+                          onClick={() =>
+                            navigate(`/Attachment/${e.id}`, {
+                              state: { Title: e.filename },
+                            })
+                          }
+                          className="flex flex-col sm:flex-row items-center gap-2 mb-5 text-sm text-gray-700"
+                        >
+                          <FileText className="w-4 h-4" />
+                          <span className="hover:underline cursor-pointer">
+                            {e.filename}
+                          </span>
+                        </div>
+                      ))
+
                     // </a>
-                  )}
+                  }
 
                   <div className="flex items-center gap-6">
                     {s.speakers.map((speaker, index) => (

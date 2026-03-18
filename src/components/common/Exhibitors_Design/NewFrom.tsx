@@ -33,6 +33,7 @@ const NewFrom = () => {
     formData.append("category", newData.category as string);
     formData.append("file", newData.logo?.[0] as Blob);
     formData.append("ads", String(newData?.ads));
+    formData.append("show_mail", String(newData?.show_mail));
     CreateExhibitor(formData);
   };
 
@@ -83,6 +84,7 @@ const NewFrom = () => {
         }),
     },
     { name: "ads", label: "Ads", type: "checkbox" },
+    { name: "show_mail", label: "Show mail", type: "checkbox"},
   ];
 
   return (

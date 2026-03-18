@@ -23,8 +23,8 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   });
 
   const removeEmptyObjects = (arr: any[]) => {
-    return arr.filter((obj) => Object.keys(obj).length !== 0);
-  };
+  return arr.filter((obj) => Object.keys(obj).length !== 0);
+};
 
   const NewsList = useMemo(() => {
     if (!AllNews) return [];
