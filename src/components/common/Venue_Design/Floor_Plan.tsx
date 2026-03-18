@@ -16,6 +16,8 @@ import {
 import { cn, normalizeLabel } from "@/lib/utils";
 import AddFloorLevelModel from "./AddFloorLevelModel";
 import EditFloorLevelModel from "./EditFloorLevel";
+import NoData from "@/components/global/NoData";
+import { toast } from "sonner";
 
 const Floor_Plan = () => {
   const [floorPlan, setFloorPlan] = useState<string | null>(null);
@@ -26,8 +28,14 @@ const Floor_Plan = () => {
   const { DeleteFloorLevel, isPending } = useDeleteFloorLevel();
 
   const GoToDesign = () => {
+    if(!selectedId.trim()) return toast.info("Floor level is not available")
     Navigate(`/venue-design/design-floor-plan/${selectedId}`);
   };
+
+  console.log(
+    !V2_FloorMapList?.response.find((pre) => pre.id === selectedId)
+      ?.design_type,
+  );
 
   useEffect(() => {
     if (V2_FloorMapList?.response && V2_FloorMapList.response.length > 0) {
@@ -132,6 +140,11 @@ const Floor_Plan = () => {
         </div>
         {V2_isFloorMapListPending ? (
           <Skeleton className="w-full h-[60vh]" />
+        ) : V2_FloorMapList?.response &&
+          V2_FloorMapList?.response.length === 0 ? (
+          <div className="w-full h-[60vh] flex items-center justify-center">
+            <NoData />
+          </div>
         ) : V2_FloorMapList?.response.find((pre) => pre.id === selectedId)
             ?.image ? (
           <img

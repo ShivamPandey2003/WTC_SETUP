@@ -95,6 +95,7 @@ declare type Session = {
   bg_img: null | string;
   is_active: boolean;
   venue: Shape;
+  attachments:{file:string, id:string}[]
 };
 
 declare type CreateSessionRequest = Omit<
@@ -358,7 +359,7 @@ declare type Programme = {
   categories: Record<string, Record<string, string>>;
   external_link: string;
   description: string;
-  bg_img: string;
+  bg_image: string;
   venue: Shape & { designId: string; design_label: string };
 };
 

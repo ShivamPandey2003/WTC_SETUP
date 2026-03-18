@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import V2_LineClamp from "@/v2_components/global/V2_LineClamp";
+import ExPlaceholderImg from '@/assets/Images/EXPlaceholder.jpg'
 
 interface NewsCardProps {
   title: string;
@@ -29,7 +30,7 @@ export default function NewsCard({
         src={
           bg_img
             ? bg_img
-            : "https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200"
+            : ExPlaceholderImg
         }
         alt=""
         className="w-full h-[5.5rem] object-cover rounded-t-xl object-center"

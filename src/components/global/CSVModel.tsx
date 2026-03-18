@@ -52,6 +52,8 @@ const CSVModel = ({
         UploadBulkImages({ type: type[Type as keyof typeof type], form: formData });
       } else if (Type === "ATTACHMENT" && Object.keys(type).length > 0) {
         UploadBulkImages({ type: type[Type as keyof typeof type], form: formData });
+      }else if (typeof type === "number"){
+        UploadBulkImages({ type: type, form: formData });
       }
     }
   };

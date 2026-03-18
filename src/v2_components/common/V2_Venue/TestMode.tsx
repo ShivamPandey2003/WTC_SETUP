@@ -54,7 +54,7 @@ const TestMode = ({ id, x, y, onClose, filterId }: prop) => {
             )}
           >
             <img
-              src={CurrentItem.bg_img ?? dummy}
+              src={CurrentItem.bg_image ?? dummy}
               alt={CurrentItem.title}
               className="w-12 h-12"
             />

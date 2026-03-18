@@ -10,7 +10,6 @@ import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { toast } from "sonner";
-import ExPlaceholderImg from '@/assets/Images/EXPlaceholder.jpg'
 
 const ExhibitorsDetails = () => {
   const { id } = useParams();
