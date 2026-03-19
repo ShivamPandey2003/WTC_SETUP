@@ -294,14 +294,22 @@ const ExhibitorsDesign_page = () => {
                 >
                   <TextStyleRow
                     label={"Title"}
-                    value={splashValue.title ? splashValue.title : ""}
+                    value={
+                      splashValue.title && splashValue.title.trim()
+                        ? splashValue.title
+                        : ""
+                    }
                     onChange={(e) =>
                       setSplashValue((pre) => ({ ...pre, title: e }))
                     }
                   />
                   <TextStyleRow
                     label={"Subtitle"}
-                    value={splashValue.subtitle ? splashValue.subtitle : ""}
+                    value={
+                      splashValue.subtitle && splashValue.subtitle.trim()
+                        ? splashValue.subtitle
+                        : ""
+                    }
                     onChange={(e) =>
                       setSplashValue((pre) => ({ ...pre, subtitle: e }))
                     }
