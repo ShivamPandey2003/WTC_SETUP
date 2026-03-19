@@ -649,6 +649,7 @@ export const useHomeDesignUpdate = () => {
     mutate: UpdateHomeDesign,
     isPending: isUpdateHomeDesignPending,
     error: errorInUpdateHomeDesign,
+    data:HomeDesignUpdateData
   } = useMutation<ProfilePicResponse, AxiosError>({
     mutationFn: async () => {
       const res = await apiRequest(
@@ -668,6 +669,7 @@ export const useHomeDesignUpdate = () => {
     UpdateHomeDesign,
     isUpdateHomeDesignPending,
     errorInUpdateHomeDesign,
+    HomeDesignUpdateData
   };
 };
 
