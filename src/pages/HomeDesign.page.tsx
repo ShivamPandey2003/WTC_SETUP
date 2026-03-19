@@ -83,16 +83,12 @@ const HomeDesign_page = () => {
       return [];
     }
 
-    console.log(AllCategory.response);
-
     const newValue = [
       ...new Set(AllCategory.response.map((item) => item.type)),
     ];
 
     return newValue;
   }, [AllCategory]);
-
-  console.log(Filter, AllCategory?.response);
 
   if (
     !NewsList ||

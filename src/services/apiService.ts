@@ -81,7 +81,6 @@ export const apiRequest = async (
       error?.status === 400 ||
       error?.data?.code === 400
     ) {
-      console.log(error);
       toast.error(error.data.header.message);
     }
   }
