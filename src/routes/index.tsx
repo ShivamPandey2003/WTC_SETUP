@@ -1,9 +1,4 @@
 import { createBrowserRouter } from "react-router";
-// import Home_page from "@/pages/Home.page";
-// import RootLayout from "@/layouts/rootlayout";
-// import Speaker_page from "@/pages/Speaker.page";
-// import Programme_page from "@/pages/Programme.page";
-// import Venue_page from "@/pages/Venue.page";
 import AdminLayout from "@/layouts/adminlayout";
 import GlobalDesign_page from "@/pages/GlobalDesign.page";
 import HomeDesign_page from "@/pages/HomeDesign.page";
@@ -158,32 +153,6 @@ const Router = createBrowserRouter(
       path: "/onboarding",
       element: <ProtectedRoute element={<Onboarding_page />} />,
     }
-    // {
-    //   path: "/",
-    //   element: <V2_rootlayout />,
-    //   children: [
-    //     {
-    //       path: "Home_v2",
-    //       element: <V2_Home_page />,
-    //     },
-    //     {
-    //       path: "speakers_v2",
-    //       element: <V2_Speakers_page />,
-    //     },
-    //     {
-    //       path: "exhibitors_v2",
-    //       element: <V2_exhibitors_page />,
-    //     },
-    //     {
-    //       path: "venue_v2",
-    //       element: <V2_Venue_page />,
-    //     },
-    //     {
-    //       path: "programme_v2",
-    //       element: <V2_Programme_page />,
-    //     },
-    //   ],
-    // },
   ],
   // {
   //   basename: "/wtc/",

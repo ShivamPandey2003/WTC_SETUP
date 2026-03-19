@@ -74,7 +74,6 @@ const V2_Home_page = () => {
 
   useEffect(() => {
     if (!NewsList.length) return;
-
     dispatch(setNews(NewsList));
   }, [NewsList]);
 

@@ -2,7 +2,6 @@ import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
-import ExPlaceholderImg from '@/assets/Images/EXPlaceholder.jpg'
 import { apiRequest } from "@/services/apiService";
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -11,6 +10,7 @@ import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { toast } from "sonner";
+import ExPlaceholderImg from '@/assets/Images/EXPlaceholder.jpg'
 
 const ExhibitorsDetails = () => {
   const { id } = useParams();
