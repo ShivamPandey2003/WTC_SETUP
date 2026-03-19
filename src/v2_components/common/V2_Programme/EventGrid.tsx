@@ -52,8 +52,6 @@ const EventGrid = ({ selectedCategories }: Props) => {
     return !filters.includes(event.categoryId);
   };
 
-  console.log(getPxDistance("11:15", "11:30"));
-
   React.useLayoutEffect(() => {
     const pos: Record<string, { top: number; height: number }> = {};
 
@@ -63,7 +61,6 @@ const EventGrid = ({ selectedCategories }: Props) => {
           event.type === "normal" ||
           (event.type === "extra" && event.start)
         ) {
-          console.log(event.start.slice(0, 5), event.end.slice(0, 5));
           const height =
             getPxDistance(event.start.slice(0, 5), event.end.slice(0, 5)) ?? 0;
           const top =

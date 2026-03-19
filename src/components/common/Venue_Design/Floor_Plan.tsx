@@ -32,11 +32,6 @@ const Floor_Plan = () => {
     Navigate(`/venue-design/design-floor-plan/${selectedId}`);
   };
 
-  console.log(
-    !V2_FloorMapList?.response.find((pre) => pre.id === selectedId)
-      ?.design_type,
-  );
-
   useEffect(() => {
     if (V2_FloorMapList?.response && V2_FloorMapList.response.length > 0) {
       setSelectedId(V2_FloorMapList.response[0].id);
