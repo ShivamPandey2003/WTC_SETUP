@@ -66,7 +66,7 @@ const NewFrom = () => {
     formData.append("category", newData.category);
     formData.append("speakers", newData.speakers);
     formData.append("venueID", `${newData.floorID}__${newData.venueID}`);
-    if(newData.bg_image){
+    if(newData.bg_image?.[0]){
       formData.append("bg_image", newData.bg_image[0] as Blob);
     }
     if (newData.attachments && newData.attachments?.length > 0) {

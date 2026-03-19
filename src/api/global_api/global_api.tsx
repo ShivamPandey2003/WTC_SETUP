@@ -1,3 +1,8 @@
+import {
+  getDateRange,
+  getEarliestAndLatest,
+  transformSessions,
+} from "@/lib/extra";
 import { CustomPick } from "@/lib/utils";
 import { queryClient } from "@/provider/TanstackProvider";
 import { setAppConfig } from "@/redux/GlobalDesignSlice";
@@ -15,10 +20,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import {
   setNews,
-  setProgrammes,
   type ProgrammeRecord,
 } from "@/redux/ExtraSlice";
-import { getDateRange, getEarliestAndLatest, transformSessions } from "@/lib/extra";
 import { nanoid } from "nanoid";
 
 export const useGlobalDesign = () => {
@@ -153,14 +156,18 @@ export const useInfiniteSpeakers = () => {
   };
 };
 
+type TransformedData = {
+  data: GlobalProgrammeListResponse;
+  custom: ProgrammeRecord;
+};
+
 export const useGetProgrammeList = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const {
     data: ProgrammeList,
     isPending,
     error,
     refetch,
-  } = useQuery<GlobalProgrammeListResponse, AxiosError>({
+  } = useQuery<GlobalProgrammeListResponse, AxiosError, TransformedData>({
     queryKey: ["global-programme"],
     queryFn: async () => {
       const res = await apiRequest("get", "program/list2");
@@ -227,10 +234,8 @@ export const useGetProgrammeList = () => {
           ...value.data,
         };
       });
-      dispatch(setProgrammes(value));
-      dispatch(setProgramme(data.response.programme));
 
-      return data;
+      return {data:data, custom:value};
     },
     refetchOnWindowFocus: false,
     retry: 1,
@@ -633,6 +638,10 @@ export const useHomeDesignUpdate = () => {
     (state: RootState) => state.Global_DesignSlice,
   );
   const filtered = CustomPick(appConfig, ["home_design"]);
+  const payload = {
+    home_title: filtered.home_design.home_title,
+    carusole_display: filtered.home_design.categories
+  }
 
   const {
     mutate: UpdateHomeDesign,
@@ -643,7 +652,7 @@ export const useHomeDesignUpdate = () => {
       const res = await apiRequest(
         "post",
         "/home/design/save",
-        filtered.home_design,
+        payload,
       );
       return res.response;
     },
