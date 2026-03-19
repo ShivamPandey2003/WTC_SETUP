@@ -168,7 +168,15 @@ const SpeakersDesign_page = () => {
                   </div>
                 </div>
                 {Object.entries(SpeakerSettings.speaker_info)
-                  .filter(([key]) => key !== "exhibitors_setting")
+                  .filter(
+                    ([key]) =>
+                      ![
+                        "exhibitors_setting",
+                        "key_note_speaker",
+                        "show_carusole",
+                        "show_home_title"
+                      ].includes(key),
+                  )
                   .map(([key, value], i) => (
                     <div className="flex items-center py-2 gap-8" key={i}>
                       <div className="w-40 text-sm font-medium">
@@ -223,7 +231,7 @@ const SpeakersDesign_page = () => {
         onSubmit={UploadSpeakerCSV}
         description="Upload CSV file to create Speaker entries. CSV Columns: firstname, lastname, prefix, designation, company, bio, external_link, keyNote"
         path="/speakers_list.csv"
-        type={{ATTACHMENT:4, IMAGE:1}}
+        type={{ ATTACHMENT: 4, IMAGE: 1 }}
         ImageDescription="Upload a ZIP file containing images for Speakers entries. The image file names should match the corresponding Images IDs."
       />
       {responseModal && (
