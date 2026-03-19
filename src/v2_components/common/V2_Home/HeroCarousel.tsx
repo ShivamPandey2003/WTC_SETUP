@@ -124,14 +124,14 @@ export default function HeroCarousel({
                 >
                   {slide.description}
                 </p>}
-                {slide.type === 1 && <p
+                <p
                   className={cn(
                     "text-xl md:text-2xl text-white/90 mb-8 line-clamp-2",
                     descriptionClassName,
                   )}
                 >
-                  {"Diamond Sponsor"}
-                </p>}
+                  {slide.category_name}
+                </p>
                 {/* <button
                 className={cn(
                   "bg-white/90 hover:bg-white text-slate-800 font-semibold px-8 py-3 rounded-full w-fit transition-colors duration-200",

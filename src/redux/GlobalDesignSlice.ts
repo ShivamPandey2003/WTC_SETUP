@@ -40,7 +40,9 @@ const initialState: initialStateType = {
     },
     home_design: {
       home_title: "",
-      categories:[]
+      categories:[],
+      key_note_speaker:false,
+      show_carusole:false
     },
   },
 };
