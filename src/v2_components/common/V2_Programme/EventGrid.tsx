@@ -25,12 +25,21 @@ const EventGrid = ({ selectedCategories }: Props) => {
   function getPxDistance(start: string, end: string) {
     const startEl = timeRefs.current[start];
     const endEl = timeRefs.current[end];
-    if (!startEl || !endEl) return null;
+    if (startEl && endEl) {
+      const r1 = startEl.getBoundingClientRect();
+      const r2 = endEl.getBoundingClientRect();
+      return r2.top - r1.top;
+    }
 
-    const r1 = startEl.getBoundingClientRect();
-    const r2 = endEl.getBoundingClientRect();
+    const toMinutes = (t: string) => {
+      const [h, m] = t.split(":").map(Number);
+      return h * 60 + m;
+    };
 
-    return r2.top - r1.top;
+    const diff = toMinutes(end) - toMinutes(start);
+    const PX_PER_MINUTE = 2;
+
+    return diff * PX_PER_MINUTE;
   }
 
   const eventHasFilteredCategory = (event: OutputItem, filters: string[]) => {
@@ -43,6 +52,8 @@ const EventGrid = ({ selectedCategories }: Props) => {
     return !filters.includes(event.categoryId);
   };
 
+  console.log(getPxDistance("11:15", "11:30"));
+
   React.useLayoutEffect(() => {
     const pos: Record<string, { top: number; height: number }> = {};
 
@@ -52,6 +63,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
           event.type === "normal" ||
           (event.type === "extra" && event.start)
         ) {
+          console.log(event.start.slice(0, 5), event.end.slice(0, 5));
           const height =
             getPxDistance(event.start.slice(0, 5), event.end.slice(0, 5)) ?? 0;
           const top =

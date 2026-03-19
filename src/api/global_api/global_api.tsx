@@ -20,7 +20,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import {
   setNews,
-  setProgrammes,
   type ProgrammeRecord,
 } from "@/redux/ExtraSlice";
 import { nanoid } from "nanoid";
@@ -163,7 +162,6 @@ type TransformedData = {
 };
 
 export const useGetProgrammeList = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const {
     data: ProgrammeList,
     isPending,
