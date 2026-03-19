@@ -1,16 +1,21 @@
 import { cn } from "@/lib/utils";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo, useMemo } from "react";
+import ExPlaceholderImg from '@/assets/Images/EXPlaceholder.jpg'
 
-export default function MiniSmallCarousel({ slides }: { slides: Carusole[] }) {
+function MiniSmallCarousel({ slides }: { slides: Carusole[] }) {
   const [index, setIndex] = useState(0);
+
+  const newLength = useMemo(()=>{
+    return slides.length
+  },[slides]) 
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setIndex((i) => (i + 1) % slides.length);
+      setIndex((i) => (i + 1) % newLength);
     }, 3000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [newLength]);
 
   const Title = (e: string[], last?: number) => {
     const mid = Math.ceil(e.length / 2);
@@ -34,7 +39,7 @@ export default function MiniSmallCarousel({ slides }: { slides: Carusole[] }) {
               src={
                 slide.bg_img
                   ? slide.bg_img
-                  : "https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                  : ExPlaceholderImg
               }
               alt={slide.title}
               className={cn(
@@ -95,3 +100,5 @@ export default function MiniSmallCarousel({ slides }: { slides: Carusole[] }) {
     </div>
   );
 }
+
+export default memo(MiniSmallCarousel)
