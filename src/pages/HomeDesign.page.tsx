@@ -35,7 +35,7 @@ import {
   SquareArrowOutUpRight,
   Upload,
 } from "lucide-react";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const HomeDesign_page = () => {
@@ -55,12 +55,12 @@ const HomeDesign_page = () => {
   const { appConfig } = useSelector(
     (state: RootState) => state.Global_DesignSlice,
   );
-  const { UpdateHomeDesign, isUpdateHomeDesignPending } = useHomeDesignUpdate();
+  const { UpdateHomeDesign, isUpdateHomeDesignPending, HomeDesignUpdateData } = useHomeDesignUpdate();
   const { UploadNewsCSV, isPending } = useUploadNewsCSV();
   const { UploadLogo, isPending: SplashScreenIsUpdating } = useUploadLogo();
   const { UpdateSplashActivation, isPending: isUpdateSplashActivation } =
     useUpdateSplash();
-  const { HeroCarusole } = useHeroCarusole();
+  const { HeroCarusole, refetch } = useHeroCarusole();
   const { downloadNews, isdownloadPending } = useNewsDownload();
 
   const OnSave = () => {
@@ -89,6 +89,12 @@ const HomeDesign_page = () => {
 
     return newValue;
   }, [AllCategory]);
+
+  useEffect(()=>{
+    if(HomeDesignUpdateData?.header.code === 200){
+      refetch()
+    }
+  },[HomeDesignUpdateData])
 
   if (
     !NewsList ||
@@ -291,44 +297,74 @@ const HomeDesign_page = () => {
                     })}
                     <div>
                       <h3 className="mb-2 font-semibold">Speaker</h3>
-                      <div className="flex items-center space-x-8">
+                      <div className="flex items-center gap-3">
                         <div className="flex items-center gap-6">
-                          <span>All Speakers</span>
-                          <input
-                            checked={appConfig.home_design.show_carusole}
-                            onChange={(e) => {
+                          <div
+                            className={cn(
+                              "flex items-center gap-2 px-3 py-1 bg-[#1111110D] text-sm text-[#303030] font-semibold rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors cursor-pointer capitalize",
+                              appConfig.home_design.show_carusole &&
+                                `bg-primary text-white`,
+                            )}
+                            // style={{
+                            //   backgroundColor:
+                            //     appConfig.home_design.categories.includes(
+                            //       p.id,
+                            //     )
+                            //       ? p.color
+                            //       : "#1111110D",
+                            // }}
+                            onClick={() => {
                               dispatch(
                                 setAppConfig({
                                   ...appConfig,
                                   home_design: {
                                     ...appConfig.home_design,
-                                    show_carusole: e.target.checked,
+                                    show_carusole:
+                                      !appConfig.home_design.show_carusole,
                                   },
                                 }),
                               );
                             }}
-                            type="checkbox"
-                            className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
-                          />
+                          >
+                            {appConfig.home_design.show_carusole && (
+                              <Check size={20} />
+                            )}
+                            <div>{"All Speakers"}</div>
+                          </div>
                         </div>
                         <div className="flex items-center gap-6">
-                          <span>Keynote Speakers</span>
-                          <input
-                            checked={appConfig.home_design.key_note_speaker}
-                            onChange={(e) => {
+                          <div
+                            className={cn(
+                              "flex items-center gap-2 px-3 py-1 bg-[#1111110D] text-sm text-[#303030] font-semibold rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors cursor-pointer capitalize",
+                              appConfig.home_design.key_note_speaker &&
+                                `bg-primary text-white`,
+                            )}
+                            // style={{
+                            //   backgroundColor:
+                            //     appConfig.home_design.categories.includes(
+                            //       p.id,
+                            //     )
+                            //       ? p.color
+                            //       : "#1111110D",
+                            // }}
+                            onClick={() => {
                               dispatch(
                                 setAppConfig({
                                   ...appConfig,
                                   home_design: {
                                     ...appConfig.home_design,
-                                    key_note_speaker: e.target.checked,
+                                    key_note_speaker:
+                                      !appConfig.home_design.key_note_speaker,
                                   },
                                 }),
                               );
                             }}
-                            type="checkbox"
-                            className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
-                          />
+                          >
+                            {appConfig.home_design.key_note_speaker && (
+                              <Check size={20} />
+                            )}
+                            <div>{"Keynote Speakers"}</div>
+                          </div>
                         </div>
                       </div>
                     </div>

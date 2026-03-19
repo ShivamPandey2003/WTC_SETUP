@@ -195,6 +195,7 @@ export const useHeroCarusole = () => {
     data: HeroCarusole,
     isPending: isHeroCarusole,
     error: errorHeroCarusole,
+    refetch
   } = useQuery<HeroCarusoleT, AxiosError>({
     queryKey: ["hero_carusole"],
     queryFn: async () => {
@@ -205,7 +206,7 @@ export const useHeroCarusole = () => {
     retry: 1,
   });
 
-  return { HeroCarusole, isHeroCarusole, errorHeroCarusole };
+  return { HeroCarusole, isHeroCarusole, errorHeroCarusole, refetch };
 };
 
 export const useUploadNewsImages = () => {
