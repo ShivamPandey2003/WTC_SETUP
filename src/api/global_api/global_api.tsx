@@ -2,6 +2,7 @@ import {
   getDateRange,
   getEarliestAndLatest,
   transformSessions,
+  type OutputItem,
 } from "@/lib/extra";
 import { CustomPick } from "@/lib/utils";
 import { queryClient } from "@/provider/TanstackProvider";
@@ -157,6 +158,11 @@ export const useInfiniteSpeakers = () => {
   };
 };
 
+type TransformedData = {
+  data: GlobalProgrammeListResponse;
+  custom: ProgrammeRecord;
+};
+
 export const useGetProgrammeList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const {
@@ -164,7 +170,7 @@ export const useGetProgrammeList = () => {
     isPending,
     error,
     refetch,
-  } = useQuery<GlobalProgrammeListResponse, AxiosError>({
+  } = useQuery<GlobalProgrammeListResponse, AxiosError, TransformedData>({
     queryKey: ["global-programme"],
     queryFn: async () => {
       const res = await apiRequest("get", "program/list2");
@@ -234,7 +240,7 @@ export const useGetProgrammeList = () => {
       dispatch(setProgrammes(value));
       dispatch(setProgramme(data.response.programme));
 
-      return data;
+      return {data:data, custom:value};
     },
     refetchOnWindowFocus: false,
     retry: 1,
@@ -637,6 +643,10 @@ export const useHomeDesignUpdate = () => {
     (state: RootState) => state.Global_DesignSlice,
   );
   const filtered = CustomPick(appConfig, ["home_design"]);
+  const payload = {
+    home_title: filtered.home_design.home_title,
+    carusole_display: filtered.home_design.categories
+  }
 
   const {
     mutate: UpdateHomeDesign,
@@ -647,7 +657,7 @@ export const useHomeDesignUpdate = () => {
       const res = await apiRequest(
         "post",
         "/home/design/save",
-        filtered.home_design,
+        payload,
       );
       return res.response;
     },

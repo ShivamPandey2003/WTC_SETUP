@@ -52,7 +52,7 @@ const V2_Programme_page = () => {
     );
   }
 
-  if (!ProgrammeList || !ProgrammeList.response || !ProgrammeList.response.programme.length) {
+  if (!ProgrammeList || !ProgrammeList.data.response || !ProgrammeList.data.response.programme.length) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />
@@ -64,7 +64,7 @@ const V2_Programme_page = () => {
     <div className="px-4 mx-auto">
       <div className="hidden sm:flex justify-between items-center ml-4 mt-4 mb-6">
         <div className="flex gap-4 flex-wrap">
-        {ProgrammeList.response.all_categories.map((item) => {
+        {ProgrammeList.data.response.all_categories.map((item) => {
           const active = selectedCategories.includes(item.id);
           return (
             <div
