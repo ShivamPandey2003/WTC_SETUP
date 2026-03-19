@@ -218,14 +218,18 @@ const HomeDesign_page = () => {
                             {val === 0
                               ? `Programme (${
                                   AllCategory?.response.filter(
-                                    (pre) => pre.type === val && appConfig.home_design.categories.includes(
+                                    (pre) =>
+                                      pre.type === val &&
+                                      appConfig.home_design.categories.includes(
                                         pre.id,
                                       ),
                                   ).length
                                 })`
                               : `Exhibitor (${
                                   AllCategory?.response.filter(
-                                    (pre) => pre.type === val && appConfig.home_design.categories.includes(
+                                    (pre) =>
+                                      pre.type === val &&
+                                      appConfig.home_design.categories.includes(
                                         pre.id,
                                       ),
                                   ).length
@@ -285,6 +289,49 @@ const HomeDesign_page = () => {
                         </div>
                       );
                     })}
+                    <div>
+                      <h3 className="mb-2 font-semibold">Speaker</h3>
+                      <div className="flex items-center space-x-8">
+                        <div className="flex items-center gap-6">
+                          <span>All Speakers</span>
+                          <input
+                            checked={appConfig.home_design.show_carusole}
+                            onChange={(e) => {
+                              dispatch(
+                                setAppConfig({
+                                  ...appConfig,
+                                  home_design: {
+                                    ...appConfig.home_design,
+                                    show_carusole: e.target.checked,
+                                  },
+                                }),
+                              );
+                            }}
+                            type="checkbox"
+                            className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
+                          />
+                        </div>
+                        <div className="flex items-center gap-6">
+                          <span>Keynote Speakers</span>
+                          <input
+                            checked={appConfig.home_design.key_note_speaker}
+                            onChange={(e) => {
+                              dispatch(
+                                setAppConfig({
+                                  ...appConfig,
+                                  home_design: {
+                                    ...appConfig.home_design,
+                                    key_note_speaker: e.target.checked,
+                                  },
+                                }),
+                              );
+                            }}
+                            type="checkbox"
+                            className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </Section>
                 <Section

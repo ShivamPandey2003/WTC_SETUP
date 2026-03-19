@@ -8,6 +8,7 @@ interface HeroCarouselProps {
     full_name: string;
     url: string;
     logo: string;
+  category_name:string;
   }[];
   intervalTime?: number;
 }
@@ -58,7 +59,7 @@ const SponserCarousal = ({
                     {slide.full_name}
                   </h2>
                   <h2 className="text-base font-bold text-primary mb-1">
-                    Diamond Sponsor
+                    {slide.category_name}
                   </h2>
                 </div>
               </div>

@@ -640,7 +640,9 @@ export const useHomeDesignUpdate = () => {
   const filtered = CustomPick(appConfig, ["home_design"]);
   const payload = {
     home_title: filtered.home_design.home_title,
-    carusole_display: filtered.home_design.categories
+    carusole_display: filtered.home_design.categories,
+    show_carusole:filtered.home_design.show_carusole,
+    key_note_speaker:filtered.home_design.key_note_speaker
   }
 
   const {
