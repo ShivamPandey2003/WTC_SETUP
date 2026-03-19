@@ -30,7 +30,7 @@ const Programme_page = () => {
     </div>;
   }
 
-  if (!ProgrammeList || !ProgrammeList.response) {
+  if (!ProgrammeList || !ProgrammeList.data.response) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />
