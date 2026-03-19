@@ -35,7 +35,7 @@ import {
   SquareArrowOutUpRight,
   Upload,
 } from "lucide-react";
-import React from "react";
+import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const HomeDesign_page = () => {
@@ -44,9 +44,11 @@ const HomeDesign_page = () => {
   const { AllCategory, isPending: isCategoriesPending } = useGetCategoryAll();
   const { NewsList } = useGetNewsList();
   const dispatch = useDispatch<AppDispatch>();
-  const { isCreating, uploadCSV, news=[] } = useSelector(
-    (state: RootState) => state.Home_Design,
-  );
+  const {
+    isCreating,
+    uploadCSV,
+    news = [],
+  } = useSelector((state: RootState) => state.Home_Design);
   const { responseModal, responseData } = useSelector(
     (state: RootState) => state.model,
   );
@@ -72,6 +74,26 @@ const HomeDesign_page = () => {
     });
   };
 
+  const Filter = useMemo(() => {
+    if (
+      !AllCategory ||
+      !AllCategory.response ||
+      AllCategory.response.length === 0
+    ) {
+      return [];
+    }
+
+    console.log(AllCategory.response);
+
+    const newValue = [
+      ...new Set(AllCategory.response.map((item) => item.type)),
+    ];
+
+    return newValue;
+  }, [AllCategory]);
+
+  console.log(Filter, AllCategory?.response);
+
   if (
     !NewsList ||
     !NewsList.response ||
@@ -94,14 +116,16 @@ const HomeDesign_page = () => {
         />
         {Boolean(value === "News") && (
           <div className="absolute right-10 flex items-center gap-4">
-            {news.length > 0 && <Button
-              onClick={() => downloadNews()}
-              disabled={isdownloadPending}
-              className="w-fit py-1 h-7"
-            >
-              <Download />
-              Download
-            </Button>}
+            {news.length > 0 && (
+              <Button
+                onClick={() => downloadNews()}
+                disabled={isdownloadPending}
+                className="w-fit py-1 h-7"
+              >
+                <Download />
+                Download
+              </Button>
+            )}
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
               className="w-fit py-1 h-7"
@@ -190,78 +214,81 @@ const HomeDesign_page = () => {
                   show={true}
                   loading={isUpdateHomeDesignPending}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="w-full flex flex-wrap gap-3">
-                      {/* {Object.keys(appConfig.home_design)
-                        .filter((pre) => pre !== "home_title")
-                        .map((value) => (
-                          <div
-                            key={value}
-                            className={cn(
-                              "flex items-center gap-2 bg-[#1111110D] px-3 py-1 text-sm text-black font-semibold rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors cursor-pointer capitalize",
-                              appConfig.home_design[
-                                value as keyof typeof appConfig.home_design
-                              ] && "text-primary",
-                            )}
-                            onClick={() =>
-                              dispatch(
-                                setAppConfig({
-                                  ...appConfig,
-                                  home_design: {
-                                    ...appConfig.home_design,
-                                    [value]:
-                                      !appConfig.home_design[
-                                        value as keyof typeof appConfig.home_design
-                                      ],
-                                  },
-                                }),
-                              )
-                            }
-                          >
-                            {appConfig.home_design[
-                              value as keyof typeof appConfig.home_design
-                            ] && <Check size={20} />}
-                            {value.replaceAll("_", " ")}
-                          </div>
-                        ))} */}
-                      {AllCategory?.response.map((p) => {
-                        return (
-                          <div
-                            key={p.id}
-                            className={cn(
-                              "flex items-center gap-2 bg-[#1111110D] px-3 py-1 text-sm text-black font-semibold rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors cursor-pointer capitalize",
-                              appConfig.home_design.categories.includes(p.id) &&
-                                "text-primary",
-                            )}
-                            onClick={() => {
-                              const categories =
-                                appConfig.home_design.categories;
+                  <div className="flex flex-col gap-8">
+                    {Filter.map((val) => {
+                      return (
+                        <div key={val}>
+                          <h3 className="mb-2 font-semibold">
+                            {val === 0
+                              ? `Programme (${
+                                  AllCategory?.response.filter(
+                                    (pre) => pre.type === val && appConfig.home_design.categories.includes(
+                                        pre.id,
+                                      ),
+                                  ).length
+                                })`
+                              : `Exhibitor (${
+                                  AllCategory?.response.filter(
+                                    (pre) => pre.type === val && appConfig.home_design.categories.includes(
+                                        pre.id,
+                                      ),
+                                  ).length
+                                })`}
+                          </h3>
+                          <div className="w-full flex flex-wrap gap-3">
+                            {AllCategory?.response
+                              .filter((pre) => pre.type === val)
+                              .map((p) => {
+                                return (
+                                  <div
+                                    key={p.id}
+                                    className={cn(
+                                      "flex items-center gap-2 px-3 py-1 bg-[#1111110D] text-sm text-[#303030] font-semibold rounded-[7px] text-center border border-transparent hover:border-gray-300 focus:border-[#318061] focus:outline-none focus:ring-1 focus:ring-[#318061] transition-colors cursor-pointer capitalize",
+                                      appConfig.home_design.categories.includes(
+                                        p.id,
+                                      ) && `bg-primary text-white`,
+                                    )}
+                                    // style={{
+                                    //   backgroundColor:
+                                    //     appConfig.home_design.categories.includes(
+                                    //       p.id,
+                                    //     )
+                                    //       ? p.color
+                                    //       : "#1111110D",
+                                    // }}
+                                    onClick={() => {
+                                      const categories =
+                                        appConfig.home_design.categories;
 
-                              const updatedCategories = categories.includes(
-                                p.id,
-                              )
-                                ? categories.filter((id) => id !== p.id) // remove
-                                : [...categories, p.id]; // add
+                                      const updatedCategories =
+                                        categories.includes(p.id)
+                                          ? categories.filter(
+                                              (id) => id !== p.id,
+                                            ) // remove
+                                          : [...categories, p.id]; // add
 
-                              dispatch(
-                                setAppConfig({
-                                  ...appConfig,
-                                  home_design: {
-                                    ...appConfig.home_design,
-                                    categories: updatedCategories,
-                                  },
-                                }),
-                              );
-                            }}
-                          >
-                            {appConfig.home_design.categories.includes(
-                              p.id,
-                            ) && <Check size={20} />}
-                            {p.name}
+                                      dispatch(
+                                        setAppConfig({
+                                          ...appConfig,
+                                          home_design: {
+                                            ...appConfig.home_design,
+                                            categories: updatedCategories,
+                                          },
+                                        }),
+                                      );
+                                    }}
+                                  >
+                                    {appConfig.home_design.categories.includes(
+                                      p.id,
+                                    ) && <Check size={20} />}
+                                    <div>{p.name}</div>
+                                  </div>
+                                );
+                              })}
                           </div>
-                        );
-                      })}
-                    </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </Section>
                 <Section
