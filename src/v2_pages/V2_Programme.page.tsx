@@ -68,8 +68,9 @@ const V2_Programme_page = () => {
       const val = ProgrammeList.data.response.programme
         .filter((e) => e.start_date === item)
         .map((Datas) => {
-          const detail = Object.entries(Datas.categories).map(([_, set]) => {
+          const detail = Object.entries(Datas.categories).map(([key, set]) => {
             return {
+              id: key,
               name: set.name,
               color: set.color,
             };
@@ -77,6 +78,7 @@ const V2_Programme_page = () => {
           return {
             session_id: Datas.id,
             id: nanoid(),
+            categoryId: detail[0].id,
             title: detail[0]?.name,
             color: detail[0]?.color,
             start_time: Datas.start_time,
@@ -123,7 +125,11 @@ const V2_Programme_page = () => {
     );
   }
 
-  if (!ProgrammeList || !ProgrammeList.data.response || !ProgrammeList.data.response.programme.length) {
+  if (
+    !ProgrammeList ||
+    !ProgrammeList.data.response ||
+    !ProgrammeList.data.response.programme.length
+  ) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />
@@ -135,34 +141,34 @@ const V2_Programme_page = () => {
     <div className="px-4 mx-auto">
       <div className="hidden sm:flex justify-between items-center ml-4 mt-4 mb-6">
         <div className="flex gap-4 flex-wrap">
-        {ProgrammeList.data.response.all_categories.map((item) => {
-          const active = selectedCategories.includes(item.id);
-          return (
-            <div
-              onClick={() => toggleCategory(item.id)}
-              key={item.name}
-              className={cn(
-                "flex items-center justify-center p-1 rounded-lg border min-w-20 w-fit gap-2 text-xs cursor-pointer",
-              )}
-              style={{
-                background: item.color,
-                borderColor: item.color,
-                color: "white",
-              }}
-            >
-              {!active && <Check size={15} />}
-              <span>{item.name}</span>
-            </div>
-          );
-        })}
+          {ProgrammeList.data.response.all_categories.map((item) => {
+            const active = selectedCategories.includes(item.id);
+            return (
+              <div
+                onClick={() => toggleCategory(item.id)}
+                key={item.name}
+                className={cn(
+                  "flex items-center justify-center p-1 px-4 rounded-lg border min-w-20 w-fit gap-2 text-sm cursor-pointer",
+                )}
+                style={{
+                  background: active ? "#B8B8B8" : item.color,
+                  borderColor: active ? "#B8B8B8" : item.color,
+                  color: active ? "#303030" : "white",
+                }}
+              >
+                {!active && <Check size={15} />}
+                <span>{item.name}</span>
+              </div>
+            );
+          })}
         </div>
         <Button
-          className="py-0 h-6 text-sm hover:text-white"
+          className="py-0 h-6 text-sm bg-primary text-white hover:text-white"
           size={"sm"}
           variant={"outline"}
           onClick={() => setSelectedCategories([])}
         >
-          Clear All
+          Clear Filters
         </Button>
       </div>
       <EventGrid selectedCategories={selectedCategories} />
