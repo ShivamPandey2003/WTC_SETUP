@@ -55,8 +55,6 @@ const EditFrom = () => {
     });
   }, [value, reset]);
 
-  console.log(value)
-
   const dispatch = useDispatch<AppDispatch>();
 
   const { EditSession, isPending: isEditSessionPending } = useEditSession();
@@ -95,8 +93,6 @@ const EditFrom = () => {
     if (newData.floorID) {
       formData.append("venueID", `${newData.floorID}__${newData.venueID}`);
     }
-
-    console.log(newData.attachments)
 
     formData.append("id", selected as string);
     EditSession(formData);

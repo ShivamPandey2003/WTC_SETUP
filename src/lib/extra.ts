@@ -94,7 +94,7 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
     const aEnd = toMinutes(a.end_time);
     const bStart = toMinutes(b.start_time);
     const bEnd = toMinutes(b.end_time);
-    return aStart < bEnd && bStart < aEnd;
+    return aStart <= bEnd && bStart <= aEnd;
   };
 
   const findClusters = (items: Session[]) => {

@@ -107,8 +107,6 @@ const V2_Venue_page = () => {
     );
   }
 
-  console.log(V2_Global_FloorMapList?.response);
-
   if (!Venue || !Venue.response) {
     return (
       <div className="flex items-center justify-center h-[80vh]">

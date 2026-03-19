@@ -50,13 +50,13 @@ const V2_Programme_page = () => {
       return date.toLocaleDateString("en-CA"); // YYYY-MM-DD
     };
 
-    const dates = ProgrammeList.response.programme.map((item) =>
+    const dates = ProgrammeList.data.response.programme.map((item) =>
       parseDate(item.start_date),
     );
 
     const earliest = new Date(Math.min(...dates.map((d) => d.getTime())));
     const latest = new Date(Math.max(...dates.map((d) => d.getTime())));
-    const Time = getEarliestAndLatest(ProgrammeList.response.programme);
+    const Time = getEarliestAndLatest(ProgrammeList.data.response.programme);
 
     value.start_date = formatYMD(earliest);
     value.end_date = formatYMD(latest);
@@ -65,7 +65,7 @@ const V2_Programme_page = () => {
 
     const dateRange = getDateRange(value.start_date, value.end_date);
     dateRange.forEach((item) => {
-      const val = ProgrammeList.response.programme
+      const val = ProgrammeList.data.response.programme
         .filter((e) => e.start_date === item)
         .map((Datas) => {
           const detail = Object.entries(Datas.categories).map(([_, set]) => {
@@ -90,7 +90,7 @@ const V2_Programme_page = () => {
       };
     });
     dispatch(setProgrammes(value));
-    dispatch(setProgramme(ProgrammeList.response.programme));
+    dispatch(setProgramme(ProgrammeList.data.response.programme));
   }, [ProgrammeList]);
 
   useEffect(() => {
@@ -123,11 +123,7 @@ const V2_Programme_page = () => {
     );
   }
 
-  if (
-    !ProgrammeList ||
-    !ProgrammeList.response ||
-    !ProgrammeList.response.programme.length
-  ) {
+  if (!ProgrammeList || !ProgrammeList.data.response || !ProgrammeList.data.response.programme.length) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />
@@ -139,7 +135,7 @@ const V2_Programme_page = () => {
     <div className="px-4 mx-auto">
       <div className="hidden sm:flex justify-between items-center ml-4 mt-4 mb-6">
         <div className="flex gap-4 flex-wrap">
-        {ProgrammeList.response.all_categories.map((item) => {
+        {ProgrammeList.data.response.all_categories.map((item) => {
           const active = selectedCategories.includes(item.id);
           return (
             <div
