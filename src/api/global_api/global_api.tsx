@@ -2,7 +2,6 @@ import {
   getDateRange,
   getEarliestAndLatest,
   transformSessions,
-  type OutputItem,
 } from "@/lib/extra";
 import { CustomPick } from "@/lib/utils";
 import { queryClient } from "@/provider/TanstackProvider";
@@ -19,12 +18,12 @@ import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import { nanoid } from "nanoid";
 import {
   setNews,
   setProgrammes,
   type ProgrammeRecord,
 } from "@/redux/ExtraSlice";
+import { nanoid } from "nanoid";
 
 export const useGlobalDesign = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -237,8 +236,6 @@ export const useGetProgrammeList = () => {
           ...value.data,
         };
       });
-      dispatch(setProgrammes(value));
-      dispatch(setProgramme(data.response.programme));
 
       return {data:data, custom:value};
     },
