@@ -65,11 +65,11 @@ export default function MiniSmallCarousel({ slides }: { slides: Carusole[] }) {
                       {slide.description}
                     </p>
                   )}
-                  {slide.email && (
+                  {/* {slide.email && ( */}
                     <p className="text-white text-base sm:text-base mb-2 drop-shadow-md line-clamp-2">
-                      {"Daimond Sponsor"}
+                      {slide.category_name}
                     </p>
-                  )}
+                  {/* )} */}
                   {/* <button className="px-1 sm:px-2 py-1 sm:py-1 bg-white text-gray-800 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg">
                     {"More Info"}
                   </button> */}
