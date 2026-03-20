@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 const SpeakerDetails = () => {
   const { speakers } = useSelector(
@@ -29,6 +29,7 @@ const SpeakerDetails = () => {
   );
   const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   const speakerFromRedux = useMemo(
     () => speakers.find((speaker) => speaker.speaker_id === id),
@@ -85,7 +86,7 @@ const SpeakerDetails = () => {
               <div className="flex-shrink-0">
                 <div className="relative p-4">
                   <img
-                    src={speakerDetails.profile_image?? PlaceholderImage}
+                    src={speakerDetails.profile_image ?? PlaceholderImage}
                     alt={`${speakerDetails.firstname} ${speakerDetails.lastname}`}
                     className="w-48 h-48 sm:w-56 sm:h-56 rounded-2xl object-cover shadow-2xl"
                   />
@@ -163,7 +164,7 @@ const SpeakerDetails = () => {
                       Website
                     </a>
                   )}
-                  {speakerDetails.email && (
+                  {speakerDetails.email?.trim() && (
                     <a
                       href={`mailto:${speakerDetails.email}`}
                       target="_blank"
@@ -194,23 +195,25 @@ const SpeakerDetails = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {speakerDetails.attachments.map((attachment, index) => {
                       return (
-                        <a
-                          href={attachment.base64}
-                          target="_blank"
+                        <div
+                          onClick={() =>
+                            navigate(
+                              `/attachment/${speakerDetails.speaker_id}`,
+                              {
+                                state: { Title: attachment.filename, type: 1 },
+                              },
+                            )
+                          }
+                          key={index}
+                          className="group cursor-pointer relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300"
                         >
-                          <div
-                            // onClick={()=>navigate(`/attachment/${speakerDetails.speaker_id}`, {state:{Title:attachment.filename, type:1}})}
-                            key={index}
-                            className="group cursor-pointer relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300"
-                          >
-                            <div className="flex items-end p-4 gap-2">
-                              <File size={20} />
-                              <span className="text-black text-sm font-medium truncate max-w-[220px]">
-                                {attachment.filename}
-                              </span>
-                            </div>
+                          <div className="flex items-end p-4 gap-2">
+                            <File size={20} />
+                            <span className="text-black text-sm font-medium truncate max-w-[220px]">
+                              {attachment.filename}
+                            </span>
                           </div>
-                        </a>
+                        </div>
                       );
                     })}
                   </div>

@@ -1,10 +1,9 @@
 import { apiRequest } from "@/services/apiService";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { queryClient } from "@/provider/TanstackProvider";
 import { toast } from "sonner";
 import {
-  setExhibitors,
   setIsCreating,
   setIsDeleting,
   setSelected,
@@ -13,31 +12,73 @@ import {
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
 
-export const useGetExhibitorsList = () => {
-  const dispatch = useDispatch<AppDispatch>();
+// export const useGetExhibitorsList = () => {
+//   const dispatch = useDispatch<AppDispatch>();
+//   const {
+//     data: Exhibitors,
+//     isPending: isExhibitorsPending,
+//     error: errorInError,
+//   } = useQuery<ExhibitorListResponse, AxiosError>({
+//     queryKey: ["exhibitor-design-list"],
+//     queryFn: async () => {
+//       const res = await apiRequest("get", "exhibitors/listing");
+//       return res.response;
+//     },
+//     select: (data) => {
+//       dispatch(
+//         setExhibitors(
+//           data.response.seq.flatMap((string) => [...data.response[string]]),
+//         ),
+//       );
+//       return data;
+//     },
+//     refetchOnWindowFocus: false,
+//     retry: 1,
+//   });
+
+//   return { Exhibitors, isExhibitorsPending, errorInError };
+// };
+
+export const useAdminInfiniteExhibitors = () => {
   const {
-    data: Exhibitors,
-    isPending: isExhibitorsPending,
-    error: errorInError,
-  } = useQuery<ExhibitorListResponse, AxiosError>({
-    queryKey: ["exhibitor-design-list"],
-    queryFn: async () => {
-      const res = await apiRequest("get", "exhibitors/listing");
+    data: AllExhibitors,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchPreviousPage,
+    isFetchingPreviousPage,
+    hasPreviousPage,
+    status,
+    error,
+  } = useInfiniteQuery<GlobalAdminInfinityExhibitors, AxiosError>({
+    queryKey: ["Admin-Exhibitors-pagination"],
+    queryFn: async ({ pageParam }) => {
+      const res = await apiRequest(
+        "get",
+        `exhibitors/listing?page=${pageParam}`,
+      );
       return res.response;
     },
-    select: (data) => {
-      dispatch(
-        setExhibitors(
-          data.response.seq.flatMap((string) => [...data.response[string]]),
-        ),
-      );
-      return data;
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { current_page, max_page, next_page } = lastPage.response;
+      if (current_page < max_page) return next_page;
+      return undefined; // no more pages
     },
-    refetchOnWindowFocus: false,
-    retry: 1,
+    refetchOnWindowFocus:false
   });
 
-  return { Exhibitors, isExhibitorsPending, errorInError };
+  return {
+    AllExhibitors,
+    fetchNextPage,
+    fetchPreviousPage,
+    isFetchingPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+    isFetchingNextPage,
+    status,
+    error,
+  };
 };
 
 export const useCreateExhibitor = () => {

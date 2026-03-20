@@ -283,13 +283,13 @@ const V2_Venue_page = () => {
                 </a>
               )}
             </div>
-            <a
-              href="/FloorPlan.pdf"
+           {venue.attachent.trim() && <a
+              href={venue.attachent}
               target="_blank"
               className="flex items-center text-blue-600 gap-1"
             >
               <Link size={18} /> Floor Plan
-            </a>
+            </a>}
           </div>
           <div className="w-full">
             {V2_Global_FloorMapList?.response &&

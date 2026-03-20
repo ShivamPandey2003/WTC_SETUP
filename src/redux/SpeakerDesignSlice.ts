@@ -10,6 +10,7 @@ export type payload = SpeakerSetting & {
     latitude: string;
     longitude: string;
     image: string | File;
+    attachment: string | File;
   };
   venue_tab: string;
 };
@@ -57,6 +58,7 @@ const initialState: ProgrammeDesignStateType = {
       latitude: "",
       longitude: "",
       image: "",
+      attachment:""
     },
     venue_tab: "",
     speaker_info: {

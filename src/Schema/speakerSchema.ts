@@ -9,7 +9,7 @@ export const speakerSchema = z.object({
   company: z.string().optional().nullable(),
   bio: z.string().optional().nullable(),
   email: z.email("Invalid email address"),
-  external_link: z.url().optional(),
+  external_link: z.url().optional().or(z.literal("")),
   attachments: z
     .instanceof(FileList)
     .optional()
@@ -23,10 +23,11 @@ export const speakerSchema = z.object({
     .refine((files) => {
       if (!files || files.length === 0) return true;
       return allowedTypes.includes(files[0].type);
-    }, "Only PNG, JPG, WEBP images are allowed"),
+    }, "Only PNG, JPG, WEBP, JPEG images are allowed"),
   linkedin_url: z.url().optional().or(z.literal("")),
   whatsapp_url: z.url().optional().or(z.literal("")),
   keyNote: z.boolean(),
+  show_mail: z.boolean(),
 });
 
 export const EditspeakerSchema = z.object({
@@ -37,7 +38,7 @@ export const EditspeakerSchema = z.object({
   // email: z.email("Invalid email address"),
   company: z.string().optional().nullable(),
   bio: z.string().optional().nullable(),
-  external_link: z.url().optional(),
+  external_link: z.url().optional().or(z.literal("")),
   attachments: z
     .custom<FileList | undefined>()
     .optional()
@@ -51,10 +52,11 @@ export const EditspeakerSchema = z.object({
     .refine((files) => {
       if (!files || files.length === 0) return true;
       return allowedTypes.includes(files[0].type);
-    }, "Only PNG, JPG, WEBP images are allowed"),
+    }, "Only PNG, JPG, WEBP, JPEG images are allowed"),
   linkedin_url: z.url().optional().or(z.literal("")),
   whatsapp_url: z.url().optional().or(z.literal("")),
   keyNote: z.boolean(),
+  show_mail: z.boolean(),
 });
 
 export type SpeakerForm = z.infer<typeof speakerSchema>;

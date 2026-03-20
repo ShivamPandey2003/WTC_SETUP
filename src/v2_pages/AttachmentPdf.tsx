@@ -4,6 +4,7 @@ import workerSrc from "pdfjs-dist/build/pdf.worker.min?url";
 import { useLocation, useParams } from "react-router";
 import { useGetAttachment } from "@/api/programme_design_api/Programme_design_api";
 import { cn } from "@/lib/utils";
+import ErrorDisplay from "@/components/global/ErrorDisplay";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
 
@@ -13,7 +14,7 @@ const AttachmentPdf = () => {
   const [loading, setLoading] = useState(true);
   const {state} = useLocation()
 
-  const { Attachment, isPending } = useGetAttachment(id as string, state.type as number);
+  const { Attachment, isPending, error } = useGetAttachment(id as string, state.type as number, state.file_id as string);
 
   useEffect(() => {
     if (!Attachment) return;
@@ -51,6 +52,20 @@ const AttachmentPdf = () => {
 
     loadPdf();
   }, [Attachment]);
+
+  if (error) {
+      return (
+        <div className="flex items-center justify-center h-[80vh]">
+          <ErrorDisplay
+            title="Attachment Error"
+            message={String(
+              error?.message ??
+                error?.message
+            )}
+          />
+        </div>
+      );
+    }
 
   return (
     <div className="flex flex-col items-center gap-6 py-6 relative w-full max-w-full overflow-auto">

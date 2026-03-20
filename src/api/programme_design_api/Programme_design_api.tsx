@@ -5,13 +5,12 @@ import {
   setIsCreating,
   setIsDeleting,
   setSelected,
-  setSession,
   setUploadCSV,
 } from "@/redux/ProgrammeDesignSlice";
 import { setCategoryModal as exhibitorCategoryModal } from "@/redux/ExhibitorSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -30,34 +29,76 @@ export const useCreateSession = () => {
     onSuccess: () => {
       toast.success("Session created successfully");
       dispatch(setIsCreating(false));
-      queryClient.invalidateQueries({ queryKey: ["sessionList"] });
+      queryClient.invalidateQueries({ queryKey: ["Admin-Programme-pagination"] });
     },
   });
 
   return { CreateSession, isPending, error };
 };
 
-export const useGetSessionList = () => {
-  const dispatch = useDispatch<AppDispatch>();
+// export const useGetSessionList = () => {
+//   const dispatch = useDispatch<AppDispatch>();
+//   const {
+//     data: SessionList,
+//     isPending,
+//     error,
+//   } = useQuery<SessionListResponse, AxiosError>({
+//     queryKey: ["sessionList"],
+//     queryFn: async () => {
+//       const res = await apiRequest("get", "programme/list");
+//       return res.response;
+//     },
+//     select: (data) => {
+//       dispatch(setSession(data.response));
+//       return data;
+//     },
+//     refetchOnWindowFocus: false,
+//     retry: 1,
+//   });
+
+//   return { SessionList, isPending, error };
+// };
+
+export const useAdminInfiniteProgramme = () => {
   const {
-    data: SessionList,
-    isPending,
+    data: AllProgramme,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchPreviousPage,
+    isFetchingPreviousPage,
+    hasPreviousPage,
+    status,
     error,
-  } = useQuery<SessionListResponse, AxiosError>({
-    queryKey: ["sessionList"],
-    queryFn: async () => {
-      const res = await apiRequest("get", "programme/list");
+  } = useInfiniteQuery<GlobalAdminInfinityProgramme, AxiosError>({
+    queryKey: ["Admin-Programme-pagination"],
+    queryFn: async ({ pageParam }) => {
+      const res = await apiRequest(
+        "get",
+        `programme/list?page=${pageParam}`,
+      );
       return res.response;
     },
-    select: (data) => {
-      dispatch(setSession(data.response));
-      return data;
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { current_page, max_page, next_page } = lastPage.response;
+      if (current_page < max_page) return next_page;
+      return undefined; // no more pages
     },
-    refetchOnWindowFocus: false,
-    retry: 1,
+    refetchOnWindowFocus:false
   });
 
-  return { SessionList, isPending, error };
+  return {
+    AllProgramme,
+    fetchNextPage,
+    fetchPreviousPage,
+    isFetchingPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+    isFetchingNextPage,
+    status,
+    error,
+  };
 };
 
 export const useDeleteSession = () => {
@@ -74,7 +115,7 @@ export const useDeleteSession = () => {
     onSuccess: () => {
       toast.success("Session deleted successfully");
       dispatch(setIsDeleting(null));
-      queryClient.invalidateQueries({ queryKey: ["sessionList"] });
+      queryClient.invalidateQueries({ queryKey: ["Admin-Programme-pagination"] });
     },
   });
 
@@ -209,7 +250,7 @@ export const useEditSession = () => {
     },
     onSuccess: () => {
       toast.success("Session edited successfully");
-      queryClient.invalidateQueries({ queryKey: ["sessionList"] });
+      queryClient.invalidateQueries({ queryKey: ["Admin-Programme-pagination"] });
       dispatch(setSelected(null));
     },
   });
@@ -242,7 +283,7 @@ export const useUploadSessionsCSV = () => {
       link.remove();
 
       toast.success("CSV downloaded successfully");
-      queryClient.invalidateQueries({ queryKey: ["sessionList"] });
+      queryClient.invalidateQueries({ queryKey: ["Admin-Programme-pagination"] });
       dispatch(setUploadCSV(false));
     },
   });
@@ -311,7 +352,7 @@ export const useSessionDownload = () => {
   return { downloadSession, isdownloadPending };
 };
 
-export const useGetAttachment = (session_id: string, type: number = 0) => {
+export const useGetAttachment = (session_id: string, type: number = 0, file_id:string) => {
   const {
     data: Attachment,
     isPending,
@@ -321,7 +362,7 @@ export const useGetAttachment = (session_id: string, type: number = 0) => {
     queryFn: async () => {
       const res = await apiRequest(
         "get",
-        `/program/attachment/${session_id}?type=${type}`,
+        `/program/attachment/${session_id}?type=${type}&file_id=${file_id}`,
         null,
         "blob",
       );

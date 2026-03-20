@@ -5,13 +5,12 @@ import {
   setIsDeleting,
   setIsPublished,
   setIsUnpublished,
-  setNews,
   setSelected,
   setUploadCSV,
 } from "@/redux/HomeDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -29,7 +28,7 @@ export const useCreateNews = () => {
     },
     onSuccess: () => {
       toast.success("News created successfully");
-      queryClient.invalidateQueries({ queryKey: ["newsList"] });
+      queryClient.invalidateQueries({ queryKey: ["Admin-News-pagination"] });
       dispatch(setIsCreating(false));
     },
   });
@@ -52,34 +51,71 @@ export const useEditNews = () => {
     onSuccess: () => {
       toast.success("News edited successfully");
       dispatch(setSelected(null));
-      queryClient.invalidateQueries({ queryKey: ["newsList"] });
+      queryClient.invalidateQueries({ queryKey: ["Admin-News-pagination"] });
     },
   });
 
   return { EditNews, isPending, error };
 };
 
-export const useGetNewsList = () => {
-  const dispatch = useDispatch<AppDispatch>();
+// export const useGetNewsList = () => {
+//   const dispatch = useDispatch<AppDispatch>();
+//   const {
+//     data: NewsList,
+//     isPending: isNewsListPending,
+//     error: errorInNewsList,
+//   } = useQuery<NewsListResponse, AxiosError>({
+//     queryKey: ["newsList"],
+//     queryFn: async () => {
+//       const res = await apiRequest("get", "news/list");
+//       return res.response;
+//     },
+//     select: (data) => {
+//       dispatch(setNews(data.response));
+//       return data;
+//     },
+//     refetchOnWindowFocus: false,
+//     retry: 1,
+//   });
+
+//   return { NewsList, isNewsListPending, errorInNewsList };
+// };
+
+export const useAdminInfiniteNews = () => {
   const {
-    data: NewsList,
-    isPending: isNewsListPending,
-    error: errorInNewsList,
-  } = useQuery<NewsListResponse, AxiosError>({
-    queryKey: ["newsList"],
-    queryFn: async () => {
-      const res = await apiRequest("get", "news/list");
+    data: AllNews,
+    fetchNextPage,
+    fetchPreviousPage,
+    hasPreviousPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+    error,
+  } = useInfiniteQuery<GlobalInfinityNews, AxiosError>({
+    queryKey: ["Admin-News-pagination"],
+    queryFn: async ({ pageParam }) => {
+      const res = await apiRequest("get", `news/list?page=${pageParam}`);
       return res.response;
     },
-    select: (data) => {
-      dispatch(setNews(data.response));
-      return data;
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { current_page, max_page, next_page } = lastPage.response;
+      if (current_page < max_page) return next_page;
+      return undefined; // no more pages
     },
-    refetchOnWindowFocus: false,
-    retry: 1,
+    refetchOnWindowFocus:false
   });
 
-  return { NewsList, isNewsListPending, errorInNewsList };
+  return {
+    AllNews,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+    error,
+    fetchPreviousPage,
+    hasPreviousPage
+  };
 };
 
 export const useDeleteNews = () => {
@@ -96,7 +132,7 @@ export const useDeleteNews = () => {
     onSuccess: () => {
       toast.success("News deleted successfully");
       dispatch(setIsDeleting(null));
-      queryClient.invalidateQueries({ queryKey: ["newsList"] });
+      queryClient.invalidateQueries({ queryKey: ["Admin-News-pagination"] });
     },
   });
 
@@ -122,7 +158,7 @@ export const usePublishedNews = () => {
     },
     onSuccess: () => {
       toast.success("News Published successfully");
-      queryClient.invalidateQueries({ queryKey: ["newsList"] });
+      queryClient.invalidateQueries({ queryKey: ["Admin-News-pagination"] });
       dispatch(setIsPublished(null));
       dispatch(setIsUnpublished(null));
     },
@@ -156,7 +192,7 @@ export const useUploadNewsCSV = () => {
       link.remove();
 
       toast.success("CSV downloaded successfully");
-      queryClient.invalidateQueries({ queryKey: ["newsList"] });
+      queryClient.invalidateQueries({ queryKey: ["Admin-News-pagination"] });
       dispatch(setUploadCSV(false));
     },
   });

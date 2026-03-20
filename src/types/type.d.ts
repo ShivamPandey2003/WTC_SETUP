@@ -169,6 +169,11 @@ declare type SpeakerListResponse = {
   })[];
 };
 
+declare type AllSpeakerListResponse = {
+  header: ResponseHeader;
+  response: {id:string, name:string}[];
+};
+
 declare type DeleteSpeakerResponse = {
   header: ResponseHeader;
   response: {
@@ -242,6 +247,7 @@ declare type GlobalNavMenuResponse = {
 
 declare type GlobalVenue = {
   bg_venue: string;
+  attachent:string;
   getting_there: {
     sub_title: string;
     description: string;
@@ -612,6 +618,20 @@ declare type GlobalInfinityExhibitors = {
     } & {
       grouped: { [category: string]: Omit<Exhibitor, "category">[] };
     };
+  };
+};
+
+declare type GlobalAdminInfinityExhibitors = {
+  header: ResponseHeader;
+  response: Infinity & {
+    data: Omit<Exhibitor, "category">[]
+  };
+};
+
+declare type GlobalAdminInfinityProgramme = {
+  header: ResponseHeader;
+  response: Infinity & {
+    data: Session[]
   };
 };
 
