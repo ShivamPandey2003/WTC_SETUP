@@ -3,14 +3,13 @@ import {
   setIsCreating,
   setIsDeleting,
   setSelected,
-  setSpeaker,
   setSpeakerSettings,
   setUploadCSV,
   type payload,
 } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
@@ -28,7 +27,7 @@ export const useCreateSpeaker = () => {
     },
     onSuccess: () => {
       toast.success("Speaker created successfully");
-      queryClient.invalidateQueries({ queryKey: ["speakerList"] });
+      queryClient.invalidateQueries({ queryKey: ["Admin-Speakers-pagination"] });
       dispatch(setIsCreating(false));
     },
   });
@@ -50,7 +49,7 @@ export const useEditSpeaker = () => {
     },
     onSuccess: () => {
       toast.success("Speaker edited successfully");
-      queryClient.invalidateQueries({ queryKey: ["speakerList"] });
+      queryClient.invalidateQueries({ queryKey: ["Admin-Speakers-pagination"] });
       dispatch(setSelected(null));
     },
   });
@@ -58,20 +57,57 @@ export const useEditSpeaker = () => {
   return { EditSpeaker, isPending, error };
 };
 
+export const useAdminInfiniteSpeakers = () => {
+  const {
+    data: AllSpeakers,
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+    isFetchingPreviousPage,
+    isFetchingNextPage,
+    status,
+    error,
+  } = useInfiniteQuery<GlobalInfinitySpeakers, AxiosError>({
+    queryKey: ["Admin-Speakers-pagination"],
+    queryFn: async ({ pageParam }) => {
+      const res = await apiRequest("get", `speakers/list?page=${pageParam}`);
+      return res.response;
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { current_page, max_page, next_page } = lastPage.response;
+      if (current_page < max_page) return next_page;
+      return undefined; // no more pages
+    },
+    refetchOnWindowFocus:false
+  });
+
+  return {
+    AllSpeakers,
+    fetchNextPage,
+    fetchPreviousPage,
+    hasPreviousPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+    error,
+    isFetchingPreviousPage
+  };
+};
+
 export const useGetSpeakerList = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const {
     data: SpeakerList,
     isPending,
     error,
-  } = useQuery<SpeakerListResponse, AxiosError>({
+  } = useQuery<AllSpeakerListResponse, AxiosError>({
     queryKey: ["speakerList"],
     queryFn: async () => {
-      const res = await apiRequest("get", "speakers/list");
+      const res = await apiRequest("get", "all-speakers");
       return res.response;
     },
     select: (data) => {
-      dispatch(setSpeaker(data.response));
       return data;
     },
     refetchOnWindowFocus: false,
@@ -95,7 +131,7 @@ export const useDeleteSpeaker = () => {
     onSuccess: () => {
       toast.success("Speaker deleted successfully");
       dispatch(setIsDeleting(null));
-      queryClient.invalidateQueries({ queryKey: ["speakerList"] });
+      queryClient.invalidateQueries({ queryKey: ["Admin-Speakers-pagination"] });
     },
   });
 
@@ -150,7 +186,7 @@ export const useUploadSpeakerCSV = () => {
       link.remove();
 
       toast.success("CSV downloaded successfully");
-      queryClient.invalidateQueries({ queryKey: ["speakerList"] });
+      queryClient.invalidateQueries({ queryKey: ["Admin-Speakers-pagination"] });
       dispatch(setUploadCSV(false));
     },
   });

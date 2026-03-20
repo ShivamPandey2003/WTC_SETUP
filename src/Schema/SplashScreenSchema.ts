@@ -10,7 +10,7 @@ export const SplashScreenSchema = z.object({
     .refine((files) => {
       if (!files || files.length === 0) return true;
       return allowedTypes.includes(files[0].type);
-    }, "Only PNG, JPG, WEBP images are allowed"),
+    }, "Only PNG, JPG, WEBP, JPEG images are allowed"),
 });
 
 export type SplashScreenSchemaType = z.infer<typeof SplashScreenSchema>;

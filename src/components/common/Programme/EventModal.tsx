@@ -136,8 +136,8 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                     <div
                       key={e.id}
                       onClick={() =>
-                        navigate(`/Attachment/${e.id}`, {
-                          state: { Title: e.filename },
+                        navigate(`/Attachment/${selectedValue.id}`, {
+                          state: { Title: e.filename, file_id:e.id },
                         })
                       }
                       className="flex flex-col sm:flex-row sm:items-center gap-2 mb-5 text-sm text-gray-700"

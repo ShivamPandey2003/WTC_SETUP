@@ -1,30 +1,64 @@
 import { CircleX, Pencil, SquareCheck, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
+  useAdminInfiniteExhibitors,
   useDeleteExibitor,
-  useGetExhibitorsList,
 } from "@/api/exhibitor_design_api/exhibitor_design_api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { setIsDeleting, setSelected } from "@/redux/ExhibitorSlice";
+import {
+  setExhibitors,
+  setIsDeleting,
+  setSelected,
+} from "@/redux/ExhibitorSlice";
 import DeleteModel from "@/components/global/DeleteModel";
 import EditModal from "./EditModel";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { useGetCategoryAll } from "@/api/programme_design_api/Programme_design_api";
+import { useEffect, useMemo } from "react";
+import { Button } from "@/components/ui/Button";
 
 const CustomTable = () => {
-  const { Exhibitors:ValueExhibitors, isExhibitorsPending, errorInError } = useGetExhibitorsList();
+  const {
+    AllExhibitors,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    hasPreviousPage,
+    fetchPreviousPage,
+    status,
+    error,
+  } = useAdminInfiniteExhibitors();
   const { AllCategory, isPending } = useGetCategoryAll();
-  const { isDeleting, selected, Exhibitors } = useSelector(
-    (state: RootState) => state.ExhibitorSlice
+  const { isDeleting, selected } = useSelector(
+    (state: RootState) => state.ExhibitorSlice,
   );
   const dispatch = useDispatch<AppDispatch>();
   const { DeleteExibitor, isPending: isDeletingPending } = useDeleteExibitor();
 
+  const NewValueList = useMemo(() => {
+    if (!AllExhibitors) return [];
 
-  if (isExhibitorsPending || isPending) {
+    const newData = AllExhibitors.pages.flatMap((page) => page.response.data);
+    if (!newData) return [];
+
+    return newData;
+  }, [AllExhibitors]);
+
+  useEffect(() => {
+    if (NewValueList.length === 0) return;
+    dispatch(setExhibitors(NewValueList));
+  }, [NewValueList]);
+
+  if (
+    status === "pending" ||
+    isPending ||
+    isFetchingNextPage ||
+    isFetchingPreviousPage
+  ) {
     return [1, 2, 3, 4].map((val) => (
       <div key={val} className="w-full">
         <Skeleton className="h-8 w-full mb-2" />
@@ -32,18 +66,15 @@ const CustomTable = () => {
     ));
   }
 
-  if (errorInError) {
+  if (error || status === "error") {
     return (
       <div className="flex items-center justify-center h-[80vh]">
-        <ErrorDisplay
-          title="Table Error"
-          message={errorInError.message}
-        />
+        <ErrorDisplay title="Table Error" message={error?.message as string} />
       </div>
     );
   }
 
-   if (!ValueExhibitors || !ValueExhibitors.response) {
+  if (!AllExhibitors || NewValueList.length === 0) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />
@@ -53,102 +84,125 @@ const CustomTable = () => {
 
   return (
     <div className="overflow-hidden">
-      <div className="overflow-x-auto">
-        <table
-          className="min-w-full border-separate"
-          style={{ borderSpacing: "0 8px" }}
-        >
-          <thead className="">
-            <tr>
-              <th className="pl-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Sno.
-              </th>
-              <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Exhibitor Name
-              </th>
-              <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                URL
-              </th>
-              <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Email
-              </th>
-              <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Logo
-              </th>
-              <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Category
-              </th>
-              <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Ads
-              </th>
-              <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* {!Exhibitors.length && <td className="text-center">No date</td>} */}
-            {Boolean(Exhibitors.length) && Exhibitors.map((item, index) => (
-              <tr key={index} className="bg-white border w-fit">
-                <td className="pl-3 py-2">{index + 1}</td>
-                <td className="pl-6 py-2">{item.full_name}</td>
-                <td className="pl-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
-                  {item.url}
-                </td>
-                <td className="pl-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[300px]">
-                  {item.email}
-                </td>
-                <td className="pl-6 py-2">
-                  {item.logo && (
-                    <SquareCheck
-                      fill="#318061"
-                      className="border-[#318061] text-white"
-                      size={28}
-                    />
-                  )}
-                </td>
-                <td className="pl-2 py-2">
-                  <div
-                    className={cn(
-                      "w-[100px] h-5 rounded-[7px] flex items-center justify-center mr-2"
-                    )}
-                  >
-                    {AllCategory?.response.find((pre)=>pre.id === item.categoryId)?.name ?? ""}
-                  </div>
-                </td>
-                <td className="pl-6 py-2">
-                  {item.ads ? (
-                    <SquareCheck
-                      fill="#318061"
-                      className="border-[#318061] text-white"
-                      size={28}
-                    />
-                  ) : (
-                    <CircleX
-                      fill="#CDA4A4"
-                      className="border-[#CDA4A4] text-white"
-                      size={28}
-                    />
-                  )}
-                </td>
-                <td className="px-6 py-2 pt-3 flex gap-2 items-center rounded-lg">
-                  <Pencil
-                    color="#425EBC"
-                    onClick={() => dispatch(setSelected(item.id))}
-                    size={20}
-                    className="cursor-pointer"
-                  />
-                  <Trash2
-                    color="#B85555"
-                    onClick={() => dispatch(setIsDeleting(item.id))}
-                    size={20}
-                    className="cursor-pointer"
-                  />
-                </td>
+      <div>
+        <div className="overflow-x-auto">
+          <table
+            className="min-w-full border-separate"
+            style={{ borderSpacing: "0 8px" }}
+          >
+            <thead className="">
+              <tr>
+                <th className="pl-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Sno.
+                </th>
+                <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Exhibitor Name
+                </th>
+                <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  URL
+                </th>
+                <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Email
+                </th>
+                <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Logo
+                </th>
+                <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Category
+                </th>
+                <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Ads
+                </th>
+                <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {/* {!Exhibitors.length && <td className="text-center">No date</td>} */}
+              {NewValueList.length > 0 &&
+                NewValueList.map((item, index) => (
+                  <tr key={index} className="bg-white border w-fit">
+                    <td className="pl-3 py-2">{index + 1}</td>
+                    <td className="pl-6 py-2">{item.full_name}</td>
+                    <td className="pl-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
+                      {item.url}
+                    </td>
+                    <td className="pl-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[300px]">
+                      {item.email}
+                    </td>
+                    <td className="pl-6 py-2">
+                      {item.logo && (
+                        <SquareCheck
+                          fill="#318061"
+                          className="border-[#318061] text-white"
+                          size={28}
+                        />
+                      )}
+                    </td>
+                    <td className="pl-2 py-2">
+                      <div
+                        className={cn(
+                          "w-[100px] h-5 rounded-[7px] flex items-center justify-center mr-2",
+                        )}
+                      >
+                        {AllCategory?.response.find(
+                          (pre) => pre.id === item.categoryId,
+                        )?.name ?? ""}
+                      </div>
+                    </td>
+                    <td className="pl-6 py-2">
+                      {item.ads ? (
+                        <SquareCheck
+                          fill="#318061"
+                          className="border-[#318061] text-white"
+                          size={28}
+                        />
+                      ) : (
+                        <CircleX
+                          fill="#CDA4A4"
+                          className="border-[#CDA4A4] text-white"
+                          size={28}
+                        />
+                      )}
+                    </td>
+                    <td className="px-6 py-2 pt-3 flex gap-2 items-center rounded-lg">
+                      <Pencil
+                        color="#425EBC"
+                        onClick={() => dispatch(setSelected(item.id))}
+                        size={20}
+                        className="cursor-pointer"
+                      />
+                      <Trash2
+                        color="#B85555"
+                        onClick={() => dispatch(setIsDeleting(item.id))}
+                        size={20}
+                        className="cursor-pointer"
+                      />
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+        {hasNextPage && (
+          <div className="flex items-center gap-4 justify-end w-full">
+            <Button
+              disabled={!hasPreviousPage}
+              onClick={() => fetchPreviousPage()}
+              className={cn(hasPreviousPage && "cursor-pointer")}
+            >
+              Previous
+            </Button>
+            <Button
+              onClick={() => fetchNextPage()}
+              disabled={!hasNextPage}
+              className={cn(hasPreviousPage && "cursor-pointer")}
+            >
+              Next
+            </Button>
+          </div>
+        )}
       </div>
       <DeleteModel
         isOpen={Boolean(isDeleting)}

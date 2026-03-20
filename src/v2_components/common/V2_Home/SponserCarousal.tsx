@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import ExPlaceholderImg from "@/assets/Images/EXPlaceholder.jpg";
 // import { cn } from "@/lib/utils";
 
@@ -8,7 +8,7 @@ interface HeroCarouselProps {
     full_name: string;
     url: string;
     logo: string;
-  category_name:string;
+    category_name: string;
   }[];
   intervalTime?: number;
 }
@@ -46,15 +46,22 @@ const SponserCarousal = ({
             className="absolute inset-0 transition-opacity duration-700 px-2"
           >
             <a href={slide.url} target="_blank" rel="noopener noreferrer">
-              <div
-                className="w-full h-full bg-contain bg-no-repeat bg-center"
-                style={{
-                  backgroundImage: slide.logo
-                    ? `url(${slide.logo})`
-                    : `url(${ExPlaceholderImg})`,
-                }}
-              >
-                <div className="w-full h-full flex flex-col justify-end py-4 px-2 md:px-4">
+              <div className="relative w-full h-full overflow-hidden">
+                <img
+                  src={
+                    slide.logo
+                      ? `${slide.logo}`
+                      : ExPlaceholderImg
+                  }
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-contain object-center"
+                  width={200}
+                  height={400}
+                  loading="lazy"
+                  decoding="async"
+                />
+
+                <div className="relative z-10 w-full h-full flex flex-col justify-end py-4 px-2 md:px-4">
                   <h2 className="text-base font-bold text-primary mb-1">
                     {slide.full_name}
                   </h2>
@@ -85,4 +92,4 @@ const SponserCarousal = ({
   );
 };
 
-export default SponserCarousal;
+export default memo(SponserCarousal);

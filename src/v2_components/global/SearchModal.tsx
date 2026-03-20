@@ -4,6 +4,7 @@ import { useInfiniteSearch } from "@/api/global_api/global_api";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useLocation, useNavigate } from "react-router";
 import ExPlaceholderImg from '@/assets/Images/EXPlaceholder.jpg'
+import PlaceholderImage from "@/assets/Images/placeholder.webp";
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -138,7 +139,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     }}
                   >
                     <img
-                      src={item.user_img ?? ExPlaceholderImg}
+                      src={item.user_img ?? PlaceholderImage}
                       alt={item.name}
                       className="h-[7rem] sm:h-[10rem] w-[11rem] sm:w-[15rem] rounded-2xl object-cover"
                     />

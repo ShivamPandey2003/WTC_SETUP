@@ -15,9 +15,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 const VenueDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
-  const [attachment, setAttachment] = React.useState<string | File>(
-    "/FloorPlan.pdf",
-  );
 
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
@@ -32,7 +29,15 @@ const VenueDesign_page = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setAttachment(file);
+    dispatch(
+      setSpeakerSettings({
+        ...SpeakerSettings,
+        venue: {
+          ...SpeakerSettings.venue,
+          attachment: file,
+        },
+      }),
+    );
   };
 
   if (isPending) {
@@ -182,17 +187,19 @@ const VenueDesign_page = () => {
                     className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary/20 file:text-primary hover:file:bg-primary/40"
                   />
                 </div>
-                <a
-                  href={
-                    typeof attachment === "string"
-                      ? attachment
-                      : URL.createObjectURL(attachment)
-                  }
-                  target="_blank"
-                  className="flex items-center text-primary gap-1"
-                >
-                  <Link size={18} /> Floor Plan
-                </a>
+                {SpeakerSettings.venue.attachment && (
+                  <a
+                    href={
+                      typeof SpeakerSettings.venue.attachment === "string"
+                        ? SpeakerSettings.venue.attachment
+                        : URL.createObjectURL(SpeakerSettings.venue.attachment)
+                    }
+                    target="_blank"
+                    className="flex items-center text-primary gap-1"
+                  >
+                    <Link size={18} /> Floor Plan
+                  </a>
+                )}
               </div>
               <div className="flex items-center gap-4 py-2 w-full">
                 <div className="text-sm font-[500] w-[220px] shrink-0">

@@ -1,12 +1,13 @@
 import Linkedin from "@/assets/Icons/Linkedin";
 import PlaceholderImage from "@/assets/Images/placeholder.webp";
+import { memo } from "react";
 
 interface TeamMemberCardProps extends CreateSpeakerRequestT {
   onClick: () => void;
   profile_image: string;
 }
 
-export default function SpeakerCard({
+function SpeakerCard({
   // title,
   bio,
   profile_image,
@@ -20,22 +21,27 @@ export default function SpeakerCard({
   // isVerified = true,
   // linkedinUrl,
   // isLinkedin,
+  keyNote,
   onClick,
 }: TeamMemberCardProps) {
   return (
     <div
-      className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 w-[250px] min-h-[325px] sm:min-w-[15rem] cursor-pointer"
+      className="bg-white relative rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 w-[250px] min-h-[325px] sm:min-w-[15rem] cursor-pointer"
       onClick={onClick}
     >
+      {keyNote && (
+        <div className="absolute top-2 right-2 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+          Keynote
+        </div>
+      )}
       <div className="h-[14rem] overflow-hidden bg-gray-200">
         <img
-          src={
-            profile_image
-              ? profile_image
-              : PlaceholderImage
-          }
+          src={profile_image ? profile_image : PlaceholderImage}
           alt={prefix + " " + firstname + " " + lastname}
-          className="w-full h-full object-cover"
+          className="object-cover object-center"
+          loading="lazy"
+          width={250}
+          height={100}
         />
       </div>
 
@@ -81,3 +87,5 @@ export default function SpeakerCard({
     </div>
   );
 }
+
+export default memo(SpeakerCard);
