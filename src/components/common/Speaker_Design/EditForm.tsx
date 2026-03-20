@@ -60,6 +60,7 @@ const EditFrom = () => {
     formData.append("designation", newData.designation as string);
     formData.append("external_link", newData?.external_link as string);
     formData.append("keyNote", String(newData.keyNote));
+    formData.append("show_mail", String(newData.show_mail));
     formData.append("linkedin_url", newData.linkedin_url as string);
     formData.append("whatsapp_url", newData.whatsapp_url as string);
     if (newData.attachments?.[0]) {
@@ -118,7 +119,7 @@ const EditFrom = () => {
       name: "profile_image",
       label: "Profile Image",
       type: "file",
-      accept: "image/png,image/jpg,image/webp",
+      accept: "image/png,image/jpg,image/webp,image/jpeg",
     },
     {
       name: "attachments",
@@ -138,6 +139,7 @@ const EditFrom = () => {
       placeholder: "https://wa.me/XXXXXXXXXX",
     },
     { name: "keyNote", label: "Keynote", type: "checkbox" },
+    { name: "show_mail", label: "Show mail", type: "checkbox"},
   ];
 
   return (

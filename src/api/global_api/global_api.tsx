@@ -420,6 +420,8 @@ export const useVenueDesignUpdate = () => {
 
   Object.entries(data).forEach(([key, value]) => {
     if(value !== null){
+      if(key === "image" && typeof value === "string") return;
+      if(key === "attachment" && typeof value === "string") return;
       formData.append(key, value);
     }
   });

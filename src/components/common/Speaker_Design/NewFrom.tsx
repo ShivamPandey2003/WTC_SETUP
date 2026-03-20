@@ -29,12 +29,19 @@ const NewFrom = () => {
     formData.append("email", newData.email as string);
     formData.append("company", newData.company as string);
     formData.append("designation", newData.designation as string);
-    formData.append("external_link", newData?.external_link as string);
-    formData.append("profile_image", newData.profile_image?.[0] as Blob);
+    // if(newData?.external_link){
+      formData.append("external_link", newData?.external_link as string);
+    // }
+    if(newData.profile_image?.[0]){
+      formData.append("profile_image", newData.profile_image?.[0] as Blob);
+    }
     formData.append("keyNote", String(newData.keyNote));
+    formData.append("show_mail", String(newData.show_mail));
     formData.append("linkedin_url", newData.linkedin_url as string);
     formData.append("whatsapp_url", newData.whatsapp_url as string);
-    formData.append("attachments", newData.attachments?.[0] as Blob);
+    if(newData.attachments?.[0]){
+      formData.append("attachments", newData.attachments?.[0] as Blob);
+    }
     
     CreateSpeaker(formData);
   };
@@ -84,7 +91,7 @@ const NewFrom = () => {
       name: "profile_image",
       label: "Profile Image",
       type: "file",
-      accept: "image/png,image/jpg,image/webp",
+      accept: "image/png,image/jpg,image/webp,image/jpeg",
     },
     {
       name: "attachments",
@@ -104,6 +111,7 @@ const NewFrom = () => {
       placeholder: "https://wa.me/XXXXXXXXXX",
     },
     { name: "keyNote", label: "Keynote", type: "checkbox" },
+    { name: "show_mail", label: "Show mail", type: "checkbox"},
   ];
 
   return (

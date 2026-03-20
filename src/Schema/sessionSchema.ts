@@ -18,7 +18,7 @@ export const SessionSchema = z.object({
     .refine((files) => {
       if (!files || files.length === 0) return true;
       return allowedTypes.includes(files[0].type);
-    }, "Only PNG, JPG, WEBP images are allowed"),
+    }, "Only PNG, JPG, WEBP, JPEG images are allowed"),
   attachments: z.custom<FileList | undefined>()
     .optional()
     .refine((files) => {
@@ -44,7 +44,7 @@ export const EditSessionSchema = z.object({
     .refine((files) => {
       if (!files || files.length === 0) return true;
       return allowedTypes.includes(files[0].type);
-    }, "Only PNG, JPG, WEBP images are allowed"),
+    }, "Only PNG, JPG, WEBP, JPEG images are allowed"),
   attachments: z
     .custom<FileList | undefined>()
     .optional()

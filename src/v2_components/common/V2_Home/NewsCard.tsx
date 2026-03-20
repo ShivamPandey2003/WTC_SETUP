@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import V2_LineClamp from "@/v2_components/global/V2_LineClamp";
-import ExPlaceholderImg from '@/assets/Images/EXPlaceholder.jpg'
+import ExPlaceholderImg from "@/assets/Images/EXPlaceholder.jpg";
+import { memo } from "react";
 
 interface NewsCardProps {
   title: string;
@@ -11,7 +12,7 @@ interface NewsCardProps {
   onClick: () => void;
 }
 
-export default function NewsCard({
+function NewsCard({
   title,
   description,
   className,
@@ -27,19 +28,20 @@ export default function NewsCard({
       onClick={() => onClick()}
     >
       <img
-        src={
-          bg_img
-            ? bg_img
-            : ExPlaceholderImg
-        }
+        src={bg_img || ExPlaceholderImg}
         alt=""
         className="w-full h-[5.5rem] object-cover rounded-t-xl object-center"
+        width={300}
+        height={88}
         loading="lazy"
+        decoding="async"
       />
       <div className="p-4">
         <h3 className="font-bold text-gray-900 mb-3">{title}</h3>
-        <V2_LineClamp onClick={onClick} text={description}/>
+        <V2_LineClamp onClick={onClick} text={description} />
       </div>
     </div>
   );
 }
+
+export default memo(NewsCard);

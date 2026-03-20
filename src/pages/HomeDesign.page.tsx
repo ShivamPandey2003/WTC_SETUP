@@ -4,14 +4,12 @@ import {
   useUploadLogo,
 } from "@/api/global_api/global_api";
 import {
-  useGetNewsList,
   useHeroCarusole,
   useNewsDownload,
   useUpdateSplash,
   useUploadNewsCSV,
 } from "@/api/home_design_api/Home_design_api";
 import { useGetCategoryAll } from "@/api/programme_design_api/Programme_design_api";
-// import BannerPreview from "@/components/common/Home_Design/BannerPreview";
 import CreateModal from "@/components/common/Home_Design/CreateModal";
 import MiniSmallCarousel from "@/components/common/Home_Design/MiniCarousel";
 import CustomTable from "@/components/common/Home_Design/Table";
@@ -19,7 +17,6 @@ import AdminTitlebar from "@/components/global/AdminTitlebar";
 import CSVModel from "@/components/global/CSVModel";
 import ErrorModal from "@/components/global/ErrorModal";
 import Section from "@/components/global/Section";
-// import TextStyleRow from "@/components/global/TextStyleRow";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
@@ -42,7 +39,6 @@ const HomeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   const { isGlobalDesignPending } = useGlobalDesign();
   const { AllCategory, isPending: isCategoriesPending } = useGetCategoryAll();
-  const { NewsList } = useGetNewsList();
   const dispatch = useDispatch<AppDispatch>();
   const {
     isCreating,
@@ -97,8 +93,6 @@ const HomeDesign_page = () => {
   },[HomeDesignUpdateData])
 
   if (
-    !NewsList ||
-    !NewsList.response ||
     !HeroCarusole ||
     !HeroCarusole.response ||
     isGlobalDesignPending ||

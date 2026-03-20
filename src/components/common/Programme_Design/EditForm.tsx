@@ -165,7 +165,7 @@ const EditFrom = () => {
       name: "bg_image",
       label: "Image",
       type: "file",
-      accept: "image/png,image/jpg,image/webp",
+      accept: "image/png,image/jpg,image/webp,image/jpeg",
     },
     { name: "location", label: "Location" },
     { name: "external_link", label: "External Link" },
@@ -188,8 +188,8 @@ const EditFrom = () => {
       placeholder: "Select a speaker",
       options: SpeakerList?.response.map((item) => {
         return {
-          label: `${item.prefix} ${item.firstname} ${item.lastname}`,
-          value: item.speaker_id,
+          label: item.name,
+          value: item.id,
         };
       }),
       addMoreHandler: () => dispatch(CreateSpeaker(true)),
