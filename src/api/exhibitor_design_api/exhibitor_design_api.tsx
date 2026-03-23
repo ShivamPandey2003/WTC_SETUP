@@ -95,7 +95,7 @@ export const useCreateExhibitor = () => {
     onSuccess: () => {
       toast.success("Exhibitor created successfully");
       dispatch(setIsCreating(false));
-      queryClient.invalidateQueries({ queryKey: ["exhibitor-design-list"] });
+      queryClient.invalidateQueries({ queryKey: ["Admin-Exhibitors-pagination"] });
     },
   });
 
@@ -116,7 +116,7 @@ export const useDeleteExibitor = () => {
     onSuccess: (data) => {
       toast.success(data.header.message);
       dispatch(setIsDeleting(null));
-      queryClient.invalidateQueries({ queryKey: ["exhibitor-design-list"] });
+      queryClient.invalidateQueries({ queryKey: ["Admin-Exhibitors-pagination"] });
     },
   });
 
@@ -142,7 +142,7 @@ export const useEditExhibitor = () => {
     onSuccess: (data) => {
       toast.success(data.header.message);
       dispatch(setSelected(null));
-      queryClient.invalidateQueries({ queryKey: ["exhibitor-design-list"] });
+      queryClient.invalidateQueries({ queryKey: ["Admin-Exhibitors-pagination"] });
     },
   });
 
@@ -178,7 +178,7 @@ export const useUploadExhibitorsCSV = () => {
       link.remove();
 
       toast.success("CSV downloaded successfully");
-      queryClient.invalidateQueries({ queryKey: ["exhibitor-design-list"] });
+      queryClient.invalidateQueries({ queryKey: ["Admin-Exhibitors-pagination"] });
       dispatch(setUploadCSV(false));
     },
   });
