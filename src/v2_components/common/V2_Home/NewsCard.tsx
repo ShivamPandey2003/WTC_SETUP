@@ -27,15 +27,17 @@ function NewsCard({
       )}
       onClick={() => onClick()}
     >
-      <img
-        src={bg_img || ExPlaceholderImg}
-        alt=""
-        className="w-full h-[5.5rem] object-cover rounded-t-xl object-center"
-        width={300}
-        height={88}
-        loading="lazy"
-        decoding="async"
-      />
+      <div className="w-full h-[6.5rem] overflow-hidden contain-content">
+        <img
+          src={bg_img || ExPlaceholderImg}
+          alt=""
+          className="rounded-t-xl object-center object-cover"
+          width={500}
+          height={88}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
       <div className="p-4">
         <h3 className="font-bold text-gray-900 mb-3">{title}</h3>
         <V2_LineClamp onClick={onClick} text={description} />
