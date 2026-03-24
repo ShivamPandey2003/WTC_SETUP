@@ -21,7 +21,7 @@ const sizeClasses = {
   md: 'max-w-lg',
   lg: 'max-w-2xl',
   xl: 'max-w-4xl',
-  full: 'max-w-full mx-4',
+  full: 'max-w-[80vw] mx-4',
 };
 
 export default function Modal({

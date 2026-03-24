@@ -138,17 +138,20 @@ const TabsTrigger = ({
   onTabChange,
   variant,
   children,
+  onMouseDown
 }: TabsTriggerProps) => {
   const isActive = activeTab === value;
 
   return (
     <button
       onClick={() => onTabChange?.(value)}
+      data-active={isActive}
       className={cn(
         tabTriggerVariants({ variant, active: isActive }),
         className,
         "cursor-pointer"
       )}
+      onMouseDown={onMouseDown}
     >
       {children}
     </button>
