@@ -371,7 +371,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                         .map((e) => (
                           <div
                             onClick={() =>
-                              navigate(`/Attachment/${e.id}`, {
+                              navigate(`/Attachment/${s.id}`, {
                                 state: { Title: e.filename, file_id:e.id },
                               })
                             }
