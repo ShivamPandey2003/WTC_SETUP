@@ -109,7 +109,7 @@ const V2_Programme_page = () => {
           <div className="w-full h-[75vh] flex items-center justify-center">
             <Loader className="text-primary animate-spin" size={30} />
             <p className="text-primary font-semibold text-lg">
-              Sessions is loading...
+              Loading programme, please wait...
             </p>
           </div>
         </div>
