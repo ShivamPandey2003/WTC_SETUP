@@ -1,5 +1,5 @@
 import { apiRequest } from "@/services/apiService";
-import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { queryClient } from "@/provider/TanstackProvider";
 import { toast } from "sonner";
@@ -12,32 +12,26 @@ import {
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
 
-// export const useGetExhibitorsList = () => {
-//   const dispatch = useDispatch<AppDispatch>();
-//   const {
-//     data: Exhibitors,
-//     isPending: isExhibitorsPending,
-//     error: errorInError,
-//   } = useQuery<ExhibitorListResponse, AxiosError>({
-//     queryKey: ["exhibitor-design-list"],
-//     queryFn: async () => {
-//       const res = await apiRequest("get", "exhibitors/listing");
-//       return res.response;
-//     },
-//     select: (data) => {
-//       dispatch(
-//         setExhibitors(
-//           data.response.seq.flatMap((string) => [...data.response[string]]),
-//         ),
-//       );
-//       return data;
-//     },
-//     refetchOnWindowFocus: false,
-//     retry: 1,
-//   });
+export const useGetExhibitorsList = (page: number = 1) => {
+  const {
+    data: Exhibitors,
+    isPending: isExhibitorsPending,
+    error: errorInError,
+  } = useQuery<ExhibitorListResponse, AxiosError>({
+    queryKey: ["exhibitor-design-list", page],
+    queryFn: async () => {
+      const res = await apiRequest("get", `exhibitors/listing?page=${page}`);
+      return res.response;
+    },
+    select: (data) => {
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
 
-//   return { Exhibitors, isExhibitorsPending, errorInError };
-// };
+  return { Exhibitors, isExhibitorsPending, errorInError };
+};
 
 export const useAdminInfiniteExhibitors = () => {
   const {
@@ -65,7 +59,11 @@ export const useAdminInfiniteExhibitors = () => {
       if (current_page < max_page) return next_page;
       return undefined; // no more pages
     },
-    refetchOnWindowFocus:false
+    getPreviousPageParam: (lastPage) => {
+      const { next_page } = lastPage.response;
+      return next_page - 1 !== 0 ? next_page - 1 : undefined;
+    },
+    refetchOnWindowFocus: false,
   });
 
   return {
@@ -95,7 +93,9 @@ export const useCreateExhibitor = () => {
     onSuccess: () => {
       toast.success("Exhibitor created successfully");
       dispatch(setIsCreating(false));
-      queryClient.invalidateQueries({ queryKey: ["Admin-Exhibitors-pagination"] });
+      queryClient.invalidateQueries({
+        queryKey: ["exhibitor-design-list"],
+      });
     },
   });
 
@@ -116,7 +116,9 @@ export const useDeleteExibitor = () => {
     onSuccess: (data) => {
       toast.success(data.header.message);
       dispatch(setIsDeleting(null));
-      queryClient.invalidateQueries({ queryKey: ["Admin-Exhibitors-pagination"] });
+      queryClient.invalidateQueries({
+        queryKey: ["exhibitor-design-list"],
+      });
     },
   });
 
@@ -142,7 +144,9 @@ export const useEditExhibitor = () => {
     onSuccess: (data) => {
       toast.success(data.header.message);
       dispatch(setSelected(null));
-      queryClient.invalidateQueries({ queryKey: ["Admin-Exhibitors-pagination"] });
+      queryClient.invalidateQueries({
+        queryKey: ["exhibitor-design-list"],
+      });
     },
   });
 
@@ -178,7 +182,9 @@ export const useUploadExhibitorsCSV = () => {
       link.remove();
 
       toast.success("CSV downloaded successfully");
-      queryClient.invalidateQueries({ queryKey: ["Admin-Exhibitors-pagination"] });
+      queryClient.invalidateQueries({
+        queryKey: ["exhibitor-design-list"],
+      });
       dispatch(setUploadCSV(false));
     },
   });

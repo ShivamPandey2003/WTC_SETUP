@@ -12,6 +12,7 @@ export type ProgrammeRecord = {
 export type initialStateT = {
   Programmes: ProgrammeRecord;
   News: News[]
+  VenueActiveTab: string
 };
 
 const initialState: initialStateT = {
@@ -22,7 +23,8 @@ const initialState: initialStateT = {
     end_time: "",
     data: {},
   },
-  News:[]
+  News:[],
+  VenueActiveTab:"General Settings"
 };
 
 const ExtraSlice = createSlice({
@@ -35,8 +37,11 @@ const ExtraSlice = createSlice({
     setNews: (state, payload: PayloadAction<News[]>) => {
       state.News = payload.payload;
     },
+    setVenueActiveTab: (state, payload: PayloadAction<string>)=>{
+      state.VenueActiveTab = payload.payload
+    }
   },
 });
 
-export const { setProgrammes, setNews } = ExtraSlice.actions;
+export const { setProgrammes, setNews, setVenueActiveTab } = ExtraSlice.actions;
 export default ExtraSlice.reducer;

@@ -1,8 +1,8 @@
 import { CircleX, Pencil, SquareCheck, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  useAdminInfiniteExhibitors,
   useDeleteExibitor,
+  useGetExhibitorsList,
 } from "@/api/exhibitor_design_api/exhibitor_design_api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,21 +17,13 @@ import EditModal from "./EditModel";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { useGetCategoryAll } from "@/api/programme_design_api/Programme_design_api";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 
 const CustomTable = () => {
-  const {
-    AllExhibitors,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-    hasPreviousPage,
-    fetchPreviousPage,
-    status,
-    error,
-  } = useAdminInfiniteExhibitors();
+  const [page, setPage] = useState<number>(1);
+  const { errorInError, Exhibitors, isExhibitorsPending } =
+    useGetExhibitorsList(page);
   const { AllCategory, isPending } = useGetCategoryAll();
   const { isDeleting, selected } = useSelector(
     (state: RootState) => state.ExhibitorSlice,
@@ -40,25 +32,19 @@ const CustomTable = () => {
   const { DeleteExibitor, isPending: isDeletingPending } = useDeleteExibitor();
 
   const NewValueList = useMemo(() => {
-    if (!AllExhibitors) return [];
+    if (!Exhibitors) return [];
 
-    const newData = AllExhibitors.pages.flatMap((page) => page.response.data);
-    if (!newData) return [];
+    const lastPage = Exhibitors.response.data;
 
-    return newData;
-  }, [AllExhibitors]);
+    return lastPage ?? [];
+  }, [Exhibitors]);
 
   useEffect(() => {
     if (NewValueList.length === 0) return;
     dispatch(setExhibitors(NewValueList));
   }, [NewValueList]);
 
-  if (
-    status === "pending" ||
-    isPending ||
-    isFetchingNextPage ||
-    isFetchingPreviousPage
-  ) {
+  if (isPending || isExhibitorsPending) {
     return [1, 2, 3, 4].map((val) => (
       <div key={val} className="w-full">
         <Skeleton className="h-8 w-full mb-2" />
@@ -66,15 +52,18 @@ const CustomTable = () => {
     ));
   }
 
-  if (error || status === "error") {
+  if (errorInError) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
-        <ErrorDisplay title="Table Error" message={error?.message as string} />
+        <ErrorDisplay
+          title="Table Error"
+          message={errorInError?.message as string}
+        />
       </div>
     );
   }
 
-  if (!AllExhibitors || NewValueList.length === 0) {
+  if (!Exhibitors || NewValueList.length === 0) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />
@@ -85,13 +74,13 @@ const CustomTable = () => {
   return (
     <div className="overflow-hidden">
       <div>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto h-[72.5vh] relative custom-scrollbar mb-4">
           <table
             className="min-w-full border-separate"
             style={{ borderSpacing: "0 8px" }}
           >
-            <thead className="">
-              <tr>
+            <thead className="sticky top-0 z-10 bg-white h-10 shadow border border-gray-200">
+              <tr className="">
                 <th className="pl-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Sno.
                 </th>
@@ -185,24 +174,46 @@ const CustomTable = () => {
             </tbody>
           </table>
         </div>
-        {hasNextPage && (
-          <div className="flex items-center gap-4 justify-end w-full">
+        <div className="flex items-center justify-end w-full">
+          <div className="flex items-center bg-white rounded-md border border-gray-400">
             <Button
-              disabled={!hasPreviousPage}
-              onClick={() => fetchPreviousPage()}
-              className={cn(hasPreviousPage && "cursor-pointer")}
+              size={"sm"}
+              className="hover:bg-primary hover:text-white bg-white text-black border-r rounded-r-none"
+              disabled={page === 1}
+              onClick={() => setPage((pre) => pre - 1)}
+              // className={cn(hasPreviousPage && "cursor-pointer")}
             >
               Previous
             </Button>
+            {Array.from(
+              { length: Exhibitors?.response.max_page },
+              (_, i) => i + 1,
+            ).map((num) => {
+              return (
+                <Button
+                  key={num}
+                  size={"sm"}
+                  className={cn(
+                    "hover:bg-primary rounded-none hover:text-white bg-white text-black border-r",
+                    page === num && "bg-primary text-white",
+                  )}
+                  onClick={() => setPage(num)}
+                >
+                  {num}
+                </Button>
+              );
+            })}
             <Button
-              onClick={() => fetchNextPage()}
-              disabled={!hasNextPage}
-              className={cn(hasPreviousPage && "cursor-pointer")}
+              size={"sm"}
+              className="hover:bg-primary hover:text-white bg-white text-black rounded-l-none"
+              disabled={page === Exhibitors?.response.max_page}
+              onClick={() => setPage((pre) => pre + 1)}
+              // className={cn(hasPreviousPage && "cursor-pointer")}
             >
               Next
             </Button>
           </div>
-        )}
+        </div>
       </div>
       <DeleteModel
         isOpen={Boolean(isDeleting)}

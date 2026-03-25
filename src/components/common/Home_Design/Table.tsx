@@ -18,29 +18,21 @@ import {
   setSelected,
 } from "@/redux/HomeDesignSlice";
 import {
-  useAdminInfiniteNews,
   useDeleteNews,
+  useGetNewsList,
   usePublishedNews,
 } from "@/api/home_design_api/Home_design_api";
 import { Skeleton } from "@/components/ui/skeleton";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import UnPublishModal from "@/components/global/UnPublishModel";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 const CustomTable = () => {
-  const {
-    AllNews,
-    status,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    hasPreviousPage,
-    fetchPreviousPage,
-  } = useAdminInfiniteNews();
+  const [page, setPage] = useState<number>(1);
+  const { NewsList, isNewsListPending, errorInNewsList } = useGetNewsList(page);
   const { DeleteNews, isPending: isDeletePending } = useDeleteNews();
   const { PulishedNew, isPending: isPublishPending } = usePublishedNews();
 
@@ -50,9 +42,9 @@ const CustomTable = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const NewsData = useMemo(() => {
-    if (!AllNews) return [];
-    return AllNews.pages.flatMap((page) => page.response.data);
-  }, [AllNews]);
+    if (!NewsList) return [];
+    return NewsList.response.data ?? [];
+  }, [NewsList]);
 
   useEffect(() => {
     if (NewsData.length === 0) return;
@@ -60,7 +52,7 @@ const CustomTable = () => {
     dispatch(setNews(NewsData));
   }, [NewsData]);
 
-  if (status === "pending" || isFetchingNextPage) {
+  if (isNewsListPending) {
     return [1, 2, 3, 4].map((val) => (
       <div key={val} className="w-full">
         <Skeleton className="h-8 w-full mb-2" />
@@ -68,18 +60,18 @@ const CustomTable = () => {
     ));
   }
 
-  if (status === "error" || error) {
+  if (errorInNewsList) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <ErrorDisplay
           title="Programme Error"
-          message={error?.message as string}
+          message={errorInNewsList?.message as string}
         />
       </div>
     );
   }
 
-  if (!AllNews || NewsData.length === 0) {
+  if (!NewsList || NewsData.length === 0) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />
@@ -90,7 +82,7 @@ const CustomTable = () => {
   return (
     <div className="overflow-hidden">
       <div>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto h-[72.5vh] relative custom-scrollbar mb-4">
           <table
             className="min-w-full border-separate"
             style={{ borderSpacing: "0 8px" }}
@@ -191,24 +183,46 @@ const CustomTable = () => {
             </tbody>
           </table>
         </div>
-        {hasNextPage && (
-          <div className="flex items-center gap-4 justify-end w-full">
+        <div className="flex items-center justify-end w-full">
+          <div className="flex items-center bg-white rounded-md border border-gray-400">
             <Button
-              disabled={!hasPreviousPage}
-              onClick={() => fetchPreviousPage()}
-              className={cn(hasPreviousPage && "cursor-pointer")}
+              size={"sm"}
+              className="hover:bg-primary hover:text-white bg-white text-black border-r rounded-r-none"
+              disabled={page === 1}
+              onClick={() => setPage((pre) => pre - 1)}
+              // className={cn(hasPreviousPage && "cursor-pointer")}
             >
               Previous
             </Button>
+            {Array.from(
+              { length: NewsList?.response.max_page },
+              (_, i) => i + 1,
+            ).map((num) => {
+              return (
+                <Button
+                  key={num}
+                  size={"sm"}
+                  className={cn(
+                    "hover:bg-primary rounded-none hover:text-white bg-white text-black border-r",
+                    page === num && "bg-primary text-white",
+                  )}
+                  onClick={() => setPage(num)}
+                >
+                  {num}
+                </Button>
+              );
+            })}
             <Button
-              onClick={() => fetchNextPage()}
-              disabled={!hasNextPage}
-              className={cn(hasPreviousPage && "cursor-pointer")}
+              size={"sm"}
+              className="hover:bg-primary hover:text-white bg-white text-black rounded-l-none"
+              disabled={page === NewsList?.response.max_page}
+              onClick={() => setPage((pre) => pre + 1)}
+              // className={cn(hasPreviousPage && "cursor-pointer")}
             >
               Next
             </Button>
           </div>
-        )}
+        </div>
       </div>
       <DeleteModel
         isOpen={Boolean(isDeleting)}

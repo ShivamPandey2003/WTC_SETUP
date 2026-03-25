@@ -9,6 +9,7 @@ import {
   Image as KonvaImage,
 } from "react-konva";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { FaAngleLeft } from "react-icons/fa";
 import type Konva from "konva";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
@@ -27,8 +28,9 @@ import {
   useV2GetFloorMApList,
 } from "@/api/Venue_api/Venue_Design_api";
 import { Button } from "@/components/ui/Button";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { isBase64Image } from "@/lib/utils";
+import { setVenueActiveTab } from "@/redux/ExtraSlice";
 
 const V2_VenueDesign_page = () => {
   const stageRef = useRef<Konva.Stage | null>(null);
@@ -37,6 +39,7 @@ const V2_VenueDesign_page = () => {
   const isPaining = useRef<boolean>(false);
   const currentShapeId = useRef<string | null>(null);
   const imageCache = useRef<Record<string, HTMLImageElement>>({});
+  const navigate = useNavigate();
   const {} = useV2GetFloorMApList();
   const { id: SelectedId } = useParams<{ id: string }>();
 
@@ -361,6 +364,12 @@ const V2_VenueDesign_page = () => {
       {/*Controls */}
       <div className="absolute top-0 z-10 w-full py-2 ">
         <div className="flex justify-center items-center gap-3 py-2 px-3 w-fit mx-auto border-border shadow-lg rounded-lg bg-white">
+          <Button size={"icon-sm"} title="Back" onClick={() => {
+            dispatch(setVenueActiveTab("Floor Plan"))
+            navigate(-1);
+            }}>
+            <FaAngleLeft className="text-white" />
+          </Button>
           {Object.entries(ACTIONS).map(([key, value]) => {
             switch (key) {
               case ACTIONS.IMAGE:

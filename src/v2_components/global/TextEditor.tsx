@@ -50,7 +50,7 @@ export default function TextEditor({ save, initialHtml }: TextEditorProp) {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="border border-gray-100 rounded-[7px] bg-[#1111110D] max-w-[260px]">
+      <div className="border border-gray-100 rounded-[7px] bg-[#1111110D] min-h-[53vh]">
         <Toolbar />
 
         <RichTextPlugin
