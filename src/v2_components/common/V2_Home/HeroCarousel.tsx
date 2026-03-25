@@ -26,14 +26,14 @@ function HeroCarousel({
   const navigation = useNavigate();
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying || slides.length === 0) return;
 
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, intervalTime);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, slides.length, intervalTime]);
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
@@ -83,11 +83,7 @@ function HeroCarousel({
               onClick={() => onClick(slide.id, slide.type)}
             >
               <img
-                src={
-                  slide.bg_img
-                    ? `${slide.bg_img}`
-                    : ExPlaceholderImg
-                }
+                src={slide.bg_img ? `${slide.bg_img}` : ExPlaceholderImg}
                 alt=""
                 className={cn(
                   "absolute inset-0 w-full h-full",

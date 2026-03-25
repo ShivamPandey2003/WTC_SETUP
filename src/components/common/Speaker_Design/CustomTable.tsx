@@ -3,8 +3,8 @@ import { Pencil, Trash2, X } from "lucide-react";
 import DeleteModel from "@/components/global/DeleteModel";
 import Keynote from "@/assets/Icons/Keynote";
 import {
-  useAdminInfiniteSpeakers,
   useDeleteSpeaker,
+  useGetAdminSpeakerList,
 } from "@/api/speaker_design_api/speaker_design_api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,17 +24,8 @@ import AttachmentModal from "./AttachmentModal";
 import { cn } from "@/lib/utils";
 
 const CustomTable = () => {
-  const {
-    AllSpeakers,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-    hasPreviousPage,
-    fetchPreviousPage,
-    status,
-    error,
-  } = useAdminInfiniteSpeakers();
+  const [page, setPage] = useState<number>(1);
+  const {SpeakerList, isPending, error} = useGetAdminSpeakerList(page)
   const { DeleteSpeaker, isPending: isDeleteSpeakerPending } =
     useDeleteSpeaker();
   const { selected, isDeleting } = useSelector(
@@ -44,12 +35,12 @@ const CustomTable = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const SpeakersList = useMemo(() => {
-    if (!AllSpeakers) return [];
-    const newData = AllSpeakers.pages.flatMap((page) => page.response.data);
+    if (!SpeakerList) return [];
+    const newData = SpeakerList.response.data;
     if (!newData) return [];
 
     return newData;
-  }, [AllSpeakers]);
+  }, [SpeakerList]);
 
   useEffect(() => {
     if (SpeakersList.length === 0) return;
@@ -57,7 +48,7 @@ const CustomTable = () => {
     dispatch(setSpeaker(SpeakersList));
   }, [SpeakersList]);
 
-  if (status === "pending" || isFetchingNextPage || isFetchingPreviousPage) {
+  if (isPending) {
     return [1, 2, 3, 4].map((val) => (
       <div key={val} className="w-full">
         <Skeleton className="h-8 w-full mb-2" />
@@ -65,7 +56,7 @@ const CustomTable = () => {
     ));
   }
 
-  if (error || status === "error") {
+  if (error) {
     return (
       <div className="flex items-center justify-center h-screen">
         <ErrorDisplay
@@ -76,7 +67,7 @@ const CustomTable = () => {
     );
   }
 
-  if (!AllSpeakers || SpeakersList.length === 0) {
+  if (!SpeakerList || SpeakersList.length === 0) {
     return (
       <div className="flex items-center justify-center h-screen">
         <NoData />
@@ -87,7 +78,7 @@ const CustomTable = () => {
   return (
     <div className="overflow-hidden">
       <div>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto h-[72.5vh] relative custom-scrollbar mb-4">
           <table
             className="min-w-full border-separate"
             style={{ borderSpacing: "0 8px" }}
@@ -179,24 +170,46 @@ const CustomTable = () => {
             </tbody>
           </table>
         </div>
-        {hasNextPage && (
-          <div className="flex items-center gap-4 justify-end w-full">
+        <div className="flex items-center justify-end w-full">
+          <div className="flex items-center bg-white rounded-md border border-gray-400">
             <Button
-              disabled={!hasPreviousPage}
-              onClick={() => fetchPreviousPage()}
-              className={cn(hasPreviousPage && "cursor-pointer")}
+              size={"sm"}
+              className="hover:bg-primary hover:text-white bg-white text-black border-r rounded-r-none"
+              disabled={page === 1}
+              onClick={() => setPage((pre) => pre - 1)}
+              // className={cn(hasPreviousPage && "cursor-pointer")}
             >
               Previous
             </Button>
+            {Array.from(
+              { length: SpeakerList?.response.max_page },
+              (_, i) => i + 1,
+            ).map((num) => {
+              return (
+                <Button
+                  key={num}
+                  size={"sm"}
+                  className={cn(
+                    "hover:bg-primary rounded-none hover:text-white bg-white text-black border-r",
+                    page === num && "bg-primary text-white",
+                  )}
+                  onClick={() => setPage(num)}
+                >
+                  {num}
+                </Button>
+              );
+            })}
             <Button
-              onClick={() => fetchNextPage()}
-              disabled={!hasNextPage}
-              className={cn(hasPreviousPage && "cursor-pointer")}
+              size={"sm"}
+              className="hover:bg-primary hover:text-white bg-white text-black rounded-l-none"
+              disabled={page === SpeakerList?.response.max_page}
+              onClick={() => setPage((pre) => pre + 1)}
+              // className={cn(hasPreviousPage && "cursor-pointer")}
             >
               Next
             </Button>
           </div>
-        )}
+        </div>
       </div>
       <DeleteModel
         isOpen={Boolean(isDeleting)}

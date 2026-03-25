@@ -35,6 +35,8 @@ const SponserCarousal = ({
     setIsAutoPlaying(false);
     setTimeout(() => setIsAutoPlaying(true), 500);
   };
+
+  
   return (
     <div
       className={`relative rounded-2xl overflow-hidden w-full min-h-[260px] h-full md:h-[200px] border border-gray-300 bg-white`}

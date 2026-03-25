@@ -10,7 +10,7 @@ import {
 } from "@/redux/HomeDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
-import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -28,7 +28,7 @@ export const useCreateNews = () => {
     },
     onSuccess: () => {
       toast.success("News created successfully");
-      queryClient.invalidateQueries({ queryKey: ["Admin-News-pagination"] });
+      queryClient.invalidateQueries({ queryKey: ["newsList"] });
       dispatch(setIsCreating(false));
     },
   });
@@ -51,72 +51,70 @@ export const useEditNews = () => {
     onSuccess: () => {
       toast.success("News edited successfully");
       dispatch(setSelected(null));
-      queryClient.invalidateQueries({ queryKey: ["Admin-News-pagination"] });
+      queryClient.invalidateQueries({ queryKey: ["newsList"] });
     },
   });
 
   return { EditNews, isPending, error };
 };
 
-// export const useGetNewsList = () => {
-//   const dispatch = useDispatch<AppDispatch>();
-//   const {
-//     data: NewsList,
-//     isPending: isNewsListPending,
-//     error: errorInNewsList,
-//   } = useQuery<NewsListResponse, AxiosError>({
-//     queryKey: ["newsList"],
-//     queryFn: async () => {
-//       const res = await apiRequest("get", "news/list");
-//       return res.response;
-//     },
-//     select: (data) => {
-//       dispatch(setNews(data.response));
-//       return data;
-//     },
-//     refetchOnWindowFocus: false,
-//     retry: 1,
-//   });
-
-//   return { NewsList, isNewsListPending, errorInNewsList };
-// };
-
-export const useAdminInfiniteNews = () => {
+export const useGetNewsList = (page:number = 1) => {
   const {
-    data: AllNews,
-    fetchNextPage,
-    fetchPreviousPage,
-    hasPreviousPage,
-    hasNextPage,
-    isFetchingNextPage,
-    status,
-    error,
-  } = useInfiniteQuery<GlobalInfinityNews, AxiosError>({
-    queryKey: ["Admin-News-pagination"],
-    queryFn: async ({ pageParam }) => {
-      const res = await apiRequest("get", `news/list?page=${pageParam}`);
+    data: NewsList,
+    isPending: isNewsListPending,
+    error: errorInNewsList,
+  } = useQuery<GlobalInfinityNews, AxiosError>({
+    queryKey: ["newsList", page],
+    queryFn: async () => {
+      const res = await apiRequest("get", `news/list?page=${page}`);
       return res.response;
     },
-    initialPageParam: 1,
-    getNextPageParam: (lastPage) => {
-      const { current_page, max_page, next_page } = lastPage.response;
-      if (current_page < max_page) return next_page;
-      return undefined; // no more pages
+    select: (data) => {
+      return data;
     },
-    refetchOnWindowFocus:false
+    refetchOnWindowFocus: false,
+    retry: 1,
   });
 
-  return {
-    AllNews,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    status,
-    error,
-    fetchPreviousPage,
-    hasPreviousPage
-  };
+  return { NewsList, isNewsListPending, errorInNewsList };
 };
+
+// export const useAdminInfiniteNews = () => {
+//   const {
+//     data: AllNews,
+//     fetchNextPage,
+//     fetchPreviousPage,
+//     hasPreviousPage,
+//     hasNextPage,
+//     isFetchingNextPage,
+//     status,
+//     error,
+//   } = useInfiniteQuery<GlobalInfinityNews, AxiosError>({
+//     queryKey: ["Admin-News-pagination"],
+//     queryFn: async ({ pageParam }) => {
+//       const res = await apiRequest("get", `news/list?page=${pageParam}`);
+//       return res.response;
+//     },
+//     initialPageParam: 1,
+//     getNextPageParam: (lastPage) => {
+//       const { current_page, max_page, next_page } = lastPage.response;
+//       if (current_page < max_page) return next_page;
+//       return undefined; // no more pages
+//     },
+//     refetchOnWindowFocus:false
+//   });
+
+//   return {
+//     AllNews,
+//     fetchNextPage,
+//     hasNextPage,
+//     isFetchingNextPage,
+//     status,
+//     error,
+//     fetchPreviousPage,
+//     hasPreviousPage
+//   };
+// };
 
 export const useDeleteNews = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -132,7 +130,7 @@ export const useDeleteNews = () => {
     onSuccess: () => {
       toast.success("News deleted successfully");
       dispatch(setIsDeleting(null));
-      queryClient.invalidateQueries({ queryKey: ["Admin-News-pagination"] });
+      queryClient.invalidateQueries({ queryKey: ["newsList"] });
     },
   });
 
@@ -158,7 +156,7 @@ export const usePublishedNews = () => {
     },
     onSuccess: () => {
       toast.success("News Published successfully");
-      queryClient.invalidateQueries({ queryKey: ["Admin-News-pagination"] });
+      queryClient.invalidateQueries({ queryKey: ["newsList"] });
       dispatch(setIsPublished(null));
       dispatch(setIsUnpublished(null));
     },
@@ -192,7 +190,7 @@ export const useUploadNewsCSV = () => {
       link.remove();
 
       toast.success("CSV downloaded successfully");
-      queryClient.invalidateQueries({ queryKey: ["Admin-News-pagination"] });
+      queryClient.invalidateQueries({ queryKey: ["newsList"] });
       dispatch(setUploadCSV(false));
     },
   });

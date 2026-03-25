@@ -95,7 +95,7 @@ declare type Session = {
   bg_img: null | string;
   is_active: boolean;
   venue: Shape;
-  attachments:{file:string, id:string}[]
+  attachments: { file: string, id: string }[]
 };
 
 declare type CreateSessionRequest = Omit<
@@ -171,7 +171,7 @@ declare type SpeakerListResponse = {
 
 declare type AllSpeakerListResponse = {
   header: ResponseHeader;
-  response: {id:string, name:string}[];
+  response: { id: string, name: string }[];
 };
 
 declare type DeleteSpeakerResponse = {
@@ -217,8 +217,8 @@ declare type AppConfig = {
   home_design: {
     home_title: string;
     categories: any[]
-    show_carusole:boolean,
-    key_note_speaker:boolean
+    show_carusole: boolean,
+    key_note_speaker: boolean
   };
 };
 
@@ -247,7 +247,7 @@ declare type GlobalNavMenuResponse = {
 
 declare type GlobalVenue = {
   bg_venue: string;
-  attachent:string;
+  attachent: string;
   getting_there: {
     sub_title: string;
     description: string;
@@ -343,7 +343,7 @@ declare type SpeakerSettingResponse = {
 
 declare type Programme = {
   attachments: {
-    id:string;
+    id: string;
     filename: string;
     has_attachment: boolean;
   }[];
@@ -488,15 +488,13 @@ declare type Exhibitor = {
   logo: string;
   categoryId: string;
   ads: boolean;
-  category_name:string
+  category_name: string
 };
 
 declare type ExhibitorListResponse = {
   header: ResponseHeader;
-  response: {
-    seq: string[];
-  } & {
-    [category: string]: Exhibitor[];
+  response: Infinity & {
+    data: Omit<Exhibitor, "category">[]
   };
 };
 
@@ -657,7 +655,7 @@ declare type Carusole = {
   bg_img: string;
   description: string | null;
   type: number;
-  category_name:string;
+  category_name: string;
 };
 
 declare type HeroCarusoleT = {
