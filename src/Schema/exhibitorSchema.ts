@@ -28,7 +28,7 @@ export const ExhibitorSchema = z.object({
 
 export const EditExhibitorSchema = z.object({
   full_name: z.string().min(2, "Full name is required"),
-  url: z.url(),
+  url: z.url().optional().or(z.literal("")),
   email: z.email(),
   show_mail: z.boolean(),
   logo: z
@@ -42,3 +42,4 @@ export const EditExhibitorSchema = z.object({
 });
 
 export type ExhibitorSchemaType = z.infer<typeof ExhibitorSchema>;
+export type EditExhibitorSchemaType = z.infer<typeof EditExhibitorSchema>;

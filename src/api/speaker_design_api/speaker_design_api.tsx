@@ -121,22 +121,25 @@ export const useGetSpeakerList = () => {
   return { SpeakerList, isPending, error };
 };
 
-export const useGetAdminSpeakerList = (page: number = 1) => {
+export const useGetAdminSpeakerList = (page: number = 1, search?:string) => {
+
+  const url = search?.trim() ? `speakers/list?page=${page}&search=${search}`:`speakers/list?page=${page}`
+
   const {
     data: SpeakerList,
     isPending,
     error,
   } = useQuery<GlobalInfinitySpeakers, AxiosError>({
-    queryKey: ["adminSpeakerList", page],
+    queryKey: ["adminSpeakerList", page, search],
     queryFn: async () => {
-      const res = await apiRequest("get", `speakers/list?page=${page}`);
+      const res = await apiRequest("get", url);
       return res.response;
     },
     select: (data) => {
       return data;
     },
     refetchOnWindowFocus: false,
-    retry: 1,
+    retry: 0,
   });
 
   return { SpeakerList, isPending, error };

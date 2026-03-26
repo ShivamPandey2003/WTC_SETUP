@@ -94,7 +94,7 @@ function HeroCarousel({
                 decoding="async"
               />
 
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 to-slate-900/40 flex flex-col justify-end py-4 px-8 md:px-16">
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-slate-900/10 flex flex-col justify-end py-4 px-8 md:px-16">
                 <h1
                   className={cn(
                     "text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 capitalize",

@@ -22,15 +22,16 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import AttachmentModal from "./AttachmentModal";
 import { cn } from "@/lib/utils";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const CustomTable = () => {
   const [page, setPage] = useState<number>(1);
-  const {SpeakerList, isPending, error} = useGetAdminSpeakerList(page)
-  const { DeleteSpeaker, isPending: isDeleteSpeakerPending } =
-    useDeleteSpeaker();
-  const { selected, isDeleting } = useSelector(
+    const { selected, isDeleting, searchText } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
+  const {SpeakerList, isPending, error} = useGetAdminSpeakerList(page, useDebounce(searchText, 300))
+  const { DeleteSpeaker, isPending: isDeleteSpeakerPending } =
+    useDeleteSpeaker();
   const [openAttachment, setOpenAttachment] = useState<string | null>(null);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -38,7 +39,6 @@ const CustomTable = () => {
     if (!SpeakerList) return [];
     const newData = SpeakerList.response.data;
     if (!newData) return [];
-
     return newData;
   }, [SpeakerList]);
 
@@ -58,10 +58,10 @@ const CustomTable = () => {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-[60vh]">
         <ErrorDisplay
-          title="News Feed Error"
-          message={error?.message as string}
+          title="Speaker Table Error"
+          message={error.message}
         />
       </div>
     );
@@ -69,7 +69,7 @@ const CustomTable = () => {
 
   if (!SpeakerList || SpeakersList.length === 0) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-[60vh]">
         <NoData />
       </div>
     );
@@ -83,7 +83,7 @@ const CustomTable = () => {
             className="min-w-full border-separate"
             style={{ borderSpacing: "0 8px" }}
           >
-            <thead className="">
+            <thead className="sticky top-0 z-10 bg-white h-10 shadow border border-gray-200">
               <tr>
                 <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Sno.

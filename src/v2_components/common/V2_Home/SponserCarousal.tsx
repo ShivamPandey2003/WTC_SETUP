@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ExPlaceholderImg from "@/assets/Images/EXPlaceholder.jpg";
 // import { cn } from "@/lib/utils";
 
@@ -29,6 +29,7 @@ const SponserCarousal = ({
 
     return () => clearInterval(interval);
   }, [isAutoPlaying]);
+
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
@@ -94,4 +95,4 @@ const SponserCarousal = ({
   );
 };
 
-export default memo(SponserCarousal);
+export default SponserCarousal;

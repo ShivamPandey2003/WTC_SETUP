@@ -512,7 +512,7 @@ declare type CategoryListResponse = {
 
 declare type GlobalExhibitorListResponse = {
   header: ResponseHeader;
-  response: Omit<Exhibitor, "category">[];
+  response: Omit<Exhibitor, "category">[]
 };
 
 declare type GlobalUsersProfile = {

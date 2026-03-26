@@ -10,6 +10,7 @@ import {
   Plus,
   SquareArrowOutUpRight,
   Upload,
+  X,
 } from "lucide-react";
 import React from "react";
 import CreateModal from "@/components/common/Speaker_Design/CreateModal";
@@ -17,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
 import {
   setIsCreating,
+  setSearchText,
   setSpeakerSettings,
   setUploadCSV,
 } from "@/redux/SpeakerDesignSlice";
@@ -35,9 +37,8 @@ import { setResponseModal } from "@/redux/ModalSlice";
 
 const SpeakersDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
-  const { isCreating, SpeakerSettings, uploadCSV, speakers } = useSelector(
-    (state: RootState) => state.Speaker_DesignSlice,
-  );
+  const { isCreating, SpeakerSettings, uploadCSV, speakers, searchText } =
+    useSelector((state: RootState) => state.Speaker_DesignSlice);
   const { responseModal, responseData } = useSelector(
     (state: RootState) => state.model,
   );
@@ -66,7 +67,7 @@ const SpeakersDesign_page = () => {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-[60vh]">
         <ErrorDisplay title="News Feed Error" message={error.message} />
       </div>
     );
@@ -74,7 +75,7 @@ const SpeakersDesign_page = () => {
 
   if (!SpeakerSettingValues || !SpeakerSettingValues.response) {
     return (
-      <div className="flex items-center justify-center h-[80vh]">
+      <div className="flex items-center justify-center h-[60vh]">
         <NoData />
       </div>
     );
@@ -91,6 +92,18 @@ const SpeakersDesign_page = () => {
         />
         {Boolean(value === "Session Data") && (
           <div className="absolute right-10 flex items-center gap-4">
+            <div className="w-[15vw] flex items-center bg-white border border-gray-300 rounded-md gap-1">
+              <input
+                value={searchText}
+                onChange={(e) => dispatch(setSearchText(e.target.value))}
+                type="text"
+                className="outline-0 py-1 px-2"
+                placeholder="Search"
+              />
+              {
+                searchText.trim() && <X className="cursor-pointer" size={20} onClick={()=>dispatch(setSearchText(""))}/>
+              }
+            </div>
             {speakers.length > 0 && (
               <Button
                 onClick={() => downloadSpeaker()}
@@ -174,7 +187,7 @@ const SpeakersDesign_page = () => {
                         "exhibitors_setting",
                         "key_note_speaker",
                         "show_carusole",
-                        "show_home_title"
+                        "show_home_title",
                       ].includes(key),
                   )
                   .map(([key, value], i) => (
