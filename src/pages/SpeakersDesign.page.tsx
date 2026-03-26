@@ -101,7 +101,7 @@ const SpeakersDesign_page = () => {
                 placeholder="Search"
               />
               {
-                searchText.trim() && <X className="cursor-pointer" size={20} onClick={()=>dispatch(setSearchText(""))}/>
+                (searchText && searchText.trim()) && <X className="cursor-pointer" size={20} onClick={()=>dispatch(setSearchText(""))}/>
               }
             </div>
             {speakers.length > 0 && (
