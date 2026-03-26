@@ -41,7 +41,6 @@ const EditFrom = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const onSubmit = (newData: EditExhibitorSchemaType) => {
-    console.log(newData.url)
     const formData = new FormData();
     formData.append("full_name", newData.full_name as string);
     if (newData.url) {

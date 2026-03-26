@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import ExPlaceholderImg from "@/assets/Images/EXPlaceholder.jpg";
 // import { cn } from "@/lib/utils";
 
@@ -95,4 +95,4 @@ const SponserCarousal = ({
   );
 };
 
-export default SponserCarousal;
+export default memo(SponserCarousal);

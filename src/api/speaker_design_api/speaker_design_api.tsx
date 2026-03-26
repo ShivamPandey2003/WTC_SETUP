@@ -123,7 +123,7 @@ export const useGetSpeakerList = () => {
 
 export const useGetAdminSpeakerList = (page: number = 1, search?:string) => {
 
-  const url = search?.trim() ? `speakers/list?page=${page}&search=${search}`:`speakers/list?page=${page}`
+  const url = (search && search?.trim()) ? `speakers/list?page=${page}&search=${search}`:`speakers/list?page=${page}`
 
   const {
     data: SpeakerList,
