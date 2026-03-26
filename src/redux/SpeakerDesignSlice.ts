@@ -30,10 +30,12 @@ type ProgrammeDesignStateType = Omit<
     email: string | null;
   })[];
   SpeakerSettings: payload;
+  searchText: string;
 };
 
 const initialState: ProgrammeDesignStateType = {
   selected: null,
+  searchText:"",
   speakers: [],
   isDeleting: null,
   isCreating: false,
@@ -129,6 +131,9 @@ const Speakers_DesignSlice = createSlice({
       state.uploadCSV = payload.payload;
       return state;
     },
+    setSearchText:(state, payload: PayloadAction<string>)=>{
+      state.searchText = payload.payload
+    }
   },
 });
 
@@ -139,5 +144,6 @@ export const {
   setIsCreating,
   setSpeakerSettings,
   setUploadCSV,
+  setSearchText
 } = Speakers_DesignSlice.actions;
 export default Speakers_DesignSlice.reducer;

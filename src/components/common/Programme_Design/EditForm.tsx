@@ -6,7 +6,7 @@ import { useGetSpeakerList } from "@/api/speaker_design_api/speaker_design_api";
 import CustomForm from "@/components/global/CustomForm";
 import { setCategoryModal, setSelected } from "@/redux/ProgrammeDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { EditSessionSchema, type SessionForm } from "@/Schema/sessionSchema";
+import { EditSessionSchema, type EditSessionForm, type SessionForm } from "@/Schema/sessionSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -61,7 +61,7 @@ const EditFrom = () => {
 
   const onClose = () => dispatch(setSelected(null));
 
-  const onSubmit = (newData: SessionForm) => {
+  const onSubmit = (newData: EditSessionForm) => {
     const formData = new FormData();
 
     function formatToYYYYMMDD(date: string | Date) {
@@ -81,7 +81,9 @@ const EditFrom = () => {
     formData.append("location", newData.location);
     formData.append("external_link", newData?.external_link as string);
     formData.append("category", newData.category);
-    formData.append("speakers", newData.speakers);
+    if(newData.speakers){
+      formData.append("speakers", newData.speakers);
+    }
     if(newData.bg_image?.[0]){
       formData.append("bg_image", newData.bg_image[0] as Blob);
     }
