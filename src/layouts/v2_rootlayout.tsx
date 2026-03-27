@@ -44,7 +44,7 @@ const V2_rootlayout = () => {
     <div className="flex h-screen bg-[#F2F2F2]">
       <V2_Sidebar />
       <div ref={scrollRef} className="w-full overflow-y-auto">
-        {isGlobalDesignPending && <V2_Navbar REF={scrollRef} setOpen={() => setOpen(true)} />}
+        {!isGlobalDesignPending && <V2_Navbar REF={scrollRef} setOpen={() => setOpen(true)} />}
         <Outlet />
       </div>
       <aside
