@@ -181,7 +181,6 @@ export const useGetSpeakerSetting = () => {
       return res.response;
     },
     select: (data) => {
-      console.log(data)
       dispatch(setSpeakerSettings(data.response as payload));
       return data;
     },
