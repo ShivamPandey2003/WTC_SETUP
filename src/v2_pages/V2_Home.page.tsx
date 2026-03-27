@@ -1,5 +1,4 @@
 import {
-  useGetExhibitorsList,
   useGetExhibitorsListPage,
   useInfiniteNews,
 } from "@/api/global_api/global_api";

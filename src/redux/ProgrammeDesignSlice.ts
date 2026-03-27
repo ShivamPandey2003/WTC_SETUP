@@ -3,7 +3,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 type ProgrammeDesignStateType = Omit<
   HomeDesignStateType,
-  "selected" | "isPublished" | "news"
+  "selected" | "isPublished" | "news" | "searchText"
 > & { session: Session[], categoryModal:boolean,  selected: string | null, slectedDate:string, uploadCSV:boolean };
 
 const initialState: ProgrammeDesignStateType = {
