@@ -67,6 +67,24 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
   ];
   const { ArrayTabs } = useSelector((state: RootState) => state.Global_Slice);
   const { title } = useSelector((state: RootState) => state.model);
+  const TitleFetch = (e: string) => {
+    switch (e) {
+      case "programme":
+        return ArrayTabs.programme_tab;
+      case "speaker":
+        return ArrayTabs.speaker_tab;
+      case "venue":
+        return ArrayTabs.venue_tab;
+      case "exhibitors":
+        return ArrayTabs.exhibitors_tab;
+      case "news":
+        return ArrayTabs.home_tab;
+      case "":
+        return ArrayTabs.home_tab;
+      default:
+        return "";
+    }
+  };
 
   useEffect(() => {
     const el = REF?.current;
@@ -83,23 +101,6 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
       el.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  const TitleFetch = (e: string) => {
-    switch (e) {
-      case "programme":
-        return ArrayTabs.programme_tab;
-      case "speaker":
-        return ArrayTabs.speaker_tab;
-      case "venue":
-        return ArrayTabs.venue_tab;
-      case "exhibitors":
-        return ArrayTabs.exhibitors_tab;
-      case "news":
-        return ArrayTabs.home_tab;
-      case "":
-        return ArrayTabs.home_tab;
-    }
-  };
 
   return (
     <header
