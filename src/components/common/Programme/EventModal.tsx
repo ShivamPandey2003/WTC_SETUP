@@ -65,7 +65,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
       {!selectedValue ? (
         <div>No such data found</div>
       ) : !Array.isArray(selectedValue) ? (
-        <div className="w-full">
+        <div className="w-full overflow-auto max-h-[70vh] custom-scrollbar">
           <div className="flex flex-col sm:flex-row items-start gap-4">
             <img
               src={selectedValue.bg_image ? selectedValue.bg_image : dummy}

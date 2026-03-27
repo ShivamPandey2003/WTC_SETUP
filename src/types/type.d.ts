@@ -15,7 +15,7 @@ declare type HomeDesignStateType = {
   unpublish: string | null;
   news: News[];
   uploadCSV: boolean;
-  searchText:string
+  searchText: string
 };
 
 declare type LoginResponse = {
@@ -334,6 +334,14 @@ declare type SpeakerSetting = {
       subtitle: string;
       title: string;
     };
+  };
+  venue: {
+    getting_there_sub_title: string;
+    getting_there_description: string;
+    latitude: string;
+    longitude: string;
+    image: string | File;
+    attachment: string | File;
   };
 };
 

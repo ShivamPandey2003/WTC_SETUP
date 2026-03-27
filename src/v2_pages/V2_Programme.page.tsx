@@ -75,6 +75,7 @@ const V2_Programme_page = () => {
               color: set.color,
             };
           });
+          if (detail.length === 0) return;
           return {
             session_id: Datas.id,
             id: nanoid(),
@@ -91,6 +92,7 @@ const V2_Programme_page = () => {
         ...value.data,
       };
     });
+
     dispatch(setProgrammes(value));
     dispatch(setProgramme(ProgrammeList.data.response.programme));
   }, [ProgrammeList]);

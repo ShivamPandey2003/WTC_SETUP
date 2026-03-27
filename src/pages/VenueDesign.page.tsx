@@ -11,7 +11,7 @@ import { setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import TextEditor from "@/v2_components/global/TextEditor";
 import { Link } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const VenueDesign_page = () => {
@@ -21,6 +21,7 @@ const VenueDesign_page = () => {
   const { VenueActiveTab } = useSelector(
     (state: RootState) => state.ExtraSlice,
   );
+  const [url, setUrl] = useState<string>("");
 
   const { isPending } = useGetSpeakerSetting();
 
@@ -31,16 +32,26 @@ const VenueDesign_page = () => {
   const onAttachmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    const url = URL.createObjectURL(file);
     dispatch(
       setSpeakerSettings({
         ...SpeakerSettings,
         venue: {
           ...SpeakerSettings.venue,
-          attachment: file,
+          attachment: url,
         },
       }),
     );
   };
+
+  useEffect(() => {
+    if (SpeakerSettings.venue.attachment) {
+      if (typeof SpeakerSettings.venue.attachment === "string") {
+        setUrl(SpeakerSettings.venue.attachment as string);
+      }
+    }
+  }, [SpeakerSettings.venue.attachment]);
 
   if (isPending) {
     return null;
@@ -55,7 +66,11 @@ const VenueDesign_page = () => {
           show={false}
           loading={isUpdateVenueDesignPending}
         />
-        <Tabs value={VenueActiveTab} onValueChange={(e)=>dispatch(setVenueActiveTab(e))} className="">
+        <Tabs
+          value={VenueActiveTab}
+          onValueChange={(e) => dispatch(setVenueActiveTab(e))}
+          className=""
+        >
           <TabsList className="pl-80 xxs:pl-60 xs:pl-0">
             <TabsTrigger
               variant={"link"}
@@ -155,15 +170,9 @@ const VenueDesign_page = () => {
                       className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary/20 file:text-primary hover:file:bg-primary/40"
                     />
                   </div>
-                  {SpeakerSettings.venue.attachment && (
+                  {SpeakerSettings.venue.attachment && url && (
                     <a
-                      href={
-                        typeof SpeakerSettings.venue.attachment === "string"
-                          ? SpeakerSettings.venue.attachment
-                          : URL.createObjectURL(
-                              SpeakerSettings.venue.attachment,
-                            )
-                      }
+                      href={url}
                       target="_blank"
                       className="flex items-center text-primary gap-1"
                     >
