@@ -20,7 +20,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { setNews, type ProgrammeRecord } from "@/redux/ExtraSlice";
 import { nanoid } from "nanoid";
-import { Data } from "@react-google-maps/api";
 
 export const useGlobalDesign = () => {
   const dispatch = useDispatch<AppDispatch>();
