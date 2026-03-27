@@ -125,14 +125,15 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
 
   const timeGroups: Record<string, Session[]> = {};
 
-  sessions.forEach((s) => {
+
+  sessions.filter(pre=>pre).forEach((s) => {
     const start = s.start_time;
     const end = s.end_time;
-
     const key = `${start}-${end}`;
     if (!timeGroups[key]) timeGroups[key] = [];
     timeGroups[key].push(s);
   });
+
 
   const leftover: Session[] = [];
 
