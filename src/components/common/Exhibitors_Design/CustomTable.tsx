@@ -19,15 +19,16 @@ import NoData from "@/components/global/NoData";
 import { useGetCategoryAll } from "@/api/programme_design_api/Programme_design_api";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const CustomTable = () => {
   const [page, setPage] = useState<number>(1);
-  const { errorInError, Exhibitors, isExhibitorsPending } =
-    useGetExhibitorsList(page);
-  const { AllCategory, isPending } = useGetCategoryAll();
-  const { isDeleting, selected } = useSelector(
+  const { isDeleting, selected, searchText } = useSelector(
     (state: RootState) => state.ExhibitorSlice,
   );
+  const { errorInError, Exhibitors, isExhibitorsPending } =
+    useGetExhibitorsList(page, useDebounce(searchText, 300));
+  const { AllCategory, isPending } = useGetCategoryAll();
   const dispatch = useDispatch<AppDispatch>();
   const { DeleteExibitor, isPending: isDeletingPending } = useDeleteExibitor();
 

@@ -5,7 +5,7 @@ import Section from "@/components/global/Section";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
-import { Download, Loader, Plus, Upload } from "lucide-react";
+import { Download, Loader, Plus, Upload, X } from "lucide-react";
 import React, { useEffect } from "react";
 import CreateModal from "@/components/common/Exhibitors_Design/CreateModal";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +15,7 @@ import {
   setDeletingCategory,
   setIsCreating,
   setIsEditable,
+  setSearchText,
   setUploadCSV,
 } from "@/redux/ExhibitorSlice";
 import {
@@ -62,6 +63,7 @@ const ExhibitorsDesign_page = () => {
     uploadCSV,
     deletingCategory,
     Exhibitors = [],
+    searchText
   } = useSelector((state: RootState) => state.ExhibitorSlice);
   const { responseModal, responseData } = useSelector(
     (state: RootState) => state.model,
@@ -144,6 +146,18 @@ const ExhibitorsDesign_page = () => {
         />
         {Boolean(value === "Session Data") && (
           <div className="absolute right-10 flex items-center gap-4">
+            <div className="w-[15vw] flex items-center bg-white border border-gray-300 rounded-md gap-1">
+              <input
+                value={searchText}
+                onChange={(e) => dispatch(setSearchText(e.target.value))}
+                type="text"
+                className="outline-0 py-1 px-2"
+                placeholder="Search"
+              />
+              {
+                (searchText && searchText.trim()) && <X className="cursor-pointer" size={20} onClick={()=>dispatch(setSearchText(""))}/>
+              }
+            </div>
             {Exhibitors.length > 0 && (
               <Button
                 onClick={() => downloadExhibitor()}

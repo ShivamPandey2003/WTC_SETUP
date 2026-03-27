@@ -13,6 +13,7 @@ type initialStateT = {
   uploadCSV: boolean;
   isEditable: Record<string, boolean>
   deletingCategory: string|null
+  searchText: string
 };
 
 const initialState: initialStateT = {
@@ -27,7 +28,8 @@ const initialState: initialStateT = {
   booth_location: false,
   uploadCSV: false,
   isEditable:{},
-  deletingCategory:null
+  deletingCategory:null,
+  searchText:""
 };
 
 const Exhibitor_DesignSlice = createSlice({
@@ -79,7 +81,12 @@ const Exhibitor_DesignSlice = createSlice({
       return state;
     },
     setIsEditable:(state, payload: PayloadAction<Record<string, boolean>>)=>{
-      state.isEditable = payload.payload
+      state.isEditable = payload.payload;
+      return state;
+    },
+    setSearchText:(state, payload: PayloadAction<string>)=>{
+      state.searchText = payload.payload;
+      return state;
     }
   },
 });
@@ -96,6 +103,7 @@ export const {
   setUploadCSV,
   setCategoryModal,
   setIsEditable,
-  setDeletingCategory
+  setDeletingCategory,
+  setSearchText
 } = Exhibitor_DesignSlice.actions;
 export default Exhibitor_DesignSlice.reducer;

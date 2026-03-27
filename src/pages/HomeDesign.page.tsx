@@ -22,7 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
 import { cn } from "@/lib/utils";
 import { setAppConfig } from "@/redux/GlobalDesignSlice";
-import { setIsCreating, setUploadCSV } from "@/redux/HomeDesignSlice";
+import { setIsCreating, setSearchText, setUploadCSV } from "@/redux/HomeDesignSlice";
 import { setResponseModal } from "@/redux/ModalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import {
@@ -31,6 +31,7 @@ import {
   Plus,
   SquareArrowOutUpRight,
   Upload,
+  X,
 } from "lucide-react";
 import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,6 +45,7 @@ const HomeDesign_page = () => {
     isCreating,
     uploadCSV,
     news = [],
+    searchText
   } = useSelector((state: RootState) => state.Home_Design);
   const { responseModal, responseData } = useSelector(
     (state: RootState) => state.model,
@@ -112,6 +114,18 @@ const HomeDesign_page = () => {
         />
         {Boolean(value === "News") && (
           <div className="absolute right-10 flex items-center gap-4">
+            <div className="w-[15vw] flex items-center bg-white border border-gray-300 rounded-md gap-1">
+              <input
+                value={searchText}
+                onChange={(e) => dispatch(setSearchText(e.target.value))}
+                type="text"
+                className="outline-0 py-1 px-2"
+                placeholder="Search"
+              />
+              {
+                (searchText && searchText.trim()) && <X className="cursor-pointer" size={20} onClick={()=>dispatch(setSearchText(""))}/>
+              }
+            </div>
             {news.length > 0 && (
               <Button
                 onClick={() => downloadNews()}
