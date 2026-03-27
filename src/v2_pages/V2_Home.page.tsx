@@ -1,5 +1,5 @@
 import {
-  useGetExhibitorsList,
+  useGetExhibitorsListPage,
   useInfiniteNews,
 } from "@/api/global_api/global_api";
 import { useHeroCarusole } from "@/api/home_design_api/Home_design_api";
@@ -15,11 +15,15 @@ import HeroCarousel from "@/v2_components/common/V2_Home/HeroCarousel";
 import NewsCard from "@/v2_components/common/V2_Home/NewsCard";
 import SponserCarousal from "@/v2_components/common/V2_Home/SponserCarousal";
 import { Loader } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 
 const V2_Home_page = () => {
+  const [page, setPage] = useState<number>(1);
+  const [carouselData, setCarouselData] = useState<
+    Omit<Exhibitor, "category">[]
+  >([]);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch<AppDispatch>();
@@ -32,11 +36,10 @@ const V2_Home_page = () => {
     status,
     error,
   } = useInfiniteNews();
-  const {
-    ExhibitorList,
-    isPending: isExhibitorsListLoading,
-    error: ExhibitorListError,
-  } = useGetExhibitorsList();
+
+  const { ExhibitorList, error: ExhibitorListError } =
+    useGetExhibitorsListPage(page);
+
   const { HeroCarusole, isHeroCarusole, errorHeroCarusole } = useHeroCarusole();
 
   const NewsList = useMemo(() => {
@@ -65,6 +68,11 @@ const V2_Home_page = () => {
   );
 
   useEffect(() => {
+    if (!ExhibitorList || !ExhibitorList.response) return;
+    setCarouselData((pre) => [...pre, ...ExhibitorList.response.data]);
+  }, [ExhibitorList]);
+
+  useEffect(() => {
     if (!loadMoreRef.current) return;
     observerRef.current = new IntersectionObserver(handleObserver);
     observerRef.current.observe(loadMoreRef.current);
@@ -81,7 +89,7 @@ const V2_Home_page = () => {
     dispatch(setTitle(null));
   }, []);
 
-  if (status === "pending" || isExhibitorsListLoading || isHeroCarusole) {
+  if (status === "pending" || isHeroCarusole) {
     return (
       <div className="mx-[7.5%]">
         <div className="grid grid-cols-1 lg:grid-cols-3 justify-center gap-6 md:gap-8">
@@ -156,12 +164,13 @@ const V2_Home_page = () => {
           ))}
         </div>
         <div>
-          {ExhibitorList &&
-          ExhibitorList.response &&
-          ExhibitorList.response.length > 0 ? (
+          {carouselData.length > 0 ? (
             <SponserCarousal
-              slides={ExhibitorList.response}
+              max={ExhibitorList?.response.max_page as number}
+              page={page}
+              slides={carouselData}
               intervalTime={7000}
+              setPage={setPage}
             />
           ) : (
             <Skeleton className="min-h-[255px] shadow rounded-xl bg-gray-300" />

@@ -7,7 +7,8 @@ const initialState: HomeDesignStateType = {
   isPublished: null,
   isCreating: false,
   uploadCSV: false,
-  unpublish:null
+  unpublish:null,
+  searchText:""
 };
 
 const Home_DesignSlice = createSlice({
@@ -42,6 +43,10 @@ const Home_DesignSlice = createSlice({
       state.uploadCSV = payload.payload;
       return state;
     },
+    setSearchText:(state, payload: PayloadAction<string>)=>{
+      state.searchText = payload.payload
+      return state
+    }
   },
 });
 
@@ -52,6 +57,7 @@ export const {
   setIsPublished,
   setIsCreating,
   setUploadCSV,
-  setIsUnpublished
+  setIsUnpublished,
+  setSearchText
 } = Home_DesignSlice.actions;
 export default Home_DesignSlice.reducer;

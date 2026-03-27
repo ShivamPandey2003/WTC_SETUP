@@ -24,7 +24,7 @@ const V2_rootlayout = () => {
     (state: RootState) => state.model,
   );
   const dispatch = useDispatch<AppDispatch>();
-  const {} = useGlobalDesign();
+  const {isGlobalDesignPending} = useGlobalDesign();
   const {} = useGetConferenceDetails();
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const V2_rootlayout = () => {
     <div className="flex h-screen bg-[#F2F2F2]">
       <V2_Sidebar />
       <div ref={scrollRef} className="w-full overflow-y-auto">
-        <V2_Navbar REF={scrollRef} setOpen={() => setOpen(true)} />
+        {!isGlobalDesignPending && <V2_Navbar REF={scrollRef} setOpen={() => setOpen(true)} />}
         <Outlet />
       </div>
       <aside

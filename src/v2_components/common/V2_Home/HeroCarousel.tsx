@@ -26,14 +26,14 @@ function HeroCarousel({
   const navigation = useNavigate();
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying || slides.length === 0) return;
 
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, intervalTime);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, slides.length, intervalTime]);
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
@@ -83,11 +83,7 @@ function HeroCarousel({
               onClick={() => onClick(slide.id, slide.type)}
             >
               <img
-                src={
-                  slide.bg_img
-                    ? `${slide.bg_img}`
-                    : ExPlaceholderImg
-                }
+                src={slide.bg_img ? `${slide.bg_img}` : ExPlaceholderImg}
                 alt=""
                 className={cn(
                   "absolute inset-0 w-full h-full",
@@ -98,7 +94,7 @@ function HeroCarousel({
                 decoding="async"
               />
 
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 to-slate-900/40 flex flex-col justify-end py-4 px-8 md:px-16">
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-slate-900/10 flex flex-col justify-end py-4 px-8 md:px-16">
                 <h1
                   className={cn(
                     "text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 capitalize",
