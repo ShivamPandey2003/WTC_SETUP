@@ -91,6 +91,7 @@ export const useInfiniteNews = () => {
       if (current_page < max_page) return next_page;
       return undefined; // no more pages
     },
+    refetchOnWindowFocus:false
   });
 
   return {
@@ -437,6 +438,7 @@ export const useVenueDesignUpdate = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
+      queryClient.invalidateQueries({queryKey:["Settings"]})
     },
   });
 
@@ -554,6 +556,27 @@ export const useGetExhibitorsList = () => {
     },
     refetchOnWindowFocus: false,
     retry: 1,
+  });
+
+  return { ExhibitorList, isPending, error };
+};
+
+export const useGetExhibitorsListPage = (page:number = 1) => {
+  const {
+    data: ExhibitorList,
+    isPending,
+    error,
+  } = useQuery<GlobalExhibitorListPageResponse, AxiosError>({
+    queryKey: ["global-Exhibitors-Page", page],
+    queryFn: async () => {
+      const res = await apiRequest("get", `exhibitors/carusole?page=${page}`);
+      return res.response;
+    },
+    select: (data) => {
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    retry: 0,
   });
 
   return { ExhibitorList, isPending, error };

@@ -58,15 +58,18 @@ export const useEditNews = () => {
   return { EditNews, isPending, error };
 };
 
-export const useGetNewsList = (page:number = 1) => {
+export const useGetNewsList = (page:number = 1, search?:string) => {
+
+  const url = (search && search.trim())? `news/list?page=${page}&search=${search}`:`news/list?page=${page}`;
+
   const {
     data: NewsList,
     isPending: isNewsListPending,
     error: errorInNewsList,
   } = useQuery<GlobalInfinityNews, AxiosError>({
-    queryKey: ["newsList", page],
+    queryKey: ["newsList", page, search],
     queryFn: async () => {
-      const res = await apiRequest("get", `news/list?page=${page}`);
+      const res = await apiRequest("get", url);
       return res.response;
     },
     select: (data) => {

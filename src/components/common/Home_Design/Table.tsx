@@ -29,16 +29,20 @@ import UnPublishModal from "@/components/global/UnPublishModel";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const CustomTable = () => {
   const [page, setPage] = useState<number>(1);
-  const { NewsList, isNewsListPending, errorInNewsList } = useGetNewsList(page);
+  const { selected, isDeleting, isPublished, unpublish, searchText } =
+    useSelector((state: RootState) => state.Home_Design);
+
+  const { NewsList, isNewsListPending, errorInNewsList } = useGetNewsList(
+    page,
+    useDebounce(searchText, 300),
+  );
   const { DeleteNews, isPending: isDeletePending } = useDeleteNews();
   const { PulishedNew, isPending: isPublishPending } = usePublishedNews();
 
-  const { selected, isDeleting, isPublished, unpublish } = useSelector(
-    (state: RootState) => state.Home_Design,
-  );
   const dispatch = useDispatch<AppDispatch>();
 
   const NewsData = useMemo(() => {

@@ -12,22 +12,25 @@ import {
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
 
-export const useGetExhibitorsList = (page: number = 1) => {
+export const useGetExhibitorsList = (page: number = 1, search?:string) => {
+
+  const url = (search && search.trim())?`exhibitors/listing?page=${page}&search=${search}`:`exhibitors/listing?page=${page}`
+
   const {
     data: Exhibitors,
     isPending: isExhibitorsPending,
     error: errorInError,
   } = useQuery<ExhibitorListResponse, AxiosError>({
-    queryKey: ["exhibitor-design-list", page],
+    queryKey: ["exhibitor-design-list", page, search],
     queryFn: async () => {
-      const res = await apiRequest("get", `exhibitors/listing?page=${page}`);
+      const res = await apiRequest("get", url);
       return res.response;
     },
     select: (data) => {
       return data;
     },
     refetchOnWindowFocus: false,
-    retry: 1,
+    retry: 0,
   });
 
   return { Exhibitors, isExhibitorsPending, errorInError };

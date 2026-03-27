@@ -15,6 +15,7 @@ declare type HomeDesignStateType = {
   unpublish: string | null;
   news: News[];
   uploadCSV: boolean;
+  searchText:string
 };
 
 declare type LoginResponse = {
@@ -514,6 +515,11 @@ declare type GlobalExhibitorListResponse = {
   header: ResponseHeader;
   response: Omit<Exhibitor, "category">[]
 };
+
+declare type GlobalExhibitorListPageResponse = {
+  header: ResponseHeader;
+  response: Infinity & { data: Omit<Exhibitor, "category">[] };
+}
 
 declare type GlobalUsersProfile = {
   header: ResponseHeader;
