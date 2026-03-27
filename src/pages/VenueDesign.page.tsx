@@ -42,8 +42,6 @@ const VenueDesign_page = () => {
     );
   };
 
-  console.log(SpeakerSettings.venue.attachment)
-
   if (isPending) {
     return null;
   }
