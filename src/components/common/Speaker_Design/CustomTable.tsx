@@ -26,10 +26,13 @@ import { useDebounce } from "@/hooks/useDebounce";
 
 const CustomTable = () => {
   const [page, setPage] = useState<number>(1);
-    const { selected, isDeleting, searchText } = useSelector(
+  const { selected, isDeleting, searchText } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
-  const {SpeakerList, isPending, error} = useGetAdminSpeakerList(page, useDebounce(searchText, 300))
+  const { SpeakerList, isPending, error } = useGetAdminSpeakerList(
+    page,
+    useDebounce(searchText, 300),
+  );
   const { DeleteSpeaker, isPending: isDeleteSpeakerPending } =
     useDeleteSpeaker();
   const [openAttachment, setOpenAttachment] = useState<string | null>(null);
@@ -41,6 +44,17 @@ const CustomTable = () => {
     if (!newData) return [];
     return newData;
   }, [SpeakerList]);
+
+  const chunkSize = 10;
+  const maxPage = SpeakerList?.response.max_page || 1;
+
+  let start = Math.floor((page - 1) / chunkSize) * chunkSize + 1;
+  let end = start + chunkSize - 1;
+
+  if (end > maxPage) {
+    end = maxPage;
+    start = Math.max(1, end - chunkSize + 1);
+  }
 
   useEffect(() => {
     if (SpeakersList.length === 0) return;
@@ -59,10 +73,7 @@ const CustomTable = () => {
   if (error) {
     return (
       <div className="flex items-center justify-center h-[60vh]">
-        <ErrorDisplay
-          title="Speaker Table Error"
-          message={error.message}
-        />
+        <ErrorDisplay title="Speaker Table Error" message={error.message} />
       </div>
     );
   }
@@ -181,24 +192,23 @@ const CustomTable = () => {
             >
               Previous
             </Button>
-            {Array.from(
-              { length: SpeakerList?.response.max_page },
-              (_, i) => i + 1,
-            ).map((num) => {
-              return (
-                <Button
-                  key={num}
-                  size={"sm"}
-                  className={cn(
-                    "hover:bg-primary rounded-none hover:text-white bg-white text-black border-r",
-                    page === num && "bg-primary text-white",
-                  )}
-                  onClick={() => setPage(num)}
-                >
-                  {num}
-                </Button>
-              );
-            })}
+            {Array.from({ length: end - start + 1 }, (_, i) => start + i).map(
+              (num) => {
+                return (
+                  <Button
+                    key={num}
+                    size={"sm"}
+                    className={cn(
+                      "hover:bg-primary rounded-none hover:text-white bg-white text-black border-r",
+                      page === num && "bg-primary text-white",
+                    )}
+                    onClick={() => setPage(num)}
+                  >
+                    {num}
+                  </Button>
+                );
+              },
+            )}
             <Button
               size={"sm"}
               className="hover:bg-primary hover:text-white bg-white text-black rounded-l-none"
