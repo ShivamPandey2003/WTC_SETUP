@@ -76,7 +76,7 @@ const VenueDesign_page = () => {
             <div className="flex items-start gap-4">
               <Section
                 title="Basic info"
-                ClassName="w-full"
+                ClassName="w-full h-[67.5vh]"
                 onSave={() => UpdateVenueDesign()}
                 show={true}
                 loading={isUpdateVenueDesignPending}
