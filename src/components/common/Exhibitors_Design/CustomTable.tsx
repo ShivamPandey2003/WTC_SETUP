@@ -40,6 +40,17 @@ const CustomTable = () => {
     return lastPage ?? [];
   }, [Exhibitors]);
 
+  const chunkSize = 10;
+  const maxPage = Exhibitors?.response.max_page || 1;
+
+  let start = Math.floor((page - 1) / chunkSize) * chunkSize + 1;
+  let end = start + chunkSize - 1;
+
+  if (end > maxPage) {
+    end = maxPage;
+    start = Math.max(1, end - chunkSize + 1);
+  }
+
   useEffect(() => {
     if (NewValueList.length === 0) return;
     dispatch(setExhibitors(NewValueList));
@@ -186,24 +197,23 @@ const CustomTable = () => {
             >
               Previous
             </Button>
-            {Array.from(
-              { length: Exhibitors?.response.max_page },
-              (_, i) => i + 1,
-            ).map((num) => {
-              return (
-                <Button
-                  key={num}
-                  size={"sm"}
-                  className={cn(
-                    "hover:bg-primary rounded-none hover:text-white bg-white text-black border-r",
-                    page === num && "bg-primary text-white",
-                  )}
-                  onClick={() => setPage(num)}
-                >
-                  {num}
-                </Button>
-              );
-            })}
+            {Array.from({ length: end - start + 1 }, (_, i) => start + i).map(
+              (num) => {
+                return (
+                  <Button
+                    key={num}
+                    size={"sm"}
+                    className={cn(
+                      "hover:bg-primary rounded-none hover:text-white bg-white text-black border-r",
+                      page === num && "bg-primary text-white",
+                    )}
+                    onClick={() => setPage(num)}
+                  >
+                    {num}
+                  </Button>
+                );
+              },
+            )}
             <Button
               size={"sm"}
               className="hover:bg-primary hover:text-white bg-white text-black rounded-l-none"
