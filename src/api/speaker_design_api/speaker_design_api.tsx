@@ -27,7 +27,9 @@ export const useCreateSpeaker = () => {
     },
     onSuccess: () => {
       toast.success("Speaker created successfully");
-      queryClient.invalidateQueries({ queryKey: ["Admin-Speakers-pagination"] });
+      queryClient.invalidateQueries({
+        queryKey: ["adminSpeakerList"],
+      });
       dispatch(setIsCreating(false));
     },
   });
@@ -49,7 +51,9 @@ export const useEditSpeaker = () => {
     },
     onSuccess: () => {
       toast.success("Speaker edited successfully");
-      queryClient.invalidateQueries({ queryKey: ["Admin-Speakers-pagination"] });
+      queryClient.invalidateQueries({
+        queryKey: ["adminSpeakerList"],
+      });
       dispatch(setSelected(null));
     },
   });
@@ -80,7 +84,7 @@ export const useAdminInfiniteSpeakers = () => {
       if (current_page < max_page) return next_page;
       return undefined; // no more pages
     },
-    refetchOnWindowFocus:false
+    refetchOnWindowFocus: false,
   });
 
   return {
@@ -92,7 +96,7 @@ export const useAdminInfiniteSpeakers = () => {
     isFetchingNextPage,
     status,
     error,
-    isFetchingPreviousPage
+    isFetchingPreviousPage,
   };
 };
 
@@ -117,6 +121,30 @@ export const useGetSpeakerList = () => {
   return { SpeakerList, isPending, error };
 };
 
+export const useGetAdminSpeakerList = (page: number = 1, search?:string) => {
+
+  const url = (search && search?.trim()) ? `speakers/list?page=${page}&search=${search}`:`speakers/list?page=${page}`
+
+  const {
+    data: SpeakerList,
+    isPending,
+    error,
+  } = useQuery<GlobalInfinitySpeakers, AxiosError>({
+    queryKey: ["adminSpeakerList", page, search],
+    queryFn: async () => {
+      const res = await apiRequest("get", url);
+      return res.response;
+    },
+    select: (data) => {
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    retry: 0,
+  });
+
+  return { SpeakerList, isPending, error };
+};
+
 export const useDeleteSpeaker = () => {
   const dispatch = useDispatch<AppDispatch>();
   const {
@@ -131,7 +159,9 @@ export const useDeleteSpeaker = () => {
     onSuccess: () => {
       toast.success("Speaker deleted successfully");
       dispatch(setIsDeleting(null));
-      queryClient.invalidateQueries({ queryKey: ["Admin-Speakers-pagination"] });
+      queryClient.invalidateQueries({
+        queryKey: ["adminSpeakerList"],
+      });
     },
   });
 
@@ -186,7 +216,9 @@ export const useUploadSpeakerCSV = () => {
       link.remove();
 
       toast.success("CSV downloaded successfully");
-      queryClient.invalidateQueries({ queryKey: ["Admin-Speakers-pagination"] });
+      queryClient.invalidateQueries({
+        queryKey: ["adminSpeakerList"],
+      });
       dispatch(setUploadCSV(false));
     },
   });

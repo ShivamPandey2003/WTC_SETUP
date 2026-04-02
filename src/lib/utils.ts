@@ -67,6 +67,7 @@ export const formatDate = (date: string) =>
     month: "short",
     day: "2-digit",
     year: "numeric",
+    timeZone: "UTC",
   });
 
 export function formatSpeakers(arr: string[]) {
@@ -93,6 +94,7 @@ export const filterDates = (dates: { date: string; day_name: string }[]) => {
     month: "short",
     day: "2-digit",
     year: "numeric",
+    timeZone: "UTC",
   });
 
   const todayIndex = dates.findIndex((d) => d.date === todayStr);
@@ -117,6 +119,7 @@ export function getNewDatesInRangeFormatted(
       month: "short",
       day: "2-digit",
       year: "numeric",
+      timeZone: "UTC",
     });
 
     const dayName = current.toLocaleDateString("en-US", {

@@ -50,12 +50,12 @@ export default function TextEditor({ save, initialHtml }: TextEditorProp) {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="border border-gray-100 rounded-[7px] bg-[#1111110D] max-w-[260px]">
+      <div className="border border-gray-100 rounded-[7px] bg-[#1111110D] h-[53vh]">
         <Toolbar />
 
         <RichTextPlugin
           contentEditable={
-            <ContentEditable className="outline-none min-h-[150px] p-3 min-w-[260px]" />
+            <ContentEditable className="outline-none max-h-[44vh] custom-scrollbar overflow-auto p-3 min-w-[260px]" />
           }
           // placeholder={<div className="text-gray-400">Start typing...</div>}
           ErrorBoundary={LexicalErrorBoundary}

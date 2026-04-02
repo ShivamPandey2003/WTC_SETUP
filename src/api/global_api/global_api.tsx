@@ -18,10 +18,7 @@ import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import {
-  setNews,
-  type ProgrammeRecord,
-} from "@/redux/ExtraSlice";
+import { setNews, type ProgrammeRecord } from "@/redux/ExtraSlice";
 import { nanoid } from "nanoid";
 
 export const useGlobalDesign = () => {
@@ -91,6 +88,7 @@ export const useInfiniteNews = () => {
       if (current_page < max_page) return next_page;
       return undefined; // no more pages
     },
+    refetchOnWindowFocus: false,
   });
 
   return {
@@ -218,6 +216,7 @@ export const useGetProgrammeList = () => {
                 };
               },
             );
+            if (detail.length === 0) return;
             return {
               session_id: Datas.id,
               id: nanoid(),
@@ -235,7 +234,7 @@ export const useGetProgrammeList = () => {
         };
       });
 
-      return {data:data, custom:value};
+      return { data: data, custom: value };
     },
     refetchOnWindowFocus: false,
     retry: 1,
@@ -419,9 +418,9 @@ export const useVenueDesignUpdate = () => {
   const formData = new FormData();
 
   Object.entries(data).forEach(([key, value]) => {
-    if(value !== null){
-      if(key === "image" && typeof value === "string") return;
-      if(key === "attachment" && typeof value === "string") return;
+    if (value !== null) {
+      if (key === "image" && typeof value === "string") return;
+      if (key === "attachment" && typeof value === "string") return;
       formData.append(key, value);
     }
   });
@@ -437,6 +436,7 @@ export const useVenueDesignUpdate = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
+      queryClient.invalidateQueries({ queryKey: ["Settings"] });
     },
   });
 
@@ -559,6 +559,27 @@ export const useGetExhibitorsList = () => {
   return { ExhibitorList, isPending, error };
 };
 
+export const useGetExhibitorsListPage = (page: number = 1) => {
+  const {
+    data: ExhibitorList,
+    isPending,
+    error,
+  } = useQuery<GlobalExhibitorListPageResponse, AxiosError>({
+    queryKey: ["global-Exhibitors-Page", page],
+    queryFn: async () => {
+      const res = await apiRequest("get", `exhibitors/carusole?page=${page}`);
+      return res.response;
+    },
+    select: (data) => {
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    retry: 0,
+  });
+
+  return { ExhibitorList, isPending, error };
+};
+
 export const useInfiniteExhibitors = () => {
   const {
     data: AllExhibitors,
@@ -643,22 +664,18 @@ export const useHomeDesignUpdate = () => {
   const payload = {
     home_title: filtered.home_design.home_title,
     carusole_display: filtered.home_design.categories,
-    show_carusole:filtered.home_design.show_carusole,
-    key_note_speaker:filtered.home_design.key_note_speaker
-  }
+    show_carusole: filtered.home_design.show_carusole,
+    key_note_speaker: filtered.home_design.key_note_speaker,
+  };
 
   const {
     mutate: UpdateHomeDesign,
     isPending: isUpdateHomeDesignPending,
     error: errorInUpdateHomeDesign,
-    data:HomeDesignUpdateData
+    data: HomeDesignUpdateData,
   } = useMutation<ProfilePicResponse, AxiosError>({
     mutationFn: async () => {
-      const res = await apiRequest(
-        "post",
-        "/home/design/save",
-        payload,
-      );
+      const res = await apiRequest("post", "/home/design/save", payload);
       return res.response;
     },
     onSuccess: (data) => {
@@ -671,7 +688,7 @@ export const useHomeDesignUpdate = () => {
     UpdateHomeDesign,
     isUpdateHomeDesignPending,
     errorInUpdateHomeDesign,
-    HomeDesignUpdateData
+    HomeDesignUpdateData,
   };
 };
 

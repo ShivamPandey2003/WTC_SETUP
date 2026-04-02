@@ -15,6 +15,7 @@ declare type HomeDesignStateType = {
   unpublish: string | null;
   news: News[];
   uploadCSV: boolean;
+  searchText: string
 };
 
 declare type LoginResponse = {
@@ -95,7 +96,7 @@ declare type Session = {
   bg_img: null | string;
   is_active: boolean;
   venue: Shape;
-  attachments:{file:string, id:string}[]
+  attachments: { file: string, id: string }[]
 };
 
 declare type CreateSessionRequest = Omit<
@@ -171,7 +172,7 @@ declare type SpeakerListResponse = {
 
 declare type AllSpeakerListResponse = {
   header: ResponseHeader;
-  response: {id:string, name:string}[];
+  response: { id: string, name: string }[];
 };
 
 declare type DeleteSpeakerResponse = {
@@ -217,8 +218,8 @@ declare type AppConfig = {
   home_design: {
     home_title: string;
     categories: any[]
-    show_carusole:boolean,
-    key_note_speaker:boolean
+    show_carusole: boolean,
+    key_note_speaker: boolean
   };
 };
 
@@ -247,7 +248,7 @@ declare type GlobalNavMenuResponse = {
 
 declare type GlobalVenue = {
   bg_venue: string;
-  attachent:string;
+  attachent: string;
   getting_there: {
     sub_title: string;
     description: string;
@@ -334,6 +335,14 @@ declare type SpeakerSetting = {
       title: string;
     };
   };
+  venue: {
+    getting_there_sub_title: string;
+    getting_there_description: string;
+    latitude: string;
+    longitude: string;
+    image: string | File;
+    attachment: string | File;
+  };
 };
 
 declare type SpeakerSettingResponse = {
@@ -343,7 +352,7 @@ declare type SpeakerSettingResponse = {
 
 declare type Programme = {
   attachments: {
-    id:string;
+    id: string;
     filename: string;
     has_attachment: boolean;
   }[];
@@ -488,15 +497,13 @@ declare type Exhibitor = {
   logo: string;
   categoryId: string;
   ads: boolean;
-  category_name:string
+  category_name: string
 };
 
 declare type ExhibitorListResponse = {
   header: ResponseHeader;
-  response: {
-    seq: string[];
-  } & {
-    [category: string]: Exhibitor[];
+  response: Infinity & {
+    data: Omit<Exhibitor, "category">[]
   };
 };
 
@@ -514,8 +521,13 @@ declare type CategoryListResponse = {
 
 declare type GlobalExhibitorListResponse = {
   header: ResponseHeader;
-  response: Omit<Exhibitor, "category">[];
+  response: Omit<Exhibitor, "category">[]
 };
+
+declare type GlobalExhibitorListPageResponse = {
+  header: ResponseHeader;
+  response: Infinity & { data: Omit<Exhibitor, "category">[] };
+}
 
 declare type GlobalUsersProfile = {
   header: ResponseHeader;
@@ -657,7 +669,7 @@ declare type Carusole = {
   bg_img: string;
   description: string | null;
   type: number;
-  category_name:string;
+  category_name: string;
 };
 
 declare type HeroCarusoleT = {

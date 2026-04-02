@@ -125,7 +125,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
           </h2>
         ) : (
           <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize text-ellipsis whitespace-nowrap overflow-hidden max-w-[100px] sm:max-w-[300px] md:max-w-[600px]">
-            {TitleFetch(pathname.split("/")[1])} {title ? `/ ${title}` : ""}
+            {TitleFetch(pathname.split("/")[1])}{title ? ` / ${title}` : ""}
           </h2>
         )}
       </div>
