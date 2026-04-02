@@ -282,6 +282,7 @@ export const useGetVenue = () => {
     },
     refetchOnWindowFocus: false,
     retry: 1,
+    staleTime:0
   });
 
   return { Venue, isPending, error };

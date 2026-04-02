@@ -3,6 +3,7 @@ import ExibitorSection from "@/components/common/Exhibitors/Section";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
+import { setShowSearch } from "@/redux/ExhibitorSlice";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
 import Exhi_SplashScreen from "@/v2_components/common/V2_Exhibitors/Exhi_SplashScreen";
@@ -57,6 +58,12 @@ const V2_exhibitors_page = () => {
     };
   }, [AllExhibitors]);
 
+  useEffect(() => {
+    if (ExhibitorList && Object.entries(ExhibitorList.grouped).length) {
+      dispatch(setShowSearch(true));
+    }
+  }, [ExhibitorList]);
+
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const target = entries[0];
@@ -75,20 +82,6 @@ const V2_exhibitors_page = () => {
     return () => observerRef.current?.disconnect();
   }, [handleObserver]);
 
-  // useEffect(() => {
-  //   if (!ExhibitorList.length || !Object.keys(ExhibitorList[0]).length) return;
-
-  //   dispatch(
-  //     setExhibitors(
-  //       ExhibitorList.flatMap((item) =>
-  //         item.seq.flatMap((pr) =>
-  //           item.grouped[pr].map((s) => ({ ...s, SponsorType: pr })),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }, [ExhibitorList]);
-
   useEffect(() => {
     dispatch(setTitle(null));
   }, []);
@@ -99,11 +92,6 @@ const V2_exhibitors_page = () => {
       setSpashScreen(true);
       sessionStorage.setItem("Exhibitor_Splash", JSON.stringify(true));
     }
-    // const timer = setTimeout(() => {
-    //   setSpashScreen(false);
-    // }, 6000);
-
-    // return () => clearTimeout(timer);
   }, [setSpashScreen]);
 
   if (status === "pending") {
@@ -139,14 +127,14 @@ const V2_exhibitors_page = () => {
   }
 
   return (
-    <div className="px-4 pb-4 mx-auto">
+    <div id="Exhibitors_Scroll" className="px-4 pb-4 mx-auto">
       {ExhibitorList.seq.map(
         (value, i) =>
           Boolean(ExhibitorList.grouped[value].length) && (
-            <div key={i} className="mt-4">
-              <h3 className="font-[700] text-[18px] text-[#353535] mb-6">
+            <div key={i} className="mt-6">
+              <h4 className="font-[700] text-[26px] text-[#353535] mb-4">
                 {value}
-              </h3>
+              </h4>
               <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
                 {ExhibitorList.grouped[value].map((item, i) => (
                   <ExhibitorCard
@@ -159,17 +147,6 @@ const V2_exhibitors_page = () => {
             </div>
           ),
       )}
-      {/* <ExhibitorModal
-        data={ExhibitorList[0].seq.flatMap((pre) =>
-          ExhibitorList[0].grouped[pre].map((s) => ({
-            ...s,
-            SponsorType: pre,
-          })),
-        )}
-        id={selectedId as string}
-        isOpen={Boolean(selectedId)}
-        onClose={() => setSelectedId(null)}
-      /> */}
 
       <div
         ref={loadMoreRef}
