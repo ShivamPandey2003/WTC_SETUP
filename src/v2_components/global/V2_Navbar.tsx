@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { setSearchModal, setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { ChevronLeft, Menu } from "lucide-react";
-import { useEffect, useState, type RefObject } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { SearchTrigger } from "./SearchTrigger";
@@ -29,7 +29,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
   const { speakers } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
-  const { Exhibitors, showSearch } = useSelector(
+  const { showSearch } = useSelector(
     (state: RootState) => state.ExhibitorSlice,
   );
   const menu = [
