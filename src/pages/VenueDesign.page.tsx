@@ -15,6 +15,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const VenueDesign_page = () => {
+  const { isPending, SpeakerSettings: Data } = useGetSpeakerSetting();
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
@@ -22,8 +23,6 @@ const VenueDesign_page = () => {
     (state: RootState) => state.ExtraSlice,
   );
   const [url, setUrl] = useState<string>("");
-
-  const { isPending } = useGetSpeakerSetting();
 
   const { UpdateVenueDesign, isUpdateVenueDesignPending } =
     useVenueDesignUpdate();
@@ -34,24 +33,24 @@ const VenueDesign_page = () => {
     if (!file) return;
 
     const url = URL.createObjectURL(file);
+    setUrl(url);
+
     dispatch(
       setSpeakerSettings({
         ...SpeakerSettings,
         venue: {
           ...SpeakerSettings.venue,
-          attachment: url,
+          attachment: file,
         },
       }),
     );
   };
 
   useEffect(() => {
-    if (SpeakerSettings.venue.attachment) {
-      if (typeof SpeakerSettings.venue.attachment === "string") {
-        setUrl(SpeakerSettings.venue.attachment as string);
-      }
+    if (Data && Data.response.venue && Data.response.venue.attachment) {
+      setUrl(Data.response.venue.attachment as string);
     }
-  }, [SpeakerSettings.venue.attachment]);
+  }, [Data]);
 
   if (isPending) {
     return null;
@@ -170,7 +169,7 @@ const VenueDesign_page = () => {
                       className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary/20 file:text-primary hover:file:bg-primary/40"
                     />
                   </div>
-                  {SpeakerSettings.venue.attachment && url && (
+                  {url && (
                     <a
                       href={url}
                       target="_blank"

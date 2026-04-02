@@ -59,6 +59,11 @@ const ProgrammeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   const scrollRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
+    const {
+    SpeakerSettings: SettingsValue,
+    isPending,
+    error,
+  } = useGetSpeakerSetting();
   const { DeleteCategory, isDeleteCategoryPending } = useDeleteCategory();
   const { AllCategory, isPending: isCategoriesPending } = useGetCategoryAll();
   const { UpdateProgrammeDesign, isUpdateProgrammeDesignPending } =
@@ -81,11 +86,6 @@ const ProgrammeDesign_page = () => {
     (state: RootState) => state.ExhibitorSlice,
   );
   const dispatch = useDispatch<AppDispatch>();
-  const {
-    SpeakerSettings: SettingsValue,
-    isPending,
-    error,
-  } = useGetSpeakerSetting();
   const Dates = getDatesInRangeFormatted(
     SpeakerSettings.conference_start_date,
     SpeakerSettings.conference_end_date,

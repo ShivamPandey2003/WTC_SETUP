@@ -10,6 +10,7 @@ import {
   useUploadNewsCSV,
 } from "@/api/home_design_api/Home_design_api";
 import { useGetCategoryAll } from "@/api/programme_design_api/Programme_design_api";
+import { useGetSpeakerSetting } from "@/api/speaker_design_api/speaker_design_api";
 import CreateModal from "@/components/common/Home_Design/CreateModal";
 import MiniSmallCarousel from "@/components/common/Home_Design/MiniCarousel";
 import CustomTable from "@/components/common/Home_Design/Table";

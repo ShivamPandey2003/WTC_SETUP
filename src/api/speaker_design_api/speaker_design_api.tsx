@@ -186,6 +186,7 @@ export const useGetSpeakerSetting = () => {
     },
     refetchOnWindowFocus: false,
     retry: 1,
+    staleTime:0
   });
 
   return { SpeakerSettings, isPending, error };
