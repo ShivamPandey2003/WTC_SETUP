@@ -141,6 +141,7 @@ const OnboardingForm = () => {
               onClick={handleRemoveImage}
               className="hover:underline text-red-500 font-bold"
             >
+              
               Remove
             </button>
           )}
