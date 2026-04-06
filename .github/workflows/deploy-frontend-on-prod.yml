@@ -7,8 +7,8 @@ on:
 jobs:
   display-variables:
     name: ${{ vars.JOB_NAME }}
-    runs-on: ${{ vars.RUNNER }}
-    environment: ${{ vars.ENVIRONMENT_STAGE }}
+    runs-on: ubuntu-latest
+    environment: ITA WTC PROD AWS
     steps:
     - name: Use variables
       run: |
