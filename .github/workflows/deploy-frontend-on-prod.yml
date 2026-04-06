@@ -5,6 +5,20 @@ on:
     branches: [main-prod]
 
 jobs:
+  display-variables:
+    name: ${{ vars.JOB_NAME }}
+    runs-on: ${{ vars.RUNNER }}
+    environment: ${{ vars.ENVIRONMENT_STAGE }}
+    steps:
+    - name: Use variables
+      run: |
+        echo "api url variable : $VITE_REACT_APP_API_URL"
+        echo "cooldown variable : $VITE_REACT_COOLDOWN_TIME_SECONDS"
+        echo "variable from shell environment : $env_var"
+      env:
+        VITE_REACT_APP_API_URL: ${{ vars.VITE_REACT_APP_API_URL }}
+        VITE_REACT_COOLDOWN_TIME_SECONDS: ${{ vars.VITE_REACT_COOLDOWN_TIME_SECONDS }}
+
   deploy:
     runs-on: ubuntu-latest
     steps:
