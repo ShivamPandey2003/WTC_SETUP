@@ -5,7 +5,7 @@ type initialStateT = {
   isDeleting: string | null;
   isCreating: boolean;
   categoryModal: boolean;
-  Exhibitors: (Exhibitor & {SponsorType?: string})[];
+  Exhibitors: (Exhibitor & {SponsorType?: string, booth_no?: string})[];
   Categorys: Category[];
   open_link_new_tab: boolean;
   allow_email_exposure: boolean;

@@ -437,6 +437,8 @@ declare type ProfileResponse = {
       linkedin_url: string;
       phone_number: string;
       profile_image: string;
+      type:number;
+      gender:string
     };
     qr_image: string;
   };
@@ -680,6 +682,7 @@ declare type HeroCarusoleT = {
 declare type FindExhibitorById = {
   header: ResponseHeader;
   response: {
+    booth_no: string;
     exhibitor_id: string;
     full_name: string;
     email: string;

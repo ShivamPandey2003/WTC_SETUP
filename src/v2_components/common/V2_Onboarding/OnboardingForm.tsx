@@ -1,6 +1,7 @@
 import {
   useGetProfile,
   useProfileUpdate,
+  useUploadExhibitorProfilePic,
   useUploadProfilePic,
 } from "@/api/Profile_api/Profile_api";
 import { Button } from "@/components/ui/Button";
@@ -18,7 +19,7 @@ const formSchema = z.object({
   gender: z.enum(["Male", "Female", "Other"]),
   company: z.string().nullable().optional(),
   designation: z.string().nullable().optional(),
-  linkedin: z.url("Invalid URL").nullable(),
+  linkedin: z.url("Invalid URL").nullable().optional().or(z.literal("")),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -26,8 +27,10 @@ type FormData = z.infer<typeof formSchema>;
 const OnboardingForm = () => {
   const { Profile, isPending: ProfilePending } = useGetProfile();
   const { UploadPic, isPending } = useUploadProfilePic();
+  const { UploadExhibitorPic, isPending: isExhibitorPending } = useUploadExhibitorProfilePic();
   const { UpdateProfile, profileData } = useProfileUpdate();
   const [image, setImage] = useState<string | null>(null);
+  const [type, setType] = useState<number>(0);
   const navigate = useNavigate();
 
   const {
@@ -43,7 +46,19 @@ const OnboardingForm = () => {
     if (!Profile) return;
     if (!Profile.response.user_info) return;
     const user = Profile.response.user_info;
-    reset({ firstName: user.firstname, lastName: user.lastname });
+    if (user.profile_image) {
+      setImage(user.profile_image);
+    }
+
+    setType(user.type);
+
+    reset({
+      firstName: user.firstname,
+      lastName: user.lastname,
+      company: user.company_name ?? "",
+      designation: user.designation ?? "",
+      linkedin: user.linkedin_url ?? "",
+    });
   }, [Profile, reset]);
 
   const onSubmit = (data: FormData) => {
@@ -69,7 +84,11 @@ const OnboardingForm = () => {
       const reader = new FileReader();
       reader.onloadend = () => setImage(reader.result as string);
       reader.readAsDataURL(file);
-      UploadPic(newForm);
+      if(type === 3){
+        UploadExhibitorPic(newForm);
+      }else{
+        UploadPic(newForm);
+      }
     }
   };
 
@@ -93,7 +112,7 @@ const OnboardingForm = () => {
     <div className="w-full mx-auto mt-4 bg-white rounded-xl space-y-2 relative">
       {/* Profile Image */}
       <div className="flex flex-col items-center justify-start mb-4">
-        {isPending ? (
+        {isPending || isExhibitorPending ? (
           <div className="bg-gray-300 w-24 h-24 rounded-full flex items-center justify-center">
             <LoaderCircle className="animate-spin text-primary" />
           </div>

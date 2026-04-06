@@ -45,7 +45,7 @@ export default function ProfileForm() {
       prefix: "",
       firstName: user_info.firstname,
       lastName: user_info.lastname,
-      // gender: "",
+      gender: user_info.gender as any,
       company: user_info.company_name as string,
       designation: user_info.designation as string,
       email: user_info.email,
