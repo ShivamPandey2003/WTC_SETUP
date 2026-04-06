@@ -55,11 +55,11 @@ const EditFrom = () => {
     formData.append("category", newData.category as string);
     formData.append("ads", String(newData?.ads));
     formData.append("show_mail", String(newData?.show_mail));
-    // if (newData.booth_location) {
-    //   formData.append("booth_location", newData.booth_location as string);
-    // }
+    if (newData.booth_no) {
+      formData.append("booth_location", newData.booth_no as string);
+    }
     if (newData.logo?.[0]) {
-      formData.append("file", newData.logo?.[0] as Blob);
+      formData.append("logo", newData.logo?.[0] as Blob);
     }
     EditExhibitor({ form: formData, id: `${selected}` });
   };
@@ -115,11 +115,11 @@ const EditFrom = () => {
           return { label: item.name, value: item.id };
         }),
     },
-    // {
-    //   name: "booth_location",
-    //   label: "Booth Location",
-    //   placeholder: "Enter booth location here",
-    // },
+    {
+      name: "booth_no",
+      label: "Booth Location",
+      placeholder: "Enter booth location here",
+    },
     { name: "ads", label: "Ads", type: "checkbox" },
     { name: "show_mail", label: "Show mail", type: "checkbox" },
   ];

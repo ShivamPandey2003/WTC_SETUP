@@ -99,6 +99,14 @@ const ExhibitorsDetails = () => {
                         Exhibitor
                       </span>
                     </div>
+                    {ExhibitorDetails.booth_no &&
+                      ExhibitorDetails.booth_no.trim() && (
+                        <div className="text-gray-700 mt-3">
+                          <p className="font-bold">
+                            Booth #{ExhibitorDetails.booth_no}
+                          </p>
+                        </div>
+                      )}
                   </div>
                 </div>
 

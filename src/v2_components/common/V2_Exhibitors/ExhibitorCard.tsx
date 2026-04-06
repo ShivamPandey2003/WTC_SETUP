@@ -3,7 +3,7 @@ import ExPlaceholderImg from '@/assets/Images/EXPlaceholder.jpg'
 interface ExhibitorCardProps {
   logo: string;
   full_name: string;
-  // boothNumber: string;
+  booth_no?: string;
   url?: string;
   backgroundColor?: string;
   onClick: () => void;
@@ -12,7 +12,7 @@ interface ExhibitorCardProps {
 export default function ExhibitorCard({
   logo,
   full_name,
-  // boothNumber,
+  booth_no,
   onClick,
 }: ExhibitorCardProps) {
   return (
@@ -33,9 +33,11 @@ export default function ExhibitorCard({
       <div className="bg-white p-6">
         <h3 className="text-xl font-bold text-gray-900 mb-4 line-clamp-2">{full_name}</h3>
 
-        {/* <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-700">Booth Hall C · Booth 21</p>
-        </div> */}
+        {(booth_no && booth_no.trim()) && (
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-gray-700">Booth #{booth_no}</p>
+          </div>
+        )}
       </div>
     </div>
   );
