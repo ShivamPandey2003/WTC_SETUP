@@ -16,6 +16,7 @@ const Auth_page = () => {
           { appConfig?.logo?.logo_img && <img
             src={appConfig?.logo?.logo_img}
             className="w-28 h-16 object-contain"
+            alt={"Logo"}
           />}
         </div>
         {step === "email" ? <FormLayout /> : <OtpForm />}

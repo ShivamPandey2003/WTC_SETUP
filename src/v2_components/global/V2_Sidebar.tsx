@@ -25,6 +25,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
           <img
             src={appConfig?.logo?.logo_img}
             className="w-[128px] h-[68px] object-contain"
+            alt={"Logo"}
           />
         )}
         {appConfig?.sponsors?.logo && (
@@ -33,6 +34,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
             <img
               src={appConfig?.sponsors?.logo}
               className="w-[128px] object-cover"
+              alt="Sponsor Logo"
             />
           </>
         )}
