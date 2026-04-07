@@ -15,11 +15,11 @@ function App() {
     if (appConfig.color_schema) {
       document.documentElement.style.setProperty(
         "--app-primary-color",
-        appConfig.color_schema.primary_color,
+        appConfig.color_schema.primary_color ?? "#318061",
       );
       document.documentElement.style.setProperty(
         "--app-secondary-color",
-        appConfig.color_schema.secondary_color,
+        appConfig.color_schema.secondary_color?? "#D6E6DF",
       );
     }
     if (appConfig.text_style) {

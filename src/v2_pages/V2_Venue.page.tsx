@@ -283,7 +283,7 @@ const V2_Venue_page = () => {
                 </a>
               )}
             </div>
-           {venue.attachent.trim() && <a
+           {(venue.attachent && venue.attachent.trim()) && <a
               href={venue.attachent}
               target="_blank"
               className="flex items-center text-blue-600 gap-1"
