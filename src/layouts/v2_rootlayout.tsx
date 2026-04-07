@@ -67,7 +67,7 @@ const V2_rootlayout = () => {
   return (
     <div className="flex h-screen bg-[#F2F2F2]">
       <V2_Sidebar />
-      <div id="Main_Scroll" key={pathname} ref={scrollRef} className="w-full overflow-y-auto">
+      <div id="Main_Scroll" ref={scrollRef} className="w-full overflow-y-auto">
         {!isGlobalDesignPending && (
           <V2_Navbar REF={scrollRef} setOpen={() => setOpen(true)} />
         )}

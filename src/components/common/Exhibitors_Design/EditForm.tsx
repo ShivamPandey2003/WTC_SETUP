@@ -56,7 +56,7 @@ const EditFrom = () => {
     formData.append("ads", String(newData?.ads));
     formData.append("show_mail", String(newData?.show_mail));
     if (newData.booth_no) {
-      formData.append("booth_location", newData.booth_no as string);
+      formData.append("booth_no", newData.booth_no as string);
     }
     if (newData.logo?.[0]) {
       formData.append("logo", newData.logo?.[0] as Blob);
