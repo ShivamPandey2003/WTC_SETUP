@@ -21,15 +21,23 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
   return (
     <>
       <div className="cursor-pointer" onClick={() => navigate("/")}>
-        <img
-          src={appConfig?.logo?.logo_img}
-          className="w-[128px] h-[68px] object-contain"
-        />
-        <span className="text-[10px] font-bold">Sponsored by</span>
-        <img
-          src={appConfig?.sponsors?.logo}
-          className="w-[128px] object-cover"
-        />
+        {appConfig?.logo?.logo_img && (
+          <img
+            src={appConfig?.logo?.logo_img}
+            className="w-[128px] h-[68px] object-contain"
+            alt={"Logo"}
+          />
+        )}
+        {appConfig?.sponsors?.logo && (
+          <>
+            <span className="text-[10px] font-bold">Sponsored by</span>
+            <img
+              src={appConfig?.sponsors?.logo}
+              className="w-[128px] object-cover"
+              alt="Sponsor Logo"
+            />
+          </>
+        )}
       </div>
       <div className="mx-auto flex flex-col space-y-4">
         {isPending

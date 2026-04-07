@@ -12,8 +12,8 @@
   --color-background: #F2F2F2;
   /* --color-primary: #318061;
   --color-secondary: #4a4459bf; */
-  --color-primary: var(--app-primary-color);
-  --color-secondary: var(--app-secondary-color);
+  --color-primary: var(--app-primary-color, #318061);
+  --color-secondary: var(--app-secondary-color, #D6E6DF);
   --color-border: #31806126;
   --color-bgCard: #31806105;
   --font-primary: "Inter";

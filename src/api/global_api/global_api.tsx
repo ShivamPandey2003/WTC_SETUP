@@ -654,7 +654,7 @@ export const useGetConferenceDetails = () => {
       return data;
     },
     refetchOnWindowFocus: false,
-    retry: 1,
+    retry: 0,
   });
 
   return { ConferenceDetails, isPending, error };
@@ -761,7 +761,7 @@ export const useGetTabs = () => {
       return data;
     },
     refetchOnWindowFocus: false,
-    retry: 1,
+    retry: 0,
   });
 
   return {
