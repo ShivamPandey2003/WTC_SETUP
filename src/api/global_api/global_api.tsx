@@ -144,6 +144,7 @@ export const useInfiniteSpeakers = () => {
       if (current_page < max_page) return next_page;
       return undefined; // no more pages
     },
+    retry:0
   });
 
   return {

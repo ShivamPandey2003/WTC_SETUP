@@ -30,13 +30,15 @@ const V2_exhibitors_page = () => {
   } = useInfiniteExhibitors();
 
   const ExhibitorList = useMemo(() => {
-    if (!AllExhibitors) return { grouped: {}, seq: [] };
+    if (!AllExhibitors || !AllExhibitors.pages) return { grouped: {}, seq: [] };
 
     const finalGrouped: Record<string, any[]> = {};
     const finalSeq = new Set<string>();
 
     AllExhibitors.pages.forEach((page) => {
       const data = page.response.data;
+
+      if(!Object.keys(data).length) return;
 
       // collect keys (seq + dynamic keys)
       data.seq.forEach((key) => finalSeq.add(key));
