@@ -248,7 +248,7 @@ declare type GlobalNavMenuResponse = {
 
 declare type GlobalVenue = {
   bg_venue: string;
-  attachent: string;
+  attachment: string;
   getting_there: {
     sub_title: string;
     description: string;
