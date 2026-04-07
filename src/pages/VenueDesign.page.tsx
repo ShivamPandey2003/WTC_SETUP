@@ -222,7 +222,7 @@ const VenueDesign_page = () => {
                 show={true}
                 loading={isUpdateVenueDesignPending}
               >
-                <div className={cn("flex items-start gap-4 py-2")}>
+                <div className={cn("flex items-start gap-4 py-2 w-full")}>
                   <TextEditor
                     initialHtml={
                       SpeakerSettings.venue.getting_there_description

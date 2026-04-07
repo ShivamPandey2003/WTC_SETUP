@@ -29,8 +29,8 @@ import {
 } from "@/api/speaker_design_api/speaker_design_api";
 import { cn, normalizeLabel } from "@/lib/utils";
 import { useSpeakerDesignUpdate } from "@/api/global_api/global_api";
-import ErrorDisplay from "@/components/global/ErrorDisplay";
-import NoData from "@/components/global/NoData";
+// import ErrorDisplay from "@/components/global/ErrorDisplay";
+// import NoData from "@/components/global/NoData";
 import CSVModel from "@/components/global/CSVModel";
 import ErrorModal from "@/components/global/ErrorModal";
 import { setResponseModal } from "@/redux/ModalSlice";
@@ -43,9 +43,9 @@ const SpeakersDesign_page = () => {
     (state: RootState) => state.model,
   );
   const {
-    SpeakerSettings: SpeakerSettingValues,
+    // SpeakerSettings: SpeakerSettingValues,
     isPending,
-    error,
+    // error,
   } = useGetSpeakerSetting();
   const { downloadSpeaker, isdownloadPending } = useSpeakerDownload();
   const { UploadSpeakerCSV, isPending: isUploadSpeakerCSV } =
@@ -65,21 +65,21 @@ const SpeakersDesign_page = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <ErrorDisplay title="News Feed Error" message={error.message} />
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="flex items-center justify-center h-[60vh]">
+  //       <ErrorDisplay title="News Feed Error" message={error.message} />
+  //     </div>
+  //   );
+  // }
 
-  if (!SpeakerSettingValues || !SpeakerSettingValues.response) {
-    return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <NoData />
-      </div>
-    );
-  }
+  // if (!SpeakerSettingValues || !SpeakerSettingValues.response) {
+  //   return (
+  //     <div className="flex items-center justify-center h-[60vh]">
+  //       <NoData />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex-1 overflow-y-auto">

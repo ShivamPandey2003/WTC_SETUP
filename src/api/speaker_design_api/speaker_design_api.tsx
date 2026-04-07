@@ -185,7 +185,7 @@ export const useGetSpeakerSetting = () => {
       return data;
     },
     refetchOnWindowFocus: false,
-    retry: 1,
+    retry: 0,
     staleTime:0
   });
 
