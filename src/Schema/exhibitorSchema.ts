@@ -24,6 +24,7 @@ export const ExhibitorSchema = z.object({
     }, "Only PNG, JPG, WEBP, JPEG images are allowed"),
   category: z.string().min(2, "Category is required"),
   ads: z.boolean(),
+  booth_no: z.string().optional(),
 });
 
 export const EditExhibitorSchema = z.object({
@@ -39,6 +40,7 @@ export const EditExhibitorSchema = z.object({
     }, "Only PNG, JPG, WEBP, JPEG images are allowed"),
   category: z.string().min(2, "Category is required"),
   ads: z.boolean(),
+  booth_no: z.string().optional(),
 });
 
 export type ExhibitorSchemaType = z.infer<typeof ExhibitorSchema>;

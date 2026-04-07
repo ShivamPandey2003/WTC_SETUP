@@ -49,7 +49,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
       return event.Item.some((e) => !filters.includes(e.categoryId));
     }
 
-    return !filters.includes(event.categoryId);
+    return !filters.includes(String(event.categoryId));
   };
 
   React.useLayoutEffect(() => {
@@ -125,7 +125,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
       <div className="flex-1 overflow-x-auto pl-20">
         <div className="flex gap-2 mb-4">
           {DateList.map((item, i) => (
-            <div key={i} className="min-w-[190px] text-center">
+            <div key={i} className="min-w-[220px] text-center">
               <h3>{item.weekday}</h3>
               <h3>{item.dayMonth}</h3>
             </div>
@@ -134,7 +134,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
         <div className="flex gap-2">
           {Dates.map((item, i) => (
             <React.Fragment key={i}>
-              <div key={item} className="min-w-[190px] relative">
+              <div key={item} className="min-w-[220px] relative">
                 <div className="flex gap-1">
                   <div
                     className="flex flex-col gap-0.5 w-full relative"

@@ -10,6 +10,7 @@ type ProfileT = {
     linkedin_url: string | null;
     phone_number: string | null;
     profile_image: string | null;
+    gender: "Male" | "Female" | "Other" | string
   };
   qr_image: string;
 };
@@ -24,6 +25,7 @@ const initialState: ProfileT = {
     linkedin_url: "",
     phone_number: "",
     profile_image: "",
+    gender:""
   },
   qr_image: "",
 };

@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { setSearchModal, setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { ChevronLeft, Menu } from "lucide-react";
-import { useEffect, useState, type RefObject } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { SearchTrigger } from "./SearchTrigger";
@@ -12,7 +12,7 @@ import { setUserInfo } from "@/redux/AuthSlice";
 import { useGetProfile } from "@/api/Profile_api/Profile_api";
 
 interface Prop {
-  REF: RefObject<HTMLDivElement | null>;
+  REF: any;
   setOpen: () => void;
 }
 
@@ -29,7 +29,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
   const { speakers } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
-  const { Exhibitors } = useSelector(
+  const { showSearch } = useSelector(
     (state: RootState) => state.ExhibitorSlice,
   );
   const menu = [
@@ -132,7 +132,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
       <div className="flex items-center gap-4">
         {((pathname === "/" && News.length > 0) ||
           (pathname === "/speaker" && speakers.length > 0) ||
-          (pathname === "/exhibitors" && Exhibitors.length > 0)) && (
+          (pathname === "/exhibitors" && showSearch)) && (
           <SearchTrigger onClick={() => dispatch(setSearchModal(true))} />
         )}
         {!token ? (

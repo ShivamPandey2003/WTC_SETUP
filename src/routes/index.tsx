@@ -152,7 +152,7 @@ const Router = createBrowserRouter(
     {
       path: "/onboarding",
       element: <ProtectedRoute element={<Onboarding_page />} />,
-    }
+    },
   ],
   // {
   //   basename: "/wtc/",

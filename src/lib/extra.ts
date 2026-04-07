@@ -86,7 +86,7 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
 
   const durationType = (s: Session) => {
     const diff = toMinutes(s.end_time) - toMinutes(s.start_time);
-    return diff > 210 ? "extra" : "normal";
+    return diff > 300 ? "extra" : "normal";
   };
 
   const isIntersect = (a: Session, b: Session) => {
@@ -126,7 +126,7 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
   const timeGroups: Record<string, Session[]> = {};
 
 
-  sessions.filter(pre=>pre).forEach((s) => {
+  sessions.filter(pre => pre).forEach((s) => {
     const start = s.start_time;
     const end = s.end_time;
     const key = `${start}-${end}`;
@@ -139,24 +139,48 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
 
   Object.values(timeGroups).forEach((group) => {
     if (group.length > 1) {
-      // ARRAY TYPE
-      result.push({
-        id: nanoid(),
-        type: "array",
-        start: group[0].start_time,
-        end: group[0].end_time,
-        Item: group.map((s) => ({
-          categoryId: s.categoryId,
-          session_id: s.session_id,
-          id: s.id,
-          title: s.title,
-          start: s.start_time,
-          end: s.end_time,
-          color: s.color,
-        })),
-      });
+      const allSameCategory = group.every(
+        (s) => s.categoryId === group[0].categoryId
+      );
+
+      if (allSameCategory) {
+        const earliest = group.reduce((a, b) =>
+          toMinutes(a.start_time) < toMinutes(b.start_time) ? a : b
+        );
+
+        const latest = group.reduce((a, b) =>
+          toMinutes(a.end_time) > toMinutes(b.end_time) ? a : b
+        );
+
+        result.push({
+          id: nanoid(),
+          categoryId: group[0].categoryId,
+          type: "merge",
+          title: group[0].title,
+          color: group[0].color,
+          start: earliest.start_time,
+          end: latest.end_time,
+          session_id: group.map((s) => s.session_id),
+        });
+      } else {
+        result.push({
+          id: nanoid(),
+          type: "array",
+          start: group[0].start_time,
+          end: group[0].end_time,
+          Item: group.map((s) => ({
+            categoryId: s.categoryId,
+            session_id: s.session_id,
+            id: s.id,
+            title: s.title,
+            start: s.start_time,
+            end: s.end_time,
+            color: s.color,
+          })),
+        });
+      }
     } else {
-      leftover.push(group[0]); // keep for merge/normal
+      leftover.push(group[0]);
     }
   });
 

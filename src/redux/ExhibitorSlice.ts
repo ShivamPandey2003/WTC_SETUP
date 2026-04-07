@@ -5,7 +5,7 @@ type initialStateT = {
   isDeleting: string | null;
   isCreating: boolean;
   categoryModal: boolean;
-  Exhibitors: (Exhibitor & {SponsorType?: string})[];
+  Exhibitors: (Exhibitor & {SponsorType?: string, booth_no?: string})[];
   Categorys: Category[];
   open_link_new_tab: boolean;
   allow_email_exposure: boolean;
@@ -13,6 +13,7 @@ type initialStateT = {
   uploadCSV: boolean;
   isEditable: Record<string, boolean>
   deletingCategory: string|null
+  showSearch:boolean;
   searchText: string
 };
 
@@ -28,6 +29,7 @@ const initialState: initialStateT = {
   booth_location: false,
   uploadCSV: false,
   isEditable:{},
+  showSearch:false,
   deletingCategory:null,
   searchText:""
 };
@@ -87,6 +89,10 @@ const Exhibitor_DesignSlice = createSlice({
     setSearchText:(state, payload: PayloadAction<string>)=>{
       state.searchText = payload.payload;
       return state;
+    },
+    setShowSearch:(state, payload: PayloadAction<boolean>)=>{
+      state.showSearch = payload.payload;
+      return state;
     }
   },
 });
@@ -104,6 +110,7 @@ export const {
   setCategoryModal,
   setIsEditable,
   setDeletingCategory,
-  setSearchText
+  setSearchText,
+  setShowSearch
 } = Exhibitor_DesignSlice.actions;
 export default Exhibitor_DesignSlice.reducer;

@@ -34,7 +34,9 @@ export const useGlobalDesign = () => {
       return res.response;
     },
     select: (data) => {
-      dispatch(setAppConfig(data.response));
+      if(Object.keys(data.response).length > 0){
+        dispatch(setAppConfig(data.response));
+      }
       return data;
     },
     refetchOnWindowFocus: false,
@@ -142,6 +144,7 @@ export const useInfiniteSpeakers = () => {
       if (current_page < max_page) return next_page;
       return undefined; // no more pages
     },
+    retry:0
   });
 
   return {
@@ -282,6 +285,7 @@ export const useGetVenue = () => {
     },
     refetchOnWindowFocus: false,
     retry: 1,
+    staleTime:0
   });
 
   return { Venue, isPending, error };
@@ -650,7 +654,7 @@ export const useGetConferenceDetails = () => {
       return data;
     },
     refetchOnWindowFocus: false,
-    retry: 1,
+    retry: 0,
   });
 
   return { ConferenceDetails, isPending, error };
@@ -757,7 +761,7 @@ export const useGetTabs = () => {
       return data;
     },
     refetchOnWindowFocus: false,
-    retry: 1,
+    retry: 0,
   });
 
   return {

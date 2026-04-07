@@ -42,7 +42,7 @@ const initialState: initialStateType = {
   Session: [],
   Venue: {
     bg_venue: "",
-    attachent:"",
+    attachment:"",
     getting_there: {
       sub_title: "",
       description: "",

@@ -67,3 +67,21 @@ export const useProfileUpdate = () => {
 
   return { profileData, UpdateProfile, isPending, error };
 };
+
+export const useUploadExhibitorProfilePic = () => {
+  const {
+    mutate: UploadExhibitorPic,
+    isPending,
+    error,
+  } = useMutation<ProfilePicResponse, AxiosError, FormData>({
+    mutationFn: async (data) => {
+      const res = await apiRequest("post", "/exhibitors/update-logo", data);
+      return res.response;
+    },
+    onSuccess: () => {
+      toast.success("Profile pic update successfully");
+    }
+  });
+
+  return { UploadExhibitorPic, isPending, error };
+};
