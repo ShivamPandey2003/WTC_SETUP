@@ -5,8 +5,8 @@ import AddCategoryModel from "@/components/common/Programme_Design/AddCategoryMo
 import CreateModal from "@/components/common/Programme_Design/CreateModal";
 import CustomTable from "@/components/common/Programme_Design/CustomTable";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
-import ErrorDisplay from "@/components/global/ErrorDisplay";
-import NoData from "@/components/global/NoData";
+// import ErrorDisplay from "@/components/global/ErrorDisplay";
+// import NoData from "@/components/global/NoData";
 import Section from "@/components/global/Section";
 import TextStyleRow from "@/components/global/TextStyleRow";
 import { Button } from "@/components/ui/Button";
@@ -60,9 +60,9 @@ const ProgrammeDesign_page = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
     const {
-    SpeakerSettings: SettingsValue,
+    // SpeakerSettings: SettingsValue,
     isPending,
-    error,
+    // error,
   } = useGetSpeakerSetting();
   const { DeleteCategory, isDeleteCategoryPending } = useDeleteCategory();
   const { AllCategory, isPending: isCategoriesPending } = useGetCategoryAll();
@@ -136,21 +136,21 @@ const ProgrammeDesign_page = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <ErrorDisplay title="News Feed Error" message={error.message} />
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <ErrorDisplay title="News Feed Error" message={error.message} />
+  //     </div>
+  //   );
+  // }
 
-  if (!SettingsValue || !SettingsValue.response) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <NoData />
-      </div>
-    );
-  }
+  // if (!SettingsValue || !SettingsValue.response) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <NoData />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex-1 overflow-y-auto">

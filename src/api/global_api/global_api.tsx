@@ -34,7 +34,9 @@ export const useGlobalDesign = () => {
       return res.response;
     },
     select: (data) => {
-      dispatch(setAppConfig(data.response));
+      if(Object.keys(data.response).length > 0){
+        dispatch(setAppConfig(data.response));
+      }
       return data;
     },
     refetchOnWindowFocus: false,

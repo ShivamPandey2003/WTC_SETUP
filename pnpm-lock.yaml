@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@epic-web/restore-scroll':
-        specifier: ^2.0.0
-        version: 2.0.0(react-router@7.9.4(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.65.0(react@19.2.0))
@@ -248,12 +245,6 @@ packages:
   '@babel/types@7.28.4':
     resolution: {integrity: sha512-bkFqkLhh3pMBUQQkpVgWDWq/lqzc2678eUyDlTBhRqhCHFguYYGM0Efga7tYk4TogG/3x0EEl66/OQ+WGbWB/Q==}
     engines: {node: '>=6.9.0'}
-
-  '@epic-web/restore-scroll@2.0.0':
-    resolution: {integrity: sha512-QgjAXcDGcqsd+BGgM8u2tGRpP4kyrON53Bp8VKguOM/U4uH2N7KMnRq8uMmUMpOPxl8dvzwzz/yOJ9l6HRFVvA==}
-    peerDependencies:
-      react: '>=18.0.0'
-      react-router: '>=7.0.0'
 
   '@esbuild/aix-ppc64@0.25.10':
     resolution: {integrity: sha512-0NFWnA+7l41irNuaSVlLfgNT12caWJVLzp5eAVhZ0z1qpxbockccEt3s+149rE64VUI3Ml2zt8Nv5JVc4QXTsw==}
@@ -2109,11 +2100,6 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
-
-  '@epic-web/restore-scroll@2.0.0(react-router@7.9.4(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)':
-    dependencies:
-      react: 19.2.0
-      react-router: 7.9.4(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
   '@esbuild/aix-ppc64@0.25.10':
     optional: true
