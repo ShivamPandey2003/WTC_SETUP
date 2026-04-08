@@ -8,6 +8,7 @@ import {
   getEarliestAndLatest,
   transformSessions,
 } from "@/lib/extra";
+import { groupIntoColumns } from "@/lib/GroupintoColumn";
 import { cn } from "@/lib/utils";
 import { setProgrammes, type ProgrammeRecord } from "@/redux/ExtraSlice";
 import { setProgramme } from "@/redux/GlobalSlice";
@@ -98,8 +99,11 @@ const V2_Programme_page = () => {
             type: "normal",
           };
         });
+      const result = transformSessions(val as any);
+      const columns = result ? groupIntoColumns(result) : [];
+
       value.data = {
-        [item]: transformSessions(val as any),
+        [item]: columns,
         ...value.data,
       };
     });
