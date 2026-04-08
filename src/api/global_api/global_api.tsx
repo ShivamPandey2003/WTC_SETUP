@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { setNews, type ProgrammeRecord } from "@/redux/ExtraSlice";
 import { nanoid } from "nanoid";
+import { groupIntoColumns } from "@/lib/GroupintoColumn";
 
 export const useGlobalDesign = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -34,7 +35,7 @@ export const useGlobalDesign = () => {
       return res.response;
     },
     select: (data) => {
-      if(Object.keys(data.response).length > 0){
+      if (Object.keys(data.response).length > 0) {
         dispatch(setAppConfig(data.response));
       }
       return data;
@@ -144,7 +145,7 @@ export const useInfiniteSpeakers = () => {
       if (current_page < max_page) return next_page;
       return undefined; // no more pages
     },
-    retry:0
+    retry: 0,
   });
 
   return {
@@ -231,8 +232,10 @@ export const useGetProgrammeList = () => {
               type: "normal",
             };
           });
+        const result = transformSessions(val as any);
+        const columns = result ? groupIntoColumns(result) : [];
         value.data = {
-          [item]: transformSessions(val as any),
+          [item]: columns,
           ...value.data,
         };
       });
@@ -285,7 +288,7 @@ export const useGetVenue = () => {
     },
     refetchOnWindowFocus: false,
     retry: 1,
-    staleTime:0
+    staleTime: 0,
   });
 
   return { Venue, isPending, error };
