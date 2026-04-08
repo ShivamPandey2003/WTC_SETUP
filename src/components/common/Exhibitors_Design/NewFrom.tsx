@@ -31,9 +31,10 @@ const NewFrom = () => {
     formData.append("url", newData.url as string);
     formData.append("email", newData.email as string);
     formData.append("category", newData.category as string);
-    formData.append("file", newData.logo?.[0] as Blob);
+    formData.append("logo", newData.logo?.[0] as Blob);
     formData.append("ads", String(newData?.ads));
     formData.append("show_mail", String(newData?.show_mail));
+    formData.append("booth_no", newData?.booth_no as string);
     CreateExhibitor(formData);
   };
 
@@ -83,6 +84,7 @@ const NewFrom = () => {
           return { label: item.name, value: item.id };
         }),
     },
+    { name: "booth_no", label: "Booth Location", placeholder: "Enter booth location here" },
     { name: "ads", label: "Ads", type: "checkbox" },
     { name: "show_mail", label: "Show mail", type: "checkbox"},
   ];

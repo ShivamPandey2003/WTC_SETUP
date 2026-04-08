@@ -36,7 +36,12 @@ const EditFrom = () => {
   useEffect(() => {
     if (!value) return;
     const { logo, url, ...rest } = value;
-    reset({ ...rest, logo: undefined, category: value.categoryId, url:url?url:"" } as any);
+    reset({
+      ...rest,
+      logo: undefined,
+      category: value.categoryId,
+      url: url ? url : "",
+    } as any);
   }, [value, reset]);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -50,8 +55,11 @@ const EditFrom = () => {
     formData.append("category", newData.category as string);
     formData.append("ads", String(newData?.ads));
     formData.append("show_mail", String(newData?.show_mail));
+    if (newData.booth_no) {
+      formData.append("booth_no", newData.booth_no as string);
+    }
     if (newData.logo?.[0]) {
-      formData.append("file", newData.logo?.[0] as Blob);
+      formData.append("logo", newData.logo?.[0] as Blob);
     }
     EditExhibitor({ form: formData, id: `${selected}` });
   };
@@ -106,6 +114,11 @@ const EditFrom = () => {
         .map((item: any) => {
           return { label: item.name, value: item.id };
         }),
+    },
+    {
+      name: "booth_no",
+      label: "Booth Location",
+      placeholder: "Enter booth location here",
     },
     { name: "ads", label: "Ads", type: "checkbox" },
     { name: "show_mail", label: "Show mail", type: "checkbox" },

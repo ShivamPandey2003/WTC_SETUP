@@ -25,8 +25,8 @@ import {
 } from "@/api/global_api/global_api";
 import { useGetSpeakerSetting } from "@/api/speaker_design_api/speaker_design_api";
 import { setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
-import ErrorDisplay from "@/components/global/ErrorDisplay";
-import NoData from "@/components/global/NoData";
+// import ErrorDisplay from "@/components/global/ErrorDisplay";
+// import NoData from "@/components/global/NoData";
 import CSVModel from "@/components/global/CSVModel";
 import {
   useExhibitorsDownload,
@@ -52,9 +52,9 @@ const ExhibitorsDesign_page = () => {
   const { Category, isCategoryPending } = useCategoryList();
   const dispatch = useDispatch();
   const {
-    SpeakerSettings: SettingValue,
+    // SpeakerSettings: SettingValue,
     isPending,
-    error,
+    // error,
   } = useGetSpeakerSetting();
   const { GlobalDesign, isGlobalDesignPending } = useGlobalDesign();
   const {
@@ -75,6 +75,7 @@ const ExhibitorsDesign_page = () => {
 
   const OnSave = () => {
     const formData = new FormData();
+    if(Object.keys(splashValue).length === 0) return;
     formData.append("file", splashValue.image);
     formData.append("title", splashValue.title);
     formData.append("subtitle", splashValue.subtitle);
@@ -96,9 +97,11 @@ const ExhibitorsDesign_page = () => {
     dispatch(setIsEditable(newState));
   }, [Categorys]);
 
+
   useEffect(() => {
     if (!GlobalDesign?.response) return;
     const splash = GlobalDesign.response.exhibitor_splash;
+    if(!splash) return;
     setSplashValue(splash);
   }, [GlobalDesign]);
 
@@ -119,21 +122,21 @@ const ExhibitorsDesign_page = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <ErrorDisplay title="News Feed Error" message={error.message} />
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <ErrorDisplay title="News Feed Error" message={error.message} />
+  //     </div>
+  //   );
+  // }
 
-  if (!SettingValue || !SettingValue.response) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <NoData />
-      </div>
-    );
-  }
+  // if (!SettingValue || !SettingValue.response) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <NoData />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -344,7 +347,7 @@ const ExhibitorsDesign_page = () => {
                       }
                       className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                     />
-                    {GlobalDesign?.response.exhibitor_splash.image && (
+                    {GlobalDesign && GlobalDesign?.response?.exhibitor_splash?.image && (
                       <img
                         src={
                           typeof splashValue.image === "string"

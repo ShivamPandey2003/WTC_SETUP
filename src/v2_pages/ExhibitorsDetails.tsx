@@ -10,7 +10,7 @@ import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { toast } from "sonner";
-import ExPlaceholderImg from '@/assets/Images/EXPlaceholder.jpg'
+import ExPlaceholderImg from "@/assets/Images/EXPlaceholder.jpg";
 
 const ExhibitorsDetails = () => {
   const { id } = useParams();
@@ -41,7 +41,7 @@ const ExhibitorsDetails = () => {
 
   const handleCopyEmail = (str: string) => {
     navigator.clipboard.writeText(str);
-    toast.success("Email Copied Successfully")
+    toast.success("Email Copied Successfully");
   };
 
   useEffect(() => {
@@ -75,7 +75,7 @@ const ExhibitorsDetails = () => {
               <div className="shrink-0">
                 <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl bg-white border-8 border-white shadow-2xl overflow-hidden">
                   <img
-                    src={ExhibitorDetails.logo?? ExPlaceholderImg}
+                    src={ExhibitorDetails.logo ?? ExPlaceholderImg}
                     alt={ExhibitorDetails.full_name}
                     className="w-full h-full object-contain p-2"
                   />
@@ -94,30 +94,43 @@ const ExhibitorsDetails = () => {
                         {ExhibitorDetails &&
                           ("SponsorType" in ExhibitorDetails
                             ? ExhibitorDetails.SponsorType
-                            :"category" in ExhibitorDetails && ExhibitorDetails.category)}{" "}
+                            : "category" in ExhibitorDetails &&
+                              ExhibitorDetails.category)}{" "}
                         Exhibitor
                       </span>
                     </div>
+                    {ExhibitorDetails.booth_no &&
+                      ExhibitorDetails.booth_no.trim() && (
+                        <div className="text-gray-700 mt-3">
+                          <p className="font-bold">
+                            Booth #{ExhibitorDetails.booth_no}
+                          </p>
+                        </div>
+                      )}
                   </div>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
-                  {ExhibitorDetails.email.trim() && <a
-                    href={`mailto:${ExhibitorDetails.email}`}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
-                  >
-                    <Mail className="w-5 h-5" />
-                    Email
-                  </a>}
-                  <a
-                    href={ExhibitorDetails.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
-                  >
-                    <Globe className="w-5 h-5" />
-                    Visit Website
-                  </a>
+                  {ExhibitorDetails.email && ExhibitorDetails.email.trim() && (
+                    <a
+                      href={`mailto:${ExhibitorDetails.email}`}
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
+                    >
+                      <Mail className="w-5 h-5" />
+                      Email
+                    </a>
+                  )}
+                  {ExhibitorDetails.url && ExhibitorDetails.url.trim() && (
+                    <a
+                      href={ExhibitorDetails.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
+                    >
+                      <Globe className="w-5 h-5" />
+                      Visit Website
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
@@ -127,36 +140,42 @@ const ExhibitorsDetails = () => {
                 Contact Information
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {ExhibitorDetails.email.trim() && <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-100">
-                  <div className="flex items-center gap-3 mb-3">
-                    <Mail className="w-6 h-6 text-blue-600" />
-                    <h3 className="text-lg font-semibold text-slate-900">
-                      Email Address
-                    </h3>
-                    <Copy className="w-5 h-5 cursor-pointer" onClick={() => handleCopyEmail(ExhibitorDetails.email)} />
+                {ExhibitorDetails.email && ExhibitorDetails.email.trim() && (
+                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-100">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Mail className="w-6 h-6 text-blue-600" />
+                      <h3 className="text-lg font-semibold text-slate-900">
+                        Email Address
+                      </h3>
+                      <Copy
+                        className="w-5 h-5 cursor-pointer"
+                        onClick={() => handleCopyEmail(ExhibitorDetails.email)}
+                      />
+                    </div>
+                    <p className="text-slate-700 text-lg font-medium">
+                      {ExhibitorDetails.email}
+                    </p>
                   </div>
-                  <p className="text-slate-700 text-lg font-medium">
-                    {ExhibitorDetails.email}
-                  </p>
-                </div>}
-
-                <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-100">
-                  <div className="flex items-center gap-3 mb-3">
-                    <Globe className="w-6 h-6 text-cyan-600" />
-                    <h3 className="text-lg font-semibold text-slate-900">
-                      Website
-                    </h3>
+                )}
+                {ExhibitorDetails.url && ExhibitorDetails.url.trim() && (
+                  <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-100">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Globe className="w-6 h-6 text-cyan-600" />
+                      <h3 className="text-lg font-semibold text-slate-900">
+                        Website
+                      </h3>
+                    </div>
+                    <a
+                      href={ExhibitorDetails.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-cyan-600 hover:text-cyan-700 font-medium flex items-center gap-2 group"
+                    >
+                      Visit Website
+                      <ExternalLink className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                    </a>
                   </div>
-                  <a
-                    href={ExhibitorDetails.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-cyan-600 hover:text-cyan-700 font-medium flex items-center gap-2 group"
-                  >
-                    Visit Website
-                    <ExternalLink className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
-                  </a>
-                </div>
+                )}
               </div>
             </div>
           </div>

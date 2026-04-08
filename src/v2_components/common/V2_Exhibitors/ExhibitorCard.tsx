@@ -3,7 +3,7 @@ import ExPlaceholderImg from '@/assets/Images/EXPlaceholder.jpg'
 interface ExhibitorCardProps {
   logo: string;
   full_name: string;
-  // boothNumber: string;
+  booth_no?: string;
   url?: string;
   backgroundColor?: string;
   onClick: () => void;
@@ -12,7 +12,7 @@ interface ExhibitorCardProps {
 export default function ExhibitorCard({
   logo,
   full_name,
-  // boothNumber,
+  booth_no,
   onClick,
 }: ExhibitorCardProps) {
   return (
@@ -21,21 +21,23 @@ export default function ExhibitorCard({
       onClick={onClick}
     >
       <div
-        className={`bg-gray-300 p-8 flex items-center justify-center min-h-32`}
+        className={`bg-gray-300 flex items-center justify-center h-32 overflow-hidden`}
       >
         <img
           src={logo??ExPlaceholderImg}
           alt={full_name}
-          className="h-12 object-contain"
+          className="object-contain h-full w-full"
         />
       </div>
 
       <div className="bg-white p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-4 line-clamp-1">{full_name}</h3>
+        <h3 className="text-xl font-bold text-gray-900 mb-4 line-clamp-2">{full_name}</h3>
 
-        {/* <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-700">Booth Hall C · Booth 21</p>
-        </div> */}
+        {(booth_no && booth_no.trim()) && (
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-gray-700">Booth #{booth_no}</p>
+          </div>
+        )}
       </div>
     </div>
   );
