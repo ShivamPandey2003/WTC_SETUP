@@ -145,7 +145,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
           {Dates.map((item, i) => {
             const columns = Programmes.data[item];
             const extraColumn = columns?.find((col) =>
-              col?.every((item) => item?.type === "extra"),
+              Array.isArray(col) && col?.every((item) => item?.type === "extra"),
             );
             const normalColumns = columns.filter((col) => col !== extraColumn);
             const columnCount = normalColumns.length || 1;
