@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { set, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
 import {
   useProfileUpdate,
-  useUploadProfilePic,
+  // useUploadProfilePic,
 } from "@/api/Profile_api/Profile_api";
 import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { apiRequest } from "@/services/apiService";
+import axios from "axios";
 
 const formSchema = z.object({
   prefix: z.string().optional(),
@@ -30,7 +32,8 @@ type FormData = z.infer<typeof formSchema>;
 
 export default function ProfileForm() {
   const { user_info } = useSelector((state: RootState) => state.Profile_Slice);
-  const { UploadPic, isPending } = useUploadProfilePic();
+  // const { UploadPic, isPending } = useUploadProfilePic();
+  const [isPending, setIsPending] = useState(false);
   const { UpdateProfile, isPending: updateProfileIsPending } =
     useProfileUpdate();
   const [image, setImage] = useState<string | null>(user_info.profile_image);
@@ -68,15 +71,31 @@ export default function ProfileForm() {
     // alert("Saved!");
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newForm = new FormData();
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      newForm.append("file", file);
-      const reader = new FileReader();
-      reader.onloadend = () => setImage(reader.result as string);
-      reader.readAsDataURL(file);
-      UploadPic(newForm);
+      setIsPending(true);
+      const res = await apiRequest(
+        "post",
+        `/upload/presigned-url?file_name=${file.name}&module=${"app_users"}&ref_id=${""}`,
+      );
+      const { file_key, upload_url } = res.response.response;
+
+      await axios.put(upload_url, file, {
+        headers: {
+          "Content-Type": file.type,
+        },
+        responseType: "blob",
+      });
+
+      const newForm = new FormData();
+      newForm.append("module", "app_users");
+      newForm.append("record_id", "");
+      newForm.append("file_path_image", file_key);
+
+      await apiRequest("post", "upload/common/files", newForm);
+      setImage(URL.createObjectURL(file));
+      setIsPending(false);
     }
   };
 
