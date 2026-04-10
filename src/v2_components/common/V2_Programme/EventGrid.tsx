@@ -1,5 +1,6 @@
 import React from "react";
-import { generateTimeArray, getDateRange, type OutputItem } from "@/lib/extra";
+import { generateTimeArray, getDateRange } from "@/lib/extra";
+import type { OutputItem } from "@/lib/extra";
 import { cn, convertToDate, Height_OBJ } from "@/lib/utils";
 import { formatDates_V2 } from "@/lib";
 import { useSelector } from "react-redux";
