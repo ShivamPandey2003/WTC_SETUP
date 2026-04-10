@@ -56,53 +56,51 @@ const EventGrid = ({ selectedCategories }: Props) => {
     const pos: Record<string, { top: number; height: number }> = {};
 
     Dates.forEach((date) => {
-      Programmes.data[date as keyof typeof Programmes.data].forEach((e) => {
+      const dateData = Programmes.data[date as keyof typeof Programmes.data];
+
+      if (!Array.isArray(dateData)) return;
+
+      dateData.forEach((e) => {
+        if (!Array.isArray(e)) return;
+
         e.forEach((event) => {
           if (
             event?.type === "normal" ||
             (event?.type === "extra" && event?.start)
           ) {
             const height =
-              getPxDistance(event.start.slice(0, 5), event.end.slice(0, 5)) ??
-              0;
+              getPxDistance(event.start.slice(0, 5), event.end.slice(0, 5)) ?? 0;
             const top =
               getPxDistance(
                 Programmes.start_time.slice(0, 5),
                 event.start.slice(0, 5),
               ) ?? 0;
-            pos[event.id] = { top: top, height };
-          } else if (event.type === "array" && event.Item) {
+            pos[event.id] = { top, height };
+
+          } else if (event?.type === "array" && Array.isArray(event.Item)) {
             event.Item.forEach((Combine) => {
+              if (!Combine?.start || !Combine?.end) return;
+
               const height =
-                getPxDistance(
-                  Combine?.start.slice(0, 5),
-                  Combine?.end.slice(0, 5),
-                ) ?? 0;
+                getPxDistance(Combine.start.slice(0, 5), Combine.end.slice(0, 5)) ?? 0;
               const top =
                 getPxDistance(
                   Programmes.start_time.slice(0, 5),
-                  Combine?.start.slice(0, 5),
+                  Combine.start.slice(0, 5),
                 ) ?? 0;
-
-              pos[event.id] = { top: top, height };
+              pos[event.id] = { top, height };
             });
-          } else if (event.type === "merge" && event.start) {
+
+          } else if (event?.type === "merge" && event?.start) {
             const height =
-              getPxDistance(event.start.slice(0, 5), event.end.slice(0, 5)) ??
-              0;
+              getPxDistance(event.start.slice(0, 5), event.end.slice(0, 5)) ?? 0;
             const top =
               getPxDistance(
                 Programmes.start_time.slice(0, 5),
                 event.start.slice(0, 5),
               ) ?? 0;
-            pos[event.id] = { top: top, height };
+            pos[event.id] = { top, height };
           }
-          //   else if (event.type === "extra" && event.start) {
-          //     const top = getPxDistance(Dates[0], event.start) ?? 0;
-          //     const height = getPxDistance(event.start, event.end) ?? 0;
-
-          //     pos[event.id] = { top, height };
-          //   }
         });
       });
     });
@@ -183,9 +181,8 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                       "text-white p-1 rounded-xl flex items-center justify-center text-center text-sm absolute w-full cursor-pointer",
                                     )}
                                     style={{
-                                      top: `${
-                                        positions[event.id]?.top + i * 4 || 0
-                                      }px`,
+                                      top: `${positions[event.id]?.top + i * 4 || 0
+                                        }px`,
                                       height: `${positions[event.id]?.height || 0}px`,
                                       backgroundColor: event.color,
                                     }}
@@ -202,9 +199,8 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                     key={event.id}
                                     className="flex gap-1 absolute"
                                     style={{
-                                      top: `${
-                                        positions[event.id]?.top + i * 2 || 0
-                                      }px`,
+                                      top: `${positions[event.id]?.top + i * 2 || 0
+                                        }px`,
                                     }}
                                   >
                                     {event.Item.map((row) => (
@@ -215,9 +211,8 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                         )}
                                         style={{
                                           width: `${100 / event.Item.length}%`,
-                                          height: `${
-                                            positions[event.id]?.height || 0
-                                          }px`,
+                                          height: `${positions[event.id]?.height || 0
+                                            }px`,
                                           backgroundColor: row.color,
                                         }}
                                         onClick={() =>
@@ -237,9 +232,8 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                       "text-white p-1 rounded-xl flex items-center justify-center text-center text-sm absolute w-full cursor-pointer",
                                     )}
                                     style={{
-                                      top: `${
-                                        positions[event.id]?.top + i * 4 || 0
-                                      }px`,
+                                      top: `${positions[event.id]?.top + i * 4 || 0
+                                        }px`,
                                       height: `${positions[event.id]?.height || 0}px`,
                                       backgroundColor: event.color,
                                     }}
@@ -267,9 +261,8 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                   "rounded-xl flex w-[30px] items-center justify-center text-white cursor-pointer",
                                 )}
                                 style={{
-                                  marginTop: `${
-                                    positions[item.id]?.top + i * 4 || 0
-                                  }px`,
+                                  marginTop: `${positions[item.id]?.top + i * 4 || 0
+                                    }px`,
                                   height: `${positions[item.id]?.height || 0}px`,
                                   backgroundColor: item.color,
                                 }}
