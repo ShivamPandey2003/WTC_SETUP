@@ -144,8 +144,8 @@ const EventGrid = ({ selectedCategories }: Props) => {
         <div className="flex gap-2">
           {Dates.map((item, i) => {
             const columns = Programmes.data[item];
-            const extraColumn = columns.find((col) =>
-              col.every((item) => item?.type === "extra"),
+            const extraColumn = columns?.find((col) =>
+              col?.every((item) => item?.type === "extra"),
             );
             const normalColumns = columns.filter((col) => col !== extraColumn);
             const columnCount = normalColumns.length || 1;
