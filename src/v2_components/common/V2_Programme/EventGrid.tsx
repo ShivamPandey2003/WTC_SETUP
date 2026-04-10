@@ -132,7 +132,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
             const date = convertToDate(item);
             const columns = Programmes.data[date];
             const height =
-              Height_OBJ[columns.length as keyof typeof Height_OBJ] || "200";
+              Height_OBJ[columns?.length as keyof typeof Height_OBJ] || "200";
             return (
               <div key={i} className="text-center" style={{ minWidth: `${height}px` }}>
                 <h3>{item.weekday}</h3>
@@ -151,7 +151,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
             const columnCount = normalColumns.length || 1;
             const columnWidth = 100 / columnCount;
             const height =
-              Height_OBJ[columns.length as keyof typeof Height_OBJ] || "200";
+              Height_OBJ[columns?.length as keyof typeof Height_OBJ] || "200";
 
             return (
               <React.Fragment key={i}>
