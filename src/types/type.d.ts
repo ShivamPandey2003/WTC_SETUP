@@ -1,3 +1,4 @@
+
 declare type ModelSliceType = {
   loginModel: boolean;
   searchModal: boolean;
@@ -76,6 +77,7 @@ declare type DeleteNewsResponse = {
 declare type CreateSessionResponse = {
   header: ResponseHeader;
   response: {
+    id:string;
     session_id: string;
     title: string;
   };
@@ -119,6 +121,7 @@ declare type DeleteSessionResponse = {
 declare type CreateSpeakerResponse = {
   header: ResponseHeader;
   response: {
+    id:string;
     speaker_id: string;
     name: string;
   };
@@ -446,7 +449,9 @@ declare type ProfileResponse = {
 
 declare type ProfilePicResponse = {
   header: ResponseHeader;
-  response: {};
+  response: {
+    id:string;
+  };
 };
 
 declare type ProfileUpdateRequest = {
@@ -707,5 +712,5 @@ declare type FailedNewsEntry = {
 
 declare type BulkImageResponse = {
   header: ResponseHeader;
-  response: FailedNewsEntry[]
+  response: Record<string, FailedNewsEntry[]>;
 }

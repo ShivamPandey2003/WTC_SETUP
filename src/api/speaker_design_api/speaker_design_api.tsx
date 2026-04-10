@@ -11,6 +11,7 @@ import type { AppDispatch } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import axios from "axios";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
@@ -25,12 +26,60 @@ export const useCreateSpeaker = () => {
       const res = await apiRequest("post", "speakers/create", data);
       return res.response;
     },
-    onSuccess: () => {
+    onSuccess: async (data, variable) => {
       toast.success("Speaker created successfully");
+      dispatch(setIsCreating(false));
+
+      const file = variable.get("profile_image") as File;
+      const attachment = variable.get("attachments") as File;
+
+      if (file) {
+        const res = await apiRequest(
+          "post",
+          `/upload/presigned-url?file_name=${file.name}&module=${"speaker_profile"}&ref_id=${data.response.speaker_id}`,
+        );
+        const { file_key, upload_url } = res.response.response;
+
+        await axios.put(upload_url, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+          responseType: "blob",
+        });
+
+        const newForm = new FormData();
+        newForm.append("module", "speaker");
+        newForm.append("record_id", data.response.speaker_id);
+        newForm.append("file_path_image", file_key);
+
+        await apiRequest("post", "upload/common/files", newForm);
+      }
+
+      if (attachment) {
+        const res = await apiRequest(
+          "post",
+          `/upload/presigned-url?file_name=${attachment.name}&module=${"speaker_attachments"}&ref_id=${data.response.speaker_id}`,
+        );
+        const { file_key, upload_url } = res.response.response;
+
+        await axios.put(upload_url, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+          responseType: "blob",
+        });
+
+        const newForm = new FormData();
+        newForm.append("module", "speaker");
+        newForm.append("record_id", data.response.speaker_id);
+        newForm.append("file_path_attachment", file_key);
+
+        await apiRequest("post", "upload/common/files", newForm);
+      }
+
       queryClient.invalidateQueries({
         queryKey: ["adminSpeakerList"],
       });
-      dispatch(setIsCreating(false));
     },
   });
 
@@ -49,12 +98,60 @@ export const useEditSpeaker = () => {
       const res = await apiRequest("post", `speakers/edit/${id}`, data);
       return res.response;
     },
-    onSuccess: () => {
+    onSuccess: async (data, variable) => {
       toast.success("Speaker edited successfully");
+      dispatch(setSelected(null));
+
+      const file = variable.get("profile_image") as File;
+      const attachment = variable.get("attachments") as File;
+
+      if (file) {
+        const res = await apiRequest(
+          "post",
+          `/upload/presigned-url?file_name=${file.name}&module=${"speaker_profile"}&ref_id=${data.response.speaker_id}`,
+        );
+        const { file_key, upload_url } = res.response.response;
+
+        await axios.put(upload_url, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+          responseType: "blob",
+        });
+
+        const newForm = new FormData();
+        newForm.append("module", "speaker");
+        newForm.append("record_id", data.response.speaker_id);
+        newForm.append("file_path_image", file_key);
+
+        await apiRequest("post", "upload/common/files", newForm);
+      }
+
+      if (attachment) {
+        const res = await apiRequest(
+          "post",
+          `/upload/presigned-url?file_name=${attachment.name}&module=${"speaker_attachments"}&ref_id=${data.response.speaker_id}`,
+        );
+        const { file_key, upload_url } = res.response.response;
+
+        await axios.put(upload_url, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+          responseType: "blob",
+        });
+
+        const newForm = new FormData();
+        newForm.append("module", "speaker");
+        newForm.append("record_id", data.response.speaker_id);
+        newForm.append("file_path_attachment", file_key);
+
+        await apiRequest("post", "upload/common/files", newForm);
+      }
+
       queryClient.invalidateQueries({
         queryKey: ["adminSpeakerList"],
       });
-      dispatch(setSelected(null));
     },
   });
 
@@ -121,9 +218,11 @@ export const useGetSpeakerList = () => {
   return { SpeakerList, isPending, error };
 };
 
-export const useGetAdminSpeakerList = (page: number = 1, search?:string) => {
-
-  const url = (search && search?.trim()) ? `speakers/list?page=${page}&search=${search}`:`speakers/list?page=${page}`
+export const useGetAdminSpeakerList = (page: number = 1, search?: string) => {
+  const url =
+    search && search?.trim()
+      ? `speakers/list?page=${page}&search=${search}`
+      : `speakers/list?page=${page}`;
 
   const {
     data: SpeakerList,
@@ -186,7 +285,7 @@ export const useGetSpeakerSetting = () => {
     },
     refetchOnWindowFocus: false,
     retry: 0,
-    staleTime:0
+    staleTime: 0,
   });
 
   return { SpeakerSettings, isPending, error };

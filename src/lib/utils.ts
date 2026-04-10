@@ -39,7 +39,9 @@ export const convertToDate = (data: { dayMonth: string }) => {
   const month = months[monthStr];
   const paddedDay = day.padStart(2, "0");
 
-  return `2026-${month}-${paddedDay}`;
+  const year = new Date().getFullYear();
+
+  return `${year}-${month}-${paddedDay}`;
 };
 
 export function getDatesInRangeFormatted(
@@ -246,4 +248,16 @@ export function shuffleArray<T>(array: T[]): T[] {
   }
 
   return newArray;
+}
+
+export function generateExhibitorId(length: number = 8): string {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * chars.length);
+    result += chars[randomIndex];
+  }
+
+  return result;
 }
