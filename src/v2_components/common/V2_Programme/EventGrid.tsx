@@ -59,8 +59,8 @@ const EventGrid = ({ selectedCategories }: Props) => {
       Programmes.data[date as keyof typeof Programmes.data].forEach((e) => {
         e.forEach((event) => {
           if (
-            event.type === "normal" ||
-            (event.type === "extra" && event.start)
+            event?.type === "normal" ||
+            (event?.type === "extra" && event?.start)
           ) {
             const height =
               getPxDistance(event.start.slice(0, 5), event.end.slice(0, 5)) ??
@@ -145,7 +145,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
           {Dates.map((item, i) => {
             const columns = Programmes.data[item];
             const extraColumn = columns.find((col) =>
-              col.every((item) => item.type === "extra"),
+              col.every((item) => item?.type === "extra"),
             );
             const normalColumns = columns.filter((col) => col !== extraColumn);
             const columnCount = normalColumns.length || 1;
@@ -259,7 +259,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
                       [...extraColumn]
                         .sort((a, b) => a.start.localeCompare(b.start))
                         .map((item) => {
-                          if (item.type === "extra") {
+                          if (item?.type === "extra") {
                             return (
                               <div
                                 key={item.id}
