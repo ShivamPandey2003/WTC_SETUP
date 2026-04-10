@@ -1,6 +1,8 @@
 import { useUploadLogo } from "@/api/global_api/global_api";
+import { apiRequest } from "@/services/apiService";
+import axios from "axios";
 import { LoaderCircle } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 
 interface LogoUploadProps {
   logoUrl: string;
@@ -8,6 +10,7 @@ interface LogoUploadProps {
   type?: number;
   title?: string;
   recommend?: string;
+  module?: string;
 }
 
 export default function LogoUpload({
@@ -15,20 +18,35 @@ export default function LogoUpload({
   fileName = "ita-montreal.png",
   type = 1,
   title = "App Logo",
-  recommend ="128 × 68",
+  recommend = "128 × 68",
+  module = "app_logo",
 }: LogoUploadProps) {
   const [image, setImage] = React.useState<string | null>(logoUrl);
   const { UploadLogo, isPending } = useUploadLogo();
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newForm = new FormData();
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      newForm.append("file", file);
+      setLoading(true);
+      const res = await apiRequest(
+        "post",
+        `/upload/presigned-url?file_name=${file.name}&module=${module}`,
+      );
+
+      const { file_key, upload_url } = res.response.response;
+      await axios.put(upload_url, file, {
+        headers: {
+          "Content-Type": file.type,
+        },
+        responseType: "blob",
+      });
+
       const reader = new FileReader();
       reader.onloadend = () => setImage(reader.result as string);
       reader.readAsDataURL(file);
-      UploadLogo({ form: newForm, type });
+      UploadLogo({ data: { file_path: file_key }, type });
+      setLoading(false);
     }
   };
 
@@ -38,7 +56,7 @@ export default function LogoUpload({
     <div className="mb-8">
       <h3 className="text-sm font-semibold text-gray-800 mb-3">{title}</h3>
       <div className="bg-white p-4 rounded border border-gray-200 inline-block w-[180px]">
-        {isPending ? (
+        {(isPending || loading) ? (
           <div className="flex items-center justify-center">
             <LoaderCircle className="animate-spin text-primary" />
           </div>

@@ -174,7 +174,7 @@ const V2_Programme_page = () => {
                     onClick={() => toggleCategory(item.id)}
                     key={item.name}
                     className={cn(
-                      "flex items-center justify-center p-1 px-4 rounded-lg w-full min-w-fit border gap-2 text-sm cursor-pointer",
+                      "flex items-center justify-center p-1 px-4 rounded-lg w-fit min-w-fit border gap-2 text-sm cursor-pointer",
                     )}
                     style={{
                       background: active ? "#B8B8B8" : item.color,
