@@ -78,6 +78,7 @@ const CSVModel = ({
         });
         setFile({ file_path: file_key, filename: file_name });
       } catch (error) {
+        console.error("Image zip upload failed:", error);
       } finally {
         setIsUploading(false);
       }

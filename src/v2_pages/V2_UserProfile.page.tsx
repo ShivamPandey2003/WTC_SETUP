@@ -41,23 +41,22 @@ const V2_UserProfile_page = () => {
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="mx-auto px-8 py-6">
-        <div className={cn("flex flex-col sm:flex-row sm:items-start justify-between gap-4",  Profile.response.speaker_info !== null ||Profile.response.exhibitor_info !== null && "mb-4")}>
+        <div
+          className={cn(
+            "flex flex-col sm:flex-row sm:items-start justify-between gap-4",
+            (Profile.response.speaker_info !== null ||
+              Profile.response.exhibitor_info !== null) &&
+              "mb-4",
+          )}
+        >
           <ProfileForm />
           <div className="sm:w-fit flex flex-col items-center">
             <WTCBadge />
           </div>
         </div>
         <div className="">
-          {
-            Profile.response.speaker_info !== null && (
-              <SpeakerForm/>
-            )
-          }
-          {
-            Profile.response.exhibitor_info !== null && (
-              <ExhibitorForm/>
-            )
-          }
+          {Profile.response.speaker_info !== null && <SpeakerForm />}
+          {Profile.response.exhibitor_info !== null && <ExhibitorForm />}
         </div>
       </div>
     </div>
