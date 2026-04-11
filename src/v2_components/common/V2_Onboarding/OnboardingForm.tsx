@@ -12,6 +12,7 @@ import { Loader2, LoaderCircle } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -66,13 +67,13 @@ const OnboardingForm = () => {
       });
 
       const newForm = new FormData();
-      newForm.append("module", module);
-      newForm.append("record_id", "");
+      // newForm.append("module", module);
+      // newForm.append("record_id", id);
       newForm.append("file_path_image", file_key);
 
       await apiRequest("post", "upload/common/files", newForm);
-    } catch (error) {
-      console.error("Image upload failed:", error);
+    } catch (error:any) {
+      toast.error("Image upload failed:", error.message);
     } finally {
       setIsPending(false);
     }
@@ -131,7 +132,7 @@ const OnboardingForm = () => {
       } else {
         await uploadImage(
           file,
-          "app_users",
+          "user_profile_image",
           Profile?.response.user_info.image_id as string,
         );
         // UploadPic(newForm);

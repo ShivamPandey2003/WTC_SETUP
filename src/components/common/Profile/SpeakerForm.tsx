@@ -12,6 +12,7 @@ import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { apiRequest } from "@/services/apiService";
 import axios from "axios";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   firstname: z.string().min(1, "First name is required"),
@@ -107,8 +108,8 @@ export default function SpeakerForm() {
 
         await apiRequest("post", "/user/profile/upload-image", newForm);
         setImage(URL.createObjectURL(file));
-      } catch (error) {
-        console.error("Image upload failed:", error);
+      } catch (error:any) {
+        toast.error("Image upload failed:", error.message);
       } finally {
         setIsPending(false);
       }

@@ -12,6 +12,7 @@ import { setResponseData, setResponseModal } from "@/redux/ModalSlice";
 import { apiRequest } from "@/services/apiService";
 import axios from "axios";
 import { generateExhibitorId } from "@/lib/utils";
+import { toast } from "sonner";
 
 type EditModalProps = {
   title: string;
@@ -77,8 +78,8 @@ const CSVModel = ({
           responseType: "blob",
         });
         setFile({ file_path: file_key, filename: file_name });
-      } catch (error) {
-        console.error("Image zip upload failed:", error);
+      } catch (error:any) {
+        toast.error("Image zip upload failed:", error.message);
       } finally {
         setIsUploading(false);
       }
