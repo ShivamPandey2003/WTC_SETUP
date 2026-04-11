@@ -56,7 +56,7 @@ export default function ExhibitorForm() {
     UpdateProfile({
       exhibitor_info: {
         full_name: data.full_name,
-        logo: image as string,
+        // logo: image as string,
         url: data.url,
         booth_no: data.booth_no,
       },

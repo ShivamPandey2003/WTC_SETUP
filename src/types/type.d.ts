@@ -491,7 +491,7 @@ declare type ProfileUpdateRequest = {
     "designation": string,
     "company": string,
     "bio": string,
-    "profile_image": string,
+    "profile_image"?: string,
     "external_link": string,
     "linkedin_url": string,
     "whatsapp_url": string
@@ -499,7 +499,7 @@ declare type ProfileUpdateRequest = {
   exhibitor_info?: {
     "full_name": string,
     "url": string,
-    "logo": string,
+    "logo"?: string,
     "booth_no": string
   }
 };

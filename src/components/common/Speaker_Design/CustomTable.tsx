@@ -106,6 +106,9 @@ const CustomTable = () => {
                   Bio
                 </th>
                 <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Email
+                </th>
+                <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   LinkedIn
                 </th>
                 <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -129,8 +132,11 @@ const CustomTable = () => {
                   <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">
                     {`${item.prefix} ${item.firstname} ${item.lastname}`}
                   </td>
-                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[320px]">
+                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[220px]">
                     {item.bio}
+                  </td>
+                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[320px]">
+                    {item?.email}
                   </td>
                   <td className="pl-9 py-2">
                     <Linkedin size={20} />
