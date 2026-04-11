@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 import { useUploadBulkNews } from "@/api/home_design_api/Home_design_api";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
-import { setResponseData, setResponseModal } from "@/redux/ModalSlice";
+// import { setResponseData, setResponseModal } from "@/redux/ModalSlice";
 // import { unzipWithWorker } from "@/workers/unzip.worker";
 // import { getPresignedUrls } from "@/services/upload.service";
 import { apiRequest } from "@/services/apiService";
@@ -49,7 +49,7 @@ const CSVModel = ({
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
   // const { UploadBulkImages, isPending, data } = useUploadNewsImages();
   const { UploadBulk, isBulkPending, BulkData } = useUploadBulkNews();
-  const dispatch = useDispatch<AppDispatch>();
+  // const dispatch = useDispatch<AppDispatch>();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
