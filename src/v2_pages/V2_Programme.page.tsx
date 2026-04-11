@@ -9,38 +9,21 @@ import {
   transformSessions,
 } from "@/lib/extra";
 import { groupIntoColumns } from "@/lib/GroupintoColumn";
-import { cn } from "@/lib/utils";
 import { setProgrammes, type ProgrammeRecord } from "@/redux/ExtraSlice";
 import { setProgramme } from "@/redux/GlobalSlice";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
 import EventGrid from "@/v2_components/common/V2_Programme/EventGrid";
-import { Check, ChevronLeft, ChevronRight, Loader } from "lucide-react";
+import MultiSelect from "@/v2_components/global/MultiSelect";
+import { Loader } from "lucide-react";
 import { nanoid } from "nanoid";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 const V2_Programme_page = () => {
   const { ProgrammeList, isPending, error } = useGetProgrammeList();
-  const scrollRef = useRef<HTMLDivElement>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const dispatch = useDispatch<AppDispatch>();
-
-  const toggleCategory = (name: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(name) ? prev.filter((c) => c !== name) : [...prev, name],
-    );
-  };
-
-  const scroll = (direction: "left" | "right") => {
-    if (!scrollRef.current) return;
-
-    const amount = 150; // px to scroll
-    scrollRef.current.scrollBy({
-      left: direction === "left" ? -amount : amount,
-      behavior: "smooth",
-    });
-  };
 
   useEffect(() => {
     if (!ProgrammeList) return;
@@ -156,43 +139,16 @@ const V2_Programme_page = () => {
 
   return (
     <div className="px-4 mx-auto">
-      <div className="hidden sm:flex justify-between items-center mt-4 mb-6">
-        <div className="w-full max-w-[80vw] flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={() => scroll("left")}>
-            <ChevronLeft />
-          </Button>
-          <div className="overflow-hidden flex-1">
-            <div
-              ref={scrollRef}
-              className="flex items-center gap-3 overflow-x-auto scroll-smooth"
-              style={{ scrollbarWidth: "none" }}
-            >
-              {ProgrammeList.data.response.all_categories.map((item) => {
-                const active = selectedCategories.includes(item.id);
-                return (
-                  <div
-                    onClick={() => toggleCategory(item.id)}
-                    key={item.name}
-                    className={cn(
-                      "flex items-center justify-center p-1 px-4 rounded-lg w-fit min-w-fit border gap-2 text-sm cursor-pointer",
-                    )}
-                    style={{
-                      background: active ? "#B8B8B8" : item.color,
-                      borderColor: active ? "#B8B8B8" : item.color,
-                      color: active ? "#303030" : "white",
-                    }}
-                  >
-                    {!active && <Check size={15} />}
-                    <span>{item.name}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          <Button variant="ghost" size="icon" onClick={() => scroll("right")}>
-            <ChevronRight />
-          </Button>
-        </div>
+      <div className="hidden sm:flex gap-4 items-center mt-4 mb-6">
+        <MultiSelect
+          options={ProgrammeList.data.response.all_categories.map((item) => ({
+            label: item.name,
+            value: item.id,
+          }))}
+          selected={selectedCategories}
+          onChange={setSelectedCategories}
+          placeholder="Search categories..."
+        />
         <Button
           className="py-0 h-6 text-sm bg-primary text-white hover:text-white"
           size={"sm"}

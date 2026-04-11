@@ -12,6 +12,7 @@ import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { apiRequest } from "@/services/apiService";
 import axios from "axios";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   prefix: z.string().optional(),
@@ -23,7 +24,7 @@ const formSchema = z.object({
   email: z.email("Invalid email"),
   linkedin: z.string().refine((text) => {
     if (!text.trim()) return true;
-    return [".com", ".in", ".ca"].some((domain) => text.includes(domain));
+    return [".com", ".in", ".ca", ".org", ".co", ".ai", ".net", ".io"].some((domain) => text.includes(domain));
   }, "Invalid url"),
   phone_number: z.string().optional(),
 });
@@ -58,17 +59,19 @@ export default function ProfileForm() {
 
   const onSubmit = (data: FormData) => {
     UpdateProfile({
-      name_prefix: data.prefix as string,
-      firstname: data.firstName,
-      lastname: data.lastName,
-      gender: data.gender,
-      company_name: data.company as string,
-      designation: data.designation as string,
-      linkedin_url: data.linkedin,
-      // user_image: image as string,
-      phone_number: data.phone_number as string,
+      user_info: {
+        firstname: data.firstName,
+        lastname: data.lastName,
+        gender: data.gender,
+        email:user_info.email,
+        company_name: data.company as string,
+        designation: data.designation as string,
+        linkedin_url: data.linkedin,
+        profile_image: image as string,
+        phone_number: data.phone_number as string,
+        image_id:user_info.image_id
+      },
     });
-    // alert("Saved!");
   };
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +81,7 @@ export default function ProfileForm() {
         setIsPending(true);
         const res = await apiRequest(
           "post",
-          `/upload/presigned-url?file_name=${file.name}&module=${"app_users"}&ref_id=${""}`,
+          `/upload/presigned-url?file_name=${file.name}&module=${"user_profile_image"}&ref_id=${user_info.image_id}`,
         );
         if (!res?.response?.response) return;
         const { file_key, upload_url } = res.response.response;
@@ -91,14 +94,18 @@ export default function ProfileForm() {
         });
 
         const newForm = new FormData();
-        newForm.append("module", "app_users");
-        newForm.append("record_id", "");
-        newForm.append("file_path_image", file_key);
+        newForm.append("module", "user");
+        // newForm.append("record_id", user_info.image_id);
+        newForm.append("file_path", file_key);
 
-        await apiRequest("post", "upload/common/files", newForm);
-        setImage(URL.createObjectURL(file));
-      } catch (error) {
-        console.error("Image upload failed:", error);
+        await apiRequest("post", "/user/profile/upload-image", newForm);
+        const objectUrl = URL.createObjectURL(file);
+        setImage((prev) => {
+          if (prev) URL.revokeObjectURL(prev);
+          return objectUrl;
+        });
+      } catch (error:any) {
+        toast.error("Image upload failed:", error.message);
       } finally {
         setIsPending(false);
       }

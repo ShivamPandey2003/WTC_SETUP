@@ -12,6 +12,7 @@ import { Loader2, LoaderCircle } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -21,7 +22,12 @@ const formSchema = z.object({
   gender: z.enum(["Male", "Female", "Other"]),
   company: z.string().nullable().optional(),
   designation: z.string().nullable().optional(),
-  linkedin: z.url("Invalid URL").nullable().optional().or(z.literal("")),
+  linkedin: z.string().refine((text) => {
+    if (!text.trim()) return true;
+    return [".com", ".in", ".ca", ".org", ".co", ".ai", ".net", ".io"].some(
+      (domain) => text.includes(domain),
+    );
+  }, "Invalid url"),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -63,13 +69,18 @@ const OnboardingForm = () => {
       });
 
       const newForm = new FormData();
-      newForm.append("module", module);
-      newForm.append("record_id", "");
+      // newForm.append("module", module);
+      // newForm.append("record_id", id);
       newForm.append("file_path_image", file_key);
 
       await apiRequest("post", "upload/common/files", newForm);
-    } catch (error) {
-      console.error("Image upload failed:", error);
+      const objectUrl = URL.createObjectURL(file);
+      setImage((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return objectUrl;
+      });
+    } catch (error: any) {
+      toast.error("Image upload failed:", error.message);
     } finally {
       setIsPending(false);
     }
@@ -96,15 +107,16 @@ const OnboardingForm = () => {
 
   const onSubmit = (data: FormData) => {
     UpdateProfile({
-      name_prefix: data.prefix as string,
-      firstname: data.firstName,
-      lastname: data.lastName,
-      gender: data.gender,
-      company_name: data.company as string,
-      designation: data.designation as string,
-      linkedin_url: data.linkedin as string,
-      // user_image: image as string,
-      phone_number: Profile?.response.user_info.phone_number as string,
+      user_info: {
+        firstname: data.firstName,
+        lastname: data.lastName,
+        gender: data.gender,
+        company_name: data.company as string,
+        designation: data.designation as string,
+        linkedin_url: data.linkedin as string,
+        // user_image: image as string,
+        phone_number: Profile?.response.user_info.phone_number as string,
+      },
     });
     // alert("Saved!");
   };
@@ -127,7 +139,7 @@ const OnboardingForm = () => {
       } else {
         await uploadImage(
           file,
-          "app_users",
+          "user_profile_image",
           Profile?.response.user_info.image_id as string,
         );
         // UploadPic(newForm);

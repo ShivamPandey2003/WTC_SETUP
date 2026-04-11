@@ -1,5 +1,6 @@
 import axios from "axios";
 import { apiRequest } from "./apiService";
+import { toast } from "sonner";
 
 const uploadSingleFile = async (file: File, id: string, module: string[]) => {
     // 1. Get presigned URL
@@ -38,8 +39,8 @@ export const uploadWithLimit = async (files: File[], id: string, module: string[
             try {
                 const res = await uploadSingleFile(file, id, module);
                 results[currentIndex] = res;
-            } catch (err) {
-                console.error("Failed:", file.name);
+            } catch (error:any) {
+                toast.error("Image upload failed:", error.message);
             }
         }
     };
