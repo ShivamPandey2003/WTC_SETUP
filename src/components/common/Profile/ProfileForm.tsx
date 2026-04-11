@@ -24,7 +24,7 @@ const formSchema = z.object({
   email: z.email("Invalid email"),
   linkedin: z.string().refine((text) => {
     if (!text.trim()) return true;
-    return [".com", ".in", ".ca"].some((domain) => text.includes(domain));
+    return [".com", ".in", ".ca", ".org", ".co", ".ai", ".net", ".io"].some((domain) => text.includes(domain));
   }, "Invalid url"),
   phone_number: z.string().optional(),
 });
@@ -94,12 +94,16 @@ export default function ProfileForm() {
         });
 
         const newForm = new FormData();
-        // newForm.append("module", "user_profile_image");
+        newForm.append("module", "user");
         // newForm.append("record_id", user_info.image_id);
         newForm.append("file_path", file_key);
 
         await apiRequest("post", "/user/profile/upload-image", newForm);
-        setImage(URL.createObjectURL(file));
+        const objectUrl = URL.createObjectURL(file);
+        setImage((prev) => {
+          if (prev) URL.revokeObjectURL(prev);
+          return objectUrl;
+        });
       } catch (error:any) {
         toast.error("Image upload failed:", error.message);
       } finally {

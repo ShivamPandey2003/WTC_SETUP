@@ -22,15 +22,15 @@ const formSchema = z.object({
   bio: z.string().min(5),
   external_link: z.string().refine((text) => {
     if (!text.trim()) return true;
-    return [".com", ".in", ".ca"].some((domain) => text.includes(domain));
+    return [".com", ".in", ".ca", ".org", ".co", ".ai", ".net", ".io"].some((domain) => text.includes(domain));
   }, "Invalid url"),
   linkedin_url: z.string().refine((text) => {
     if (!text.trim()) return true;
-    return [".com", ".in", ".ca"].some((domain) => text.includes(domain));
+    return [".com", ".in", ".ca", ".org", ".co", ".ai", ".net", ".io"].some((domain) => text.includes(domain));
   }, "Invalid url"),
   whatsapp_url: z.string().refine((text) => {
     if (!text.trim()) return true;
-    return [".com", ".in", ".ca"].some((domain) => text.includes(domain));
+    return [".com", ".in", ".ca", ".org", ".co", ".ai", ".net", ".io"].some((domain) => text.includes(domain));
   }, "Invalid url"),
 });
 
@@ -107,7 +107,11 @@ export default function SpeakerForm() {
         newForm.append("file_path", file_key);
 
         await apiRequest("post", "/user/profile/upload-image", newForm);
-        setImage(URL.createObjectURL(file));
+        const objectUrl = URL.createObjectURL(file);
+        setImage((prev) => {
+          if (prev) URL.revokeObjectURL(prev);
+          return objectUrl;
+        });
       } catch (error:any) {
         toast.error("Image upload failed:", error.message);
       } finally {

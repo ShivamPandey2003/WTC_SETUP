@@ -18,7 +18,9 @@ const formSchema = z.object({
   full_name: z.string().min(1),
   url: z.string().refine((text) => {
     if (!text.trim()) return true;
-    return [".com", ".in", ".ca"].some((domain) => text.includes(domain));
+    return [".com", ".in", ".ca", ".org", ".co", ".ai", ".net", ".io"].some(
+      (domain) => text.includes(domain),
+    );
   }, "Invalid url"),
   booth_no: z.string().min(1),
 });
@@ -86,8 +88,12 @@ export default function ExhibitorForm() {
         newForm.append("file_path", file_key);
 
         await apiRequest("post", "/user/profile/upload-image", newForm);
-        setImage(URL.createObjectURL(file));
-      } catch (error:any) {
+        const objectUrl = URL.createObjectURL(file);
+        setImage((prev) => {
+          if (prev) URL.revokeObjectURL(prev);
+          return objectUrl;
+        });
+      } catch (error: any) {
         toast.error("Image upload failed:", error.message);
       } finally {
         setIsPending(false);
@@ -155,7 +161,7 @@ export default function ExhibitorForm() {
 
         <div className="flex flex-col sm:flex-row sm:items-center">
           <label className="block text-sm font-medium text-gray-600 sm:w-[170px]">
-           Url
+            Url
           </label>
           <div>
             <input

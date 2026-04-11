@@ -24,7 +24,9 @@ const formSchema = z.object({
   designation: z.string().nullable().optional(),
   linkedin: z.string().refine((text) => {
     if (!text.trim()) return true;
-    return [".com", ".in", ".ca"].some((domain) => text.includes(domain));
+    return [".com", ".in", ".ca", ".org", ".co", ".ai", ".net", ".io"].some(
+      (domain) => text.includes(domain),
+    );
   }, "Invalid url"),
 });
 
@@ -72,7 +74,12 @@ const OnboardingForm = () => {
       newForm.append("file_path_image", file_key);
 
       await apiRequest("post", "upload/common/files", newForm);
-    } catch (error:any) {
+      const objectUrl = URL.createObjectURL(file);
+      setImage((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return objectUrl;
+      });
+    } catch (error: any) {
       toast.error("Image upload failed:", error.message);
     } finally {
       setIsPending(false);
@@ -100,16 +107,16 @@ const OnboardingForm = () => {
 
   const onSubmit = (data: FormData) => {
     UpdateProfile({
-      user_info:{
-      firstname: data.firstName,
-      lastname: data.lastName,
-      gender: data.gender,
-      company_name: data.company as string,
-      designation: data.designation as string,
-      linkedin_url: data.linkedin as string,
-      // user_image: image as string,
-      phone_number: Profile?.response.user_info.phone_number as string,
-      }
+      user_info: {
+        firstname: data.firstName,
+        lastname: data.lastName,
+        gender: data.gender,
+        company_name: data.company as string,
+        designation: data.designation as string,
+        linkedin_url: data.linkedin as string,
+        // user_image: image as string,
+        phone_number: Profile?.response.user_info.phone_number as string,
+      },
     });
     // alert("Saved!");
   };
