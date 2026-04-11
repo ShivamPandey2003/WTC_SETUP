@@ -74,7 +74,7 @@ export default function SpeakerForm() {
         company: data.company as string,
         designation: data.designation as string,
         linkedin_url: data.linkedin_url,
-        profile_image: image as string,
+        // profile_image: image as string,
         whatsapp_url: data.whatsapp_url as string,
         external_link: data.external_link as string,
         bio: data.bio as string,

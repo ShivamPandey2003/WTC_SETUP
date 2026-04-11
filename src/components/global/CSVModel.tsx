@@ -135,8 +135,8 @@ const CSVModel = ({
   useEffect(() => {
     if (!BulkData) return;
     if (BulkData.response.failed.length) {
-      dispatch(setResponseData(BulkData.response.failed));
-      dispatch(setResponseModal(true));
+      // dispatch(setResponseData(BulkData.response.failed));
+      // dispatch(setResponseModal(true));
     }
     setType("CSV");
     onClose();

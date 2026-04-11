@@ -67,7 +67,7 @@ export default function ProfileForm() {
         company_name: data.company as string,
         designation: data.designation as string,
         linkedin_url: data.linkedin,
-        profile_image: image as string,
+        // profile_image: image as string,
         phone_number: data.phone_number as string,
         image_id:user_info.image_id
       },
