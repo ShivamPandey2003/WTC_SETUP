@@ -1,11 +1,13 @@
 import {
   useGetProfile,
   useProfileUpdate,
-  useUploadExhibitorProfilePic,
-  useUploadProfilePic,
+  // useUploadExhibitorProfilePic,
+  // useUploadProfilePic,
 } from "@/api/Profile_api/Profile_api";
 import { Button } from "@/components/ui/Button";
+import { apiRequest } from "@/services/apiService";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { Loader2, LoaderCircle } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -26,10 +28,11 @@ type FormData = z.infer<typeof formSchema>;
 
 const OnboardingForm = () => {
   const { Profile, isPending: ProfilePending } = useGetProfile();
-  const { UploadPic, isPending } = useUploadProfilePic();
-  const { UploadExhibitorPic, isPending: isExhibitorPending } = useUploadExhibitorProfilePic();
+  // const { UploadPic, isPending } = useUploadProfilePic();
+  // const { UploadExhibitorPic, isPending: isExhibitorPending } = useUploadExhibitorProfilePic();
   const { UpdateProfile, profileData } = useProfileUpdate();
   const [image, setImage] = useState<string | null>(null);
+  const [isPending, setIsPending] = useState(false);
   const [type, setType] = useState<number>(0);
   const navigate = useNavigate();
 
@@ -41,6 +44,36 @@ const OnboardingForm = () => {
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
+
+  const uploadImage = async (file: File, module: string, id: string) => {
+    try {
+      setIsPending(true);
+      const res = await apiRequest(
+        "post",
+        `/upload/presigned-url?file_name=${file.name}&module=${module}&ref_id=${id}`,
+      );
+      if (!res?.response?.response) return;
+      const { file_key, upload_url } = res.response.response;
+
+      await axios.put(upload_url, file, {
+        headers: {
+          "Content-Type": file.type,
+        },
+        responseType: "blob",
+      });
+
+      const newForm = new FormData();
+      newForm.append("module", module);
+      newForm.append("record_id", "");
+      newForm.append("file_path_image", file_key);
+
+      await apiRequest("post", "upload/common/files", newForm);
+    } catch (error) {
+      console.error("Image upload failed:", error);
+    } finally {
+      setIsPending(false);
+    }
+  };
 
   useEffect(() => {
     if (!Profile) return;
@@ -76,7 +109,7 @@ const OnboardingForm = () => {
     // alert("Saved!");
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newForm = new FormData();
     const file = e.target.files?.[0];
     if (file) {
@@ -84,10 +117,20 @@ const OnboardingForm = () => {
       const reader = new FileReader();
       reader.onloadend = () => setImage(reader.result as string);
       reader.readAsDataURL(file);
-      if(type === 3){
-        UploadExhibitorPic(newForm);
-      }else{
-        UploadPic(newForm);
+      if (type === 3) {
+        await uploadImage(
+          file,
+          "exhibitor_logo",
+          Profile?.response.user_info.image_id as string,
+        );
+        // UploadExhibitorPic(newForm);
+      } else {
+        await uploadImage(
+          file,
+          "app_users",
+          Profile?.response.user_info.image_id as string,
+        );
+        // UploadPic(newForm);
       }
     }
   };
@@ -112,7 +155,7 @@ const OnboardingForm = () => {
     <div className="w-full mx-auto mt-4 bg-white rounded-xl space-y-2 relative">
       {/* Profile Image */}
       <div className="flex flex-col items-center justify-start mb-4">
-        {isPending || isExhibitorPending ? (
+        {isPending ? (
           <div className="bg-gray-300 w-24 h-24 rounded-full flex items-center justify-center">
             <LoaderCircle className="animate-spin text-primary" />
           </div>
@@ -141,7 +184,6 @@ const OnboardingForm = () => {
               onClick={handleRemoveImage}
               className="hover:underline text-red-500 font-bold"
             >
-              
               Remove
             </button>
           )}

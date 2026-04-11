@@ -162,7 +162,7 @@ const ProgrammeDesign_page = () => {
           loading={isUpdateProgrammeDesignPending}
         />
         {Boolean(value === "Session Data") && (
-          <div className="absolute right-10 top-21 flex items-center gap-4">
+          <div className="absolute right-10 top-24 flex items-center gap-4">
             <div className="w-full max-w-xl flex items-center gap-2">
               <Button
                 variant="ghost"

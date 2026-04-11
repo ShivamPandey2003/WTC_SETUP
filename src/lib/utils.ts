@@ -58,6 +58,7 @@ export function getDatesInRangeFormatted(
       month: "short",
       day: "2-digit",
       year: "numeric",
+      timeZone:"UTC"
     });
     dates.push(formatted);
     current.setDate(current.getDate() + 1);

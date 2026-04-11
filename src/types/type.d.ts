@@ -434,6 +434,7 @@ declare type ProfileResponse = {
     user_info: {
       firstname: string;
       lastname: string;
+      image_id:string;
       email: string;
       designation: string;
       company_name: string;

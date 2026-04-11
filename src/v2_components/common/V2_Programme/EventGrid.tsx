@@ -132,9 +132,13 @@ const EventGrid = ({ selectedCategories }: Props) => {
             const date = convertToDate(item);
             const columns = Programmes.data[date];
             const height =
-              Height_OBJ[columns.length as keyof typeof Height_OBJ] || "200";
+              Height_OBJ[columns?.length as keyof typeof Height_OBJ] || "200";
             return (
-              <div key={i} className="text-center" style={{ minWidth: `${height}px` }}>
+              <div
+                key={i}
+                className="text-center"
+                style={{ minWidth: `${height}px` }}
+              >
                 <h3>{item.weekday}</h3>
                 <h3>{item.dayMonth}</h3>
               </div>
@@ -145,21 +149,26 @@ const EventGrid = ({ selectedCategories }: Props) => {
           {Dates.map((item, i) => {
             const columns = Programmes.data[item];
             const extraColumn = columns.find((col) =>
-              col.every((item) => item.type === "extra"),
+              col?.every((item) => item.type === "extra"),
             );
             const normalColumns = columns.filter((col) => col !== extraColumn);
             const columnCount = normalColumns.length || 1;
             const columnWidth = 100 / columnCount;
             const height =
-              Height_OBJ[columns.length as keyof typeof Height_OBJ] || "200";
+              Height_OBJ[columns?.length as keyof typeof Height_OBJ] || "200";
 
             return (
               <React.Fragment key={i}>
-                <div key={item} className="relative" style={{ minWidth: `${height}px` }}>
+                <div
+                  key={item}
+                  className="relative"
+                  style={{ minWidth: `${height}px` }}
+                >
                   <div className="flex gap-1">
-                    {normalColumns.map((event) => {
+                    {normalColumns.map((event, i) => {
                       return (
                         <div
+                          key={i}
                           className="flex flex-col gap-0.5 relative"
                           style={{
                             height: Times.length * 40,
