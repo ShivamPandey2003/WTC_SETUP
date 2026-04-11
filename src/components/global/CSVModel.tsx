@@ -62,21 +62,25 @@ const CSVModel = ({
       const file = new File([old], filename, {
         type: old.type,
       });
-      setIsUploading(true);
-      const res = await apiRequest(
-        "post",
-        `/upload/presigned-url?file_name=${file.name}&module=${"app_zip"}`,
-      );
-      const { file_key, file_name, upload_url } = res.response.response;
+      try {
+        setIsUploading(true);
+        const res = await apiRequest(
+          "post",
+          `/upload/presigned-url?file_name=${file.name}&module=${"app_zip"}`,
+        );
+        const { file_key, file_name, upload_url } = res.response.response;
 
-      await axios.put(upload_url, file, {
-        headers: {
-          "Content-Type": "application/x-zip-compressed",
-        },
-        responseType: "blob",
-      });
-      setIsUploading(false);
-      setFile({ file_path: file_key, filename: file_name });
+        await axios.put(upload_url, file, {
+          headers: {
+            "Content-Type": "application/x-zip-compressed",
+          },
+          responseType: "blob",
+        });
+        setFile({ file_path: file_key, filename: file_name });
+      } catch (error) {
+      } finally {
+        setIsUploading(false);
+      }
     }
   };
 

@@ -66,7 +66,7 @@ function HeroCarousel({
   return (
     <div
       className={cn(
-        "relative w-full h-[350px] md:h-[530px] rounded-2xl overflow-hidden group",
+        "relative w-full h-[350px] md:h-[530px] rounded-2xl overflow-hidden group bg-gray-300",
         className,
       )}
     >
@@ -94,7 +94,7 @@ function HeroCarousel({
                 decoding="async"
               />
 
-              <div className="absolute inset-0 bg-linear-to-t from-slate-900/40 to-slate-900/10 flex flex-col justify-end py-4 px-8 md:px-16">
+              <div className={cn("absolute inset-0 bg-linear-to-t from-slate-900/40 to-slate-900/10 flex flex-col justify-end py-4 px-8 md:px-16",slide.type === 1 && "hidden")}>
                 <h1
                   className={cn(
                     "text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 capitalize",
