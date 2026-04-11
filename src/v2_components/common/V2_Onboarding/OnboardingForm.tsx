@@ -46,27 +46,33 @@ const OnboardingForm = () => {
   });
 
   const uploadImage = async (file: File, module: string, id: string) => {
-    setIsPending(true);
-    const res = await apiRequest(
-      "post",
-      `/upload/presigned-url?file_name=${file.name}&module=${module}&ref_id=${id}`,
-    );
-    const { file_key, upload_url } = res.response.response;
+    try {
+      setIsPending(true);
+      const res = await apiRequest(
+        "post",
+        `/upload/presigned-url?file_name=${file.name}&module=${module}&ref_id=${id}`,
+      );
+      if (!res?.response?.response) return;
+      const { file_key, upload_url } = res.response.response;
 
-    await axios.put(upload_url, file, {
-      headers: {
-        "Content-Type": file.type,
-      },
-      responseType: "blob",
-    });
+      await axios.put(upload_url, file, {
+        headers: {
+          "Content-Type": file.type,
+        },
+        responseType: "blob",
+      });
 
-    const newForm = new FormData();
-    newForm.append("module", module);
-    newForm.append("record_id", "");
-    newForm.append("file_path_image", file_key);
+      const newForm = new FormData();
+      newForm.append("module", module);
+      newForm.append("record_id", "");
+      newForm.append("file_path_image", file_key);
 
-    await apiRequest("post", "upload/common/files", newForm);
-    setIsPending(false);
+      await apiRequest("post", "upload/common/files", newForm);
+    } catch (error) {
+      console.error("Image upload failed:", error);
+    } finally {
+      setIsPending(false);
+    }
   };
 
   useEffect(() => {

@@ -74,28 +74,34 @@ export default function ProfileForm() {
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setIsPending(true);
-      const res = await apiRequest(
-        "post",
-        `/upload/presigned-url?file_name=${file.name}&module=${"app_users"}&ref_id=${""}`,
-      );
-      const { file_key, upload_url } = res.response.response;
+      try {
+        setIsPending(true);
+        const res = await apiRequest(
+          "post",
+          `/upload/presigned-url?file_name=${file.name}&module=${"app_users"}&ref_id=${""}`,
+        );
+        if (!res?.response?.response) return;
+        const { file_key, upload_url } = res.response.response;
 
-      await axios.put(upload_url, file, {
-        headers: {
-          "Content-Type": file.type,
-        },
-        responseType: "blob",
-      });
+        await axios.put(upload_url, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+          responseType: "blob",
+        });
 
-      const newForm = new FormData();
-      newForm.append("module", "app_users");
-      newForm.append("record_id", "");
-      newForm.append("file_path_image", file_key);
+        const newForm = new FormData();
+        newForm.append("module", "app_users");
+        newForm.append("record_id", "");
+        newForm.append("file_path_image", file_key);
 
-      await apiRequest("post", "upload/common/files", newForm);
-      setImage(URL.createObjectURL(file));
-      setIsPending(false);
+        await apiRequest("post", "upload/common/files", newForm);
+        setImage(URL.createObjectURL(file));
+      } catch (error) {
+        console.error("Image upload failed:", error);
+      } finally {
+        setIsPending(false);
+      }
     }
   };
 
