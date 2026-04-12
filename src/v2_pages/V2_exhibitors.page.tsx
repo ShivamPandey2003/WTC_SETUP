@@ -13,6 +13,7 @@ import { Loader } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
+import ExhibitorsDetails from "./ExhibitorsDetails";
 
 const adjustHexColor = (hex: string, amount: number): string => {
   const clean = hex.replace("#", "");
@@ -31,6 +32,7 @@ const V2_exhibitors_page = () => {
   const dispatch = useDispatch<AppDispatch>();
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const navigation = useNavigate();
+  const [selectedExhibitor, setSelectedExhibitor] = useState<string | null>(null);
   const {
     AllExhibitors,
     fetchNextPage,
@@ -46,6 +48,7 @@ const V2_exhibitors_page = () => {
     const finalGrouped: Record<string, any[]> = {};
     const finalSeq = new Set<string>();
     const finalColors: Record<string, string> = {};
+
 
     AllExhibitors.pages.forEach((page) => {
       const data = page.response.data;
@@ -147,48 +150,65 @@ const V2_exhibitors_page = () => {
   }
 
   return (
-    <div id="Exhibitors_Scroll" className="pb-4 mx-auto">
-      {ExhibitorList.seq.map(
-        (value, i) =>
-          Boolean(ExhibitorList.grouped[value].length) && (
-            <div key={i} className="mb-3 mx-5">
-              <div className="flex title-bar w-full items-center justify-between gap-4 my-3 sticky top-14 z-10 from-80% bg-linear-to-b from-background to-transparent py-2">
-                <div className="w-10 h-2 rounded-full shadow-sm" style={{
-                  background: `linear-gradient(135deg, ${adjustHexColor(ExhibitorList.colors[value] as string, 10)}, ${adjustHexColor(ExhibitorList.colors[value] as string, -10)})`,
-                }}/>
-                <h4 className="font-[700] text-[26px]">
-                  {value}
-                </h4>
-                <div className="w-full h-2 rounded-full shadow-sm" style={{
-                  background: `linear-gradient(135deg, ${adjustHexColor(ExhibitorList.colors[value] as string, 10)}, ${adjustHexColor(ExhibitorList.colors[value] as string, -10)})`,
-                }}/>
-              </div>
-              <div className="flex flex-wrap gap-4 px-4 justify-center sm:justify-start">
-                {ExhibitorList.grouped[value].map((item, i) => (
-                  <ExhibitorCard
-                    key={i}
-                    {...item}
-                    onClick={() => navigation(`/exhibitors/${item.id}`)}
-                    colorTag={ExhibitorList?.colors && ExhibitorList.colors[value] as string}
-                  />
-                ))}
-              </div>
-            </div>
-          ),
+    <>
+      {selectedExhibitor && (
+        <div
+          className="fixed inset-0 z-6 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 sm:ml-32"
+          onClick={() => setSelectedExhibitor(null)}
+        >
+          <div
+            className="bg-white rounded-xl p-6 animate-in fade-in zoom-in-95 duration-200 max-w-9/12
+             overflow-auto max-h-9/12"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ExhibitorsDetails id={selectedExhibitor} close={() => setSelectedExhibitor(null)} />
+          </div>
+        </div>
       )}
-
-      <div
-        ref={loadMoreRef}
-        className="w-full flex items-center justify-center my-4"
-      >
-        {isFetchingNextPage ? (
-          <Loader size={30} className="animate-spin text-primary" />
-        ) : (
-          ""
+      <div id="Exhibitors_Scroll" className="pb-4 mx-auto">
+        {ExhibitorList.seq.map(
+          (value, i) =>
+            Boolean(ExhibitorList.grouped[value].length) && (
+              <div key={i} className="mb-3 mx-5">
+                <div className="flex title-bar w-full items-center justify-between gap-4 my-3 sticky top-14 z-3 from-80% bg-linear-to-b from-background to-transparent py-2">
+                  <div className="w-10 h-2 rounded-full shadow-sm" style={{
+                    background: `linear-gradient(135deg, ${adjustHexColor(ExhibitorList.colors[value] as string, 10)}, ${adjustHexColor(ExhibitorList.colors[value] as string, -10)})`,
+                  }} />
+                  <h4 className="font-[700] text-[26px]">
+                    {value}
+                  </h4>
+                  <div className="w-full h-2 rounded-full shadow-sm" style={{
+                    background: `linear-gradient(135deg, ${adjustHexColor(ExhibitorList.colors[value] as string, 10)}, ${adjustHexColor(ExhibitorList.colors[value] as string, -10)})`,
+                  }} />
+                </div>
+                <div className="flex flex-wrap gap-4 px-4 justify-center sm:justify-start">
+                  {ExhibitorList.grouped[value].map((item, i) => (
+                    <ExhibitorCard
+                      key={i}
+                      {...item}
+                      // onClick={() => navigation(`/exhibitors/${item.id}`)}
+                      onClick={() => setSelectedExhibitor(item.id)}
+                      colorTag={ExhibitorList?.colors && ExhibitorList.colors[value] as string}
+                    />
+                  ))}
+                </div>
+              </div>
+            ),
         )}
+
+        <div
+          ref={loadMoreRef}
+          className="w-full flex items-center justify-center my-4"
+        >
+          {isFetchingNextPage ? (
+            <Loader size={30} className="animate-spin text-primary" />
+          ) : (
+            ""
+          )}
+        </div>
+        <Exhi_SplashScreen open={spashScreen} setOpen={setSpashScreen} />
       </div>
-      <Exhi_SplashScreen open={spashScreen} setOpen={setSpashScreen} />
-    </div>
+    </>
   );
 };
 
