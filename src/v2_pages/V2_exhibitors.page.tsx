@@ -152,7 +152,7 @@ const V2_exhibitors_page = () => {
         (value, i) =>
           Boolean(ExhibitorList.grouped[value].length) && (
             <div key={i} className="mb-3 mx-5">
-              <div className="flex title-bar w-full items-center justify-between gap-4 my-3 sticky top-13 z-10 bg-background py-2">
+              <div className="flex title-bar w-full items-center justify-between gap-4 my-3 sticky top-14 z-10 from-80% bg-linear-to-b from-background to-transparent py-2">
                 <div className="w-10 h-2 rounded-full shadow-sm" style={{
                   background: `linear-gradient(135deg, ${adjustHexColor(ExhibitorList.colors[value] as string, 10)}, ${adjustHexColor(ExhibitorList.colors[value] as string, -10)})`,
                 }}/>
