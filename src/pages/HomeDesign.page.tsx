@@ -127,7 +127,7 @@ const HomeDesign_page = () => {
                 onChange={(e) => dispatch(setSearchText(e.target.value))}
                 type="text"
                 className="outline-0 py-1 px-2"
-                placeholder="Search"
+                placeholder="Search news"
               />
               {searchText && searchText.trim() && (
                 <X
@@ -141,22 +141,22 @@ const HomeDesign_page = () => {
               <Button
                 onClick={() => downloadNews()}
                 disabled={isdownloadPending}
-                className="w-fit py-1 h-7"
+                className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
               >
                 <Download />
-                Download
+                Download Data
               </Button>
             )}
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
-              className="w-fit py-1 h-7"
+              className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
             >
               <Upload />
-              Upload
+              Upload Data
             </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}
-              className="w-fit py-1 h-7"
+              className="w-fit py-1 h-7 "
             >
               <Plus />
               Add News
