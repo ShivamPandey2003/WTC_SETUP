@@ -128,19 +128,19 @@ const MultiSelect = ({
                   key={o.value}
                   onClick={() => toggle(o.value)}
                   className={`flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent ${
-                    isSelected
+                    !isSelected
                       ? "text-foreground font-medium"
-                      : "text-foreground"
+                      : "text-foreground text-gray-400"
                   }`}
                 >
                   <span
                     className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${
-                      isSelected
+                      !isSelected
                         ? "border-primary bg-primary text-white"
                         : "border-muted-foreground/40"
                     }`}
                   >
-                    {isSelected && <Check size={12} />}
+                    {!isSelected && <Check size={12} />}
                   </span>
                   {o.label}
                 </li>

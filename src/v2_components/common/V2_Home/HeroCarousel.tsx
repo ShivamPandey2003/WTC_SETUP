@@ -66,7 +66,7 @@ function HeroCarousel({
   return (
     <div
       className={cn(
-        "relative w-full h-[350px] md:h-[530px] rounded-2xl overflow-hidden group bg-gray-300",
+        "relative w-full aspect-video rounded-2xl overflow-hidden group shadow-md",
         className,
       )}
     >
@@ -79,15 +79,20 @@ function HeroCarousel({
             }`}
           >
             <div
-              className="relative w-full h-full"
+              className={cn(
+                "relative w-full h-full",
+                slide.type === 1 && "bg-white",
+              )}
               onClick={() => onClick(slide.id, slide.type)}
             >
               <img
                 src={slide.bg_img ? `${slide.bg_img}` : ExPlaceholderImg}
                 alt=""
                 className={cn(
-                  "absolute inset-0 w-full h-full",
-                  slide.type === 1 ? "object-contain" : "object-cover",
+                  "absolute w-full h-full",
+                  slide.type === 1
+                    ? "object-contain inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)]"
+                    : "object-cover inset-0",
                 )}
                 width={1200}
                 loading={index === 0 ? "eager" : "lazy"}
@@ -135,12 +140,12 @@ function HeroCarousel({
         ) : null,
       )}
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 hidden group-hover:flex space-x-2">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-2 h-2 rounded-full transition-all duration-200 cursor-pointer ${
+            className={`w-2 h-2 rounded-full transition-all duration-200 border border-gray-300 cursor-pointer ${
               index === currentSlide
                 ? "bg-white w-8"
                 : "bg-white/50 hover:bg-white/75"

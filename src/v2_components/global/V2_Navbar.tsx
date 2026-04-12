@@ -104,7 +104,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
   return (
     <header
       className={cn(
-        "sticky top-0 z-[999] flex items-center justify-between p-4 transition-colors duration-200",
+        "sticky top-0 z-[999] flex items-center justify-between p-2 pl-4 pr-4 transition-colors duration-200 ",
         showBackground && "bg-[#F2F2F2] shadow",
       )}
     >

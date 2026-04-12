@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import dummy from "@/assets/Images/Dummy.png";
 import type { RootState } from "@/redux/store";
-import { FileText, Menu, X } from "lucide-react";
+import { FileText, Menu, X, CalendarArrowDown, BellDot, MapPin, Calendar1, Clock } from "lucide-react";
 import React, { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
@@ -16,9 +16,10 @@ type ModalProps = {
   isOpen: boolean;
   onClose: React.Dispatch<React.SetStateAction<string | null>>;
   id: string | string[];
+  eventCategory: string | string[];
 };
 
-const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
+const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id, eventCategory }) => {
   const { Session } = useSelector((state: RootState) => state.Global_Slice);
   const { notify, isPending } = useNotifyProgramme();
   const [menuBar, setMenuBar] = useState<boolean>(false);
@@ -66,22 +67,33 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
         <div>No such data found</div>
       ) : !Array.isArray(selectedValue) ? (
         <div className="w-full overflow-auto max-h-[70vh] custom-scrollbar">
-          <div className="flex flex-col sm:flex-row items-start gap-4">
-            <img
-              src={selectedValue.bg_image ? selectedValue.bg_image : dummy}
-              alt={selectedValue.title}
-              className="w-full sm:w-[200px] h-[118px] rounded-lg object-cover opacity-80"
-            />
-            <div className="">
+          {eventCategory !== selectedValue.title &&
+            <div className="title text-primary mb-3">
+              {eventCategory}
+            </div>
+          }
+          <div className="flex flex-col sm:flex-row gap-5 items-center">
+            <div className="flex items-center justify-center h-full">
+              <img
+                src={selectedValue.bg_image ? selectedValue.bg_image : dummy}
+                alt={selectedValue.title}
+                className="w-full sm:w-[200px] h-[118px] rounded-lg object-cover opacity-80"
+              />
+            </div>
+            <div className="flex flex-col justify-between h-full gap-3">
               <h2 className="text-xl font-bold text-primary mb-2">
                 {selectedValue.title}
               </h2>
-              <p className="text-sm text-primary font-semibold mb-1">
-                {`${selectedValue.start_date} - ${selectedValue.end_date}`}
-              </p>
-              <Button variant={"link"} size={"sm"} className="p-0">
-                {selectedValue.location}
-              </Button>
+              <div className="flex gap-5 text-sm items-center">
+                <div className="text-sm text-primary font-semibold flex items-center gap-1">
+                  <Calendar1 size={17} /> {selectedValue.start_date === selectedValue.end_date ?
+                    selectedValue.start_date :
+                    `${selectedValue.start_date} - ${selectedValue.end_date}`}
+                </div>
+                <div className="flex text-sm text-primary font-semibold gap-1 items-center">
+                  <Clock size={17} /> {`${selectedValue.start_time} - ${selectedValue.end_time}`}
+                </div>
+              </div>
               {selectedValue.venue && (
                 <Button
                   onClick={() =>
@@ -99,42 +111,47 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
               )}
               <button
                 onClick={() => onClose(null)}
-                className="absolute top-3 right-3 p-1 rounded-full bg-white/90 hover:bg-white transition-colors"
+                className="absolute hover:cursor-pointer top-3 right-3 p-1 rounded-full bg-white/90 hover:bg-white transition-colors"
                 aria-label="Close"
               >
                 <X className="w-4 h-4 text-gray-700 font-semibold" />
               </button>
-              <div className="flex gap-3 mb-5">
-                <Button
-                  onClick={() =>
-                    addToGoogleCalendar({
-                      title: selectedValue.title,
-                      start: formatForGoogleCalendar(
-                        selectedValue.start_date,
-                        selectedValue.start_time,
-                      ),
-                      end: formatForGoogleCalendar(
-                        selectedValue.end_date,
-                        selectedValue.end_time,
-                      ),
-                      location: selectedValue.location,
-                    })
-                  }
-                  variant={"link"}
-                  size={"sm"}
-                  className="p-0"
-                >
-                  Add to calendar
+              <div className="flex flex-col w-full items-start">
+                <Button variant={"link"} size={"sm"} className="p-0!">
+                  <MapPin /> {selectedValue.location}
                 </Button>
-                <Button
-                  variant={"link"}
-                  size={"sm"}
-                  className="p-0"
-                  onClick={() => notify({ id: selectedValue.id })}
-                  disabled={isPending}
-                >
-                  Notify me
-                </Button>
+                <div className="flex w-full gap-5">
+                  <Button
+                    onClick={() =>
+                      addToGoogleCalendar({
+                        title: selectedValue.title,
+                        start: formatForGoogleCalendar(
+                          selectedValue.start_date,
+                          selectedValue.start_time,
+                        ),
+                        end: formatForGoogleCalendar(
+                          selectedValue.end_date,
+                          selectedValue.end_time,
+                        ),
+                        location: selectedValue.location,
+                      })
+                    }
+                    variant={"link"}
+                    size={"sm"}
+                    className="p-0!"
+                  >
+                    <CalendarArrowDown /> Add to calendar
+                  </Button>
+                  <Button
+                    variant={"link"}
+                    size={"sm"}
+                    className="p-0!"
+                    onClick={() => notify({ id: selectedValue.id })}
+                    disabled={isPending}
+                  >
+                    <BellDot /> Notify me
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -145,26 +162,26 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
 
             {
               selectedValue.attachments &&
-                selectedValue.attachments.length > 0 &&
-                // <a href={selectedValue.attachments.file} target="_blank">
-                selectedValue.attachments
-                  .filter((p) => p.has_attachment)
-                  .map((e) => (
-                    <div
-                      key={e.id}
-                      onClick={() =>
-                        navigate(`/Attachment/${selectedValue.id}`, {
-                          state: { Title: e.filename, file_id: e.id },
-                        })
-                      }
-                      className="flex flex-col sm:flex-row sm:items-center gap-2 mb-5 text-sm text-gray-700"
-                    >
-                      <FileText className="w-4 h-4" />
-                      <span className="hover:underline cursor-pointer">
-                        {e.filename}
-                      </span>
-                    </div>
-                  ))
+              selectedValue.attachments.length > 0 &&
+              // <a href={selectedValue.attachments.file} target="_blank">
+              selectedValue.attachments
+                .filter((p) => p.has_attachment)
+                .map((e) => (
+                  <div
+                    key={e.id}
+                    onClick={() =>
+                      navigate(`/Attachment/${selectedValue.id}`, {
+                        state: { Title: e.filename, file_id: e.id },
+                      })
+                    }
+                    className="flex flex-col sm:flex-row sm:items-center gap-2 mb-5 text-sm text-gray-700"
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span className="hover:underline cursor-pointer">
+                      {e.filename}
+                    </span>
+                  </div>
+                ))
               // </a>
             }
 
@@ -239,7 +256,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
           >
             {menuBar && isMobile && (
               <TabsList className="flex-col items-start rounded-none border-r border-gray-300 min-h-[300px] sm:w-[30%] h-full justify-start gap-4 pr-2 overflow-y-auto max-h-[52vh] sm:max-h-[70vh]">
-                <span className="text-lg font-semibold text-gray-700">
+                <span className="text-lg font-semibold text-gray-400">
                   Programme
                 </span>
                 {selectedValue.map((value) => (
@@ -261,7 +278,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
             )}
 
             <TabsList className="flex-col hidden sm:flex items-start rounded-none border-r border-gray-300 min-h-[300px] sm:w-[30%] h-full justify-start gap-4 pr-2 overflow-y-auto max-h-[52vh] sm:max-h-[70vh]">
-              <span className="text-lg font-semibold text-gray-700">
+              <span className="text-lg font-semibold text-gray-400">
                 Programme
               </span>
               {selectedValue.map((value) => (
@@ -274,9 +291,9 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                   )}
                 >
                   <span>{`${value.start_time.slice(0, 5)} - ${value.end_time.slice(0, 5)}`}</span>
-                  <p className="line-clamp-2 whitespace-normal text-start">
+                  <div className="line-clamp-2 whitespace-normal text-start truncate">
                     {value.title}
-                  </p>
+                  </div>
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -287,38 +304,44 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                 className="overflow-y-auto max-h-[52vh] sm:max-h-[70vh] custom-scrollbar pb-2"
                 key={s.id}
               >
-                <h2 className="text-xl font-bold text-primary mb-2 line-clamp-2">
-                  {s.title}
-                </h2>
-                <div className="flex flex-col sm:flex-row items-start gap-4 mb-2">
-                  <img
-                    src={s.bg_image ? s.bg_image : dummy}
-                    alt={s.title}
-                    className="w-full sm:w-[200px] h-[118px] rounded-lg object-cover opacity-80"
-                  />
-                  <div className="">
-                    <p className="text-sm text-primary font-semibold mb-1">
-                      {`${s.start_date}`}
-                    </p>
-                    <p className="text-sm text-primary font-semibold mb-1">
-                      {`${s.start_time} - ${s.end_time}`}
-                    </p>
-                    <Button variant={"link"} size={"sm"} className="p-0">
-                      {s.location}
-                    </Button>
+                <div className="flex flex-col items-start gap-4 mb-2 p-4">
+                  <div className="flex items-center justify-start w-full">
+                    <img
+                      src={s.bg_image ? s.bg_image : dummy}
+                      alt={s.title}
+                      className="w-full sm:w-[200px] h-[118px] rounded-lg object-cover opacity-80"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <h2 className="text-xl font-bold text-primary mb-2 line-clamp-2">
+                      {s.title}
+                    </h2>
+                    <div className="flex gap-5">
+                      <div className="flex items-center gap-1 text-sm text-primary font-semibold mb-1">
+                        <Calendar1 size={17} /> {`${s.start_date}`}
+                      </div>
+                      <div className="flex items-center gap-1 text-sm text-primary font-semibold mb-1">
+                        <Clock size={17} /> {`${s.start_time} - ${s.end_time}`}
+                      </div>
+                    </div>
+                    <div className="flex flex-start">
+                      <Button variant={"link"} size={"sm"} className="p-0!">
+                        <MapPin /> {s.location}
+                      </Button>
+                    </div>
                     {s.venue && (
                       <Button
                         onClick={() => navigate(`/venue?id=${s.venue.id}`)}
                         variant={"link"}
                         size={"sm"}
-                        className="p-0 ml-4"
+                        className="p-0! ml-4"
                       >
                         Room no: {s.venue.name}
                       </Button>
                     )}
                     <button
                       onClick={() => onClose(null)}
-                      className="absolute top-3 right-3 p-1 rounded-full bg-white/90 hover:bg-white transition-colors"
+                      className="absolute top-3 hover:cursor-pointer right-3 p-1 rounded-full bg-white/90 hover:bg-white transition-colors"
                       aria-label="Close"
                     >
                       <X className="w-4 h-4 text-gray-700 font-semibold" />
@@ -341,18 +364,18 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                         }
                         variant={"link"}
                         size={"sm"}
-                        className="p-0"
+                        className="p-0!"
                       >
-                        Add to calendar
+                        <CalendarArrowDown /> Add to calendar
                       </Button>
                       <Button
                         variant={"link"}
                         size={"sm"}
-                        className="p-0"
+                        className="p-0!"
                         onClick={() => notify({ id: s.id })}
                         disabled={isPending}
                       >
-                        Notify me
+                        <BellDot /> Notify me
                       </Button>
                     </div>
                   </div>
@@ -364,25 +387,25 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, id }) => {
                   </p> */}
                   {
                     s.attachments &&
-                      s.attachments.length > 0 &&
-                      // <a href={s.attachments.file} target="_blank">
-                      s.attachments
-                        .filter((p) => p.has_attachment)
-                        .map((e) => (
-                          <div
-                            onClick={() =>
-                              navigate(`/Attachment/${s.id}`, {
-                                state: { Title: e.filename, file_id:e.id },
-                              })
-                            }
-                            className="flex flex-col sm:flex-row items-center gap-2 mb-5 text-sm text-gray-700"
-                          >
-                            <FileText className="w-4 h-4" />
-                            <span className="hover:underline cursor-pointer">
-                              {e.filename}
-                            </span>
-                          </div>
-                        ))
+                    s.attachments.length > 0 &&
+                    // <a href={s.attachments.file} target="_blank">
+                    s.attachments
+                      .filter((p) => p.has_attachment)
+                      .map((e) => (
+                        <div
+                          onClick={() =>
+                            navigate(`/Attachment/${s.id}`, {
+                              state: { Title: e.filename, file_id: e.id },
+                            })
+                          }
+                          className="flex flex-col sm:flex-row items-center gap-2 mb-5 text-sm text-gray-700"
+                        >
+                          <FileText className="w-4 h-4" />
+                          <span className="hover:underline cursor-pointer">
+                            {e.filename}
+                          </span>
+                        </div>
+                      ))
 
                     // </a>
                   }

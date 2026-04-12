@@ -14,8 +14,8 @@ const isOverlap = (a: OutputItem, b: OutputItem) => {
 
 export const groupIntoColumns = (items: OutputItem[]) => {
   // 🔹 1. separate extra items
-  const extras = items.filter((item) => item.type === "extra");
-  const normalItems = items.filter((item) => item.type !== "extra");
+  const extras = items.filter((item) => item?.type === "extra");
+  const normalItems = items.filter((item) => item?.type !== "extra");
 
   // 🔹 2. sort normal items
   const sorted = [...normalItems].sort(

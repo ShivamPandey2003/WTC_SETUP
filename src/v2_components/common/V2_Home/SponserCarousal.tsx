@@ -53,7 +53,7 @@ const SponserCarousal = ({
 
   return (
     <div
-      className={`group relative rounded-2xl overflow-hidden w-full min-h-[260px] h-full md:h-[200px] border border-gray-300 bg-white`}
+      className={`group relative rounded-xl overflow-hidden w-full h-[28vh] transition-shadow shadow-sm`}
     >
       {slides.map((slide, index) =>
         index === currentSlide ? (
@@ -62,11 +62,11 @@ const SponserCarousal = ({
             className="absolute inset-0 transition-opacity duration-700"
           >
             <a href={slide.url} target="_blank" rel="noopener noreferrer">
-              <div className="relative w-full h-full overflow-hidden bg-gray-200">
+              <div className="relative w-full h-full overflow-hidden bg-white">
                 <img
                   src={slide.logo ? `${slide.logo}` : ExPlaceholderImg}
                   alt=""
-                  className="absolute inset-0 w-full h-full object-contain object-center"
+                  className="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)] object-contain object-center"
                   width={200}
                   height={400}
                   loading="lazy"

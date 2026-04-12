@@ -17,6 +17,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
   const Times = generateTimeArray(Programmes.start_time, Programmes.end_time);
   const timeRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
   const [seleted, setSelected] = React.useState<string | null | string[]>(null);
+  const [selectedCategory, setSelectedCategory] = React.useState<string | null | string[]>(null);
   const [positions, setPositions] = React.useState<
     Record<string, { top: number; height: number }>
   >({});
@@ -111,23 +112,16 @@ const EventGrid = ({ selectedCategories }: Props) => {
   }, [Programmes]);
 
   return (
-    <div className="relative flex">
-      <div className="left-0 top-0 z-50 flex flex-col space-y-4 px-4 border-r border-border bg-[#F2F2F2]">
-        <div className="mb-14" />
-        {Times.map((item) => (
-          <div
-            key={item}
-            className="text-center text-gray-400"
-            ref={(el) => {
-              timeRefs.current[item] = el;
-            }}
-          >
-            {item}
-          </div>
-        ))}
-      </div>
-      <div className="flex-1 overflow-x-auto pl-4">
-        <div className="flex gap-2 mb-4">
+    <div className="overflow-auto max-h-[calc(100vh-130px)]">
+      <div
+        className="grid"
+        style={{ gridTemplateColumns: "auto auto", width: "max-content" }}
+      >
+        {/* Corner: sticky top-left, covers intersection */}
+        <div className="sticky top-0 left-0 z-[60] bg-[#F2F2F2] border-r border-gray-400 px-4" />
+
+        {/* Date headers: sticky top, scrolls horizontally with content */}
+        <div className="sticky top-0 z-40 flex bg-[#F2F2F2] pl-4">
           {DateList.map((item, i) => {
             const date = convertToDate(item);
             const columns = Programmes.data[date];
@@ -136,16 +130,32 @@ const EventGrid = ({ selectedCategories }: Props) => {
             return (
               <div
                 key={i}
-                className="text-center"
+                className="text-center border-r px-1 border-r-gray-300"
                 style={{ minWidth: `${height}px` }}
               >
-                <h3>{item.weekday}</h3>
-                <h3>{item.dayMonth}</h3>
+                <h3>{item.weekday}, {item.dayMonth}</h3>
               </div>
             );
           })}
         </div>
-        <div className="flex gap-2">
+
+        {/* Time column: sticky left, scrolls vertically with content */}
+        <div className="sticky left-0 z-50 flex flex-col space-y-4 px-4 border-r border-gray-400 bg-[#F2F2F2]">
+          {Times.map((item) => (
+            <div
+              key={item}
+              className="text-center text-gray-400"
+              ref={(el) => {
+                timeRefs.current[item] = el;
+              }}
+            >
+              {item}
+            </div>
+          ))}
+        </div>
+
+        {/* Event grid */}
+        <div className="flex pl-4">
           {Dates.map((item, i) => {
             const columns = Programmes.data[item];
             const extraColumn = columns.find((col) =>
@@ -161,7 +171,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
               <React.Fragment key={i}>
                 <div
                   key={item}
-                  className="relative"
+                  className="relative border-r px-1 border-r-gray-300"
                   style={{ minWidth: `${height}px` }}
                 >
                   <div className="flex gap-1">
@@ -199,7 +209,10 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                       backgroundColor: event.color,
                                     }}
                                     onClick={() =>
-                                      setSelected(event.session_id)
+                                      {
+                                        setSelected(event.session_id);
+                                        setSelectedCategory(event.title);
+                                      }
                                     }
                                   >
                                     {event.title}
@@ -303,6 +316,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
           isOpen={Boolean(seleted)}
           onClose={() => setSelected(null)}
           id={seleted as string | string[]}
+          eventCategory={selectedCategory as string | string[]}
         />
       )}
     </div>
@@ -310,3 +324,4 @@ const EventGrid = ({ selectedCategories }: Props) => {
 };
 
 export default EventGrid;
+

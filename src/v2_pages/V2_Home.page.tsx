@@ -131,13 +131,13 @@ const V2_Home_page = () => {
   return (
     <div className="px-4 pb-4 mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 h-[58vh] flex justify-center">
           {HeroCarusole?.response &&
           HeroCarusole.response.length > 0 &&
           CarusolData.length > 0 ? (
             <HeroCarousel slides={CarusolData} />
           ) : (
-            <Skeleton className="h-[350px] md:h-[530px] shadow rounded-xl bg-gray-300" />
+            <Skeleton className="h-[1/2vh] md:h-[530px] shadow rounded-xl bg-gray-300" />
           )}
         </div>
         <div className="space-y-4">
