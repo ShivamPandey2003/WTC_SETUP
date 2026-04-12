@@ -5,7 +5,7 @@ import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { Copy, ExternalLink, Globe, Mail, Star } from "lucide-react";
+import { Copy, ExternalLink, Globe, Mail } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
