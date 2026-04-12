@@ -17,7 +17,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
   const Times = generateTimeArray(Programmes.start_time, Programmes.end_time);
   const timeRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
   const [seleted, setSelected] = React.useState<string | null | string[]>(null);
-  const [positions, setPositions] = React.useState
+  const [positions, setPositions] = React.useState<
     Record<string, { top: number; height: number }>
   >({});
   const DateList = formatDates_V2(Dates);
@@ -101,7 +101,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
     });
 
     setPositions(pos);
-  }, [Programmes]);
+  }, [Programmes, Dates]);
 
   return (
     <div className="relative">
