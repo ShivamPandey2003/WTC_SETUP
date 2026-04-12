@@ -15,7 +15,7 @@ import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
 import EventGrid from "@/v2_components/common/V2_Programme/EventGrid";
 import MultiSelect from "@/v2_components/global/MultiSelect";
-import { Loader } from "lucide-react";
+import { Loader, X } from "lucide-react";
 import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -138,25 +138,28 @@ const V2_Programme_page = () => {
   }
 
   return (
-    <div className="px-4 mx-auto">
-      <div className="hidden sm:flex gap-4 items-center mt-4 mb-6">
-        <MultiSelect
-          options={ProgrammeList.data.response.all_categories.map((item) => ({
-            label: item.name,
-            value: item.id,
-          }))}
-          selected={selectedCategories}
-          onChange={setSelectedCategories}
-          placeholder="Search categories..."
-        />
-        <Button
-          className="py-0 h-6 text-sm bg-primary text-white hover:text-white"
-          size={"sm"}
-          variant={"outline"}
-          onClick={() => setSelectedCategories([])}
-        >
-          Clear Filters
-        </Button>
+    <div className="px-4 mx-auto flex flex-col">
+      <div className="hidden sm:flex gap-4 sm:justify-center mb-6 w-full">
+        <div className="flex items-center w-fit-content gap-2">
+          <MultiSelect
+            options={ProgrammeList.data.response.all_categories.map((item) => ({
+              label: item.name,
+              value: item.id,
+            }))}
+            selected={selectedCategories}
+            onChange={setSelectedCategories}
+            placeholder="Search categories..."
+          />
+          <Button
+              className="py-0 text-sm bg-primary text-white hover:text-white"
+              size={"sm"}
+              variant={"outline"}
+              disabled={selectedCategories.length === 0}
+              onClick={() => setSelectedCategories([])}
+            >
+              <X />
+            </Button>
+        </div>
       </div>
       <EventGrid selectedCategories={selectedCategories} />
     </div>
