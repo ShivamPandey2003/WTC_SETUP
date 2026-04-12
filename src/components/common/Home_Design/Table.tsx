@@ -99,7 +99,7 @@ const CustomTable = () => {
       <div>
         <div className="overflow-x-auto h-[72.5vh] relative custom-scrollbar mb-4">
           <table
-            className="min-w-full border-separate"
+            className="w-full border-separate"
             style={{ borderSpacing: "0 8px" }}
           >
             <thead className="sticky top-0 z-10 h-10 shadow border border-gray-200">
@@ -120,10 +120,10 @@ const CustomTable = () => {
                   Background
                 </th>
                 <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Created By
+                  Creator
                 </th>
                 <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Tile Space
+                  Tile
                 </th>
                 <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
@@ -133,11 +133,11 @@ const CustomTable = () => {
             <tbody>
               {NewsData.map((item, index) => (
                 <tr key={item.id} className="bg-white border items-center rounded-xl border-black">
-                  <td className="px-6 py-2 rounded-l-xl w-1/11">{index + 1}</td>
-                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis w-3/11">
+                  <td className="px-6 py-2 rounded-l-xl max-w-1/11">{index + 1}</td>
+                  <td className="px-2 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-52">
                     {item.title}
                   </td>
-                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis w-1/11">
+                  <td className="px-2 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-xs">
                     {item.description}
                   </td>
                   <td className="px-6 py-2 w-2/11">

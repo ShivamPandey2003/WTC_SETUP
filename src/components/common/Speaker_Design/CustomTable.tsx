@@ -91,10 +91,10 @@ const CustomTable = () => {
       <div>
         <div className="overflow-x-auto h-[72.5vh] relative custom-scrollbar mb-4">
           <table
-            className="min-w-full border-separate"
+            className="w-full border-separate border border-black"
             style={{ borderSpacing: "0 8px" }}
           >
-            <thead className="sticky top-0 z-10 h-10 shadow border border-gray-200">
+            <thead className="sticky top-0 z-10 h-10 py-5 shadow border border-gray-200 bg-gray-100">
               <tr>
                 <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Sno.
@@ -129,13 +129,13 @@ const CustomTable = () => {
               {SpeakersList.map((item, index) => (
                 <tr key={index} className="bg-white border">
                   <td className="px-6 py-2 rounded-l-xl w-1/11">{index + 1}</td>
-                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis w-3/11">
+                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-xs">
                     {`${item.prefix} ${item.firstname} ${item.lastname}`}
                   </td>
-                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis w-2/11">
+                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-xs">
                     {item.bio}
                   </td>
-                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis w-1/11">
+                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-xs">
                     {item?.email}
                   </td>
                   <td className="pl-9 py-2 w-1/11">
