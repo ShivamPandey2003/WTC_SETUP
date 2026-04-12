@@ -22,24 +22,22 @@ function NewsCard({
   return (
     <div
       className={cn(
-        "bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer min-h-[255px]",
+        "bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer h-[28vh]",
         className,
       )}
       onClick={() => onClick()}
     >
-      <div className="w-full h-[6.5rem] overflow-hidden contain-content">
+      <div className="w-full h-4/7 overflow-hidden contain-content">
         <img
           src={bg_img || ExPlaceholderImg}
           alt=""
           className="rounded-t-xl object-center object-cover"
-          width={500}
-          height={88}
           loading="lazy"
           decoding="async"
         />
       </div>
-      <div className="p-4">
-        <h3 className="font-bold text-gray-900 mb-3">{title}</h3>
+      <div className="pb-2 pr-4 pl-4 pt-2 h-3/7 flex flex-col justify-center">
+        <h3 className="font-bold text-gray-900 mb-1 truncate">{title}</h3>
         <V2_LineClamp onClick={onClick} text={description} />
       </div>
     </div>

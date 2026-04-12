@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 
 interface prop {
   text: string;
-  onClick:()=>void
+  onClick: () => void
 }
 
 export default function V2_LineClamp({ text, onClick }: prop) {
@@ -23,9 +23,13 @@ export default function V2_LineClamp({ text, onClick }: prop) {
         {text}
       </p>
 
-      {isClamped && (
-        <Button variant={"link"} onClick={onClick} className="text-blue-500 text-sm font-medium p-0">Read more</Button>
-      )}
+      {/* {isClamped && (
+        <input type="button"
+          onClick={onClick}
+          className="hover:pointer text-blue-500 text-sm font-medium p-0">
+          Read more
+        </input>
+      )} */}
     </div>
   );
 }

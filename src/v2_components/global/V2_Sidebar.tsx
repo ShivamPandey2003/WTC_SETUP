@@ -64,7 +64,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
                     onClick={() => setOpen?.()}
                   >
                     <item.Icon />
-                    <span className="max-w-[80px] overflow-hidden text-ellipsis">
+                    <span className="overflow-hidden text-ellipsis">
                       {value}
                     </span>
                   </NavLink>
@@ -101,7 +101,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
 
 const V2_Sidebar = () => {
   return (
-    <aside className="hidden p-4 sm:flex flex-col gap-4 items-center bg-white relative border-r border-border shadow min-w-[150px]">
+    <aside className="hidden p-4 sm:flex flex-col gap-4 items-center bg-white relative border-r border-border shadow">
       <V2_Sidebar_Context />
     </aside>
   );
