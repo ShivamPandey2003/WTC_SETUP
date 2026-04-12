@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import ExPlaceholderImg from '@/assets/Images/EXPlaceholder.jpg'
 
 interface ExhibitorCardProps {
@@ -7,6 +8,7 @@ interface ExhibitorCardProps {
   url?: string;
   backgroundColor?: string;
   onClick: () => void;
+  colorTag: string;
 }
 
 export default function ExhibitorCard({
@@ -14,10 +16,16 @@ export default function ExhibitorCard({
   full_name,
   booth_no,
   onClick,
+  colorTag
 }: ExhibitorCardProps) {
+  const [hovered, setHovered] = useState(false)
+
   return (
     <div
-      className={`rounded-lg overflow-hidden flex flex-col justify-between shadow-sm w-[20rem] max-w-full sm:max-w-[17.5rem] md:max-w-xs cursor-pointer hover:shadow-xl border border-gray-200 hover:border-gray-300`}
+      className={`rounded-lg overflow-hidden flex flex-col justify-between w-[20rem] max-w-full sm:max-w-70 md:max-w-xs cursor-pointer border border-gray-200 hover:border-gray-300 transition-shadow duration-200`}
+      style={{ boxShadow: hovered ? `0 3px 10px 0 ${colorTag}55, 0 3px 10px 0 rgba(0,0,0,0.08)` : `0 1px 5px 0 ${colorTag}55, 0 1px 3px 0 rgba(0,0,0,0.08)` }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       onClick={onClick}
     >
       <div
@@ -30,7 +38,7 @@ export default function ExhibitorCard({
         />
       </div>
 
-      <div className="from-transparent to-white bg-linear-to-b p-4">
+      <div className="p-4 bg-white">
         <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">{full_name}</h3>
 
         {(booth_no && booth_no.trim()) && (

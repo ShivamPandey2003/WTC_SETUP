@@ -14,6 +14,17 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 
+const adjustHexColor = (hex: string, amount: number): string => {
+  const clean = hex.replace("#", "");
+  const num = parseInt(clean.length === 3
+    ? clean.split("").map((c) => c + c).join("")
+    : clean, 16);
+  const r = Math.min(255, Math.max(0, (num >> 16) + amount));
+  const g = Math.min(255, Math.max(0, ((num >> 8) & 0xff) + amount));
+  const b = Math.min(255, Math.max(0, (num & 0xff) + amount));
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
+};
+
 const V2_exhibitors_page = () => {
   const [spashScreen, setSpashScreen] = useState<boolean>(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -30,10 +41,11 @@ const V2_exhibitors_page = () => {
   } = useInfiniteExhibitors();
 
   const ExhibitorList = useMemo(() => {
-    if (!AllExhibitors || !AllExhibitors.pages) return { grouped: {}, seq: [] };
+    if (!AllExhibitors || !AllExhibitors.pages) return { grouped: {}, seq: [], colors: {} };
 
     const finalGrouped: Record<string, any[]> = {};
     const finalSeq = new Set<string>();
+    const finalColors: Record<string, string> = {};
 
     AllExhibitors.pages.forEach((page) => {
       const data = page.response.data;
@@ -52,11 +64,17 @@ const V2_exhibitors_page = () => {
 
         finalGrouped[key].push(...list);
       });
+
+      // merge colors
+      if (data.colors) {
+        Object.assign(finalColors, data.colors);
+      }
     });
 
     return {
       grouped: finalGrouped,
       seq: Array.from(finalSeq),
+      colors: finalColors,
     };
   }, [AllExhibitors]);
 
@@ -133,8 +151,13 @@ const V2_exhibitors_page = () => {
       {ExhibitorList.seq.map(
         (value, i) =>
           Boolean(ExhibitorList.grouped[value].length) && (
-            <div key={i} className="mt-6">
-              <h4 className="font-[700] text-[26px] text-[#353535] mb-4">
+            <div key={i} className="mt-6 mx-2">
+              <h4 className="font-[700] text-[26px] mb-4" style={{
+                  background: `linear-gradient(135deg, ${adjustHexColor(ExhibitorList.colors[value] as string, 30)}, ${adjustHexColor(ExhibitorList.colors[value] as string, -30)})`,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}>
                 {value}
               </h4>
               <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
@@ -143,6 +166,7 @@ const V2_exhibitors_page = () => {
                     key={i}
                     {...item}
                     onClick={() => navigation(`/exhibitors/${item.id}`)}
+                    colorTag={ExhibitorList?.colors && ExhibitorList.colors[value] as string}
                   />
                 ))}
               </div>
