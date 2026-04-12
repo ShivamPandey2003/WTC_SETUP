@@ -91,7 +91,7 @@ const CustomTable = () => {
             className="min-w-full border-separate"
             style={{ borderSpacing: "0 8px" }}
           >
-            <thead className="sticky top-0 z-10 bg-white h-10 shadow border border-gray-200">
+            <thead className="sticky top-0 z-10 h-10 shadow border border-gray-200">
               <tr className="">
                 <th className="pl-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Sno.
