@@ -12,6 +12,7 @@ import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 
@@ -26,10 +27,37 @@ export const useCreateNews = () => {
       const res = await apiRequest("post", "news/create", data);
       return res.response;
     },
-    onSuccess: () => {
+    onSuccess: async (data, Variable) => {
       toast.success("News created successfully");
-      queryClient.invalidateQueries({ queryKey: ["newsList"] });
       dispatch(setIsCreating(false));
+
+      const file = Variable.get("attachment") as File;
+      if (!file) {
+        queryClient.invalidateQueries({ queryKey: ["newsList"] });
+        return;
+      }
+
+      const res = await apiRequest(
+        "post",
+        `/upload/presigned-url?file_name=${file.name}&module=${"news"}&ref_id=${data.response.id}`,
+      );
+      const { file_key, upload_url } = res.response.response;
+
+      await axios.put(upload_url, file, {
+        headers: {
+          "Content-Type": file.type,
+        },
+        responseType: "blob",
+      });
+
+      const newForm = new FormData();
+      newForm.append("module", "news");
+      newForm.append("record_id", data.response.id);
+      newForm.append("file_path_image", file_key);
+
+      await apiRequest("post", "upload/common/files", newForm);
+
+      queryClient.invalidateQueries({ queryKey: ["newsList"] });
     },
   });
 
@@ -48,9 +76,35 @@ export const useEditNews = () => {
       const res = await apiRequest("post", `news/edit/${id}`, data);
       return res.response;
     },
-    onSuccess: () => {
+    onSuccess: async (data, variable) => {
       toast.success("News edited successfully");
       dispatch(setSelected(null));
+      const file = variable.get("attachment") as File;
+      if (!file) {
+        queryClient.invalidateQueries({ queryKey: ["newsList"] });
+        return;
+      }
+
+      const res = await apiRequest(
+        "post",
+        `/upload/presigned-url?file_name=${file.name}&module=${"news"}&ref_id=${data.response.id}`,
+      );
+      const { file_key, upload_url } = res.response.response;
+
+      await axios.put(upload_url, file, {
+        headers: {
+          "Content-Type": file.type,
+        },
+        responseType: "blob",
+      });
+
+      const newForm = new FormData();
+      newForm.append("module", "news");
+      newForm.append("record_id", data.response.id);
+      newForm.append("file_path_image", file_key);
+
+      await apiRequest("post", "upload/common/files", newForm);
+
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
     },
   });
@@ -58,9 +112,11 @@ export const useEditNews = () => {
   return { EditNews, isPending, error };
 };
 
-export const useGetNewsList = (page:number = 1, search?:string) => {
-
-  const url = (search && search.trim())? `news/list?page=${page}&search=${search}`:`news/list?page=${page}`;
+export const useGetNewsList = (page: number = 1, search?: string) => {
+  const url =
+    search && search.trim()
+      ? `news/list?page=${page}&search=${search}`
+      : `news/list?page=${page}`;
 
   const {
     data: NewsList,
@@ -232,7 +288,7 @@ export const useHeroCarusole = () => {
     data: HeroCarusole,
     isPending: isHeroCarusole,
     error: errorHeroCarusole,
-    refetch
+    refetch,
   } = useQuery<HeroCarusoleT, AxiosError>({
     queryKey: ["hero_carusole"],
     queryFn: async () => {
@@ -246,69 +302,85 @@ export const useHeroCarusole = () => {
   return { HeroCarusole, isHeroCarusole, errorHeroCarusole, refetch };
 };
 
-export const useUploadNewsImages = () => {
+export const useUploadBulkNews = () => {
   const {
-    mutate: UploadBulkImages,
-    isPending,
-    data,
-    isError,
+    mutate: UploadBulk,
+    isPending: isBulkPending,
+    data: BulkData,
+    isError: isBulkError,
   } = useMutation<
     BulkImageResponse,
     AxiosError,
-    { type: number; form: FormData }
+    { type: number; file_path: string; filename: string }
   >({
-    mutationFn: async ({ type, form }) => {
-      const res = await apiRequest("post", `/upload/images?type=${type}`, form);
+    mutationFn: async (data) => {
+      const res = await apiRequest("post", `upload/bulk/process-zip`, data);
       return res.response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["newsList"] });
     },
   });
 
-  return { UploadBulkImages, isPending, data, isError };
+  return { UploadBulk, isBulkPending, BulkData, isBulkError };
 };
 
+// export const useUploadNewsImages = () => {
+//   const {
+//     mutate: UploadBulkImages,
+//     isPending,
+//     data,
+//     isError,
+//   } = useMutation<
+//     BulkImageResponse,
+//     AxiosError,
+//     { type: number; form: FormData }
+//   >({
+//     mutationFn: async ({ type, form }) => {
+//       const res = await apiRequest("post", `/upload/images?type=${type}`, form);
+//       return res.response;
+//     },
+//   });
+
+//   return { UploadBulkImages, isPending, data, isError };
+// };
+
 export const useNewsDownload = () => {
-  const { mutate: downloadNews, isPending: isdownloadPending } = useMutation(
-    {
-      mutationKey: ["session_download"],
-      mutationFn: async () => {
-        const res = await apiRequest(
-          "get",
-          "/news/download-news",
-          null,
-          "blob",
-        );
+  const { mutate: downloadNews, isPending: isdownloadPending } = useMutation({
+    mutationKey: ["session_download"],
+    mutationFn: async () => {
+      const res = await apiRequest("get", "/news/download-news", null, "blob");
 
-        const contentDisposition = res.headers["content-disposition"];
-        const blob = new Blob([res.response]);
+      const contentDisposition = res.headers["content-disposition"];
+      const blob = new Blob([res.response]);
 
-        // Extract filename safely
-        let filename = "news_list.csv";
+      // Extract filename safely
+      let filename = "news_list.csv";
 
-        if (contentDisposition?.includes("filename=")) {
-          filename = contentDisposition.split("filename=")[1].replace(/"/g, "");
-        }
+      if (contentDisposition?.includes("filename=")) {
+        filename = contentDisposition.split("filename=")[1].replace(/"/g, "");
+      }
 
-        const url = window.URL.createObjectURL(res.response);
-        const link = document.createElement("a");
+      const url = window.URL.createObjectURL(res.response);
+      const link = document.createElement("a");
 
-        link.href = url;
-        link.download = filename; // cleaner way
-        document.body.appendChild(link);
-        link.click();
+      link.href = url;
+      link.download = filename; // cleaner way
+      document.body.appendChild(link);
+      link.click();
 
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
 
-        return blob;
-      },
-      onMutate: () => {
-        toast.info("File is preparing for download");
-      },
-      onSuccess: () => {
-        toast.success("File download successfully");
-      },
+      return blob;
     },
-  );
+    onMutate: () => {
+      toast.info("File is preparing for download");
+    },
+    onSuccess: () => {
+      toast.success("File download successfully");
+    },
+  });
 
   return { downloadNews, isdownloadPending };
 };

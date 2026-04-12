@@ -9,13 +9,16 @@ import { cn, normalizeLabel } from "@/lib/utils";
 import { setVenueActiveTab } from "@/redux/ExtraSlice";
 import { setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
+import { apiRequest } from "@/services/apiService";
 import TextEditor from "@/v2_components/global/TextEditor";
+import axios from "axios";
 import { Link } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const VenueDesign_page = () => {
   const { isPending, SpeakerSettings: Data } = useGetSpeakerSetting();
+  const [venueImage, setVenueImage] = useState<string | null>(null);
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
@@ -28,27 +31,49 @@ const VenueDesign_page = () => {
     useVenueDesignUpdate();
   const dispatch = useDispatch<AppDispatch>();
 
-  const onAttachmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onAttachmentChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const url = URL.createObjectURL(file);
     setUrl(url);
 
+    const res = await apiRequest(
+      "post",
+      `/upload/presigned-url?file_name=${file.name}&module=${"venue_attachment"}`,
+    );
+
+    const { file_key, upload_url } = res.response.response;
+    await axios.put(upload_url, file, {
+      headers: {
+        "Content-Type": file.type,
+      },
+      responseType: "blob",
+    });
+
+    const newForm = new FormData();
+    newForm.append("file_path_attachment", file_key);
+    apiRequest("post", "/venue/upload-files", newForm);
+
     dispatch(
       setSpeakerSettings({
         ...SpeakerSettings,
         venue: {
           ...SpeakerSettings.venue,
-          attachment: file,
+          attachment: file_key,
         },
       }),
     );
   };
 
   useEffect(() => {
-    if (Data && Data.response.venue && Data.response.venue.attachment) {
-      setUrl(Data.response.venue.attachment as string);
+    if (Data && Data.response.venue) {
+      if (Data.response.venue.attachment) {
+        setUrl(Data.response.venue.attachment as string);
+      }
+      if (Data.response.venue.image) {
+        setVenueImage(Data.response.venue.image as string);
+      }
     }
   }, [Data]);
 
@@ -187,31 +212,44 @@ const VenueDesign_page = () => {
                     type="file"
                     multiple={false}
                     accept={"image/*"}
-                    onChange={(e) => {
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+
+                      const url = URL.createObjectURL(file);
+                      setVenueImage(url);
+
+                      const res = await apiRequest(
+                        "post",
+                        `/upload/presigned-url?file_name=${file.name}&module=${"venue_image"}`,
+                      );
+
+                      const { file_key, upload_url } = res.response.response;
+                      await axios.put(upload_url, file, {
+                        headers: {
+                          "Content-Type": file.type,
+                        },
+                        responseType: "blob",
+                      });
+
+                      const newForm = new FormData();
+                      newForm.append("file_path_image", file_key);
+                      apiRequest("post", "/venue/upload-files", newForm);
+
                       dispatch(
                         setSpeakerSettings({
                           ...SpeakerSettings,
                           venue: {
                             ...SpeakerSettings.venue,
-                            image: e.target.files?.[0] as File,
+                            image: file_key,
                           },
                         }),
                       );
                     }}
                     className="text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary/20 file:text-primary hover:file:bg-primary/40"
                   />
-                  {SpeakerSettings.venue.image && (
-                    <img
-                      src={
-                        typeof SpeakerSettings.venue.image === "string"
-                          ? SpeakerSettings.venue.image
-                          : URL.createObjectURL(
-                              SpeakerSettings.venue.image as File,
-                            )
-                      }
-                      alt=""
-                      className="w-24 rounded-lg"
-                    />
+                  {venueImage && (
+                    <img src={venueImage} alt="" className="w-24 rounded-lg" />
                   )}
                 </div>
               </Section>

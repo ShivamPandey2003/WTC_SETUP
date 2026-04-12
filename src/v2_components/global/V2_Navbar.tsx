@@ -37,7 +37,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
       ? [
           {
             id: "Dashboard",
-            label: "Dashboard",
+            label: "Admin Module",
             onClick: () => {
               navigate("/global-design");
               dispatch(setTitle(null));
@@ -97,14 +97,14 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
       case "news":
         return ArrayTabs.home_tab;
       case "":
-        return ArrayTabs.home_tab;
+        return "News";
     }
   };
 
   return (
     <header
       className={cn(
-        "sticky top-0 z-[999] flex items-center justify-between p-4 transition-colors duration-200",
+        "sticky top-0 z-[999] flex items-center justify-between p-2 pl-4 pr-4 transition-colors duration-200 ",
         showBackground && "bg-[#F2F2F2] shadow",
       )}
     >
@@ -133,7 +133,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
         {((pathname === "/" && News.length > 0) ||
           (pathname === "/speaker" && speakers.length > 0) ||
           (pathname === "/exhibitors" && showSearch)) && (
-          <SearchTrigger onClick={() => dispatch(setSearchModal(true))} />
+          <SearchTrigger onClick={() => dispatch(setSearchModal(true))} tabname={TitleFetch(pathname.split("/")[1]) as string}/>
         )}
         {!token ? (
           <Button

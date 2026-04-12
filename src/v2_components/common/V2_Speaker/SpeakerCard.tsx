@@ -26,7 +26,8 @@ function SpeakerCard({
 }: TeamMemberCardProps) {
   return (
     <div
-      className="bg-white relative rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 w-[250px] min-h-[325px] sm:min-w-[15rem] cursor-pointer"
+      className="bg-white relative rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow 
+      duration-200 w-[250px] gap-2 sm:min-w-[15rem] cursor-pointer flex flex-col justify-between"
       onClick={onClick}
     >
       {keyNote && (
@@ -38,10 +39,8 @@ function SpeakerCard({
         <img
           src={profile_image ? profile_image : PlaceholderImage}
           alt={prefix + " " + firstname + " " + lastname}
-          className="object-cover object-center"
+          className="w-full h-full object-cover object-top"
           loading="lazy"
-          width={250}
-          height={100}
         />
       </div>
 

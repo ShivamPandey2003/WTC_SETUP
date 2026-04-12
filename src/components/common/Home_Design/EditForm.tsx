@@ -80,7 +80,7 @@ const EditFrom = () => {
     },
     {
       name: "attachments",
-      label: "Attachments",
+      label: "Image",
       type: "file",
       accept: "image/png,image/jpg,image/webp,image/jpeg",
     },

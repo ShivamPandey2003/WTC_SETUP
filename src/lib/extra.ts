@@ -1,25 +1,27 @@
 import { nanoid } from "nanoid";
 
 export const getDateRange = (start: string, end: string): string[] => {
-  const parse = (dateStr: string): Date => {
+  const parseUTC = (dateStr: string): Date => {
     const [y, m, d] = dateStr.split("-").map(Number);
-    return new Date(y, m - 1, d); // safe local date
+    return new Date(Date.UTC(y, m - 1, d)); // ✅ UTC date
   };
 
-  const format = (date: Date): string => {
-    return date.toLocaleDateString("en-CA"); // YYYY-MM-DD
+  const formatUTC = (date: Date): string => {
+    return date.toISOString().split("T")[0]; // ✅ YYYY-MM-DD in UTC
   };
 
-  const startDate = parse(start);
-  const endDate = parse(end);
+  const startDate = parseUTC(start);
+  const endDate = parseUTC(end);
 
   const result: string[] = [];
 
   let current = new Date(startDate);
 
   while (current <= endDate) {
-    result.push(format(current));
-    current.setDate(current.getDate() + 1);
+    result.push(formatUTC(current));
+
+    // ✅ increment in UTC (IMPORTANT)
+    current.setUTCDate(current.getUTCDate() + 1);
   }
 
   return result;

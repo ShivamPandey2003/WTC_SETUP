@@ -22,9 +22,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
 import { cn } from "@/lib/utils";
 import { setAppConfig } from "@/redux/GlobalDesignSlice";
-import { setIsCreating, setSearchText, setUploadCSV } from "@/redux/HomeDesignSlice";
+import {
+  setIsCreating,
+  setSearchText,
+  setUploadCSV,
+} from "@/redux/HomeDesignSlice";
 import { setResponseModal } from "@/redux/ModalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
+import { apiRequest } from "@/services/apiService";
+import axios from "axios";
 import {
   Check,
   Download,
@@ -33,19 +39,20 @@ import {
   Upload,
   X,
 } from "lucide-react";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const HomeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   const { isGlobalDesignPending } = useGlobalDesign();
   const { AllCategory, isPending: isCategoriesPending } = useGetCategoryAll();
+  const [path, setPath] = useState<string | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const {
     isCreating,
     uploadCSV,
     news = [],
-    searchText
+    searchText,
   } = useSelector((state: RootState) => state.Home_Design);
   const { responseModal, responseData } = useSelector(
     (state: RootState) => state.model,
@@ -53,7 +60,8 @@ const HomeDesign_page = () => {
   const { appConfig } = useSelector(
     (state: RootState) => state.Global_DesignSlice,
   );
-  const { UpdateHomeDesign, isUpdateHomeDesignPending, HomeDesignUpdateData } = useHomeDesignUpdate();
+  const { UpdateHomeDesign, isUpdateHomeDesignPending, HomeDesignUpdateData } =
+    useHomeDesignUpdate();
   const { UploadNewsCSV, isPending } = useUploadNewsCSV();
   const { UploadLogo, isPending: SplashScreenIsUpdating } = useUploadLogo();
   const { UpdateSplashActivation, isPending: isUpdateSplashActivation } =
@@ -62,14 +70,13 @@ const HomeDesign_page = () => {
   const { downloadNews, isdownloadPending } = useNewsDownload();
 
   const OnSave = () => {
-    const formData = new FormData();
-    formData.append("file", appConfig.splash.image);
-
-    UploadLogo({
-      type: 5,
-      extra: `&title=${appConfig.splash.title}&subtitle=${appConfig.splash.subtitle}`,
-      form: formData,
-    });
+    if (path) {
+      UploadLogo({
+        type: 5,
+        extra: `&title=${appConfig.splash.title}&subtitle=${appConfig.splash.subtitle}`,
+        data: { file_path: path },
+      });
+    }
   };
 
   const Filter = useMemo(() => {
@@ -88,11 +95,11 @@ const HomeDesign_page = () => {
     return newValue;
   }, [AllCategory]);
 
-  useEffect(()=>{
-    if(HomeDesignUpdateData?.header.code === 200){
-      refetch()
+  useEffect(() => {
+    if (HomeDesignUpdateData?.header.code === 200) {
+      refetch();
     }
-  },[HomeDesignUpdateData])
+  }, [HomeDesignUpdateData]);
 
   if (
     !HeroCarusole ||
@@ -120,32 +127,36 @@ const HomeDesign_page = () => {
                 onChange={(e) => dispatch(setSearchText(e.target.value))}
                 type="text"
                 className="outline-0 py-1 px-2"
-                placeholder="Search"
+                placeholder="Search News"
               />
-              {
-                (searchText && searchText.trim()) && <X className="cursor-pointer" size={20} onClick={()=>dispatch(setSearchText(""))}/>
-              }
+              {searchText && searchText.trim() && (
+                <X
+                  className="cursor-pointer"
+                  size={20}
+                  onClick={() => dispatch(setSearchText(""))}
+                />
+              )}
             </div>
             {news.length > 0 && (
               <Button
                 onClick={() => downloadNews()}
                 disabled={isdownloadPending}
-                className="w-fit py-1 h-7"
+                className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
+                title="Download News Data"
               >
                 <Download />
-                Download
               </Button>
             )}
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
-              className="w-fit py-1 h-7"
+              className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
+              title="Upload News Data"
             >
               <Upload />
-              Upload
             </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}
-              className="w-fit py-1 h-7"
+              className="w-fit py-1 h-7 "
             >
               <Plus />
               Add News
@@ -417,16 +428,32 @@ const HomeDesign_page = () => {
                       type="file"
                       multiple={false}
                       accept={"image/*"}
-                      onChange={(e) => {
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
                         dispatch(
                           setAppConfig({
                             ...appConfig,
                             splash: {
                               ...appConfig.splash,
-                              image: e.target.files?.[0],
+                              image: file,
                             },
                           }),
                         );
+                        const res = await apiRequest(
+                          "post",
+                          `/upload/presigned-url?file_name=${file.name}&module=${"main_splash"}`,
+                        );
+                        const { file_key, upload_url } = res.response.response;
+
+                        await axios.put(upload_url, file, {
+                          headers: {
+                            "Content-Type": file.type,
+                          },
+                          responseType: "blob",
+                        });
+
+                        setPath(file_key);
                       }}
                       className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                     />

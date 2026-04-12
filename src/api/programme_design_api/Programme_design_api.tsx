@@ -14,6 +14,8 @@ import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
+import axios from "axios";
+import { uploadWithLimit } from "@/services/uploadWithLimit";
 
 export const useCreateSession = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,10 +28,44 @@ export const useCreateSession = () => {
       const res = await apiRequest("post", "programme/create", data);
       return res.response;
     },
-    onSuccess: () => {
+    onSuccess: async (data, variable) => {
       toast.success("Session created successfully");
       dispatch(setIsCreating(false));
-      queryClient.invalidateQueries({ queryKey: ["Admin-Programme-pagination"] });
+      const file = variable.get("bg_image") as File;
+      const attachment = variable.getAll("attachment") as File[];
+
+      if (file) {
+        const res = await apiRequest(
+          "post",
+          `/upload/presigned-url?file_name=${file.name}&module=${"programme_bg"}&ref_id=${data.response.id}`,
+        );
+        const { file_key, upload_url } = res.response.response;
+
+        await axios.put(upload_url, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+          responseType: "blob",
+        });
+
+        const newForm = new FormData();
+        newForm.append("module", "programme");
+        newForm.append("record_id", data.response.id);
+        newForm.append("file_path_image", file_key);
+
+        await apiRequest("post", "upload/common/files", newForm);
+      }
+
+      if (attachment && attachment.length > 0) {
+        await uploadWithLimit(attachment, data.response.id, [
+          "programme_attachments",
+          "programme",
+        ]);
+      }
+
+      queryClient.invalidateQueries({
+        queryKey: ["Admin-Programme-pagination"],
+      });
     },
   });
 
@@ -73,10 +109,7 @@ export const useAdminInfiniteProgramme = () => {
   } = useInfiniteQuery<GlobalAdminInfinityProgramme, AxiosError>({
     queryKey: ["Admin-Programme-pagination"],
     queryFn: async ({ pageParam }) => {
-      const res = await apiRequest(
-        "get",
-        `programme/list?page=${pageParam}`,
-      );
+      const res = await apiRequest("get", `programme/list?page=${pageParam}`);
       return res.response;
     },
     initialPageParam: 1,
@@ -85,7 +118,7 @@ export const useAdminInfiniteProgramme = () => {
       if (current_page < max_page) return next_page;
       return undefined; // no more pages
     },
-    refetchOnWindowFocus:false
+    refetchOnWindowFocus: false,
   });
 
   return {
@@ -115,7 +148,9 @@ export const useDeleteSession = () => {
     onSuccess: () => {
       toast.success("Session deleted successfully");
       dispatch(setIsDeleting(null));
-      queryClient.invalidateQueries({ queryKey: ["Admin-Programme-pagination"] });
+      queryClient.invalidateQueries({
+        queryKey: ["Admin-Programme-pagination"],
+      });
     },
   });
 
@@ -248,10 +283,44 @@ export const useEditSession = () => {
       const res = await apiRequest("post", `/programme/edit/${id}`, data);
       return res.response;
     },
-    onSuccess: () => {
+    onSuccess: async (data, variable) => {
       toast.success("Session edited successfully");
-      queryClient.invalidateQueries({ queryKey: ["Admin-Programme-pagination"] });
       dispatch(setSelected(null));
+
+      const file = variable.get("bg_image") as File;
+      const attachment = variable.getAll("attachment") as File[];
+
+      if (file) {
+        const res = await apiRequest(
+          "post",
+          `/upload/presigned-url?file_name=${file.name}&module=${"programme_bg"}&ref_id=${data.response.id}`,
+        );
+        const { file_key, upload_url } = res.response.response;
+
+        await axios.put(upload_url, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+          responseType: "blob",
+        });
+
+        const newForm = new FormData();
+        newForm.append("module", "programme");
+        newForm.append("record_id", data.response.id);
+        newForm.append("file_path_image", file_key);
+
+        await apiRequest("post", "upload/common/files", newForm);
+      }
+
+      if (attachment && attachment.length > 0) {
+        await uploadWithLimit(attachment, data.response.id, [
+          "programme_attachments",
+          "programme",
+        ]);
+      }
+      queryClient.invalidateQueries({
+        queryKey: ["Admin-Programme-pagination"],
+      });
     },
   });
 
@@ -283,7 +352,9 @@ export const useUploadSessionsCSV = () => {
       link.remove();
 
       toast.success("CSV downloaded successfully");
-      queryClient.invalidateQueries({ queryKey: ["Admin-Programme-pagination"] });
+      queryClient.invalidateQueries({
+        queryKey: ["Admin-Programme-pagination"],
+      });
       dispatch(setUploadCSV(false));
     },
   });
@@ -352,7 +423,11 @@ export const useSessionDownload = () => {
   return { downloadSession, isdownloadPending };
 };
 
-export const useGetAttachment = (session_id: string, type: number = 0, file_id:string) => {
+export const useGetAttachment = (
+  session_id: string,
+  type: number = 0,
+  file_id: string,
+) => {
   const {
     data: Attachment,
     isPending,

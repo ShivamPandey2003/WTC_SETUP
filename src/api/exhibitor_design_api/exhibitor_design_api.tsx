@@ -11,6 +11,7 @@ import {
 } from "@/redux/ExhibitorSlice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
+import axios from "axios";
 
 export const useGetExhibitorsList = (page: number = 1, search?:string) => {
 
@@ -93,9 +94,34 @@ export const useCreateExhibitor = () => {
       const res = await apiRequest("post", "/exhibitors/add", data);
       return res.response;
     },
-    onSuccess: () => {
+    onSuccess: async(data, variable) => {
       toast.success("Exhibitor created successfully");
       dispatch(setIsCreating(false));
+
+      const file = variable.get("logo") as File;
+
+      if (file) {
+        const res = await apiRequest(
+          "post",
+          `/upload/presigned-url?file_name=${file.name}&module=${"exhibitors_logo"}&ref_id=${data.response.id}`,
+        );
+        const { file_key, upload_url } = res.response.response;
+
+        await axios.put(upload_url, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+          responseType: "blob",
+        });
+
+        const newForm = new FormData();
+        newForm.append("module", "exhibitor");
+        newForm.append("record_id", data.response.id);
+        newForm.append("file_path_image", file_key);
+
+        await apiRequest("post", "upload/common/files", newForm);
+      }
+
       queryClient.invalidateQueries({
         queryKey: ["exhibitor-design-list"],
       });
@@ -144,9 +170,34 @@ export const useEditExhibitor = () => {
       const res = await apiRequest("post", `exhibitors/edit/${id}`, form);
       return res.response;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data, variable) => {
       toast.success(data.header.message);
       dispatch(setSelected(null));
+
+      const file = variable.form.get("logo") as File;
+
+      if (file) {
+        const res = await apiRequest(
+          "post",
+          `/upload/presigned-url?file_name=${file.name}&module=${"exhibitors_logo"}&ref_id=${data.response.id}`,
+        );
+        const { file_key, upload_url } = res.response.response;
+
+        await axios.put(upload_url, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+          responseType: "blob",
+        });
+
+        const newForm = new FormData();
+        newForm.append("module", "exhibitor");
+        newForm.append("record_id", data.response.id);
+        newForm.append("file_path_image", file_key);
+
+        await apiRequest("post", "upload/common/files", newForm);
+      }
+
       queryClient.invalidateQueries({
         queryKey: ["exhibitor-design-list"],
       });

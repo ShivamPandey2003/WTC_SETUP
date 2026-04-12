@@ -6,7 +6,7 @@ export type ProgrammeRecord = {
   start_time: string;
   end_time: string;
   end_date: string;
-  data: Record<string, OutputItem[]>;
+  data: Record<string, OutputItem[][]>;
 };
 
 export type initialStateT = {

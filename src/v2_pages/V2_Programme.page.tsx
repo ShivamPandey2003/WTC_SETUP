@@ -8,38 +8,22 @@ import {
   getEarliestAndLatest,
   transformSessions,
 } from "@/lib/extra";
-import { cn } from "@/lib/utils";
+import { groupIntoColumns } from "@/lib/GroupintoColumn";
 import { setProgrammes, type ProgrammeRecord } from "@/redux/ExtraSlice";
 import { setProgramme } from "@/redux/GlobalSlice";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
 import EventGrid from "@/v2_components/common/V2_Programme/EventGrid";
-import { Check, ChevronLeft, ChevronRight, Loader } from "lucide-react";
+import MultiSelect from "@/v2_components/global/MultiSelect";
+import { Loader, X } from "lucide-react";
 import { nanoid } from "nanoid";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 const V2_Programme_page = () => {
   const { ProgrammeList, isPending, error } = useGetProgrammeList();
-  const scrollRef = useRef<HTMLDivElement>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const dispatch = useDispatch<AppDispatch>();
-
-  const toggleCategory = (name: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(name) ? prev.filter((c) => c !== name) : [...prev, name],
-    );
-  };
-
-  const scroll = (direction: "left" | "right") => {
-    if (!scrollRef.current) return;
-
-    const amount = 150; // px to scroll
-    scrollRef.current.scrollBy({
-      left: direction === "left" ? -amount : amount,
-      behavior: "smooth",
-    });
-  };
 
   useEffect(() => {
     if (!ProgrammeList) return;
@@ -98,8 +82,11 @@ const V2_Programme_page = () => {
             type: "normal",
           };
         });
+      const result = transformSessions(val as any);
+      const columns = result ? groupIntoColumns(result) : [];
+
       value.data = {
-        [item]: transformSessions(val as any),
+        [item]: columns,
         ...value.data,
       };
     });
@@ -119,7 +106,7 @@ const V2_Programme_page = () => {
         <Skeleton className="w-full h-8" />
         <div className="flex gap-4 mt-4">
           <Skeleton className="w-32 h-full" />
-          <div className="w-full h-[75vh] flex items-center justify-center">
+          <div className="w-full h-[75vh] flex flex-col items-center justify-center">
             <Loader className="text-primary animate-spin" size={30} />
             <p className="text-primary font-semibold text-lg">
               Loading programme, please wait...
@@ -151,52 +138,28 @@ const V2_Programme_page = () => {
   }
 
   return (
-    <div className="px-4 mx-auto">
-      <div className="hidden sm:flex justify-between items-center mt-4 mb-6">
-        <div className="w-full max-w-[80vw] flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={() => scroll("left")}>
-            <ChevronLeft />
-          </Button>
-          <div className="overflow-hidden flex-1">
-            <div
-              ref={scrollRef}
-              className="flex items-center gap-3 overflow-x-auto scroll-smooth"
-              style={{ scrollbarWidth: "none" }}
+    <div className="px-4 mx-auto flex flex-col">
+      <div className="hidden sm:flex gap-4 sm:justify-center mb-6 w-full">
+        <div className="flex items-center w-fit-content gap-2">
+          <MultiSelect
+            options={ProgrammeList.data.response.all_categories.map((item) => ({
+              label: item.name,
+              value: item.id,
+            }))}
+            selected={selectedCategories}
+            onChange={setSelectedCategories}
+            placeholder="Search categories..."
+          />
+          <Button
+              className="py-0 text-sm bg-primary text-white hover:text-white"
+              size={"sm"}
+              variant={"outline"}
+              disabled={selectedCategories.length === 0}
+              onClick={() => setSelectedCategories([])}
             >
-              {ProgrammeList.data.response.all_categories.map((item) => {
-                const active = selectedCategories.includes(item.id);
-                return (
-                  <div
-                    onClick={() => toggleCategory(item.id)}
-                    key={item.name}
-                    className={cn(
-                      "flex items-center justify-center p-1 px-4 rounded-lg w-full min-w-fit border gap-2 text-sm cursor-pointer",
-                    )}
-                    style={{
-                      background: active ? "#B8B8B8" : item.color,
-                      borderColor: active ? "#B8B8B8" : item.color,
-                      color: active ? "#303030" : "white",
-                    }}
-                  >
-                    {!active && <Check size={15} />}
-                    <span>{item.name}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          <Button variant="ghost" size="icon" onClick={() => scroll("right")}>
-            <ChevronRight />
-          </Button>
+              <X />
+            </Button>
         </div>
-        <Button
-          className="py-0 h-6 text-sm bg-primary text-white hover:text-white"
-          size={"sm"}
-          variant={"outline"}
-          onClick={() => setSelectedCategories([])}
-        >
-          Clear Filters
-        </Button>
       </div>
       <EventGrid selectedCategories={selectedCategories} />
     </div>

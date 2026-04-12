@@ -10,6 +10,34 @@ function App() {
   );
 
   useEffect(() => {
+    const isFirstLoad = !localStorage.getItem("app_initialized");
+
+    if (isFirstLoad) {
+      // -------- Clear local/session storage --------
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // -------- Clear cookies --------
+      document.cookie.split(";").forEach((cookie) => {
+        const name = cookie.split("=")[0].trim();
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/`;
+      });
+
+      // -------- Clear IndexedDB --------
+      if ("indexedDB" in window) {
+        indexedDB.databases?.().then((dbs: any) => {
+          dbs.forEach((db: any) => {
+            if (db.name) indexedDB.deleteDatabase(db.name);
+          });
+        });
+      }
+
+      // mark as initialized
+      localStorage.setItem("app_initialized", "true");
+    }
+  }, []);
+
+  useEffect(() => {
     if (!appConfig) return;
 
     if (appConfig.color_schema) {
@@ -19,7 +47,7 @@ function App() {
       );
       document.documentElement.style.setProperty(
         "--app-secondary-color",
-        appConfig.color_schema.secondary_color?? "#D6E6DF",
+        appConfig.color_schema.secondary_color ?? "#D6E6DF",
       );
     }
     if (appConfig.text_style) {

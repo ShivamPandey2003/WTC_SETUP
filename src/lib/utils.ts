@@ -5,6 +5,45 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const Height_OBJ = {
+  1: "100",
+  2: "200",
+  3: "300",
+  4: "500",
+  5: "850",
+  6: "1200",
+  7: "1400",
+  8: "1600",
+  9: "1800",
+  10: "2000",
+}
+
+export const convertToDate = (data: { dayMonth: string }) => {
+  const [monthStr, day] = data.dayMonth.split(" ");
+
+  const months: Record<string, string> = {
+    Jan: "01",
+    Feb: "02",
+    Mar: "03",
+    Apr: "04",
+    May: "05",
+    Jun: "06",
+    Jul: "07",
+    Aug: "08",
+    Sep: "09",
+    Oct: "10",
+    Nov: "11",
+    Dec: "12",
+  };
+
+  const month = months[monthStr];
+  const paddedDay = day.padStart(2, "0");
+
+  const year = new Date().getFullYear();
+
+  return `${year}-${month}-${paddedDay}`;
+};
+
 export function getDatesInRangeFormatted(
   startDate: string,
   endDate: string,
@@ -19,6 +58,7 @@ export function getDatesInRangeFormatted(
       month: "short",
       day: "2-digit",
       year: "numeric",
+      timeZone:"UTC"
     });
     dates.push(formatted);
     current.setDate(current.getDate() + 1);
@@ -209,4 +249,16 @@ export function shuffleArray<T>(array: T[]): T[] {
   }
 
   return newArray;
+}
+
+export function generateExhibitorId(length: number = 8): string {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * chars.length);
+    result += chars[randomIndex];
+  }
+
+  return result;
 }
