@@ -102,7 +102,7 @@ const CustomTable = () => {
             className="min-w-full border-separate"
             style={{ borderSpacing: "0 8px" }}
           >
-            <thead className="sticky top-0 z-10 bg-white h-10 shadow border border-gray-200">
+            <thead className="sticky top-0 z-10 h-10 shadow border border-gray-200">
               <tr>
                 <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Sno.
@@ -132,15 +132,15 @@ const CustomTable = () => {
             </thead>
             <tbody>
               {NewsData.map((item, index) => (
-                <tr key={item.id} className="bg-white border">
-                  <td className="px-6 py-2">{index + 1}</td>
-                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">
+                <tr key={item.id} className="bg-white border items-center rounded-xl border-black">
+                  <td className="px-6 py-2 rounded-l-xl w-1/11">{index + 1}</td>
+                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis w-3/11">
                     {item.title}
                   </td>
-                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[350px]">
+                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis w-1/11">
                     {item.description}
                   </td>
-                  <td className="px-6 py-2">
+                  <td className="px-6 py-2 w-2/11">
                     {new Date(item.created_on).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
@@ -148,7 +148,7 @@ const CustomTable = () => {
                     })}
                   </td>
                   {/* <td className="px-6 py-2">{item["Created On"]}</td> */}
-                  <td className="px-6 py-2">
+                  <td className="px-6 py-2 w-1/11">
                     <div
                       className="bg-cover bg-center w-20 h-7"
                       style={{
@@ -158,40 +158,42 @@ const CustomTable = () => {
                       }}
                     />
                   </td>
-                  <td className="px-6 py-2">
+                  <td className="px-6 py-2 w-1/11">
                     <CircleUserRound className="ml-[1.4rem]" />
                   </td>
-                  <td className="px-6 py-2">
+                  <td className="px-6 py-2 w-1/11">
                     <div className="ml-[1.4rem]">{item.tile_space}</div>
                   </td>
-                  <td className="px-6 py-2 flex gap-3">
-                    <Pencil
-                      onClick={() => dispatch(setSelected(item.id))}
-                      color="#425EBC"
-                      size={18}
-                      className="cursor-pointer"
-                    />
-                    {!item.is_published ? (
-                      <>
-                        <Trash2
-                          onClick={() => dispatch(setIsDeleting(item.id))}
-                          color="#B85555"
-                          size={18}
-                          className="cursor-pointer"
-                        />
-                        <Upload
-                          onClick={() => dispatch(setIsPublished(item.id))}
-                          size={18}
-                          className="cursor-pointer"
-                        />
-                      </>
-                    ) : (
-                      <Download
+                  <td className="px-6 py-2 rounded-r-xl w-1/11">
+                    <div className="flex gap-3 h-full items-center">
+                      <Pencil
+                        onClick={() => dispatch(setSelected(item.id))}
+                        color="#425EBC"
                         size={18}
                         className="cursor-pointer"
-                        onClick={() => dispatch(setIsUnpublished(item.id))}
                       />
-                    )}
+                      {!item.is_published ? (
+                        <>
+                          <Trash2
+                            onClick={() => dispatch(setIsDeleting(item.id))}
+                            color="#B85555"
+                            size={18}
+                            className="cursor-pointer"
+                          />
+                          <Upload
+                            onClick={() => dispatch(setIsPublished(item.id))}
+                            size={18}
+                            className="cursor-pointer"
+                          />
+                        </>
+                      ) : (
+                        <Download
+                          size={18}
+                          className="cursor-pointer"
+                          onClick={() => dispatch(setIsUnpublished(item.id))}
+                        />
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -205,7 +207,7 @@ const CustomTable = () => {
               className="hover:bg-primary hover:text-white bg-white text-black border-r rounded-r-none"
               disabled={page === 1}
               onClick={() => setPage((pre) => pre - 1)}
-              // className={cn(hasPreviousPage && "cursor-pointer")}
+            // className={cn(hasPreviousPage && "cursor-pointer")}
             >
               Previous
             </Button>
@@ -231,7 +233,7 @@ const CustomTable = () => {
               className="hover:bg-primary hover:text-white bg-white text-black rounded-l-none"
               disabled={page === NewsList?.response.max_page}
               onClick={() => setPage((pre) => pre + 1)}
-              // className={cn(hasPreviousPage && "cursor-pointer")}
+            // className={cn(hasPreviousPage && "cursor-pointer")}
             >
               Next
             </Button>

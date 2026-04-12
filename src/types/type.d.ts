@@ -543,6 +543,8 @@ declare type Exhibitor = {
   categoryId: string;
   ads: boolean;
   category_name: string
+  booth_no: string
+  color?: string;
 };
 
 declare type ExhibitorListResponse = {
@@ -672,6 +674,7 @@ declare type GlobalInfinityExhibitors = {
   response: Infinity & {
     data: {
       seq: string[];
+      colors?: Record<string, string>;
     } & {
       grouped: { [category: string]: Omit<Exhibitor, "category">[] };
     };
@@ -739,6 +742,7 @@ declare type FindExhibitorById = {
     }[];
     description: string | null;
     created_at: string;
+    color?: string;
   };
 };
 

@@ -94,7 +94,7 @@ const CustomTable = () => {
             className="min-w-full border-separate"
             style={{ borderSpacing: "0 8px" }}
           >
-            <thead className="sticky top-0 z-10 bg-white h-10 shadow border border-gray-200">
+            <thead className="sticky top-0 z-10 h-10 shadow border border-gray-200">
               <tr>
                 <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Sno.
@@ -128,26 +128,26 @@ const CustomTable = () => {
             <tbody>
               {SpeakersList.map((item, index) => (
                 <tr key={index} className="bg-white border">
-                  <td className="px-6 py-2">{index + 1}</td>
-                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">
+                  <td className="px-6 py-2 rounded-l-xl w-1/11">{index + 1}</td>
+                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis w-3/11">
                     {`${item.prefix} ${item.firstname} ${item.lastname}`}
                   </td>
-                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[220px]">
+                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis w-2/11">
                     {item.bio}
                   </td>
-                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[320px]">
+                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis w-1/11">
                     {item?.email}
                   </td>
-                  <td className="pl-9 py-2">
+                  <td className="pl-9 py-2 w-1/11">
                     <Linkedin size={20} />
                   </td>
-                  <td className="pl-9 py-2">
+                  <td className="pl-9 py-2 w-1/11">
                     <img
                       src={item.profile_image ? item.profile_image : Avatar1}
                       className="w-6 h-6"
                     />
                   </td>
-                  <td className="pl-9 py-2">
+                  <td className="pl-9 py-2 w-1/11">
                     {item.attachments.length > 0 ? (
                       <Button
                         variant={"link"}
@@ -161,26 +161,28 @@ const CustomTable = () => {
                       "Not Available"
                     )}
                   </td>
-                  <td className="pl-10 py-2">
+                  <td className="pl-10 py-2 w-1/11">
                     {item.keyNote ? (
                       <Keynote size={20} className="text-primary" />
                     ) : (
                       <X size={20} className="text-red-400" />
                     )}
                   </td>
-                  <td className="px-6 py-2 flex gap-2">
-                    <Pencil
-                      onClick={() => dispatch(setSelected(item.speaker_id))}
-                      color="#425EBC"
-                      size={18}
-                      className="cursor-pointer"
-                    />
-                    <Trash2
-                      onClick={() => dispatch(setIsDeleting(item.speaker_id))}
-                      color="#B85555"
-                      size={18}
-                      className="cursor-pointer"
-                    />
+                  <td className="px-6 py-2 rounded-r-xl w-1/11">
+                    <div className="flex items-center h-full gap-2">
+                      <Pencil
+                        onClick={() => dispatch(setSelected(item.speaker_id))}
+                        color="#425EBC"
+                        size={18}
+                        className="cursor-pointer"
+                      />
+                      <Trash2
+                        onClick={() => dispatch(setIsDeleting(item.speaker_id))}
+                        color="#B85555"
+                        size={18}
+                        className="cursor-pointer"
+                      />
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -194,7 +196,7 @@ const CustomTable = () => {
               className="hover:bg-primary hover:text-white bg-white text-black border-r rounded-r-none"
               disabled={page === 1}
               onClick={() => setPage((pre) => pre - 1)}
-              // className={cn(hasPreviousPage && "cursor-pointer")}
+            // className={cn(hasPreviousPage && "cursor-pointer")}
             >
               Previous
             </Button>
@@ -220,7 +222,7 @@ const CustomTable = () => {
               className="hover:bg-primary hover:text-white bg-white text-black rounded-l-none"
               disabled={page === SpeakerList?.response.max_page}
               onClick={() => setPage((pre) => pre + 1)}
-              // className={cn(hasPreviousPage && "cursor-pointer")}
+            // className={cn(hasPreviousPage && "cursor-pointer")}
             >
               Next
             </Button>

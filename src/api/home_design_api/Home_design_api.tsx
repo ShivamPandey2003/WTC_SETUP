@@ -317,6 +317,9 @@ export const useUploadBulkNews = () => {
       const res = await apiRequest("post", `upload/bulk/process-zip`, data);
       return res.response;
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["newsList"] });
+    },
   });
 
   return { UploadBulk, isBulkPending, BulkData, isBulkError };

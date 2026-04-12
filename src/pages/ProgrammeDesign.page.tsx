@@ -59,7 +59,7 @@ const ProgrammeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   const scrollRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
-    const {
+  const {
     // SpeakerSettings: SettingsValue,
     isPending,
     // error,
@@ -71,7 +71,7 @@ const ProgrammeDesign_page = () => {
   const { downloadSession, isdownloadPending } = useSessionDownload();
   const { UploadNewsCSV, isPending: isUploadSessionsCSV } =
     useUploadSessionsCSV();
-  const { isCreating, slectedDate, uploadCSV, session=[] } = useSelector(
+  const { isCreating, slectedDate, uploadCSV, session = [] } = useSelector(
     (state: RootState) => state.Programme_Design,
   );
   const { isCreating: isSpeakerCreating, SpeakerSettings } = useSelector(
@@ -190,7 +190,9 @@ const ProgrammeDesign_page = () => {
                         variant={"ghost"}
                         className={cn(
                           "h-7 shrink-0",
-                          date === slectedDate && "bg-primary/20 text-primary",
+                          date === slectedDate ?
+                            "bg-primary text-white hover:bg-primary hover:text-white" :
+                            "hover:bg-primary/10 hover:text-primary/80 hover:border hover:border-green-700 border border-gray-100",
                         )}
                       >
                         {date}
@@ -210,17 +212,17 @@ const ProgrammeDesign_page = () => {
             {session.length > 0 && <Button
               onClick={() => downloadSession()}
               disabled={isdownloadPending}
-              className="w-fit py-1 h-7"
+              className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
+              title="Download Programme Data"
             >
               <Download />
-              Download
             </Button>}
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
-              className="w-fit py-1 h-7"
+              className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
+              title="Upload Programme Data"
             >
               <Upload />
-              Upload
             </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}
@@ -245,7 +247,7 @@ const ProgrammeDesign_page = () => {
               value={"Session Data"}
               className="text-[15px] font-semibold leading-[15px] px-0"
             >
-              Session Data
+              Programme Data
             </TabsTrigger>
           </TabsList>
           <TabsContent value="General Settings">
@@ -378,6 +380,11 @@ const ProgrammeDesign_page = () => {
             </div>
           </TabsContent>
           <TabsContent value="Session Data">
+            {slectedDate &&
+              <div className="text-sm pb-1 w-full text-gray-500">
+                Showing programme data for {slectedDate}
+              </div>
+            }
             <CustomTable />
           </TabsContent>
         </Tabs>
@@ -405,7 +412,7 @@ const ProgrammeDesign_page = () => {
         onSubmit={UploadNewsCSV}
         description="Upload CSV file to create Sessions entries. CSV Columns: title, category, location, start_date, end_date, start_time, end_time, speakers, external_link, description"
         path="/session_entry.csv"
-        type={{ATTACHMENT:3, IMAGE:6}}
+        type={{ ATTACHMENT: 3, IMAGE: 6 }}
         ImageDescription="Upload a ZIP file containing pdf for Sessions entries. The pdf file names should match the corresponding Image IDs."
       />
       {responseModal && (

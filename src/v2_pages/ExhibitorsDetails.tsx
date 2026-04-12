@@ -5,7 +5,7 @@ import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { Copy, ExternalLink, Globe, Mail, Star } from "lucide-react";
+import { Copy, ExternalLink, Globe, Mail } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
@@ -72,8 +72,8 @@ const ExhibitorsDetails = () => {
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           <div className="relative px-6 py-6">
             <div className="flex flex-col sm:flex-row gap-8 items-start">
-              <div className="shrink-0">
-                <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl bg-white border-8 border-white shadow-2xl overflow-hidden">
+              <div className="shrink-0 w-1/3">
+                <div className="h-40 sm:h-48 rounded-2xl overflow-hidden">
                   <img
                     src={ExhibitorDetails.logo ?? ExPlaceholderImg}
                     alt={ExhibitorDetails.full_name}
@@ -89,14 +89,17 @@ const ExhibitorsDetails = () => {
                       {ExhibitorDetails.full_name}
                     </h1>
                     <div className="flex items-center gap-2 mt-3">
-                      <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
-                      <span className="text-sm font-semibold text-amber-600 bg-amber-50 px-3 py-1 rounded-full">
+                      <span
+                        className="text-sm font-semibold px-3 py-1 rounded-full"
+                        style={{
+                          color: ExhibitorDetails.color,
+                          backgroundColor: ExhibitorDetails.color ? `${ExhibitorDetails.color}20` : '#fef3c7',
+                        }}>
                         {ExhibitorDetails &&
                           ("SponsorType" in ExhibitorDetails
                             ? ExhibitorDetails.SponsorType
                             : "category" in ExhibitorDetails &&
-                              ExhibitorDetails.category)}{" "}
-                        Exhibitor
+                            ExhibitorDetails.category)}{" "}
                       </span>
                     </div>
                     {ExhibitorDetails.booth_no &&
@@ -135,7 +138,7 @@ const ExhibitorsDetails = () => {
               </div>
             </div>
 
-            <div className="mt-12 pt-8 border-t border-slate-200">
+            <div className="mt-5 pt-3 border-t border-slate-200">
               <h2 className="text-2xl font-bold text-slate-900 mb-6">
                 Contact Information
               </h2>
@@ -171,7 +174,7 @@ const ExhibitorsDetails = () => {
                       rel="noopener noreferrer"
                       className="text-cyan-600 hover:text-cyan-700 font-medium flex items-center gap-2 group"
                     >
-                      Visit Website
+                      {ExhibitorDetails.url}
                       <ExternalLink className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
                     </a>
                   </div>
