@@ -133,7 +133,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
         {((pathname === "/" && News.length > 0) ||
           (pathname === "/speaker" && speakers.length > 0) ||
           (pathname === "/exhibitors" && showSearch)) && (
-          <SearchTrigger onClick={() => dispatch(setSearchModal(true))} tabname={TitleFetch(pathname.split("/")[1])}/>
+          <SearchTrigger onClick={() => dispatch(setSearchModal(true))} tabname={TitleFetch(pathname.split("/")[1]) as string}/>
         )}
         {!token ? (
           <Button
