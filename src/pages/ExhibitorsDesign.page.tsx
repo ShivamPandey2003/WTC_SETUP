@@ -187,7 +187,7 @@ const ExhibitorsDesign_page = () => {
                 onChange={(e) => dispatch(setSearchText(e.target.value))}
                 type="text"
                 className="outline-0 py-1 px-2"
-                placeholder="Search"
+                placeholder="Search Exhibitors"
               />
               {searchText && searchText.trim() && (
                 <X
@@ -201,18 +201,18 @@ const ExhibitorsDesign_page = () => {
               <Button
                 onClick={() => downloadExhibitor()}
                 disabled={isdownloadPending}
-                className="w-fit py-1 h-7"
+                className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
+                title="Download Exhibitor Data"
               >
                 <Download />
-                Download
               </Button>
             )}
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
-              className="w-fit py-1 h-7"
+              className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
+              title="Upload Exhibitor Data"
             >
               <Upload />
-              Upload
             </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}

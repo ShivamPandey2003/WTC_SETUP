@@ -103,6 +103,9 @@ const CustomTable = () => {
                   URL
                 </th>
                 <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Booth
+                </th>
+                <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Email
                 </th>
                 <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -124,15 +127,18 @@ const CustomTable = () => {
               {NewValueList.length > 0 &&
                 NewValueList.map((item, index) => (
                   <tr key={index} className="bg-white border w-fit">
-                    <td className="pl-3 py-2">{index + 1}</td>
-                    <td className="pl-6 py-2">{item.full_name}</td>
-                    <td className="pl-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
+                    <td className="pl-3 py-2 rounded-l-xl w-1/11">{index + 1}</td>
+                    <td className="pl-6 py-2 w-2/11">{item.full_name}</td>
+                    <td className="pl-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis w-2/11">
                       {item.url}
                     </td>
-                    <td className="pl-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[300px]">
+                    <td className="pl-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis w-1/11">
+                      {item.booth_no}
+                    </td>
+                    <td className="pl-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis w-2/11">
                       {item.email}
                     </td>
-                    <td className="pl-6 py-2">
+                    <td className="pl-6 py-2 w-1/11">
                       {item.logo && (
                         <SquareCheck
                           fill="#318061"
@@ -141,7 +147,7 @@ const CustomTable = () => {
                         />
                       )}
                     </td>
-                    <td className="pl-2 py-2">
+                    <td className="pl-2 py-2 w-1/11">
                       <div
                         className={cn(
                           "w-[100px] h-5 rounded-[7px] flex items-center justify-center mr-2",
@@ -152,7 +158,7 @@ const CustomTable = () => {
                         )?.name ?? ""}
                       </div>
                     </td>
-                    <td className="pl-6 py-2">
+                    <td className="pl-6 py-2 w-1/11">
                       {item.ads ? (
                         <SquareCheck
                           fill="#318061"
@@ -167,19 +173,21 @@ const CustomTable = () => {
                         />
                       )}
                     </td>
-                    <td className="px-6 py-2 pt-3 flex gap-2 items-center rounded-lg">
-                      <Pencil
-                        color="#425EBC"
-                        onClick={() => dispatch(setSelected(item.id))}
-                        size={20}
-                        className="cursor-pointer"
-                      />
-                      <Trash2
-                        color="#B85555"
-                        onClick={() => dispatch(setIsDeleting(item.id))}
-                        size={20}
-                        className="cursor-pointer"
-                      />
+                    <td className="px-6 py-2 pt-3 rounded-r-xl w-1/11">
+                      <div className="flex items-center gap-2">
+                        <Pencil
+                          color="#425EBC"
+                          onClick={() => dispatch(setSelected(item.id))}
+                          size={20}
+                          className="cursor-pointer"
+                        />
+                        <Trash2
+                          color="#B85555"
+                          onClick={() => dispatch(setIsDeleting(item.id))}
+                          size={20}
+                          className="cursor-pointer"
+                        />
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -193,7 +201,7 @@ const CustomTable = () => {
               className="hover:bg-primary hover:text-white bg-white text-black border-r rounded-r-none"
               disabled={page === 1}
               onClick={() => setPage((pre) => pre - 1)}
-              // className={cn(hasPreviousPage && "cursor-pointer")}
+            // className={cn(hasPreviousPage && "cursor-pointer")}
             >
               Previous
             </Button>
@@ -219,7 +227,7 @@ const CustomTable = () => {
               className="hover:bg-primary hover:text-white bg-white text-black rounded-l-none"
               disabled={page === Exhibitors?.response.max_page}
               onClick={() => setPage((pre) => pre + 1)}
-              // className={cn(hasPreviousPage && "cursor-pointer")}
+            // className={cn(hasPreviousPage && "cursor-pointer")}
             >
               Next
             </Button>

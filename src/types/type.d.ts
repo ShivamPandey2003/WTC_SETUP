@@ -543,6 +543,7 @@ declare type Exhibitor = {
   categoryId: string;
   ads: boolean;
   category_name: string
+  booth_no: string
 };
 
 declare type ExhibitorListResponse = {

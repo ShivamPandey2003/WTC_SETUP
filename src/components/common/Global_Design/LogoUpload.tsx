@@ -1,7 +1,7 @@
 import { useUploadLogo } from "@/api/global_api/global_api";
 import { apiRequest } from "@/services/apiService";
 import axios from "axios";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, Pencil, Trash2 } from "lucide-react";
 import React, { useState } from "react";
 
 interface LogoUploadProps {
@@ -68,15 +68,11 @@ export default function LogoUpload({
           />
         )}
       </div>
-      <div className="my-3 text-xs flex items-center gap-2">
-        <span>PNG</span> | <span>Max 2MB</span> |{" "}
-        <span>Recommended {recommend}</span>
-      </div>
       <div className="mt-3 flex items-center gap-4 text-sm">
         <span className="text-gray-600">{fileName}</span>
         <div className="flex space-x-3 text-sm">
-          <label className="cursor-pointer hover:underline">
-            Change
+          <label className="cursor-pointer hover:underline hover:text-blue-600">
+            <Pencil size={15}/>
             <input
               type="file"
               accept="image/*"
@@ -88,12 +84,17 @@ export default function LogoUpload({
             <button
               type="button"
               onClick={handleRemoveImage}
-              className="hover:underline"
+              className="hover:underline cursor-pointer hover:text-red-500"
             >
-              Remove
+              <Trash2 size={15}/>
             </button>
           )}
         </div>
+      </div>
+      <div className="my-3 text-xs flex flex-col items-start">
+        <span>PNG</span>
+        <span>Max 2MB</span>
+        <span>Recommended {recommend}</span>
       </div>
     </div>
   );
