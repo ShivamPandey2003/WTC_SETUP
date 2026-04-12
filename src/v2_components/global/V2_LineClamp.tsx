@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/Button";
+
 import { useEffect, useRef, useState } from "react";
 
 interface prop {
@@ -6,16 +6,9 @@ interface prop {
   onClick: () => void
 }
 
-export default function V2_LineClamp({ text, onClick }: prop) {
+export default function V2_LineClamp({ text }: prop) {
   const textRef = useRef<HTMLParagraphElement>(null);
-  const [isClamped, setIsClamped] = useState(false);
 
-  useEffect(() => {
-    const el = textRef.current;
-    if (el) {
-      setIsClamped(el.scrollHeight > el.clientHeight);
-    }
-  }, []);
 
   return (
     <div className="max-w-sm">
