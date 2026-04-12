@@ -78,17 +78,17 @@ const SpeakerDetails = () => {
   }
 
   return (
-    <div className="px-4 pb-4 mx-auto">
+    <div className="px-4 py-4 mx-auto">
       <article className="max-w-5xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="relative px-6 sm:px-12 pb-12">
+          <div className="relative py-6 px-6 sm:px-12 pb-12">
             <div className="flex flex-col sm:flex-row gap-8">
               <div className="flex-shrink-0">
                 <div className="relative p-4">
                   <img
                     src={speakerDetails.profile_image ?? PlaceholderImage}
                     alt={`${speakerDetails.firstname} ${speakerDetails.lastname}`}
-                    className="w-48 h-48 sm:w-56 sm:h-56 rounded-2xl object-cover shadow-2xl"
+                    className="w-48 h-48 sm:w-56 sm:h-56 rounded-2xl object-cover object-top shadow-2xl"
                   />
                   {speakerDetails.keyNote && (
                     <div className="absolute top-2 -right-2 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
@@ -106,18 +106,22 @@ const SpeakerDetails = () => {
                       {speakerDetails.lastname}
                     </h1>
                     <div className="flex flex-wrap gap-4 mt-4">
-                      <div className="flex items-center gap-2 text-slate-600">
-                        <Briefcase className="w-5 h-5 text-slate-400" />
-                        <span className="font-medium">
-                          {speakerDetails.designation}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 text-slate-600">
-                        <Building2 className="w-5 h-5 text-slate-400" />
-                        <span className="font-medium">
-                          {speakerDetails.company}
-                        </span>
-                      </div>
+                      {speakerDetails.designation &&
+                        <div className="flex items-center gap-2 text-slate-600">
+                          <Briefcase className="w-5 h-5 text-slate-400" />
+                          <span className="font-medium">
+                            {speakerDetails.designation}
+                          </span>
+                        </div>
+                      }
+                      {speakerDetails.company &&
+                        <div className="flex items-center gap-2 text-slate-600">
+                          <Building2 className="w-5 h-5 text-slate-400" />
+                          <span className="font-medium">
+                            {speakerDetails.company}
+                          </span>
+                        </div>
+                      }
                       {speakerDetails.total_sessions > 0 && (
                         <div className="flex items-center gap-2 text-slate-600">
                           <Lectern className="w-5 h-5 text-slate-400" />
@@ -179,16 +183,18 @@ const SpeakerDetails = () => {
               </div>
             </div>
 
-            <div className="mt-12 pt-8 border-t border-slate-200">
-              <h2 className="text-2xl font-bold text-slate-900 mb-4">About</h2>
-              <p className="text-lg text-slate-700 leading-relaxed">
-                {speakerDetails.bio}
-              </p>
-            </div>
+            {speakerDetails.bio &&
+              <div className="mt-4 pt-8 border-t border-slate-200">
+                <h2 className="text-2xl font-bold text-slate-900 mb-4">About</h2>
+                <p className="text-lg text-slate-700 leading-relaxed">
+                  {speakerDetails.bio}
+                </p>
+              </div>
+            }
 
             {speakerDetails.attachments &&
               speakerDetails.attachments.length > 0 && (
-                <div className="mt-12 pt-8 border-t border-slate-200">
+                <div className="mt-4 pt-8 border-t border-slate-200">
                   <h2 className="text-2xl font-bold text-slate-900 mb-6">
                     Attachments
                   </h2>

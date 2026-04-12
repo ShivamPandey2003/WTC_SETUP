@@ -339,14 +339,14 @@ export const useUploadLogo = () => {
   } = useMutation<
     LogoUpdateResponse,
     AxiosError,
-    { form: FormData; type: number; extra?: string }
+    { data: { file_path: string }; type: number; extra?: string }
   >({
     mutationFn: async (data) => {
       const params = data.extra ? `${data.type}${data.extra}` : data.type;
       const res = await apiRequest(
         "post",
         `global/settings/logo/update?main=${params}`,
-        data.form,
+        data.data,
       );
       return res.response;
     },
@@ -403,6 +403,7 @@ export const useVenueDesignUpdate = () => {
     typeof image === "string"
       ? {
           ...rest,
+          file_path: image,
           venue_tab,
           floor_plan: "",
           visa_title: "",
@@ -413,6 +414,7 @@ export const useVenueDesignUpdate = () => {
         }
       : {
           ...venue,
+          file_path: image,
           venue_tab,
           floor_plan: "",
           visa_title: "",

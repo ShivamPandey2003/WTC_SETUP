@@ -146,10 +146,12 @@ export function formatDates_V2(dates: string[]): FormattedDate[] {
     return {
       weekday: date.toLocaleDateString("en-US", {
         weekday: "short",
+        timeZone: "UTC",
       }),
       dayMonth: date.toLocaleDateString("en-US", {
         day: "numeric",
         month: "short",
+        timeZone: "UTC",
       }),
     };
   });

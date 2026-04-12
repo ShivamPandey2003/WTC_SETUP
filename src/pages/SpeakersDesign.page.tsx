@@ -98,7 +98,7 @@ const SpeakersDesign_page = () => {
                 onChange={(e) => dispatch(setSearchText(e.target.value))}
                 type="text"
                 className="outline-0 py-1 px-2"
-                placeholder="Search"
+                placeholder="Search Speakers"
               />
               {
                 (searchText && searchText.trim()) && <X className="cursor-pointer" size={20} onClick={()=>dispatch(setSearchText(""))}/>
@@ -108,18 +108,18 @@ const SpeakersDesign_page = () => {
               <Button
                 onClick={() => downloadSpeaker()}
                 disabled={isdownloadPending}
-                className="w-fit py-1 h-7"
+                className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
+                title="Download Speaker Data"
               >
                 <Download />
-                Download
               </Button>
             )}
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
-              className="w-fit py-1 h-7"
+              className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
+              title="Upload Speaker Data"
             >
               <Upload />
-              Upload
             </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}

@@ -53,7 +53,7 @@ const SponserCarousal = ({
 
   return (
     <div
-      className={`relative rounded-2xl overflow-hidden w-full min-h-[260px] h-full md:h-[200px] border border-gray-300 bg-white`}
+      className={`group relative rounded-xl overflow-hidden w-full h-[28vh] transition-shadow shadow-sm`}
     >
       {slides.map((slide, index) =>
         index === currentSlide ? (
@@ -62,25 +62,16 @@ const SponserCarousal = ({
             className="absolute inset-0 transition-opacity duration-700"
           >
             <a href={slide.url} target="_blank" rel="noopener noreferrer">
-              <div className="relative w-full h-full overflow-hidden bg-gray-200">
+              <div className="relative w-full h-full overflow-hidden bg-white">
                 <img
                   src={slide.logo ? `${slide.logo}` : ExPlaceholderImg}
                   alt=""
-                  className="absolute inset-0 w-full h-full object-contain object-center"
+                  className="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)] object-contain object-center"
                   width={200}
                   height={400}
                   loading="lazy"
                   decoding="async"
                 />
-
-                <div className="relative z-10 w-full h-full bg-linear-to-t from-slate-900/40 to-slate-900/10 flex flex-col justify-end py-4 px-2 md:px-4">
-                  <h2 className="text-base font-bold text-white mb-1">
-                    {slide.full_name}
-                  </h2>
-                  <h2 className="text-base font-bold text-white mb-1">
-                    {slide.category_name}
-                  </h2>
-                </div>
               </div>
             </a>
           </div>
@@ -88,14 +79,14 @@ const SponserCarousal = ({
       )}
       <button
         disabled={currentSlide === 0}
-        className="rounded-full absolute p-2 z-[999] top-[40%] transition-transform duration-300 hover:scale-120 left-4 hover:opacity-100 opacity-70 disabled:opacity-50 shadow bg-white"
+        className="group-hover:opacity-70 rounded-full absolute p-2 z-[999] top-[40%] transition-transform duration-300 hover:scale-120 left-4 hover:opacity-100 opacity-0 disabled:opacity-50 shadow bg-white"
         onClick={() => goToSlide(currentSlide - 1)}
       >
         <FaChevronLeft className="text-primary" size={24} />
       </button>
       <button
         disabled={currentSlide === slides.length - 1}
-        className="rounded-full absolute p-2 z-[999] top-[40%] right-4 transition-transform duration-300 hover:scale-120 hover:opacity-100 opacity-70 disabled:opacity-50 shadow bg-white"
+        className="group-hover:opacity-70 rounded-full absolute p-2 z-[999] top-[40%] right-4 transition-transform duration-300 hover:scale-120 hover:opacity-100 opacity-0 disabled:opacity-50 shadow bg-white"
         onClick={() => goToSlide(currentSlide + 1)}
       >
         <FaChevronRight className="text-primary" size={24} />
