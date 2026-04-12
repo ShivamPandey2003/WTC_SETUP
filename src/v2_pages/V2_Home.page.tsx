@@ -91,15 +91,27 @@ const V2_Home_page = () => {
 
   if (status === "pending" || isHeroCarusole) {
     return (
-      <div className="mx-[7.5%]">
+      <div className="w-full px-4">
+        <div className="navbar flex justify-between py-2">
+          <div className="left-header">
+            <Skeleton className="w-[150px] h-7" />
+          </div>
+          <div className="right-header flex gap-4 mb-2">
+            <Skeleton className="w-[200px] h-10" />
+            <Skeleton className="w-10 h-10 rounded-full" />
+          </div>
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 justify-center gap-6 md:gap-8">
-          <Skeleton className="w-full lg:col-span-2 h-[420px]" />
-          <Skeleton className="w-full h-[420px]" />
+          <Skeleton className="w-full lg:col-span-2 h-[59vh]" />
+          <div className="flex flex-col gap-4">
+            <Skeleton className="w-full h-[28vh]" />
+            <Skeleton className="w-full h-[28vh]" />
+          </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 my-4">
-          <Skeleton className="w-full h-[180px]" />
-          <Skeleton className="w-full h-[180px]" />
-          <Skeleton className="w-full h-[180px]" />
+          <Skeleton className="w-full h-[28vh]" />
+          <Skeleton className="w-full h-[28vh]" />
+          <Skeleton className="w-full h-[28vh]" />
         </div>
       </div>
     );
@@ -112,8 +124,8 @@ const V2_Home_page = () => {
           title="News Feed Error"
           message={String(
             error?.message ??
-              ExhibitorListError?.message ??
-              errorHeroCarusole?.message,
+            ExhibitorListError?.message ??
+            errorHeroCarusole?.message,
           )}
         />
       </div>
@@ -133,8 +145,8 @@ const V2_Home_page = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 h-[58vh] flex justify-center">
           {HeroCarusole?.response &&
-          HeroCarusole.response.length > 0 &&
-          CarusolData.length > 0 ? (
+            HeroCarusole.response.length > 0 &&
+            CarusolData.length > 0 ? (
             <HeroCarousel slides={CarusolData} />
           ) : (
             <Skeleton className="h-[1/2vh] md:h-[530px] shadow rounded-xl bg-gray-300" />
