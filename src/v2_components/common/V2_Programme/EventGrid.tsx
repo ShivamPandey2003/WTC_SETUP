@@ -104,8 +104,8 @@ const EventGrid = ({ selectedCategories }: Props) => {
   }, [Programmes, Dates]);
 
   return (
-    <div className="relative">
-      <div className="absolute left-0 top-0 z-50 flex flex-col space-y-4 px-4 border-r border-border bg-[#F2F2F2]">
+    <div className="relative flex">
+      <div className="left-0 top-0 z-50 flex flex-col space-y-4 px-4 border-r border-border bg-[#F2F2F2]">
         <div className="mb-14" />
         {Times.map((item) => (
           <div
@@ -119,7 +119,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
           </div>
         ))}
       </div>
-      <div className="flex-1 overflow-x-auto pl-20">
+      <div className="flex-1 overflow-x-auto pl-4">
         <div className="flex gap-2 mb-4">
           {DateList.map((item, i) => {
             const date = convertToDate(item);
@@ -127,7 +127,11 @@ const EventGrid = ({ selectedCategories }: Props) => {
             const height =
               Height_OBJ[columns?.length as keyof typeof Height_OBJ] || "200";
             return (
-              <div key={i} className="text-center" style={{ minWidth: `${height}px` }}>
+              <div
+                key={i}
+                className="text-center"
+                style={{ minWidth: `${height}px` }}
+              >
                 <h3>{item.weekday}</h3>
                 <h3>{item.dayMonth}</h3>
               </div>
@@ -150,11 +154,15 @@ const EventGrid = ({ selectedCategories }: Props) => {
             const columnCount = normalColumns.length || 1;
             const columnWidth = 100 / columnCount;
             const height =
-              Height_OBJ[columns.length as keyof typeof Height_OBJ] || "200";
+              Height_OBJ[columns?.length as keyof typeof Height_OBJ] || "200";
 
             return (
               <React.Fragment key={i}>
-                <div className="relative" style={{ minWidth: `${height}px` }}>
+                <div
+                  key={item}
+                  className="relative"
+                  style={{ minWidth: `${height}px` }}
+                >
                   <div className="flex gap-1">
                     {normalColumns.map((col, colIdx) => {
                       // ✅ Guard: col must be iterable

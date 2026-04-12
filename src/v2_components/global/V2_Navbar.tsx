@@ -37,7 +37,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
       ? [
           {
             id: "Dashboard",
-            label: "Dashboard",
+            label: "Admin Module",
             onClick: () => {
               navigate("/global-design");
               dispatch(setTitle(null));

@@ -79,7 +79,7 @@ export default function FailedNewsModal({
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <code className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
-                      {entry.id.split("-")[0]}...
+                      {(entry.id ?? "").split("-")[0]}...
                     </code>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">

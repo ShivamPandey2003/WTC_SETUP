@@ -57,7 +57,7 @@ export const useProfileUpdate = () => {
     error,
   } = useMutation<ProfilePicResponse, AxiosError, ProfileUpdateRequest>({
     mutationFn: async (data) => {
-      const res = await apiRequest("post", "user/profile/update", data);
+      const res = await apiRequest("post", "/user/profile-info/update", data);
       return res.response;
     },
     onSuccess: () => {

@@ -1,3 +1,4 @@
+
 declare type ModelSliceType = {
   loginModel: boolean;
   searchModal: boolean;
@@ -76,6 +77,7 @@ declare type DeleteNewsResponse = {
 declare type CreateSessionResponse = {
   header: ResponseHeader;
   response: {
+    id: string;
     session_id: string;
     title: string;
   };
@@ -119,6 +121,7 @@ declare type DeleteSessionResponse = {
 declare type CreateSpeakerResponse = {
   header: ResponseHeader;
   response: {
+    id: string;
     speaker_id: string;
     name: string;
   };
@@ -431,34 +434,74 @@ declare type ProfileResponse = {
     user_info: {
       firstname: string;
       lastname: string;
+      image_id: string;
       email: string;
       designation: string;
       company_name: string;
       linkedin_url: string;
       phone_number: string;
       profile_image: string;
-      type:number;
-      gender:string
+      type: number;
+      gender: string
     };
     qr_image: string;
+    speaker_info: {
+      "firstname": string,
+      "lastname": string,
+      "designation": string,
+      "company": string,
+      "bio": string,
+      "profile_image": string,
+      "external_link": string,
+      "linkedin_url": string,
+      "whatsapp_url": string
+    } | null
+    exhibitor_info: {
+      "full_name": string,
+      "url": string,
+      "logo": string,
+      "booth_no": string
+    } | null
   };
 };
 
 declare type ProfilePicResponse = {
   header: ResponseHeader;
-  response: {};
+  response: {
+    id: string;
+  };
 };
 
 declare type ProfileUpdateRequest = {
-  name_prefix: string;
-  firstname: string;
-  lastname: string;
-  gender: string;
-  company_name: string;
-  designation: string;
-  linkedin_url: string;
-  // user_image: string;
-  phone_number: string;
+  user_info?: {
+    firstname: string;
+    lastname: string;
+    email?: string;
+    designation: string | null;
+    company_name: string | null;
+    linkedin_url: string | null;
+    phone_number: string | null;
+    profile_image?: string | null;
+    gender: "Male" | "Female" | "Other" | string
+    image_id?: string;
+  };
+  speaker_info?: {
+    "firstname": string,
+    "lastname": string,
+    "designation": string,
+    "company": string,
+    "bio": string,
+    "profile_image"?: string,
+    "external_link": string,
+    "linkedin_url": string,
+    "whatsapp_url": string
+  }
+  exhibitor_info?: {
+    "full_name": string,
+    "url": string,
+    "logo"?: string,
+    "booth_no": string
+  }
 };
 
 declare type OtpResponse = {
@@ -707,5 +750,5 @@ declare type FailedNewsEntry = {
 
 declare type BulkImageResponse = {
   header: ResponseHeader;
-  response: FailedNewsEntry[]
+  response: Record<string, FailedNewsEntry[]>;
 }
