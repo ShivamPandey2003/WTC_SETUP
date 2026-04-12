@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
 import V2_LineClamp from "@/v2_components/global/V2_LineClamp";
-import ExPlaceholderImg from "@/assets/Images/EXPlaceholder.jpg";
 import NewUpdatePlacerholder from "@/assets/Images/new-update-banner-template-ribbon-label-placeholder.png";
 import { memo } from "react";
 
