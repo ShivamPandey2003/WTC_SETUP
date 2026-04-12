@@ -50,7 +50,7 @@ const V2_exhibitors_page = () => {
     AllExhibitors.pages.forEach((page) => {
       const data = page.response.data;
 
-      if(!Object.keys(data).length) return;
+      if (!Object.keys(data).length) return;
 
       // collect keys (seq + dynamic keys)
       data.seq.forEach((key) => finalSeq.add(key));
@@ -147,20 +147,23 @@ const V2_exhibitors_page = () => {
   }
 
   return (
-    <div id="Exhibitors_Scroll" className="px-4 pb-4 mx-auto">
+    <div id="Exhibitors_Scroll" className="pb-4 mx-auto">
       {ExhibitorList.seq.map(
         (value, i) =>
           Boolean(ExhibitorList.grouped[value].length) && (
-            <div key={i} className="mt-6 mx-2">
-              <h4 className="font-[700] text-[26px] mb-4" style={{
-                  background: `linear-gradient(135deg, ${adjustHexColor(ExhibitorList.colors[value] as string, 30)}, ${adjustHexColor(ExhibitorList.colors[value] as string, -30)})`,
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}>
-                {value}
-              </h4>
-              <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
+            <div key={i} className="mb-3 mx-5">
+              <div className="flex title-bar w-full items-center justify-between gap-4 my-3 sticky top-13 z-10 bg-background py-2">
+                <div className="w-10 h-2 rounded-full shadow-sm" style={{
+                  background: `linear-gradient(135deg, ${adjustHexColor(ExhibitorList.colors[value] as string, 10)}, ${adjustHexColor(ExhibitorList.colors[value] as string, -10)})`,
+                }}/>
+                <h4 className="font-[700] text-[26px]">
+                  {value}
+                </h4>
+                <div className="w-full h-2 rounded-full shadow-sm" style={{
+                  background: `linear-gradient(135deg, ${adjustHexColor(ExhibitorList.colors[value] as string, 10)}, ${adjustHexColor(ExhibitorList.colors[value] as string, -10)})`,
+                }}/>
+              </div>
+              <div className="flex flex-wrap gap-4 px-4 justify-center sm:justify-start">
                 {ExhibitorList.grouped[value].map((item, i) => (
                   <ExhibitorCard
                     key={i}
