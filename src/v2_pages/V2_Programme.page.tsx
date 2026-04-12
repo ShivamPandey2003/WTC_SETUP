@@ -106,7 +106,7 @@ const V2_Programme_page = () => {
         <Skeleton className="w-full h-8" />
         <div className="flex gap-4 mt-4">
           <Skeleton className="w-32 h-full" />
-          <div className="w-full h-[75vh] flex items-center justify-center">
+          <div className="w-full h-[75vh] flex flex-col items-center justify-center">
             <Loader className="text-primary animate-spin" size={30} />
             <p className="text-primary font-semibold text-lg">
               Loading programme, please wait...
