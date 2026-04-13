@@ -60,7 +60,7 @@ function HeroCarousel({
     } else if (type === 2) {
       navigation(`/programme`);
     } else {
-      navigation(`/news/${id}`);
+      navigation(`/?n=${id}`);
     }
   };
   return (

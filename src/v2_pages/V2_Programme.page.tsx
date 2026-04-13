@@ -15,7 +15,7 @@ import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
 import EventGrid from "@/v2_components/common/V2_Programme/EventGrid";
 import MultiSelect from "@/v2_components/global/MultiSelect";
-import { Loader, X } from "lucide-react";
+import { X } from "lucide-react";
 import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -101,17 +101,63 @@ const V2_Programme_page = () => {
 
   if (isPending) {
     return (
-      <div className="w-full h-screen flex flex-col px-4">
-        <Skeleton className="w-full h-8 mb-4" />
-        <Skeleton className="w-full h-8" />
-        <div className="flex gap-4 mt-4">
-          <Skeleton className="w-32 h-full" />
-          <div className="w-full h-[75vh] flex flex-col items-center justify-center">
-            <Loader className="text-primary animate-spin" size={30} />
-            <p className="text-primary font-semibold text-lg">
-              Loading programme, please wait...
-            </p>
+      <div className="w-full flex flex-col px-4">
+        {/* Navbar */}
+        <div className="navbar flex justify-between px-4 py-2">
+          <div className="left-header">
+            <Skeleton className="w-[150px] h-7" />
           </div>
+          <div className="right-header flex gap-4 mb-5">
+            <Skeleton className="w-[200px] h-10" />
+            <Skeleton className="w-10 h-10 rounded-full" />
+          </div>
+        </div>
+        {/* Search bar */}
+        <div className="hidden sm:flex justify-center mb-6">
+          <div className="flex items-center gap-2">
+            <Skeleton className="w-72 h-9 rounded-md" />
+            <Skeleton className="w-9 h-9 rounded-md" />
+          </div>
+        </div>
+        {/* Calendar grid */}
+        <div className="flex gap-0 overflow-hidden">
+          {/* Time column */}
+          <div className="flex flex-col pt-8 gap-0 shrink-0 w-14">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div key={i} className="h-12 flex items-start justify-end pr-2">
+                <Skeleton className="w-8 h-3 rounded" />
+              </div>
+            ))}
+          </div>
+          {/* Day columns */}
+          {[
+            [{ top: 1, span: 3 }, { top: 5, span: 2 }],
+            [{ top: 0, span: 2 }, { top: 0, span: 2, offset: true }, { top: 3, span: 3 }, { top: 7, span: 2 }],
+            [{ top: 2, span: 4 }, { top: 7, span: 3 }],
+          ].map((events, colIdx) => (
+            <div key={colIdx} className="flex-1 flex flex-col min-w-0 border-l border-gray-100">
+              {/* Day header */}
+              <div className="h-8 flex items-center justify-center mb-0 border-b border-gray-100">
+                <Skeleton className="w-20 h-4 rounded" />
+              </div>
+              {/* Grid cells with event blocks */}
+              <div className="relative">
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <div key={i} className="h-12 border-b border-gray-50" />
+                ))}
+                {events.map((ev, i) => (
+                  <Skeleton
+                    key={i}
+                    className="absolute left-1 right-1 rounded-lg"
+                    style={{
+                      top: `${ev.top * 48}px`,
+                      height: `${ev.span * 48 - 4}px`,
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );
