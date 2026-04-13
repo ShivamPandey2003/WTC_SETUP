@@ -51,12 +51,12 @@ const V2_UserProfile_page = () => {
             "flex flex-col sm:flex-row sm:items-start justify-between gap-4",
             (Profile.response.speaker_info !== null ||
               Profile.response.exhibitor_info !== null) &&
-              "mb-4",
+            "mb-4",
           )}
         >
           <Tabs
             value={value}
-            onValueChange={(e) => setValue(e as any)}
+            onValueChange={(e) => setValue(e as typeof value)}
             className="w-full"
           >
             <TabsList className="">
