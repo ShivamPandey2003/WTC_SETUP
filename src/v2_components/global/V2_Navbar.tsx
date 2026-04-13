@@ -51,7 +51,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
       label: "Profile",
       onClick: () => {
         dispatch(setTitle(null));
-        navigate(grp === 1 ? "/wtc-profile" : "/user-profile");
+        navigate(grp === 1 ? "/wtc-profile" : "/user-profile", {state:{Title:"User Profile"}});
       },
     },
     {
