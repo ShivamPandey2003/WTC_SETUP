@@ -134,7 +134,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     className="flex items-start mb-6 gap-4 cursor-pointer"
                     key={item.speaker_id}
                     onClick={() => {
-                      navigate(`/speaker/${item.speaker_id}`);
+                      navigate(`/speaker?s=${item.speaker_id}`);
                       onClose();
                     }}
                   >
@@ -163,7 +163,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                             className="flex items-start mb-6 gap-4 cursor-pointer"
                             key={value.id}
                             onClick={() => {
-                              navigate(`/exhibitors/${value.id}`);
+                              navigate(`/exhibitors?e=${value.id}`);
                               onClose();
                             }}
                           >

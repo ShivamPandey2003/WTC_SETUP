@@ -116,7 +116,7 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
 
 const V2_Sidebar = () => {
   return (
-    <aside className="hidden p-4 sm:flex transition-all delay-75 flex-col gap-4 items-center bg-white relative border-r border-border shadow">
+    <aside className="hidden p-4 sm:flex transition-all delay-75 z-10 flex-col gap-4 items-center bg-white relative border-r border-border shadow">
       <V2_Sidebar_Context />
     </aside>
   );

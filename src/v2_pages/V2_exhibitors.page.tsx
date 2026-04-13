@@ -12,7 +12,8 @@ import ExhibitorCard from "@/v2_components/common/V2_Exhibitors/ExhibitorCard";
 import { Loader } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
+import ExhibitorsDetails from "./ExhibitorsDetails";
+import { useSearchParams } from "react-router";
 
 const adjustHexColor = (hex: string, amount: number): string => {
   const clean = hex.replace("#", "");
@@ -30,7 +31,7 @@ const V2_exhibitors_page = () => {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const loadMoreRef = useRef<HTMLDivElement>(null);
-  const navigation = useNavigate();
+  const [selectedExhibitor, setSelectedExhibitor] = useState<string | null>(null);
   const {
     AllExhibitors,
     fetchNextPage,
@@ -39,6 +40,23 @@ const V2_exhibitors_page = () => {
     status,
     error,
   } = useInfiniteExhibitors();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const e = searchParams.get("e");
+    if (e) {
+      setSelectedExhibitor(e);
+    }
+  }, [searchParams])
+
+  useEffect(() => {
+    if (selectedExhibitor) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [selectedExhibitor])
 
   const ExhibitorList = useMemo(() => {
     if (!AllExhibitors || !AllExhibitors.pages) return { grouped: {}, seq: [], colors: {} };
@@ -47,10 +65,11 @@ const V2_exhibitors_page = () => {
     const finalSeq = new Set<string>();
     const finalColors: Record<string, string> = {};
 
+
     AllExhibitors.pages.forEach((page) => {
       const data = page.response.data;
 
-      if(!Object.keys(data).length) return;
+      if (!Object.keys(data).length) return;
 
       // collect keys (seq + dynamic keys)
       data.seq.forEach((key) => finalSeq.add(key));
@@ -116,17 +135,32 @@ const V2_exhibitors_page = () => {
 
   if (status === "pending") {
     return (
-      <div className="mx-[7.5%]">
-        {[1, 2].map((i) => (
-          <ExibitorSection key={i} title={""}>
-            <div className="flex gap-2">
-              {[1, 2, 3].map((v) => (
-                <Skeleton key={v} className="w-[200px] mr-2 h-[200px]" />
-              ))}
+      <>
+        {selectedExhibitor && (
+          <div
+            className="fixed inset-0 z-6 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 sm:ml-32"
+            onClick={() => setSelectedExhibitor(null)}
+          >
+            <div
+              className="bg-white rounded-xl p-6 animate-in fade-in zoom-in-95 duration-200 max-w-9/12 overflow-auto max-h-9/12"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ExhibitorsDetails id={selectedExhibitor} close={() => setSelectedExhibitor(null)} />
             </div>
-          </ExibitorSection>
-        ))}
-      </div>
+          </div>
+        )}
+        <div className="mx-[7.5%]">
+          {[1, 2].map((i) => (
+            <ExibitorSection key={i} title={""}>
+              <div className="flex gap-2">
+                {[1, 2, 3].map((v) => (
+                  <Skeleton key={v} className="w-[200px] mr-2 h-[200px]" />
+                ))}
+              </div>
+            </ExibitorSection>
+          ))}
+        </div>
+      </>
     );
   }
 
@@ -147,45 +181,65 @@ const V2_exhibitors_page = () => {
   }
 
   return (
-    <div id="Exhibitors_Scroll" className="px-4 pb-4 mx-auto">
-      {ExhibitorList.seq.map(
-        (value, i) =>
-          Boolean(ExhibitorList.grouped[value].length) && (
-            <div key={i} className="mt-6 mx-2">
-              <h4 className="font-[700] text-[26px] mb-4" style={{
-                  background: `linear-gradient(135deg, ${adjustHexColor(ExhibitorList.colors[value] as string, 30)}, ${adjustHexColor(ExhibitorList.colors[value] as string, -30)})`,
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}>
-                {value}
-              </h4>
-              <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
-                {ExhibitorList.grouped[value].map((item, i) => (
-                  <ExhibitorCard
-                    key={i}
-                    {...item}
-                    onClick={() => navigation(`/exhibitors/${item.id}`)}
-                    colorTag={ExhibitorList?.colors && ExhibitorList.colors[value] as string}
-                  />
-                ))}
-              </div>
-            </div>
-          ),
+    <>
+      {selectedExhibitor && (
+        <div
+          className="fixed inset-0 z-6 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 sm:ml-32"
+          onClick={() => setSelectedExhibitor(null)}
+        >
+          <div
+            className="bg-white rounded-xl p-6 animate-in fade-in zoom-in-95 duration-200 max-w-9/12
+             overflow-auto max-h-9/12"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ExhibitorsDetails id={selectedExhibitor} close={() => setSelectedExhibitor(null)} />
+          </div>
+        </div>
       )}
-
-      <div
-        ref={loadMoreRef}
-        className="w-full flex items-center justify-center my-4"
-      >
-        {isFetchingNextPage ? (
-          <Loader size={30} className="animate-spin text-primary" />
-        ) : (
-          ""
+      <div id="Exhibitors_Scroll" className="pb-4 mx-auto">
+        {ExhibitorList.seq.map(
+          (value, i) =>
+            Boolean(ExhibitorList.grouped[value].length) && (
+              <div key={i} className="mb-3 mx-5">
+                <div className="flex title-bar w-full items-center justify-between gap-4 my-3 sticky top-14 z-3 from-80% bg-linear-to-b from-background to-transparent py-2">
+                  <div className="w-10 h-2 rounded-full shadow-sm" style={{
+                    background: `linear-gradient(135deg, ${adjustHexColor(ExhibitorList.colors[value] as string, 10)}, ${adjustHexColor(ExhibitorList.colors[value] as string, -10)})`,
+                  }} />
+                  <h4 className="font-[700] text-[26px]">
+                    {value}
+                  </h4>
+                  <div className="w-full h-2 rounded-full shadow-sm" style={{
+                    background: `linear-gradient(135deg, ${adjustHexColor(ExhibitorList.colors[value] as string, 10)}, ${adjustHexColor(ExhibitorList.colors[value] as string, -10)})`,
+                  }} />
+                </div>
+                <div className="flex flex-wrap gap-4 px-4 justify-center sm:justify-start">
+                  {ExhibitorList.grouped[value].map((item, i) => (
+                    <ExhibitorCard
+                      key={i}
+                      {...item}
+                      // onClick={() => navigation(`/exhibitors/${item.id}`)}
+                      onClick={() => setSelectedExhibitor(item.id)}
+                      colorTag={ExhibitorList?.colors && ExhibitorList.colors[value] as string}
+                    />
+                  ))}
+                </div>
+              </div>
+            ),
         )}
+
+        <div
+          ref={loadMoreRef}
+          className="w-full flex items-center justify-center my-4"
+        >
+          {isFetchingNextPage ? (
+            <Loader size={30} className="animate-spin text-primary" />
+          ) : (
+            ""
+          )}
+        </div>
+        <Exhi_SplashScreen open={spashScreen} setOpen={setSpashScreen} />
       </div>
-      <Exhi_SplashScreen open={spashScreen} setOpen={setSpashScreen} />
-    </div>
+    </>
   );
 };
 

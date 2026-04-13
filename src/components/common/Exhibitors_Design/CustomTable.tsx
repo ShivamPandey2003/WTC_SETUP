@@ -127,15 +127,15 @@ const CustomTable = () => {
               {NewValueList.length > 0 &&
                 NewValueList.map((item, index) => (
                   <tr key={index} className="bg-white border w-fit">
-                    <td className="pl-3 py-2 rounded-l-xl w-1/11">{index + 1}</td>
-                    <td className="pl-6 py-2 w-2/11">{item.full_name}</td>
-                    <td className="pl-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis w-2/11">
+                    <td className="px-3 items-center py-2 rounded-l-xl max-w-[50px]">{index + 1}</td>
+                    <td className="pl-6 py-2 truncate max-w-[100px]">{item.full_name}</td>
+                    <td className="pl-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
                       {item.url}
                     </td>
-                    <td className="pl-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis w-1/11">
+                    <td className="pl-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[100px]">
                       {item.booth_no}
                     </td>
-                    <td className="pl-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis w-2/11">
+                    <td className="pl-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
                       {item.email}
                     </td>
                     <td className="pl-6 py-2 w-1/11">

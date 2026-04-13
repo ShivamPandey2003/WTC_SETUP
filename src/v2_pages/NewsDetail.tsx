@@ -3,11 +3,14 @@ import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
 import ExPlaceholderImg from "@/assets/Images/EXPlaceholder.jpg";
 
-const NewsDetail = () => {
-  const { id } = useParams();
+interface NewsDetailProps {
+  id: string;
+  close: () => void;
+}
+
+const NewsDetail = ({ id, close }: NewsDetailProps) => {
   const { News } = useSelector((state: RootState) => state.ExtraSlice);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -28,39 +31,43 @@ const NewsDetail = () => {
   }
 
   return (
-    <div className="px-4 pb-4 mx-auto">
-      <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-          <div className="relative h-96 sm:h-[28rem] overflow-hidden group">
-            <img
-              src={NewsData.bg_img ? NewsData.bg_img : ExPlaceholderImg}
-              alt={NewsData.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-            <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
-              <h1 className="text-3xl sm:text-5xl font-bold text-white leading-tight">
-                {NewsData.title}
-              </h1>
-            </div>
+    <div className="relative max-w-4xl">
+      <div
+        onClick={close}
+        className="absolute top-2 right-2 cursor-pointer border border-gray-400 text-gray-600 text-xs font-bold px-3 py-1 rounded-full shadow-lg z-10 bg-white"
+      >
+        Close
+      </div>
+      <div className="bg-white rounded-2xl overflow-hidden">
+        <div className="relative h-72 sm:h-96 overflow-hidden group">
+          <img
+            src={NewsData.bg_img ? NewsData.bg_img : ExPlaceholderImg}
+            alt={NewsData.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+          <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent"></div>
+          <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+            <h1 className="text-2xl sm:text-4xl font-bold text-white leading-tight">
+              {NewsData.title}
+            </h1>
           </div>
+        </div>
 
-          <div className="px-6 sm:px-12 py-8 sm:py-12">
-            <div className="prose prose-lg max-w-none">
-              <div className="space-y-6 text-slate-700 leading-relaxed">
-                {NewsData.description
-                  .split("\n")
-                  .filter((para) => para.trim())
-                  .map((paragraph, index) => (
-                    <p key={index} className="text-lg">
-                      {paragraph}
-                    </p>
-                  ))}
-              </div>
+        <div className="px-6 sm:px-10 py-6 sm:py-8">
+          <div className="prose prose-lg max-w-none">
+            <div className="space-y-4 text-slate-700 leading-relaxed">
+              {NewsData.description
+                .split("\n")
+                .filter((para) => para.trim())
+                .map((paragraph, index) => (
+                  <p key={index} className="text-base">
+                    {paragraph}
+                  </p>
+                ))}
             </div>
           </div>
         </div>
-      </article>
+      </div>
     </div>
   );
 };
