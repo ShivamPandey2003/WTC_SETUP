@@ -123,7 +123,8 @@ export default function SpeakerForm() {
   const handleRemoveImage = () => setImage(null);
 
   return (
-    <div className="w-full sm:w-1/2 p-6 bg-white rounded-xl space-y-4 relative">
+    <div className="p-6 bg-white rounded-xl space-y-4 relative">
+      <p className="font-semibold">Linked Speaker Profile</p>
       {/* Profile Image */}
       <div className="flex items-end">
         {isPending ? (
@@ -239,7 +240,7 @@ export default function SpeakerForm() {
             <input
               {...register("whatsapp_url")}
               className="w-full sm:w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
-              placeholder="LinkedIn URL"
+              placeholder="Whatsapp URL"
             />
             {errors.whatsapp_url && (
               <p className="text-red-500 text-sm">{errors.whatsapp_url.message}</p>
@@ -254,7 +255,7 @@ export default function SpeakerForm() {
             <input
               {...register("external_link")}
               className="w-full sm:w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
-              placeholder="LinkedIn URL"
+              placeholder="External URL"
             />
             {errors.external_link && (
               <p className="text-red-500 text-sm">{errors.external_link.message}</p>
