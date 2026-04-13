@@ -41,8 +41,6 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
 
   const [value, setValue] = React.useState<string>("");
 
-  console.log(selectedValue);
-
   const navigate = useNavigate();
 
   // const { date, start, end } = useMemo(() => {
