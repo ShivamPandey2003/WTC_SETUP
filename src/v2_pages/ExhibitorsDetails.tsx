@@ -125,74 +125,32 @@ const ExhibitorsDetails = ({ id, close }: ExhibitorProps) => {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
+            <div className="flex flex-col gap-2 flex-wrap">
               {ExhibitorDetails.email && ExhibitorDetails.email.trim() && (
                 <a
                   href={`mailto:${ExhibitorDetails.email}`}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-lg transition-colors duration-200 text-sm"
                 >
-                  <Mail className="w-5 h-5" />
-                  Email
+                  <Mail className="w-4 h-4 shrink-0" />
+                  {ExhibitorDetails.email}
                 </a>
               )}
               {ExhibitorDetails.url && ExhibitorDetails.url.trim() && (
                 <a
-                  href={ExhibitorDetails.url}
+                  href={/^http?:\/\//i.test(ExhibitorDetails.url) ? ExhibitorDetails.url : `http://${ExhibitorDetails.url}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-lg transition-colors duration-200 text-sm"
                 >
-                  <Globe className="w-5 h-5" />
-                  Visit Website
+                  <Globe className="w-4 h-4 shrink-0" />
+                  {ExhibitorDetails.url}
                 </a>
               )}
             </div>
           </div>
         </div>
-
-        {/* <div className="mt-5 pt-3 border-t border-slate-200">
-          <h2 className="text-2xl font-bold text-slate-900 mb-6">
-            Contact Information
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {ExhibitorDetails.email && ExhibitorDetails.email.trim() && (
-              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-100">
-                <div className="flex items-center gap-3 mb-3">
-                  <Mail className="w-6 h-6 text-blue-600" />
-                  <h3 className="text-lg font-semibold text-slate-900">
-                    Email Address
-                  </h3>
-                  <Copy
-                    className="w-5 h-5 cursor-pointer"
-                    onClick={() => handleCopyEmail(ExhibitorDetails.email)}
-                  />
-                </div>
-                <p className="text-slate-700 text-lg font-medium">
-                  {ExhibitorDetails.email}
-                </p>
-              </div>
-            )}
-            {ExhibitorDetails.url && ExhibitorDetails.url.trim() && (
-              <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-100">
-                <div className="flex items-center gap-3 mb-3">
-                  <Globe className="w-6 h-6 text-cyan-600" />
-                  <h3 className="text-lg font-semibold text-slate-900">
-                    Website
-                  </h3>
-                </div>
-                <a
-                  href={ExhibitorDetails.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-cyan-600 hover:text-cyan-700 font-medium flex items-center gap-2 group"
-                >
-                  {ExhibitorDetails.url}
-                  <ExternalLink className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
-                </a>
-              </div>
-            )}
-          </div>
-        </div> */}
       </div>
     </div>
 
