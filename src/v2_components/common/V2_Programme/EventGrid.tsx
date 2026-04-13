@@ -23,6 +23,8 @@ const EventGrid = ({ selectedCategories }: Props) => {
   >({});
   const DateList = formatDates_V2(Dates);
 
+  console.log(Programmes)
+
   function getPxDistance(start: string, end: string) {
     const startEl = timeRefs.current[start];
     const endEl = timeRefs.current[end];
@@ -225,7 +227,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                     className="flex gap-1 absolute"
                                     style={{
                                       top: `${
-                                        positions[event.id]?.top + i * 2 || 0
+                                        (positions[event.id]?.top + i * 2) + 6 || 0
                                       }px`,
                                     }}
                                   >
@@ -236,7 +238,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                           "text-white p-1 rounded-xl flex items-center justify-center text-center text-[9px] cursor-pointer",
                                         )}
                                         style={{
-                                          width: `${100 / event.Item.length}%`,
+                                          width: `${90 / event.Item.length}%`,
                                           height: `${
                                             positions[event.id]?.height || 0
                                           }px`,

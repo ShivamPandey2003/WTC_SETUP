@@ -67,7 +67,7 @@ export interface GroupItem {
   end: string;
   Item: {
     categoryId: string;
-    session_id: string;
+    session_id: string | string[];
     id: string;
     title: string;
     start: string;
@@ -165,12 +165,29 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
           session_id: group.map((s) => s.session_id),
         });
       } else {
-        result.push({
-          id: nanoid(),
-          type: "array",
-          start: group[0].start_time,
-          end: group[0].end_time,
-          Item: group.map((s) => ({
+        const groupedByCategory: Record<string, Session[]> = {};
+
+        group.forEach((s) => {
+          const key = `${s.categoryId}-${s.title}`;
+          if (!groupedByCategory[key]) groupedByCategory[key] = [];
+          groupedByCategory[key].push(s);
+        });
+
+        const items = Object.values(groupedByCategory).map((catGroup) => {
+          if (catGroup.length > 1) {
+            return {
+              categoryId: catGroup[0].categoryId,
+              session_id: catGroup.map((s) => s.session_id),
+              id: catGroup[0].id,
+              title: catGroup[0].title,
+              start: catGroup[0].start_time,
+              end: catGroup[0].end_time,
+              color: catGroup[0].color,
+            };
+          }
+
+          const s = catGroup[0];
+          return {
             categoryId: s.categoryId,
             session_id: s.session_id,
             id: s.id,
@@ -178,7 +195,15 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
             start: s.start_time,
             end: s.end_time,
             color: s.color,
-          })),
+          };
+        });
+
+        result.push({
+          id: nanoid(),
+          type: "array",
+          start: group[0].start_time,
+          end: group[0].end_time,
+          Item: items,
         });
       }
     } else {

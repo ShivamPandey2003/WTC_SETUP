@@ -71,9 +71,12 @@ const ProgrammeDesign_page = () => {
   const { downloadSession, isdownloadPending } = useSessionDownload();
   const { UploadNewsCSV, isPending: isUploadSessionsCSV } =
     useUploadSessionsCSV();
-  const { isCreating, slectedDate, uploadCSV, session = [] } = useSelector(
-    (state: RootState) => state.Programme_Design,
-  );
+  const {
+    isCreating,
+    slectedDate,
+    uploadCSV,
+    session = [],
+  } = useSelector((state: RootState) => state.Programme_Design);
   const { isCreating: isSpeakerCreating, SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
@@ -103,12 +106,16 @@ const ProgrammeDesign_page = () => {
 
   useEffect(() => {
     const end = new Date(formatDate(SpeakerSettings.conference_end_date));
+    const start = new Date(formatDate(SpeakerSettings.conference_start_date));
     const sel = new Date(slectedDate);
 
-    if (end < sel) {
+    if (start > sel) {
       dispatch(
-        setSelectedDate(formatDate(SpeakerSettings.conference_end_date)),
+        setSelectedDate(formatDate(SpeakerSettings.conference_start_date)),
       );
+    }
+
+    if (end < sel) {
     }
   }, [SpeakerSettings.conference_end_date, slectedDate, dispatch]);
 
@@ -190,9 +197,9 @@ const ProgrammeDesign_page = () => {
                         variant={"ghost"}
                         className={cn(
                           "h-7 shrink-0",
-                          date === slectedDate ?
-                            "bg-primary text-white hover:bg-primary hover:text-white" :
-                            "hover:bg-primary/10 hover:text-primary/80 hover:border hover:border-green-700 border border-gray-100",
+                          date === slectedDate
+                            ? "bg-primary text-white hover:bg-primary hover:text-white"
+                            : "hover:bg-primary/10 hover:text-primary/80 hover:border hover:border-green-700 border border-gray-100",
                         )}
                       >
                         {date}
@@ -209,14 +216,16 @@ const ProgrammeDesign_page = () => {
                 <ChevronRight />
               </Button>
             </div>
-            {session.length > 0 && <Button
-              onClick={() => downloadSession()}
-              disabled={isdownloadPending}
-              className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
-              title="Download Programme Data"
-            >
-              <Download />
-            </Button>}
+            {session.length > 0 && (
+              <Button
+                onClick={() => downloadSession()}
+                disabled={isdownloadPending}
+                className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
+                title="Download Programme Data"
+              >
+                <Download />
+              </Button>
+            )}
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
               className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
@@ -380,11 +389,11 @@ const ProgrammeDesign_page = () => {
             </div>
           </TabsContent>
           <TabsContent value="Session Data">
-            {slectedDate &&
+            {slectedDate && (
               <div className="text-sm pb-1 w-full text-gray-500">
                 Showing programme data for {slectedDate}
               </div>
-            }
+            )}
             <CustomTable />
           </TabsContent>
         </Tabs>
