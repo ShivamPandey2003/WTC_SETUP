@@ -135,7 +135,6 @@ export const useEditSpeaker = () => {
           `/upload/presigned-url?file_name=${attachment.name}&module=${"speaker_attachments"}&ref_id=${data.response.speaker_id}`,
         );
         const { file_key, upload_url } = res.response.response;
-        console.log(file_key)
 
         await axios.put(upload_url, file, {
           headers: {
