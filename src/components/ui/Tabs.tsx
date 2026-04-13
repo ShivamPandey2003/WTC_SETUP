@@ -25,7 +25,8 @@ interface TabsListProps {
 }
 
 interface TabsTriggerProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof tabTriggerVariants> {
   value: string;
   className?: string;
@@ -67,36 +68,36 @@ const Tabs = ({
               activeTab,
               onTabChange: handleChange,
             })
-          : child
+          : child,
       )}
     </div>
   );
 };
 
-const TabsList = ({
-  className,
-  children,
-  activeTab,
-  onTabChange,
-}: TabsListProps) => {
-  return (
-    <div
-      className={cn(
-        "bg-muted text-muted-foreground inline-flex h-9 w-full sm:w-fit items-center justify-center rounded-lg p-[3px] overflow-x-auto",
-        className
-      )}
-    >
-      {React.Children.map(children, (child) =>
-        React.isValidElement(child)
-          ? React.cloneElement(child as React.ReactElement<TabsChildProps>, {
-              activeTab,
-              onTabChange,
-            })
-          : child
-      )}
-    </div>
-  );
-};
+const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
+  ({ className, children, activeTab, onTabChange }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "bg-muted text-muted-foreground inline-flex h-9 w-full sm:w-fit items-center justify-center rounded-lg p-[3px] overflow-x-auto",
+          className,
+        )}
+      >
+        {React.Children.map(children, (child) =>
+          React.isValidElement(child)
+            ? React.cloneElement(child as React.ReactElement<TabsChildProps>, {
+                activeTab,
+                onTabChange,
+              })
+            : child,
+        )}
+      </div>
+    );
+  },
+);
+
+TabsList.displayName = "TabsList";
 
 export const tabTriggerVariants = cva(
   "inline-flex h-[calc(100%-1px)] items-center justify-center rounded-md border border-transparent px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none",
@@ -128,35 +129,43 @@ export const tabTriggerVariants = cva(
       variant: "default",
       active: false,
     },
-  }
+  },
 );
 
-const TabsTrigger = ({
-  value,
-  className,
-  activeTab,
-  onTabChange,
-  variant,
-  children,
-  onMouseDown
-}: TabsTriggerProps) => {
-  const isActive = activeTab === value;
+const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
+  (
+    {
+      value,
+      className,
+      activeTab,
+      onTabChange,
+      variant,
+      children,
+      onMouseDown,
+    },
+    ref,
+  ) => {
+    const isActive = activeTab === value;
 
-  return (
-    <button
-      onClick={() => onTabChange?.(value)}
-      data-active={isActive}
-      className={cn(
-        tabTriggerVariants({ variant, active: isActive }),
-        className,
-        "cursor-pointer"
-      )}
-      onMouseDown={onMouseDown}
-    >
-      {children}
-    </button>
-  );
-};
+    return (
+      <button
+        ref={ref} // ✅ attach here
+        onClick={() => onTabChange?.(value)}
+        data-active={isActive}
+        className={cn(
+          tabTriggerVariants({ variant, active: isActive }),
+          className,
+          "cursor-pointer",
+        )}
+        onMouseDown={onMouseDown}
+      >
+        {children}
+      </button>
+    );
+  },
+);
+
+TabsTrigger.displayName = "TabsTrigger";
 
 const TabsContent = ({
   value,

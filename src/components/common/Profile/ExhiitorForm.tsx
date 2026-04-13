@@ -104,7 +104,8 @@ export default function ExhibitorForm() {
   const handleRemoveImage = () => setImage(null);
 
   return (
-    <div className="w-full sm:w-1/2 p-6 bg-white rounded-xl space-y-4 relative">
+    <div className="p-6 bg-white rounded-xl space-y-4 relative min-h-[78vh]">
+      <p className="font-semibold">Linked Exhibitor Profile</p>
       {/* Profile Image */}
       <div className="flex items-end">
         {isPending ? (

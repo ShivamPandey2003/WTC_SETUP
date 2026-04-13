@@ -53,7 +53,7 @@ export default function ProfileForm() {
       company: user_info.company_name as string,
       designation: user_info.designation as string,
       email: user_info.email,
-      linkedin: user_info.linkedin_url as string,
+      linkedin: user_info.linkedin_url || "",
     },
   });
 
@@ -115,7 +115,8 @@ export default function ProfileForm() {
   const handleRemoveImage = () => setImage(null);
 
   return (
-    <div className="w-full sm:w-4/5 mx-auto p-6 bg-white rounded-xl space-y-4 relative">
+    <div className="p-6 bg-white rounded-xl space-y-4 relative">
+      <p className="font-semibold">Your Profile</p>
       {/* Profile Image */}
       <div className="flex items-end">
         {isPending ? (

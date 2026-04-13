@@ -16,8 +16,11 @@ const EventGrid = ({ selectedCategories }: Props) => {
   const Dates = getDateRange(Programmes.start_date, Programmes.end_date);
   const Times = generateTimeArray(Programmes.start_time, Programmes.end_time);
   const timeRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
-  const [seleted, setSelected] = React.useState<string | null | string[]>(null);
-  const [selectedCategory, setSelectedCategory] = React.useState<string | null | string[]>(null);
+  const [seleted, setSelected] = React.useState<{
+    id: string;
+    date: string;
+  } | null>(null);
+  // const [selectedCategory, setSelectedCategory] = React.useState<string | null | string[]>(null);
   const [positions, setPositions] = React.useState<
     Record<string, { top: number; height: number }>
   >({});
@@ -133,7 +136,9 @@ const EventGrid = ({ selectedCategories }: Props) => {
                 className="text-center border-r px-1 border-r-gray-300"
                 style={{ minWidth: `${height}px` }}
               >
-                <h3>{item.weekday}, {item.dayMonth}</h3>
+                <h3>
+                  {item.weekday}, {item.dayMonth}
+                </h3>
               </div>
             );
           })}
@@ -202,18 +207,18 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                       "text-white p-1 rounded-xl flex items-center justify-center text-center text-sm absolute w-full cursor-pointer",
                                     )}
                                     style={{
-                                      top: `${
-                                        positions[event.id]?.top + i * 4 || 0
-                                      }px`,
+                                      top: `${positions[event.id]?.top + i * 4 || 0
+                                        }px`,
                                       height: `${positions[event.id]?.height || 0}px`,
                                       backgroundColor: event.color,
                                     }}
-                                    onClick={() =>
-                                      {
-                                        setSelected(event.session_id);
-                                        setSelectedCategory(event.title);
-                                      }
-                                    }
+                                    onClick={() => {
+                                      setSelected({
+                                        id: event.session_id,
+                                        date: item,
+                                      });
+                                      // setSelectedCategory(event.title);
+                                    }}
                                   >
                                     {event.title}
                                   </div>
@@ -224,9 +229,9 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                     key={event.id}
                                     className="flex gap-1 absolute"
                                     style={{
-                                      top: `${
-                                        positions[event.id]?.top + i * 2 || 0
-                                      }px`,
+                                      top: `${positions[event.id]?.top + i * 2 + 6 ||
+                                        0
+                                        }px`,
                                     }}
                                   >
                                     {event.Item.map((row) => (
@@ -236,14 +241,18 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                           "text-white p-1 rounded-xl flex items-center justify-center text-center text-[9px] cursor-pointer",
                                         )}
                                         style={{
-                                          width: `${100 / event.Item.length}%`,
-                                          height: `${
-                                            positions[event.id]?.height || 0
-                                          }px`,
+                                          width: `${90 / event.Item.length}%`,
+                                          height: `${positions[event.id]?.height || 0
+                                            }px`,
                                           backgroundColor: row.color,
                                         }}
                                         onClick={() =>
-                                          setSelected(row.session_id)
+                                          setSelected({
+                                            id: Array.isArray(row.session_id)
+                                              ? row.session_id[0]
+                                              : row.session_id,
+                                            date: item,
+                                          })
                                         }
                                       >
                                         {row.title}
@@ -259,14 +268,16 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                       "text-white p-1 rounded-xl flex items-center justify-center text-center text-sm absolute w-full cursor-pointer",
                                     )}
                                     style={{
-                                      top: `${
-                                        positions[event.id]?.top + i * 4 || 0
-                                      }px`,
+                                      top: `${positions[event.id]?.top + i * 4 || 0
+                                        }px`,
                                       height: `${positions[event.id]?.height || 0}px`,
                                       backgroundColor: event.color,
                                     }}
                                     onClick={() =>
-                                      setSelected(event.session_id)
+                                      setSelected({
+                                        id: event.session_id[0],
+                                        date: item,
+                                      })
                                     }
                                   >
                                     {event.title}
@@ -280,25 +291,29 @@ const EventGrid = ({ selectedCategories }: Props) => {
                     {extraColumn &&
                       [...extraColumn]
                         .sort((a, b) => a.start.localeCompare(b.start))
-                        .map((item) => {
-                          if (item.type === "extra") {
+                        .map((c) => {
+                          if (c.type === "extra") {
                             return (
                               <div
-                                key={item.id}
+                                key={c.id}
                                 className={cn(
                                   "rounded-xl flex w-[30px] items-center justify-center text-white cursor-pointer",
                                 )}
                                 style={{
-                                  marginTop: `${
-                                    positions[item.id]?.top + i * 4 || 0
-                                  }px`,
-                                  height: `${positions[item.id]?.height || 0}px`,
-                                  backgroundColor: item.color,
+                                  marginTop: `${positions[c.id]?.top + i * 4 || 0
+                                    }px`,
+                                  height: `${positions[c.id]?.height || 0}px`,
+                                  backgroundColor: c.color,
                                 }}
-                                onClick={() => setSelected(item.session_id)}
+                                onClick={() =>
+                                  setSelected({
+                                    id: c.session_id,
+                                    date: item,
+                                  })
+                                }
                               >
                                 <span className="rotate-90 inline-block text-xs">
-                                  {item.title}
+                                  {c.title}
                                 </span>
                               </div>
                             );
@@ -315,8 +330,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
         <EventModal
           isOpen={Boolean(seleted)}
           onClose={() => setSelected(null)}
-          id={seleted as string | string[]}
-          eventCategory={selectedCategory as string | string[]}
+          data={seleted!}
         />
       )}
     </div>
@@ -324,4 +338,3 @@ const EventGrid = ({ selectedCategories }: Props) => {
 };
 
 export default EventGrid;
-

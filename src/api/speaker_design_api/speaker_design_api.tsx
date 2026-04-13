@@ -61,10 +61,11 @@ export const useCreateSpeaker = () => {
           `/upload/presigned-url?file_name=${attachment.name}&module=${"speaker_attachments"}&ref_id=${data.response.speaker_id}`,
         );
         const { file_key, upload_url } = res.response.response;
+        
 
-        await axios.put(upload_url, file, {
+        await axios.put(upload_url, attachment, {
           headers: {
-            "Content-Type": file.type,
+            "Content-Type": attachment.type,
           },
           responseType: "blob",
         });
@@ -72,6 +73,7 @@ export const useCreateSpeaker = () => {
         const newForm = new FormData();
         newForm.append("module", "speaker");
         newForm.append("record_id", data.response.speaker_id);
+        newForm.append("type", "4");
         newForm.append("file_path_attachment", file_key);
 
         await apiRequest("post", "upload/common/files", newForm);
@@ -134,9 +136,9 @@ export const useEditSpeaker = () => {
         );
         const { file_key, upload_url } = res.response.response;
 
-        await axios.put(upload_url, file, {
+        await axios.put(upload_url, attachment, {
           headers: {
-            "Content-Type": file.type,
+            "Content-Type": attachment.type,
           },
           responseType: "blob",
         });
@@ -144,6 +146,7 @@ export const useEditSpeaker = () => {
         const newForm = new FormData();
         newForm.append("module", "speaker");
         newForm.append("record_id", data.response.speaker_id);
+        newForm.append("type", "4");
         newForm.append("file_path_attachment", file_key);
 
         await apiRequest("post", "upload/common/files", newForm);
