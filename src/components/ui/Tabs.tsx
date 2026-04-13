@@ -74,31 +74,6 @@ const Tabs = ({
   );
 };
 
-// const TabsList = ({
-//   className,
-//   children,
-//   activeTab,
-//   onTabChange,
-// }: TabsListProps) => {
-//   return (
-//     <div
-//       className={cn(
-//         "bg-muted text-muted-foreground inline-flex h-9 w-full sm:w-fit items-center justify-center rounded-lg p-[3px] overflow-x-auto",
-//         className,
-//       )}
-//     >
-//       {React.Children.map(children, (child) =>
-//         React.isValidElement(child)
-//           ? React.cloneElement(child as React.ReactElement<TabsChildProps>, {
-//               activeTab,
-//               onTabChange,
-//             })
-//           : child,
-//       )}
-//     </div>
-//   );
-// };
-
 const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
   ({ className, children, activeTab, onTabChange }, ref) => {
     return (
@@ -156,33 +131,6 @@ export const tabTriggerVariants = cva(
     },
   },
 );
-
-// const TabsTrigger = ({
-//   value,
-//   className,
-//   activeTab,
-//   onTabChange,
-//   variant,
-//   children,
-//   onMouseDown
-// }: TabsTriggerProps) => {
-//   const isActive = activeTab === value;
-
-//   return (
-//     <button
-//       onClick={() => onTabChange?.(value)}
-//       data-active={isActive}
-//       className={cn(
-//         tabTriggerVariants({ variant, active: isActive }),
-//         className,
-//         "cursor-pointer"
-//       )}
-//       onMouseDown={onMouseDown}
-//     >
-//       {children}
-//     </button>
-//   );
-// };
 
 const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
   (
