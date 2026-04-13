@@ -115,7 +115,7 @@ export default function ProfileForm() {
   const handleRemoveImage = () => setImage(null);
 
   return (
-    <div className=" p-6 bg-white rounded-xl space-y-4 relative">
+    <div className="p-6 bg-white rounded-xl space-y-4 relative">
       <p className="font-semibold">Your Profile</p>
       {/* Profile Image */}
       <div className="flex items-end">
