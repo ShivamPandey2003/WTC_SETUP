@@ -295,30 +295,30 @@ const EventGrid = ({ selectedCategories }: Props) => {
                     {extraColumn &&
                       [...extraColumn]
                         .sort((a, b) => a.start.localeCompare(b.start))
-                        .map((item) => {
-                          if (item.type === "extra") {
+                        .map((c) => {
+                          if (c.type === "extra") {
                             return (
                               <div
-                                key={item.id}
+                                key={c.id}
                                 className={cn(
                                   "rounded-xl flex w-[30px] items-center justify-center text-white cursor-pointer",
                                 )}
                                 style={{
                                   marginTop: `${
-                                    positions[item.id]?.top + i * 4 || 0
+                                    positions[c.id]?.top + i * 4 || 0
                                   }px`,
-                                  height: `${positions[item.id]?.height || 0}px`,
-                                  backgroundColor: item.color,
+                                  height: `${positions[c.id]?.height || 0}px`,
+                                  backgroundColor: c.color,
                                 }}
                                 onClick={() =>
                                   setSelected({
-                                    id: item.session_id,
-                                    date: item.start,
+                                    id: c.session_id,
+                                    date: item,
                                   })
                                 }
                               >
                                 <span className="rotate-90 inline-block text-xs">
-                                  {item.title}
+                                  {c.title}
                                 </span>
                               </div>
                             );
