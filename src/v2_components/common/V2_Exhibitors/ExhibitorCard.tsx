@@ -22,8 +22,11 @@ export default function ExhibitorCard({
 
   return (
     <div
-      className={`rounded-lg overflow-hidden flex flex-col justify-between w-[20rem] max-w-full sm:max-w-70 md:max-w-xs cursor-pointer border border-gray-200 hover:border-gray-300 transition-shadow duration-200`}
-      style={{ boxShadow: hovered ? `0 3px 10px 0 ${colorTag}55, 0 3px 10px 0 rgba(0,0,0,0.08)` : `0 1px 5px 0 ${colorTag}55, 0 1px 3px 0 rgba(0,0,0,0.08)` }}
+      className={`rounded-lg overflow-hidden flex flex-col justify-between w-[20rem] max-w-full sm:max-w-70 md:max-w-xs cursor-pointer border transition-shadow duration-200`}
+      style={{
+        borderColor: hovered ? colorTag : '#e5e7eb',
+        boxShadow: hovered ? `0 3px 10px 0 ${colorTag}55, 0 3px 10px 0 rgba(0,0,0,0.08)` : `0 1px 5px 0 ${colorTag}55, 0 1px 3px 0 rgba(0,0,0,0.08)`
+      }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={onClick}

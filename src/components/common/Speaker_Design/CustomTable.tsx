@@ -91,7 +91,7 @@ const CustomTable = () => {
       <div>
         <div className="overflow-x-auto h-[72.5vh] relative custom-scrollbar mb-4">
           <table
-            className="w-full border-separate border border-black"
+            className="w-full border-separate"
             style={{ borderSpacing: "0 8px" }}
           >
             <thead className="sticky top-0 z-10 h-10 py-5 shadow border border-gray-200 bg-gray-100">
@@ -128,26 +128,26 @@ const CustomTable = () => {
             <tbody>
               {SpeakersList.map((item, index) => (
                 <tr key={index} className="bg-white border">
-                  <td className="px-6 py-2 rounded-l-xl w-1/11">{index + 1}</td>
-                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-xs">
+                  <td className="px-3 text-center py-2 rounded-l-xl max-w-[50px]">{index + 1}</td>
+                  <td className="px-3 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px]">
                     {`${item.prefix} ${item.firstname} ${item.lastname}`}
                   </td>
-                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-xs">
+                  <td className="px-3 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
                     {item.bio}
                   </td>
-                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-xs">
+                  <td className="px-3 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
                     {item?.email}
                   </td>
-                  <td className="pl-9 py-2 w-1/11">
+                  <td className="px-6 items-center py-2 max-w-[70px]">
                     <Linkedin size={20} />
                   </td>
-                  <td className="pl-9 py-2 w-1/11">
+                  <td className="pl-9 py-2 max-w-[80px]">
                     <img
                       src={item.profile_image ? item.profile_image : Avatar1}
                       className="w-6 h-6"
                     />
                   </td>
-                  <td className="pl-9 py-2 w-1/11">
+                  <td className="pl-9 py-2 max-w-[80px]">
                     {item.attachments.length > 0 ? (
                       <Button
                         variant={"link"}
@@ -158,7 +158,7 @@ const CustomTable = () => {
                         Check
                       </Button>
                     ) : (
-                      "Not Available"
+                      "NA"
                     )}
                   </td>
                   <td className="pl-10 py-2 w-1/11">
