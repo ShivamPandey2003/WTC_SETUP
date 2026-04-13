@@ -12,8 +12,8 @@ import ExhibitorCard from "@/v2_components/common/V2_Exhibitors/ExhibitorCard";
 import { Loader } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
 import ExhibitorsDetails from "./ExhibitorsDetails";
+import { useSearchParams } from "react-router";
 
 const adjustHexColor = (hex: string, amount: number): string => {
   const clean = hex.replace("#", "");
@@ -31,7 +31,6 @@ const V2_exhibitors_page = () => {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const loadMoreRef = useRef<HTMLDivElement>(null);
-  const navigation = useNavigate();
   const [selectedExhibitor, setSelectedExhibitor] = useState<string | null>(null);
   const {
     AllExhibitors,
@@ -41,6 +40,23 @@ const V2_exhibitors_page = () => {
     status,
     error,
   } = useInfiniteExhibitors();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const e = searchParams.get("e");
+    if (e) {
+      setSelectedExhibitor(e);
+    }
+  }, [searchParams])
+
+  useEffect(() => {
+    if (selectedExhibitor) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [selectedExhibitor])
 
   const ExhibitorList = useMemo(() => {
     if (!AllExhibitors || !AllExhibitors.pages) return { grouped: {}, seq: [], colors: {} };
@@ -119,17 +135,32 @@ const V2_exhibitors_page = () => {
 
   if (status === "pending") {
     return (
-      <div className="mx-[7.5%]">
-        {[1, 2].map((i) => (
-          <ExibitorSection key={i} title={""}>
-            <div className="flex gap-2">
-              {[1, 2, 3].map((v) => (
-                <Skeleton key={v} className="w-[200px] mr-2 h-[200px]" />
-              ))}
+      <>
+        {selectedExhibitor && (
+          <div
+            className="fixed inset-0 z-6 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 sm:ml-32"
+            onClick={() => setSelectedExhibitor(null)}
+          >
+            <div
+              className="bg-white rounded-xl p-6 animate-in fade-in zoom-in-95 duration-200 max-w-9/12 overflow-auto max-h-9/12"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ExhibitorsDetails id={selectedExhibitor} close={() => setSelectedExhibitor(null)} />
             </div>
-          </ExibitorSection>
-        ))}
-      </div>
+          </div>
+        )}
+        <div className="mx-[7.5%]">
+          {[1, 2].map((i) => (
+            <ExibitorSection key={i} title={""}>
+              <div className="flex gap-2">
+                {[1, 2, 3].map((v) => (
+                  <Skeleton key={v} className="w-[200px] mr-2 h-[200px]" />
+                ))}
+              </div>
+            </ExibitorSection>
+          ))}
+        </div>
+      </>
     );
   }
 

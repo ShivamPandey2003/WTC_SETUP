@@ -5,11 +5,9 @@ import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { Copy, ExternalLink, Globe, Mail } from "lucide-react";
+import { Globe, Mail } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
-import { toast } from "sonner";
 import ExPlaceholderImg from "@/assets/Images/EXPlaceholder.jpg";
 
 interface ExhibitorProps {
@@ -42,11 +40,6 @@ const ExhibitorsDetails = ({ id, close }: ExhibitorProps) => {
   });
 
   const ExhibitorDetails = exhibitorData || ExhibitorFromAPI?.response;
-
-  const handleCopyEmail = (str: string) => {
-    navigator.clipboard.writeText(str);
-    toast.success("Email Copied Successfully");
-  };
 
   useEffect(() => {
     if (ExhibitorDetails) {

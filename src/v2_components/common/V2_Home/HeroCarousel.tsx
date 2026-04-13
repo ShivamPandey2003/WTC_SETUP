@@ -54,9 +54,9 @@ function HeroCarousel({
 
   const onClick = (id: string, type: number) => {
     if (type === 1) {
-      navigation(`/exhibitors/${id}`);
+      navigation(`/exhibitors?e=${id}`);
     } else if (type === 3) {
-      navigation(`/speaker/${id}`);
+      navigation(`/speaker?s=${id}`);
     } else if (type === 2) {
       navigation(`/programme`);
     } else {
