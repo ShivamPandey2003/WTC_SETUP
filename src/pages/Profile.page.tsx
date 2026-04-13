@@ -46,7 +46,9 @@ const Profile_page = () => {
           loading={false}
         />
         <div className="flex items-start justify-between gap-4">
-          <ProfileForm />
+          <div className="w-full">
+            <ProfileForm />
+          </div>
           <div className="w-fit flex flex-col items-center">
             <WTCBadge />
             <p></p>
