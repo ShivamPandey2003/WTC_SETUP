@@ -334,78 +334,79 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                       {value.name}
                     </p>
                   ))}
-                  <div className="flex items-center justify-start w-full">
+                  <div className="flex items-start justify-start gap-4 w-full">
                     <img
                       src={s.bg_image ? s.bg_image : dummy}
                       alt={s.title}
-                      className="w-full sm:w-[200px] h-[118px] rounded-lg object-cover opacity-80"
+                      className="w-full sm:w-[200px] h-[130px] rounded-lg object-cover opacity-80"
                     />
-                  </div>
-                  <div className="flex flex-col">
-                    <h2 className="text-xl font-bold text-primary mb-2 line-clamp-2">
-                      {s.title}
-                    </h2>
-                    <div className="flex gap-5">
-                      <div className="flex items-center gap-1 text-sm text-primary font-semibold mb-1">
-                        <Calendar1 size={17} /> {`${s.start_date}`}
+                    <div className="flex flex-col">
+                      <h2 className="text-xl font-bold text-primary mb-2 line-clamp-2">
+                        {s.title}
+                      </h2>
+                      <div className="flex gap-5">
+                        <div className="flex items-center gap-1 text-sm text-primary font-semibold mb-1">
+                          <Calendar1 size={17} /> {`${s.start_date}`}
+                        </div>
+                        <div className="flex items-center gap-1 text-sm text-primary font-semibold mb-1">
+                          <Clock size={17} />{" "}
+                          {`${s.start_time} - ${s.end_time}`}
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1 text-sm text-primary font-semibold mb-1">
-                        <Clock size={17} /> {`${s.start_time} - ${s.end_time}`}
+                      <div className="flex flex-start">
+                        <Button variant={"link"} size={"sm"} className="p-0!">
+                          <MapPin /> {s.location}
+                        </Button>
                       </div>
-                    </div>
-                    <div className="flex flex-start">
-                      <Button variant={"link"} size={"sm"} className="p-0!">
-                        <MapPin /> {s.location}
-                      </Button>
-                    </div>
-                    {s.venue && (
-                      <Button
-                        onClick={() => navigate(`/venue?id=${s.venue.id}`)}
-                        variant={"link"}
-                        size={"sm"}
-                        className="p-0! ml-4"
+                      {s.venue && (
+                        <Button
+                          onClick={() => navigate(`/venue?id=${s.venue.id}`)}
+                          variant={"link"}
+                          size={"sm"}
+                          className="p-0! ml-4"
+                        >
+                          Room no: {s.venue.name}
+                        </Button>
+                      )}
+                      <button
+                        onClick={() => onClose(null)}
+                        className="absolute top-3 hover:cursor-pointer right-3 p-1 rounded-full bg-white/90 hover:bg-white transition-colors"
+                        aria-label="Close"
                       >
-                        Room no: {s.venue.name}
-                      </Button>
-                    )}
-                    <button
-                      onClick={() => onClose(null)}
-                      className="absolute top-3 hover:cursor-pointer right-3 p-1 rounded-full bg-white/90 hover:bg-white transition-colors"
-                      aria-label="Close"
-                    >
-                      <X className="w-4 h-4 text-gray-700 font-semibold" />
-                    </button>
-                    <div className="flex gap-3 mb-5">
-                      <Button
-                        onClick={() =>
-                          addToGoogleCalendar({
-                            title: s.title,
-                            start: formatForGoogleCalendar(
-                              s.start_date,
-                              s.start_time,
-                            ),
-                            end: formatForGoogleCalendar(
-                              s.end_date,
-                              s.end_time,
-                            ),
-                            location: s.location,
-                          })
-                        }
-                        variant={"link"}
-                        size={"sm"}
-                        className="p-0!"
-                      >
-                        <CalendarArrowDown /> Add to calendar
-                      </Button>
-                      <Button
-                        variant={"link"}
-                        size={"sm"}
-                        className="p-0!"
-                        onClick={() => notify({ id: s.id })}
-                        disabled={isPending}
-                      >
-                        <BellDot /> Notify me
-                      </Button>
+                        <X className="w-4 h-4 text-gray-700 font-semibold" />
+                      </button>
+                      <div className="flex gap-3 mb-5">
+                        <Button
+                          onClick={() =>
+                            addToGoogleCalendar({
+                              title: s.title,
+                              start: formatForGoogleCalendar(
+                                s.start_date,
+                                s.start_time,
+                              ),
+                              end: formatForGoogleCalendar(
+                                s.end_date,
+                                s.end_time,
+                              ),
+                              location: s.location,
+                            })
+                          }
+                          variant={"link"}
+                          size={"sm"}
+                          className="p-0!"
+                        >
+                          <CalendarArrowDown /> Add to calendar
+                        </Button>
+                        <Button
+                          variant={"link"}
+                          size={"sm"}
+                          className="p-0!"
+                          onClick={() => notify({ id: s.id })}
+                          disabled={isPending}
+                        >
+                          <BellDot /> Notify me
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
