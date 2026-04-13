@@ -116,6 +116,9 @@ const ProgrammeDesign_page = () => {
     }
 
     if (end < sel) {
+      dispatch(
+        setSelectedDate(formatDate(SpeakerSettings.conference_end_date)),
+      );
     }
   }, [SpeakerSettings.conference_end_date, slectedDate, dispatch]);
 

@@ -23,8 +23,6 @@ const EventGrid = ({ selectedCategories }: Props) => {
   >({});
   const DateList = formatDates_V2(Dates);
 
-  console.log(Programmes)
-
   function getPxDistance(start: string, end: string) {
     const startEl = timeRefs.current[start];
     const endEl = timeRefs.current[end];
