@@ -82,7 +82,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
       showCloseButton
       classname="overflow-hidden custom-scrollbar"
     >
-      {!selectedValue ? (
+      {!selectedValue || selectedValue.length === 0 ? (
         <div>No such data found</div>
       ) : (
         // !Array.isArray(selectedValue) ? (
@@ -329,8 +329,8 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                 key={s.id}
               >
                 <div className="flex flex-col items-start gap-4 mb-2 px-4 pb-4">
-                  {Object.entries(s.categories).map(([_, value]) => (
-                    <p style={{ color: value.color }} className="font-semibold">
+                  {Object.entries(s.categories).map(([key, value]) => (
+                    <p key={key} style={{ color: value.color }} className="font-semibold">
                       {value.name}
                     </p>
                   ))}
