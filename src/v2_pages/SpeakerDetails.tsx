@@ -32,7 +32,6 @@ const SpeakerDetails = ({ id, close }: SpeakerProps) => {
   const { speakers } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
-  // const { id } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 

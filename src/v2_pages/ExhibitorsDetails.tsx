@@ -132,7 +132,7 @@ const ExhibitorsDetails = ({ id, close }: ExhibitorProps) => {
               )}
               {ExhibitorDetails.url && ExhibitorDetails.url.trim() && (
                 <a
-                  href={/^http?:\/\//i.test(ExhibitorDetails.url) ? ExhibitorDetails.url : `http://${ExhibitorDetails.url}`}
+                  href={/^https?:\/\//i.test(ExhibitorDetails.url) ? ExhibitorDetails.url : `https://${ExhibitorDetails.url}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-lg transition-colors duration-200 text-sm"
