@@ -126,7 +126,7 @@ const CustomTable = () => {
               ).map((item, index) => (
                 <tr key={item.session_id} className="bg-white border">
                   <td className="px-6 py-2">{index + 1}</td>
-                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">
+                  <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
                     {item.title}
                   </td>
                   <td className="px-6 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[320px]">
@@ -134,7 +134,7 @@ const CustomTable = () => {
                   </td>
                   <td className="px-6 py-2">{item.start_time}</td>
                   <td className="px-6 py-2">{item.end_time}</td>
-                  <td className="px-6 py-2">
+                  <td className="px-6 py-2 text-ellipsis truncate max-w-[200px]">
                     {item.category.map((id) => {
                       const Aray: any = new Map(
                         AllCategory?.response.map((i: any) => [i.id, i]),
