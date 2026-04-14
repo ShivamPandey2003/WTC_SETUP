@@ -73,7 +73,7 @@ export const useCreateSpeaker = () => {
         const newForm = new FormData();
         newForm.append("module", "speaker");
         newForm.append("record_id", data.response.speaker_id);
-        newForm.append("type", "4");
+        newForm.append("type", `${UploadTypeEnum.SPEAKER_ATTACHMENT}`);
         newForm.append("file_path_attachment", file_key);
 
         await apiRequest("post", "upload/common/files", newForm);
@@ -146,7 +146,7 @@ export const useEditSpeaker = () => {
         const newForm = new FormData();
         newForm.append("module", "speaker");
         newForm.append("record_id", data.response.speaker_id);
-        newForm.append("type", "4");
+        newForm.append("type", `${UploadTypeEnum.SPEAKER_ATTACHMENT}`);
         newForm.append("file_path_attachment", file_key);
 
         await apiRequest("post", "upload/common/files", newForm);

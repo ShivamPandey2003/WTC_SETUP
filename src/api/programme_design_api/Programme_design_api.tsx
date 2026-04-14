@@ -51,7 +51,7 @@ export const useCreateSession = () => {
         const newForm = new FormData();
         newForm.append("module", "programme");
         newForm.append("record_id", data.response.id);
-        newForm.append("type", "3");
+        newForm.append("type", `${UploadTypeEnum.PROGRAMME_BG_IMAGE}`);
         newForm.append("file_path_image", file_key);
 
         await apiRequest("post", "upload/common/files", newForm);

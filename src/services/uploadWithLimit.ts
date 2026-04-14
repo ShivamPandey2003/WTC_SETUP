@@ -22,7 +22,7 @@ const uploadSingleFile = async (file: File, id: string, module: string[]) => {
     const newForm = new FormData();
     newForm.append("module", module[1]);
     newForm.append("record_id", id);
-    newForm.append("type", "3");
+    newForm.append("type", `${UploadTypeEnum.PROGRAMME_ATTACHMENT}`);
     newForm.append("file_path_attachment", file_key);
 
     await apiRequest("post", "upload/common/files", newForm);

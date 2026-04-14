@@ -1,0 +1,8 @@
+declare enum UploadTypeEnum {
+    SPEAKER_PROFILE = 1,
+    EXHIBITOR_LOGO = 2,
+    PROGRAMME_ATTACHMENT = 3,
+    SPEAKER_ATTACHMENT = 4,
+    NEWS_IMAGE = 5,
+    PROGRAMME_BG_IMAGE = 6
+}
