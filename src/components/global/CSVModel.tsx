@@ -105,13 +105,14 @@ const CSVModel = ({
       });
     } else if (
       Type === "ATTACHMENT" &&
+      typeof type === "object" &&
       Object.keys(type).length > 0 &&
       typeof file === "object" &&
       "file_path" in file &&
       file.filename !== ""
     ) {
       UploadBulk({
-        type: type[Type as keyof typeof type],
+        type: type.ATTACHMENT,
         ...file,
       });
     } else if (

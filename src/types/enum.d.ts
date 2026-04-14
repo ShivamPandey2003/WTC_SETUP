@@ -1,4 +1,4 @@
-declare enum UploadTypeEnum {
+export enum UploadTypeEnum {
     SPEAKER_PROFILE = 1,
     EXHIBITOR_LOGO = 2,
     PROGRAMME_ATTACHMENT = 3,
