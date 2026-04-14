@@ -97,7 +97,7 @@ declare type Session = {
   description: string;
   bg_img: null | string;
   is_active: boolean;
-  venue: Shape;
+  venue: Shape & {designId:string};
   attachments: { file: string, id: string }[]
 };
 
