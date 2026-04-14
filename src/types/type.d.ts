@@ -638,7 +638,7 @@ declare type VenueDesignMap = {
 
 declare type GlobalVenueDesignMap = {
   header: ResponseHeader;
-  response: (MapT & { programmes: Programme[]; created_by: string })[];
+  response: (MapT & { programmes: (Programme& { venue_id: string; })[]; created_by: string })[];
 };
 
 declare type Infinity = {

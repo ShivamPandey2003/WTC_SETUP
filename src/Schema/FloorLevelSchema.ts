@@ -19,7 +19,7 @@ export const EditFloorLevelSchema = z.object({
   label: z.string().min(2, "Label is required"),
   floor_level: z.number().min(1, "Floor level is required"),
   design_type: z.coerce.boolean(),
-  iframe_url: z.url().optional(),
+  iframe_url: z.url().optional().or(z.literal("")),
   file: z
     .custom<FileList | undefined>()
     .optional()

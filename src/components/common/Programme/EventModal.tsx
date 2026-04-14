@@ -78,7 +78,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
       showHeader={false}
       isOpen={isOpen}
       onClose={() => onClose(null)}
-      size={"full"}
+      size={isMobile?"lg":"full"}
       showCloseButton
       classname="overflow-hidden custom-scrollbar"
     >
@@ -334,7 +334,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                       {value.name}
                     </p>
                   ))}
-                  <div className="flex items-start justify-start gap-4 w-full">
+                  <div className="flex flex-col sm:flex-md items-start justify-start gap-4 w-full">
                     <img
                       src={s.bg_image ? s.bg_image : dummy}
                       alt={s.title}
@@ -353,21 +353,21 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                           {`${s.start_time} - ${s.end_time}`}
                         </div>
                       </div>
-                      <div className="flex flex-start">
+                      <div className="flex flex-start gap-3">
                         <Button variant={"link"} size={"sm"} className="p-0!">
                           <MapPin /> {s.location}
                         </Button>
+                        {s.venue && (
+                          <Button
+                            onClick={() => navigate(`/venue?id=${s.venue.designId}&venueid=${s.venue.id}`)}
+                            variant={"link"}
+                            size={"sm"}
+                            className="p-0! ml-4"
+                          >
+                            Room no: {s.venue.name}
+                          </Button>
+                        )}
                       </div>
-                      {s.venue && (
-                        <Button
-                          onClick={() => navigate(`/venue?id=${s.venue.id}`)}
-                          variant={"link"}
-                          size={"sm"}
-                          className="p-0! ml-4"
-                        >
-                          Room no: {s.venue.name}
-                        </Button>
-                      )}
                       <button
                         onClick={() => onClose(null)}
                         className="absolute top-3 hover:cursor-pointer right-3 p-1 rounded-full bg-white/90 hover:bg-white transition-colors"

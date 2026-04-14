@@ -111,7 +111,7 @@ const EditFrom = () => {
       ?.map_list.filter((i) => !["IMAGE", "TEXT", "SCRIBBLE"].includes(i.type))
       .map((item) => {
         return {
-          label: `${item.name}`,
+          label: `${item.name ?? item.type}`,
           value: item.id,
         };
       });
