@@ -78,9 +78,9 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
       showHeader={false}
       isOpen={isOpen}
       onClose={() => onClose(null)}
-      size={isMobile?"lg":"full"}
+      size={isMobile ? "lg" : "full"}
       showCloseButton
-      classname="overflow-hidden custom-scrollbar"
+      classname="overflow-hidden custom-scrollbar p-2 sm:p-4"
     >
       {!selectedValue ? (
         <div>No such data found</div>
@@ -241,7 +241,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
         <div className="w-full sm:min-h-[300px]">
           <div className="flex flex-col sm:flex-row sm:items-center w-full sm:gap-8">
             <div className="flex items-center gap-4">
-              {!menuBar ? (
+              {/* {!menuBar ? (
                 <Menu
                   className="sm:hidden bg-gray-200 rounded-sm p-0.5"
                   onClick={() => setMenuBar((pre) => !pre)}
@@ -251,14 +251,25 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                   className="sm:hidden bg-gray-200 rounded-sm p-0.5"
                   onClick={() => setMenuBar((pre) => !pre)}
                 />
-              )}
+              )} */}
               <p className="text-2xl sm:mb-4 font-bold text-primary">
                 Day View
               </p>
             </div>
-            <p className="text-lg sm:text-2xl mb-4 font-bold text-primary">
+            <p className="text-lg sm:text-2xl sm:mb-4 font-bold text-primary">
               {data.date}
             </p>
+            {isMobile && (
+              <select name="items" value={value} onChange={(e)=>setValue(e.target.value)} className="outline-0 mb-4 border border-gray-300 rounded-lg p-1 shadow">
+                {selectedValue.map((item) => {
+                  return (
+                    <option key={item.id} value={item.id}>
+                      {item.title}
+                    </option>
+                  );
+                })}
+              </select>
+            )}
           </div>
           <Tabs
             defaultValue={data.id}
@@ -266,7 +277,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
             onValueChange={setValue}
             className="flex flex-row"
           >
-            {menuBar && isMobile && (
+            {/* {menuBar && isMobile && (
               <TabsList
                 ref={listRef}
                 className="flex-col items-start rounded-none border-r border-gray-300 min-h-[300px] sm:w-[30%] h-full justify-start gap-4 pr-2 overflow-y-auto max-h-[52vh] sm:max-h-[70vh]"
@@ -293,7 +304,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                   </TabsTrigger>
                 ))}
               </TabsList>
-            )}
+            )} */}
 
             <TabsList
               ref={listRef}
@@ -334,7 +345,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                       {value.name}
                     </p>
                   ))}
-                  <div className="flex flex-col sm:flex-md items-start justify-start gap-4 w-full">
+                  <div className="flex flex-col sm:flex-row items-start justify-start gap-4 w-full">
                     <img
                       src={s.bg_image ? s.bg_image : dummy}
                       alt={s.title}
@@ -359,7 +370,11 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                         </Button>
                         {s.venue && (
                           <Button
-                            onClick={() => navigate(`/venue?id=${s.venue.designId}&venueid=${s.venue.id}`)}
+                            onClick={() =>
+                              navigate(
+                                `/venue?id=${s.venue.designId}&venueid=${s.venue.id}`,
+                              )
+                            }
                             variant={"link"}
                             size={"sm"}
                             className="p-0! ml-4"

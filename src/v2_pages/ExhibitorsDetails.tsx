@@ -73,7 +73,7 @@ const ExhibitorsDetails = ({ id, close }: ExhibitorProps) => {
       <div className="relative flex w-fit">
         <div
           onClick={() => close()}
-          className="absolute top-2 right-0 cursor-pointer border border-gray-400 text-gray-600 text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+          className="absolute top-0 right-1 cursor-pointer border border-gray-400 bg-white text-gray-600 text-xs font-bold px-3 py-1 rounded-full shadow-lg">
           Close
         </div>
         <div className="flex flex-col sm:flex-row gap-8 items-start">
