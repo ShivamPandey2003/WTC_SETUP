@@ -403,7 +403,6 @@ export const useVenueDesignUpdate = () => {
     typeof image === "string"
       ? {
           ...rest,
-          file_path: image,
           venue_tab,
           floor_plan: "",
           visa_title: "",
@@ -414,7 +413,6 @@ export const useVenueDesignUpdate = () => {
         }
       : {
           ...venue,
-          file_path: image,
           venue_tab,
           floor_plan: "",
           visa_title: "",

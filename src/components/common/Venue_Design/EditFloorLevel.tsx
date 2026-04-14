@@ -7,10 +7,13 @@ import {
   EditFloorLevelSchema,
   type FloorLevelSchemaType,
 } from "@/Schema/FloorLevelSchema";
+import { apiRequest } from "@/services/apiService";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 
 type EditFloorLevelModelProp = {
   id: string;
@@ -22,6 +25,7 @@ const EditFloorLevelModel = ({ id }: EditFloorLevelModelProp) => {
   );
   const Value = map.find((pre) => pre.id === id);
   const { EditFloorLevel, isPending } = useEditFloorLevel();
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const {
     register,
     setValue,
@@ -46,7 +50,7 @@ const EditFloorLevelModel = ({ id }: EditFloorLevelModelProp) => {
       label: Value.label,
       floor_level: Value.floor_level,
       design_type: Value.design_type,
-      iframe_url: Value.iframe_url
+      iframe_url: Value.iframe_url,
     });
   }, [Value, reset, setValue]);
 
@@ -55,15 +59,44 @@ const EditFloorLevelModel = ({ id }: EditFloorLevelModelProp) => {
     setUrl(value);
   }, [designType]);
 
-  const onSubmit = (newData: FloorLevelSchemaType) => {
+  const onSubmit = async (newData: FloorLevelSchemaType) => {
     const formData = new FormData();
     formData.append("label", newData.label);
     formData.append("floor_level", String(newData.floor_level));
-    if(newData.file?.[0]){
-      formData.append("file", newData.file?.[0] as Blob);
-    }
-    if(newData.iframe_url){
+    if (newData.iframe_url) {
       formData.append("iframe_url", newData.iframe_url);
+    }
+
+    if (newData.file?.[0]) {
+      const file = newData.file?.[0];
+      try {
+        setIsLoading(true)
+        const res = await apiRequest(
+          "post",
+          `/upload/presigned-url?file_name=${file.name}&module=${"floor_plan_design"}&ref_id=${id}`,
+        );
+
+        const { file_key, upload_url } = res.response.response;
+        await axios.put(upload_url, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+          responseType: "blob",
+        });
+
+        const newForm = new FormData();
+        newForm.append("module", "designer");
+        newForm.append("record_id", id);
+        newForm.append("file_path_image", file_key);
+
+        await apiRequest("post", "upload/common/files", newForm);
+
+        formData.append("file_path", file_key);
+      } catch (error:any) {
+        toast.error("Image is not uploaded", error.message)
+      }finally{
+        setIsLoading(false)
+      }
     }
 
     EditFloorLevel({ id: id, data: formData });
@@ -134,7 +167,7 @@ const EditFloorLevelModel = ({ id }: EditFloorLevelModelProp) => {
             errors={errors}
             watch={watch}
             setValue={setValue}
-            isLoading={isPending}
+            isLoading={isPending || isLoading}
             onClose={() => dispatch(setEditFloorLevelModal(false))}
           />
         </div>
