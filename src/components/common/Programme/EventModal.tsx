@@ -4,7 +4,6 @@ import dummy from "@/assets/Images/Dummy.png";
 import type { RootState } from "@/redux/store";
 import {
   FileText,
-  Menu,
   X,
   CalendarArrowDown,
   BellDot,
@@ -12,7 +11,7 @@ import {
   Calendar1,
   Clock,
 } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { useSelector } from "react-redux";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { addToGoogleCalendar, cn, formatForGoogleCalendar } from "@/lib/utils";
@@ -32,7 +31,6 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   const listRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const { notify, isPending } = useNotifyProgramme();
-  const [menuBar, setMenuBar] = useState<boolean>(false);
   const isMobile = useIsMobile();
 
   const selectedValue = Session.filter(
