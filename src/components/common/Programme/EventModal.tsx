@@ -4,7 +4,6 @@ import dummy from "@/assets/Images/Dummy.png";
 import type { RootState } from "@/redux/store";
 import {
   FileText,
-  Menu,
   X,
   CalendarArrowDown,
   BellDot,
@@ -12,7 +11,7 @@ import {
   Calendar1,
   Clock,
 } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { useSelector } from "react-redux";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { addToGoogleCalendar, cn, formatForGoogleCalendar } from "@/lib/utils";
@@ -32,7 +31,6 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   const listRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const { notify, isPending } = useNotifyProgramme();
-  const [menuBar, setMenuBar] = useState<boolean>(false);
   const isMobile = useIsMobile();
 
   const selectedValue = React.useMemo(() => {
@@ -67,9 +65,9 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
       showHeader={false}
       isOpen={isOpen}
       onClose={() => onClose(null)}
-      size={"full"}
+      size={isMobile ? "lg" : "full"}
       showCloseButton
-      classname="overflow-hidden custom-scrollbar"
+      classname="overflow-hidden custom-scrollbar p-2 sm:p-4"
     >
       {!selectedValue || selectedValue.length === 0 ? (
         <div>No such data found</div>
@@ -77,7 +75,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
         <div className="w-full sm:min-h-[300px]">
           <div className="flex flex-col sm:flex-row sm:items-center w-full sm:gap-8">
             <div className="flex items-center gap-4">
-              {!menuBar ? (
+              {/* {!menuBar ? (
                 <Menu
                   className="sm:hidden bg-gray-200 rounded-sm p-0.5"
                   onClick={() => setMenuBar((pre) => !pre)}
@@ -87,14 +85,25 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                   className="sm:hidden bg-gray-200 rounded-sm p-0.5"
                   onClick={() => setMenuBar((pre) => !pre)}
                 />
-              )}
+              )} */}
               <p className="text-2xl sm:mb-4 font-bold text-primary">
                 Day View
               </p>
             </div>
-            <p className="text-lg sm:text-2xl mb-4 font-bold text-primary">
+            <p className="text-lg sm:text-2xl sm:mb-4 font-bold text-primary">
               {data.date}
             </p>
+            {isMobile && (
+              <select name="items" value={value} onChange={(e)=>setValue(e.target.value)} className="outline-0 mb-4 border border-gray-300 rounded-lg p-1 shadow">
+                {selectedValue.map((item) => {
+                  return (
+                    <option key={item.id} value={item.id}>
+                      {item.title}
+                    </option>
+                  );
+                })}
+              </select>
+            )}
           </div>
           <Tabs
             defaultValue={data.id}
@@ -102,7 +111,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
             onValueChange={setValue}
             className="flex flex-row"
           >
-            {menuBar && isMobile && (
+            {/* {menuBar && isMobile && (
               <TabsList
                 ref={listRef}
                 className="flex-col items-start rounded-none border-r border-gray-300 min-h-[300px] sm:w-[30%] h-full justify-start gap-4 pr-2 overflow-y-auto max-h-[52vh] sm:max-h-[70vh]"
@@ -129,7 +138,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                   </TabsTrigger>
                 ))}
               </TabsList>
-            )}
+            )} */}
 
             <TabsList
               ref={listRef}
@@ -170,7 +179,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                       {value.name}
                     </p>
                   ))}
-                  <div className="flex items-start justify-start gap-4 w-full">
+                  <div className="flex flex-col sm:flex-row items-start justify-start gap-4 w-full">
                     <img
                       src={s.bg_image ? s.bg_image : dummy}
                       alt={s.title}
@@ -189,21 +198,25 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                           {`${s.start_time} - ${s.end_time}`}
                         </div>
                       </div>
-                      <div className="flex flex-start">
+                      <div className="flex flex-start gap-3">
                         <Button variant={"link"} size={"sm"} className="p-0!">
                           <MapPin /> {s.location}
                         </Button>
+                        {s.venue && (
+                          <Button
+                            onClick={() =>
+                              navigate(
+                                `/venue?id=${s.venue.designId}&venueid=${s.venue.id}`,
+                              )
+                            }
+                            variant={"link"}
+                            size={"sm"}
+                            className="p-0! ml-4"
+                          >
+                            Room no: {s.venue.name}
+                          </Button>
+                        )}
                       </div>
-                      {s.venue && (
-                        <Button
-                          onClick={() => navigate(`/venue?id=${s.venue.id}`)}
-                          variant={"link"}
-                          size={"sm"}
-                          className="p-0! ml-4"
-                        >
-                          Room no: {s.venue.name}
-                        </Button>
-                      )}
                       <button
                         onClick={() => onClose(null)}
                         className="absolute top-3 hover:cursor-pointer right-3 p-1 rounded-full bg-white/90 hover:bg-white transition-colors"

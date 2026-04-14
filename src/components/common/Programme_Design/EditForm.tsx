@@ -6,7 +6,11 @@ import { useGetSpeakerList } from "@/api/speaker_design_api/speaker_design_api";
 import CustomForm from "@/components/global/CustomForm";
 import { setCategoryModal, setSelected } from "@/redux/ProgrammeDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { EditSessionSchema, type EditSessionForm, type SessionForm } from "@/Schema/sessionSchema";
+import {
+  EditSessionSchema,
+  type EditSessionForm,
+  type SessionForm,
+} from "@/Schema/sessionSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,12 +49,12 @@ const EditFrom = () => {
 
   useEffect(() => {
     if (!value) return;
-    const {attachments, ...rest} = value
+    const { attachments, ...rest } = value;
     reset({
       ...rest,
       speakers: value.speakers[0],
-      venueID: value?.venue?.id ? value.venue.id.split("__")[1] : "",
-      floorID: value?.venue?.id ? value?.venue?.id.split("__")[0] : "",
+      venueID: value?.venue?.id ? value?.venue?.id : "",
+      floorID: value?.venue?.designId ? value?.venue?.designId : "",
       category: value.category[0],
     });
   }, [value, reset]);
@@ -81,10 +85,10 @@ const EditFrom = () => {
     formData.append("location", newData.location);
     formData.append("external_link", newData?.external_link as string);
     formData.append("category", newData.category);
-    if(newData.speakers){
+    if (newData.speakers) {
       formData.append("speakers", newData.speakers);
     }
-    if(newData.bg_image?.[0]){
+    if (newData.bg_image?.[0]) {
       formData.append("bg_image", newData.bg_image[0] as Blob);
     }
     if (newData.attachments && newData.attachments?.length > 0) {
@@ -107,11 +111,15 @@ const EditFrom = () => {
 
   useEffect(() => {
     const Value = V2_FloorMapList?.response
-      .find((pre) => pre.id === selectedFloorID)
+      .find((pre) =>
+        pre.id === value?.venue?.designId
+          ? value?.venue?.designId
+          : selectedFloorID,
+      )
       ?.map_list.filter((i) => !["IMAGE", "TEXT", "SCRIBBLE"].includes(i.type))
       .map((item) => {
         return {
-          label: `${item.name}`,
+          label: `${item.name ?? item.type}`,
           value: item.id,
         };
       });
@@ -119,7 +127,7 @@ const EditFrom = () => {
     if (!Value) return;
 
     setValues(Value);
-  }, [selectedFloorID]);
+  }, [selectedFloorID,value]);
 
   if (isPending || isSpeakersListPenindg || V2_isFloorMapListPending) {
     return (
