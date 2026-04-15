@@ -3,7 +3,10 @@ import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
 import Modal from "../ui/Modal";
 import React, { useEffect } from "react";
-import { useUploadBulkNews } from "@/api/home_design_api/Home_design_api";
+import {
+  useUploadBulkNews,
+  useUploadCSVBulk,
+} from "@/api/home_design_api/Home_design_api";
 // import { useDispatch } from "react-redux";
 // import type { AppDispatch } from "@/redux/store";
 // import { setResponseData, setResponseModal } from "@/redux/ModalSlice";
@@ -11,8 +14,8 @@ import { useUploadBulkNews } from "@/api/home_design_api/Home_design_api";
 // import { getPresignedUrls } from "@/services/upload.service";
 import { apiRequest } from "@/services/apiService";
 import axios from "axios";
-import { generateExhibitorId } from "@/lib/utils";
 import { toast } from "sonner";
+import { CSVUploadEnum } from "@/types/enum";
 
 type EditModalProps = {
   title: string;
@@ -21,6 +24,7 @@ type EditModalProps = {
   isLoading?: boolean;
   onSubmit: (e: FormData) => void;
   description: string;
+  CSV_MODULE: string;
   path: string;
   ImageDescription?: string;
   type: number | { ATTACHMENT: number; IMAGE: number };
@@ -31,8 +35,9 @@ const CSVModel = ({
   onClose,
   title,
   isLoading,
-  onSubmit,
+  // onSubmit,
   description,
+  CSV_MODULE,
   path,
   ImageDescription,
   type,
@@ -49,36 +54,35 @@ const CSVModel = ({
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
   // const { UploadBulkImages, isPending, data } = useUploadNewsImages();
   const { UploadBulk, isBulkPending, BulkData } = useUploadBulkNews();
+  const { UploadCSV, isCSVPending } = useUploadCSVBulk(onClose);
   // const dispatch = useDispatch<AppDispatch>();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      if (Type === "CSV") {
-        setFile(e.target.files[0]);
-        return;
-      }
+      // if (Type === "CSV") {
+      //   setFile(e.target.files[0]);
+      //   return;
+      // }
       // handleZipUpload(e.target.files[0]);
-      const old = e.target.files[0];
-      const filename = generateExhibitorId() + ".zip";
-      const file = new File([old], filename, {
-        type: old.type,
-      });
+      const file = e.target.files[0];
       try {
         setIsUploading(true);
         const res = await apiRequest(
           "post",
-          `/upload/presigned-url?file_name=${file.name}&module=${"app_zip"}`,
+          `/upload/presigned-url?file_name=${file.name}&module=${Type === "CSV" ? CSV_MODULE : "app_zip"}`,
         );
         const { file_key, file_name, upload_url } = res.response.response;
 
         await axios.put(upload_url, file, {
           headers: {
-            "Content-Type": "application/x-zip-compressed",
+            "Content-Type":
+              Type === "CSV" ? file.type : "application/x-zip-compressed",
           },
           responseType: "blob",
         });
         setFile({ file_path: file_key, filename: file_name });
-      } catch (error:any) {
+      } catch (error: any) {
+        setIsUploading(false);
         toast.error("Image zip upload failed:", error.message);
       } finally {
         setIsUploading(false);
@@ -88,10 +92,16 @@ const CSVModel = ({
 
   const handleSubmit = () => {
     if (file === null) return;
-    if (Type === "CSV" && file instanceof File) {
-      const formData = new FormData();
-      formData.append("file", file);
-      onSubmit(formData);
+    if (
+      Type === "CSV" &&
+      typeof file === "object" &&
+      "file_path" in file
+    ) {
+      // const formData = new FormData();
+      // formData.append("file", file);
+      // onSubmit(formData);
+      const module = CSVUploadEnum[CSV_MODULE as keyof typeof CSVUploadEnum];
+      UploadCSV({ module: module, file_key: file.file_path });
     } else if (
       Type === "IMAGE" &&
       Object.keys(type).length > 0 &&
@@ -209,13 +219,19 @@ const CSVModel = ({
           type="button"
           className="text-black"
           onClick={onClose}
-          disabled={isLoading || isBulkPending || isUploading}
+          disabled={isLoading || isBulkPending || isUploading || isCSVPending}
         >
           Cancel
         </Button>
         <Button
           type="submit"
-          disabled={isLoading || isBulkPending || isUploading || file === null}
+          disabled={
+            isLoading ||
+            isBulkPending ||
+            isUploading ||
+            file === null ||
+            isCSVPending
+          }
           onClick={handleSubmit}
         >
           <Save size={16} />

@@ -417,6 +417,7 @@ const ProgrammeDesign_page = () => {
         isDeleting={isDeleteCategoryPending}
       />
       <CSVModel
+        CSV_MODULE="session_csv"
         isOpen={uploadCSV}
         onClose={() => dispatch(setUploadCSV(false))}
         title="Sessions"

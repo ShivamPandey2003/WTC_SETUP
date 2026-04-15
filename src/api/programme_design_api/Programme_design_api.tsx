@@ -10,7 +10,7 @@ import {
 import { setCategoryModal as exhibitorCategoryModal } from "@/redux/ExhibitorSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
-import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -73,67 +73,88 @@ export const useCreateSession = () => {
   return { CreateSession, isPending, error };
 };
 
-// export const useGetSessionList = () => {
-//   const dispatch = useDispatch<AppDispatch>();
-//   const {
-//     data: SessionList,
-//     isPending,
-//     error,
-//   } = useQuery<SessionListResponse, AxiosError>({
-//     queryKey: ["sessionList"],
-//     queryFn: async () => {
-//       const res = await apiRequest("get", "programme/list");
-//       return res.response;
-//     },
-//     select: (data) => {
-//       dispatch(setSession(data.response));
-//       return data;
-//     },
-//     refetchOnWindowFocus: false,
-//     retry: 1,
-//   });
+export const useGetSessionList = (
+  page: number = 1,
+  date: string,
+  search?: string,
+) => {
+  const input = new Date(date + " UTC");
 
-//   return { SessionList, isPending, error };
-// };
+  const formatted = input.toISOString().split("T")[0];
 
-export const useAdminInfiniteProgramme = () => {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    filter_date: formatted,
+  });
+  if (search?.trim()) {
+    params.append("search", search.trim());
+  }
+  const url = `programme/list?${params.toString()}`;
+
   const {
-    data: AllProgramme,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    fetchPreviousPage,
-    isFetchingPreviousPage,
-    hasPreviousPage,
-    status,
+    data: SessionList,
+    isPending,
     error,
-  } = useInfiniteQuery<GlobalAdminInfinityProgramme, AxiosError>({
-    queryKey: ["Admin-Programme-pagination"],
-    queryFn: async ({ pageParam }) => {
-      const res = await apiRequest("get", `programme/list?page=${pageParam}`);
+  } = useQuery<GlobalAdminInfinityProgramme, AxiosError>({
+    queryKey: ["sessionList", page, search, date],
+    queryFn: async () => {
+      const res = await apiRequest("get", url);
       return res.response;
     },
-    initialPageParam: 1,
-    getNextPageParam: (lastPage) => {
-      const { current_page, max_page, next_page } = lastPage.response;
-      if (current_page < max_page) return next_page;
-      return undefined; // no more pages
+    select: (data) => {
+      return data;
     },
     refetchOnWindowFocus: false,
+    retry: 1,
   });
 
-  return {
-    AllProgramme,
-    fetchNextPage,
-    fetchPreviousPage,
-    isFetchingPreviousPage,
-    hasNextPage,
-    hasPreviousPage,
-    isFetchingNextPage,
-    status,
-    error,
-  };
+  return { SessionList, isPending, error };
 };
+
+// export const useAdminInfiniteProgramme = (date?: string) => {
+//   const {
+//     data: AllProgramme,
+//     fetchNextPage,
+//     hasNextPage,
+//     isFetchingNextPage,
+//     fetchPreviousPage,
+//     isFetchingPreviousPage,
+//     hasPreviousPage,
+//     status,
+//     error,
+//   } = useInfiniteQuery<GlobalAdminInfinityProgramme, AxiosError>({
+//     queryKey: ["Admin-Programme-pagination", date],
+//     queryFn: async ({ pageParam }) => {
+//       const input = new Date(date + " UTC");
+
+//       const formatted = input.toISOString().split("T")[0];
+//       const res = await apiRequest(
+//         "get",
+//         `programme/list?page=${pageParam}&filter_date=${formatted}`,
+//       );
+//       return res.response;
+//     },
+//     initialPageParam: 1,
+//     getNextPageParam: (lastPage) => {
+//       const { current_page, max_page, next_page } = lastPage.response;
+//       if (current_page < max_page) return next_page;
+//       return undefined; // no more pages
+//     },
+//     refetchOnWindowFocus: false,
+//   });
+
+//   return {
+//     AllProgramme,
+//     fetchNextPage,
+//     fetchPreviousPage,
+//     isFetchingPreviousPage,
+//     hasNextPage,
+//     hasPreviousPage,
+//     isFetchingNextPage,
+//     status,
+//     error,
+//   };
+// };
 
 export const useDeleteSession = () => {
   const dispatch = useDispatch<AppDispatch>();

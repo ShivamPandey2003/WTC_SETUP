@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { ChevronDown, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export interface MultiSelectOption {
   label: string;
@@ -11,6 +12,7 @@ interface MultiSelectProps {
   selected: string[];
   onChange: (selected: string[]) => void;
   placeholder?: string;
+  className?: string;
 }
 
 const MultiSelect = ({
@@ -18,6 +20,7 @@ const MultiSelect = ({
   selected,
   onChange,
   placeholder = "Select...",
+  className
 }: MultiSelectProps) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -62,7 +65,7 @@ const MultiSelect = ({
   //   };
 
   return (
-    <div ref={containerRef} className="relative w-[30vw]">
+    <div ref={containerRef} className={cn("relative w-[30vw]", className)}>
       <div
         className="flex min-h-[20px] cursor-pointer flex-wrap items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 transition-colors hover:border-foreground/30 focus-within:ring-0 focus-within:ring-ring"
         onClick={(e) => {

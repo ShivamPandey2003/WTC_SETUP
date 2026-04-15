@@ -67,3 +67,149 @@ h3{
   scrollbar-width: thin;
   scrollbar-color: #318061 transparent;
 }
+
+
+
+/* body, html, #root {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+} */
+
+.calendar-outer-wrapper {
+  height: calc(100vh - 120px);
+  /* width: calc(100vw - 90px); */
+  background-color: #F2F2F2;
+}
+
+.calendar-scroll-container {
+  display: grid;
+  grid-template-columns: 80px 1fr; /* Gutter width */
+  grid-template-rows: 60px 1fr;   /* Header height */
+  height: 100%;
+  overflow: auto; /* The main scrollable area */
+}
+
+.corner-cell {
+  grid-column: 1;
+  grid-row: 1;
+  background: #F2F2F2;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  border-bottom: 2px solid #ddd;
+  border-right: 2px solid #ddd;
+}
+
+.header-row {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #F2F2F2;
+  border-bottom: 2px solid #ddd;
+}
+
+.day-header {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 13px;
+  border-right: 1px solid #ddd;
+  flex-shrink: 0;
+  color: #333;
+}
+
+.time-gutter {
+  grid-column: 1;
+  grid-row: 2;
+  position: sticky;
+  left: 0;
+  z-index: 50;
+  background: #F2F2F2;
+  border-right: 2px solid #ddd;
+}
+
+.time-label {
+  height: 120px; /* Must match PX_PER_MIN * 60 */
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+  font-size: 12px;
+  color: #888;
+  font-weight: 500;
+}
+
+.calendar-grid {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+}
+
+.day-column {
+  position: relative;
+  max-height: fit-content;
+  /* height: 2880px; */
+  border-right: 1px solid #ddd;
+  background: #F2F2F2;
+  flex-shrink: 0;
+}
+
+.grid-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: #f0f0f0;
+}
+
+/* Event Cards */
+.event-card {
+  position: absolute;
+  border-radius: 10px; /* Rounded corners as requested */
+  padding: 0px 10px;
+  color: #ffffff;
+  box-sizing: border-box;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  overflow: hidden;
+  transition: transform 0.1s ease;
+}
+
+.event-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  /* padding-top: 4px; */
+  height: 100%;
+}
+
+.event-time {
+  font-size: 11px;
+  font-weight: bold;
+  opacity: 0.9;
+}
+
+.category-badge {
+  font-size: 9px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 3px 8px;
+  border-radius: 15px;
+  align-self: flex-start;
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.event-title {
+  /* font-size: 13px; */
+  font-weight: 700;
+  line-height: 1.2;
+}

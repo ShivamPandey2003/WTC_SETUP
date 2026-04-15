@@ -1,9 +1,9 @@
 import { Pencil, Trash2 } from "lucide-react";
 import DeleteModel from "@/components/global/DeleteModel";
 import {
-  useAdminInfiniteProgramme,
   useDeleteSession,
   useGetCategoryAll,
+  useGetSessionList,
 } from "@/api/programme_design_api/Programme_design_api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,48 +17,64 @@ import EditModal from "./EditModel";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { cn, formatDate } from "@/lib/utils";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 
 const CustomTable = () => {
-  const {
-    AllProgramme,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-    hasPreviousPage,
-    fetchPreviousPage,
-    status,
-    error,
-  } = useAdminInfiniteProgramme();
-  const { DeleteSession, isPending: isDeleetSessionPending } =
-    useDeleteSession();
-  const { AllCategory, isPending } = useGetCategoryAll();
+  const [page, setPage] = useState<number>(1);
   const { isDeleting, selected, slectedDate } = useSelector(
     (state: RootState) => state.Programme_Design,
   );
+  // const {
+  //   AllProgramme,
+  //   fetchNextPage,
+  //   hasNextPage,
+  //   isFetchingNextPage,
+  //   isFetchingPreviousPage,
+  //   hasPreviousPage,
+  //   fetchPreviousPage,
+  //   status,
+  //   error,
+  // } = useAdminInfiniteProgramme(slectedDate);
+  const {
+    SessionList,
+    isPending: isListPending,
+    error,
+  } = useGetSessionList(page, slectedDate);
+  const { DeleteSession, isPending: isDeleetSessionPending } =
+    useDeleteSession();
+  const { AllCategory, isPending } = useGetCategoryAll();
   const dispatch = useDispatch<AppDispatch>();
 
   const NewValue = useMemo(() => {
-    if (!AllProgramme) return [];
-    const newData = AllProgramme.pages.flatMap((page) => page.response.data);
+    if (!SessionList) return [];
+    const newData = SessionList.response.data;
     if (!newData) return [];
 
     return newData;
-  }, [AllProgramme]);
+  }, [SessionList]);
+
+  const chunkSize = 10;
+  const maxPage = SessionList?.response.max_page || 1;
+
+  let start = Math.floor((page - 1) / chunkSize) * chunkSize + 1;
+  let end = start + chunkSize - 1;
+
+  if (end > maxPage) {
+    end = maxPage;
+    start = Math.max(1, end - chunkSize + 1);
+  }
+
+  useEffect(()=>{
+    setPage(1)
+  },[slectedDate])
 
   useEffect(() => {
     if (NewValue.length === 0) return;
     dispatch(setSession(NewValue));
   }, [NewValue]);
 
-  if (
-    status === "pending" ||
-    isPending ||
-    isFetchingNextPage ||
-    isFetchingPreviousPage
-  ) {
+  if (isListPending || isPending) {
     return [1, 2, 3, 4].map((val) => (
       <div key={val} className="w-full">
         <Skeleton className="h-8 w-full mb-2" />
@@ -75,7 +91,7 @@ const CustomTable = () => {
   }
 
   if (
-    !AllProgramme ||
+    !SessionList ||
     NewValue.length === 0 ||
     !NewValue.filter((item) => formatDate(item.start_date) === slectedDate)
       .length
@@ -90,12 +106,12 @@ const CustomTable = () => {
   return (
     <div className="overflow-hidden">
       <div>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto h-[70vh] relative custom-scrollbar mb-4">
           <table
             className="min-w-full border-separate"
             style={{ borderSpacing: "0 8px" }}
           >
-            <thead className="">
+            <thead className="sticky top-0 z-10 h-10 shadow border border-gray-200 bg-white">
               <tr>
                 <th className="px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Sno.
@@ -161,24 +177,45 @@ const CustomTable = () => {
             </tbody>
           </table>
         </div>
-        {hasNextPage && (
-          <div className="flex items-center gap-4 justify-end w-full">
+        <div className="flex items-center justify-end w-full">
+          <div className="flex items-center bg-white rounded-md border border-gray-400">
             <Button
-              disabled={!hasPreviousPage}
-              onClick={() => fetchPreviousPage()}
-              className={cn(hasPreviousPage && "cursor-pointer")}
+              size={"sm"}
+              className="hover:bg-primary hover:text-white bg-white text-black border-r rounded-r-none"
+              disabled={page === 1}
+              onClick={() => setPage((pre) => pre - 1)}
+              // className={cn(hasPreviousPage && "cursor-pointer")}
             >
               Previous
             </Button>
+            {Array.from({ length: end - start + 1 }, (_, i) => start + i).map(
+              (num) => {
+                return (
+                  <Button
+                    key={num}
+                    size={"sm"}
+                    className={cn(
+                      "hover:bg-primary rounded-none hover:text-white bg-white text-black border-r",
+                      page === num && "bg-primary text-white",
+                    )}
+                    onClick={() => setPage(num)}
+                  >
+                    {num}
+                  </Button>
+                );
+              },
+            )}
             <Button
-              onClick={() => fetchNextPage()}
-              disabled={!hasNextPage}
-              className={cn(hasPreviousPage && "cursor-pointer")}
+              size={"sm"}
+              className="hover:bg-primary hover:text-white bg-white text-black rounded-l-none"
+              disabled={page === SessionList?.response.max_page}
+              onClick={() => setPage((pre) => pre + 1)}
+              // className={cn(hasPreviousPage && "cursor-pointer")}
             >
               Next
             </Button>
           </div>
-        )}
+        </div>
       </div>
       <EditModal
         isOpen={Boolean(selected)}

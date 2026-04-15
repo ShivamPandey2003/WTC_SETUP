@@ -325,6 +325,43 @@ export const useUploadBulkNews = () => {
   return { UploadBulk, isBulkPending, BulkData, isBulkError };
 };
 
+export const useUploadCSVBulk = (onClose:()=>void) => {
+  const {
+    mutate: UploadCSV,
+    isPending: isCSVPending,
+    data: CSVData,
+    isError: isCSVError,
+  } = useMutation<
+    BulkImageResponse,
+    AxiosError,
+    { module: string; file_key: string }
+  >({
+    mutationFn: async (data) => {
+       const params = new URLSearchParams({
+        module: data.module,
+        file_key: data.file_key,
+      });
+      const res = await apiRequest("post", `upload/process-csv?${params.toString()}`);
+      return res.response;
+    },
+    onSuccess: (_, variable) => {
+       const queryMap: Record<string, string> = {
+        news: "newsList",
+        session: "sessionList",
+        speaker: "adminSpeakerList",
+        exhibitor: "exhibitor-design-list",
+      };
+      const queryKey = queryMap[variable.module];
+      if (queryKey) {
+        queryClient.invalidateQueries({ queryKey: [queryKey] });
+      }
+      onClose()
+    },
+  });
+
+  return { UploadCSV, isCSVPending, CSVData, isCSVError };
+};
+
 // export const useUploadNewsImages = () => {
 //   const {
 //     mutate: UploadBulkImages,
