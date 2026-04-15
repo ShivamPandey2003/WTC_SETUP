@@ -13,7 +13,7 @@ import { setProgrammes, type ProgrammeRecord } from "@/redux/ExtraSlice";
 import { setAll_Categories, setProgramme, setType } from "@/redux/GlobalSlice";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
-import EventGrid from "@/v2_components/common/V2_Programme/EventGrid";
+// import EventGrid from "@/v2_components/common/V2_Programme/EventGrid";
 import EventGrid_V2 from "@/v2_components/common/V2_Programme/EventGrid_v2";
 import MultiSelect from "@/v2_components/global/MultiSelect";
 import { X } from "lucide-react";
