@@ -219,12 +219,12 @@ export default function EventGrid_v2({
                   className="day-header"
                   style={{ width, minWidth: width }}
                 >
-                  {new Date(date)
+                  {new Date(`${date}T00:00:00Z`)
                     .toLocaleDateString("en-GB", {
                       weekday: "short",
                       day: "numeric",
                       month: "short",
-                      timeZone:"UTC"
+                      timeZone: "UTC",
                     })
                     .toUpperCase()}
                 </div>
