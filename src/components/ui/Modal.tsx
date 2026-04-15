@@ -75,7 +75,7 @@ export default function Modal({
     >
       <div
         ref={modalRef}
-        className={`bg-white relative rounded-lg shadow-xl w-full ${sizeClasses[size]} max-h-[80vh]`}
+        className={`bg-white relative rounded-lg shadow-xl w-full ${sizeClasses[size]} max-h-[90vh] sm:max-h-[80vh]`}
       >
         {showHeader && (header || title || showCloseButton) && (
           <div className={cn("flex items-center justify-between border-b border-gray-200", "bg-primary w-full rounded-t-lg px-6 text-white py-3 text-xl font-[600]")}>

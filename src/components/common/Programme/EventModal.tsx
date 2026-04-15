@@ -19,7 +19,7 @@ import { useNavigate } from "react-router";
 import { useNotifyProgramme } from "@/api/programme_design_api/Programme_design_api";
 import Description from "@/components/ui/Description";
 import { useIsMobile } from "@/hooks/use-mobile";
-import MultiSelect from "@/v2_components/global/MultiSelect";
+import SingleSelect from "@/v2_components/global/SingleSelect";
 
 type ModalProps = {
   isOpen: boolean;
@@ -35,39 +35,22 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const { notify, isPending } = useNotifyProgramme();
   const isMobile = useIsMobile();
-  const [type, setType] = useState<string[]>([]);
+  const [type, setType] = useState<string | null>(null);
 
   const selectedValue = Session.filter(
-    (pre) => data.date === pre.start_date && type.includes(pre.type),
+    (pre) => data.date === pre.start_date && type === pre.type,
   ).sort((a, b) => a.start_time.localeCompare(b.start_time));
 
   const [value, setValue] = React.useState<string>("");
 
-  console.log(selectedValue);
-
   const navigate = useNavigate();
-
-  // const { date, start, end } = useMemo(() => {
-  //   if (!value.trim() || !Array.isArray(selectedValue))
-  //     return { date: "", start: "", end: "" };
-  //   const newValue = selectedValue.find((pre) => pre.id === value);
-  //   if (!newValue) return { date: "", start: "", end: "" };
-
-  //   return {
-  //     date: newValue.start_date,
-  //     start: newValue.start_time,
-  //     end: newValue.end_time,
-  //   };
-  // }, [value]);
-
-  console.log(type);
 
   React.useEffect(() => {
     if (data.id) {
       setValue(data.id);
       const type = Session.find((pre) => pre.id === data.id)?.type;
       if (type) {
-        setType([type]);
+        setType(type);
       }
     }
   }, [data]);
@@ -248,46 +231,31 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
         //     </div>
         //   </div>
         // ) :
-        <div className="w-full sm:min-h-[350px]">
-          <div className="flex flex-col sm:flex-row sm:items-center w-full sm:gap-8">
-            <div className="flex items-center gap-4">
-              {/* {!menuBar ? (
-                <Menu
-                  className="sm:hidden bg-gray-200 rounded-sm p-0.5"
-                  onClick={() => setMenuBar((pre) => !pre)}
-                />
-              ) : (
-                <X
-                  className="sm:hidden bg-gray-200 rounded-sm p-0.5"
-                  onClick={() => setMenuBar((pre) => !pre)}
-                />
-              )} */}
-              <p className="text-2xl sm:mb-4 font-bold text-primary">
-                Day View
-              </p>
-            </div>
-            <p className="text-lg sm:text-2xl sm:mb-4 font-bold text-primary">
+        <div className="w-full min-h-[400px] sm:min-h-[350px]">
+          <div className="flex flex-row items-end sm:items-center w-full gap-4 sm:gap-8">
+            <p className="text-lg sm:text-2xl sm:mb-4 font-bold text-primary">Day View</p>
+            <p className="sm:text-2xl sm:mb-4 font-bold text-primary">
               {data.date}
             </p>
-            {isMobile && (
-              <select
-                name="items"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                className="outline-0 mb-4 border border-gray-300 rounded-lg p-1 shadow"
-              >
-                {selectedValue.map((item) => {
-                  return (
-                    <option key={item.id} value={item.id}>
-                      {item.title}
-                    </option>
-                  );
-                })}
-              </select>
-            )}
+            {/* {isMobile && (
+              <div>
+                <span className="truncate text-sm font-semibold">Type</span>
+                <SingleSelect
+                  onChange={setType}
+                  selected={type}
+                  placeholder="Search type..."
+                  options={Types.map((item) => ({
+                    label: item,
+                    value: item,
+                  }))}
+                  className="w-full mb-2"
+                />
+              </div>
+            )} */}
           </div>
           <div className="mb-2">
-            <MultiSelect
+            <span className="truncate text-sm font-semibold">Type</span>
+            <SingleSelect
               onChange={setType}
               selected={type}
               placeholder="Search type..."
@@ -295,9 +263,23 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                 label: item,
                 value: item,
               }))}
-              className="w-[23vw]"
+              className="w-full sm:w-[23vw]"
             />
           </div>
+          {isMobile && (
+            <div>
+              <span className="truncate text-sm font-semibold">Sessions</span>
+              <SingleSelect
+                selected={value}
+                onChange={(e) => setValue(e as string)}
+                options={selectedValue.map((item) => ({
+                  label: item.title,
+                  value: item.id,
+                }))}
+                className="w-full mb-2"
+              />
+            </div>
+          )}
           <Tabs
             defaultValue={data.id}
             value={value}
