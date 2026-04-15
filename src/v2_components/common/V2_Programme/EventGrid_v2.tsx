@@ -66,59 +66,6 @@ const calculateDayLayout = (dayEvents: Programme[]) => {
   return { events: groupedEvents, totalLanes: Math.max(1, lanes.length) };
 };
 
-// const calculateDayLayout = (dayEvents: Programme[]) => {
-//   // 1. Map events to a consistent format and sort by start time
-//   // If start times are equal, sort by longest duration first for a cleaner layout
-//   const processedEvents = dayEvents.map(event => {
-//     const [sh, sm] = event.start_time.split(":").map(Number);
-//     const [eh, em] = event.end_time.split(":").map(Number);
-//     const catId = Object.keys(event.categories || {})[0] || "no-cat";
-//     const catData = event.categories[catId] || {};
-
-//     return {
-//       id: event.id,
-//       startMins: sh * 60 + sm,
-//       endMins: eh * 60 + em,
-//       start_time: event.start_time,
-//       end_time: event.end_time,
-//       title: event.title,
-//       categoryName: catData.name || "General",
-//       catColor: catData.color || "#333",
-//       laneIndex: 0,
-//     };
-//   }).sort((a, b) => a.startMins - b.startMins || (b.endMins - a.endMins));
-
-//   // 2. Collision Detection (Laning)
-//   // We keep track of the 'end time' of the last event placed in each lane
-//   const lanes: number[] = []; // Stores the endMins of the last event in each lane
-
-//   processedEvents.forEach((event) => {
-//     let placed = false;
-
-//     for (let i = 0; i < lanes.length; i++) {
-//       // If the event starts AFTER (or at) the time the lane becomes free
-//       // We add a small 1-minute buffer to prevent visual touching if desired
-//       if (event.startMins >= lanes[i]) {
-//         event.laneIndex = i;
-//         lanes[i] = event.endMins;
-//         placed = true;
-//         break;
-//       }
-//     }
-
-//     // If no lane is free, create a new lane
-//     if (!placed) {
-//       event.laneIndex = lanes.length;
-//       lanes.push(event.endMins);
-//     }
-//   });
-
-//   return {
-//     events: processedEvents,
-//     totalLanes: Math.max(1, lanes.length)
-//   };
-// };
-
 const timeToMins = (timeStr: string) => {
   const [h, m] = timeStr.split(":").map(Number);
 
@@ -277,6 +224,7 @@ export default function EventGrid_v2({
                       weekday: "short",
                       day: "numeric",
                       month: "short",
+                      timeZone:"UTC"
                     })
                     .toUpperCase()}
                 </div>

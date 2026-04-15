@@ -29,7 +29,6 @@ type ModalProps = {
 };
 
 const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
-  console.log(data);
   const { Session, Types } = useSelector(
     (state: RootState) => state.Global_Slice,
   );
@@ -54,7 +53,6 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
       setValue(data.id);
       const type = Session.find((pre) => pre.id === data.id)?.type;
       if (type) {
-        console.log(Session.find((pre) => pre.id === data.id)?.type);
         setType(type);
       }
     }

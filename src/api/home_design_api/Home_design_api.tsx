@@ -337,7 +337,11 @@ export const useUploadCSVBulk = (onClose:()=>void) => {
     { module: string; file_key: string }
   >({
     mutationFn: async (data) => {
-      const res = await apiRequest("post", `upload/process-csv?module=${data.module}&file_key=${data.file_key}`);
+       const params = new URLSearchParams({
+        module: data.module,
+        file_key: data.file_key,
+      });
+      const res = await apiRequest("post", `upload/process-csv?${params.toString()}`);
       return res.response;
     },
     onSuccess: (_, variable) => {
