@@ -14,6 +14,7 @@ import { setAll_Categories, setProgramme, setType } from "@/redux/GlobalSlice";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
 import EventGrid from "@/v2_components/common/V2_Programme/EventGrid";
+import EventGrid_V2 from "@/v2_components/common/V2_Programme/EventGrid_v2";
 import MultiSelect from "@/v2_components/global/MultiSelect";
 import { X } from "lucide-react";
 import { nanoid } from "nanoid";
@@ -231,7 +232,8 @@ const V2_Programme_page = () => {
           </Button>
         </div>
       </div>
-      <EventGrid selectedCategories={selectedCategories} />
+      {/* <EventGrid selectedCategories={selectedCategories} /> */}
+      <EventGrid_V2 programmeData={ProgrammeList.data.response.programme}/>
     </div>
   );
 };

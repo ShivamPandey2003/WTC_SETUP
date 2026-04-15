@@ -169,7 +169,8 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
           end: latest.end_time,
           session_id: group.map((s) => s.session_id),
         });
-      } else {
+      } 
+      else {
         const groupedByCategory: Record<string, Session[]> = {};
 
         group.forEach((s) => {
