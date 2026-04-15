@@ -82,10 +82,14 @@ export const useGetSessionList = (
 
   const formatted = input.toISOString().split("T")[0];
 
-  const url =
-    search && search.trim()
-      ? `programme/list?page=${page}&search=${search}&filter_date=${formatted}`
-      : `programme/list?page=${page}&filter_date=${formatted}`;
+  const params = new URLSearchParams({
+    page: page.toString(),
+    filter_date: formatted,
+  });
+  if (search?.trim()) {
+    params.append("search", search.trim());
+  }
+  const url = `programme/list?${params.toString()}`;
 
   const {
     data: SessionList,

@@ -341,18 +341,15 @@ export const useUploadCSVBulk = (onClose:()=>void) => {
       return res.response;
     },
     onSuccess: (_, variable) => {
-      switch(variable.module){
-        case "news":
-           queryClient.invalidateQueries({ queryKey: ["newsList"] })
-           break;
-        case "session":
-          queryClient.invalidateQueries({ queryKey: ["sessionList"] })
-          break;
-        case "speaker":
-          queryClient.invalidateQueries({ queryKey: ["adminSpeakerList"] })
-          break;
-        case "exhibitor":
-          queryClient.invalidateQueries({ queryKey: ["exhibitor-design-list"] })
+       const queryMap: Record<string, string> = {
+        news: "newsList",
+        session: "sessionList",
+        speaker: "adminSpeakerList",
+        exhibitor: "exhibitor-design-list",
+      };
+      const queryKey = queryMap[variable.module];
+      if (queryKey) {
+        queryClient.invalidateQueries({ queryKey: [queryKey] });
       }
       onClose()
     },
