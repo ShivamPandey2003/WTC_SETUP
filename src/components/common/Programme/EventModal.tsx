@@ -268,7 +268,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
           </div>
           {isMobile && (
             <div>
-              <span className="truncate text-sm font-semibold">Sessions</span>
+              <span className="truncate text-sm font-semibold">Programme</span>
               <SingleSelect
                 selected={value}
                 onChange={(e) => setValue(e as string)}
