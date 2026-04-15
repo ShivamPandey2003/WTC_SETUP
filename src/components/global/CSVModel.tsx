@@ -54,7 +54,7 @@ const CSVModel = ({
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
   // const { UploadBulkImages, isPending, data } = useUploadNewsImages();
   const { UploadBulk, isBulkPending, BulkData } = useUploadBulkNews();
-  const { UploadCSV, isCSVPending, CSVData } = useUploadCSVBulk(onClose);
+  const { UploadCSV, isCSVPending } = useUploadCSVBulk(onClose);
   // const dispatch = useDispatch<AppDispatch>();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
