@@ -215,9 +215,8 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                       "text-white p-1 rounded-xl flex items-center text-ellipsis justify-center text-center text-sm absolute w-full cursor-pointer",
                                     )}
                                     style={{
-                                      top: `${
-                                        positions[event.id]?.top + i * 4 || 0
-                                      }px`,
+                                      top: `${positions[event.id]?.top + i * 4 || 0
+                                        }px`,
                                       height: `${positions[event.id]?.height || 0}px`,
                                       backgroundColor: event.color,
                                     }}
@@ -238,10 +237,9 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                     key={event.id}
                                     className="flex gap-1 absolute"
                                     style={{
-                                      top: `${
-                                        positions[event.id]?.top + i * 2 + 6 ||
+                                      top: `${positions[event.id]?.top + i * 2 + 6 ||
                                         0
-                                      }px`,
+                                        }px`,
                                     }}
                                   >
                                     {event.Item.map((row) => (
@@ -252,9 +250,8 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                         )}
                                         style={{
                                           width: `${90 / event.Item.length}%`,
-                                          height: `${
-                                            positions[event.id]?.height || 0
-                                          }px`,
+                                          height: `${positions[event.id]?.height || 0
+                                            }px`,
                                           backgroundColor: row.color,
                                         }}
                                         onClick={() =>
@@ -279,9 +276,8 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                       "text-white p-1 rounded-xl flex items-center justify-center text-center text-sm absolute w-full cursor-pointer",
                                     )}
                                     style={{
-                                      top: `${
-                                        positions[event.id]?.top + i * 4 || 0
-                                      }px`,
+                                      top: `${positions[event.id]?.top + i * 4 || 0
+                                        }px`,
                                       height: `${positions[event.id]?.height || 0}px`,
                                       backgroundColor: event.color,
                                     }}
@@ -315,9 +311,8 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                   "rounded-xl flex w-[30px] items-center justify-center text-white cursor-pointer",
                                 )}
                                 style={{
-                                  marginTop: `${
-                                    positions[c.id]?.top + i * 4 || 0
-                                  }px`,
+                                  marginTop: `${positions[c.id]?.top + i * 4 || 0
+                                    }px`,
                                   height: `${positions[c.id]?.height || 0}px`,
                                   backgroundColor: c.color,
                                 }}
@@ -346,8 +341,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
         <EventModal
           isOpen={Boolean(seleted)}
           onClose={() => setSelected(null)}
-          data={seleted as any}
-          // eventCategory={selectedCategory as string | string[]}
+          data={seleted!}
         />
       )}
     </div>

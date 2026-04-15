@@ -63,7 +63,7 @@ export const useCreateSpeaker = () => {
         const { file_key, upload_url } = res.response.response;
         
 
-        await axios.put(upload_url, file, {
+        await axios.put(upload_url, attachment, {
           headers: {
             "Content-Type": attachment.type,
           },
@@ -136,7 +136,7 @@ export const useEditSpeaker = () => {
         );
         const { file_key, upload_url } = res.response.response;
 
-        await axios.put(upload_url, file, {
+        await axios.put(upload_url, attachment, {
           headers: {
             "Content-Type": attachment.type,
           },

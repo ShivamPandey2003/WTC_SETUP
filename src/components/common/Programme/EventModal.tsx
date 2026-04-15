@@ -37,11 +37,13 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   const isMobile = useIsMobile();
   const [type, setType] = useState<string | null>(null);
 
-  const selectedValue = Session.filter(
-    (pre) => data.date === pre.start_date && type === pre.type,
-  ).sort((a, b) => a.start_time.localeCompare(b.start_time));
+  const selectedValue = React.useMemo(() => {
+    return Session.filter(
+      (pre) => data.date === pre.start_date && type === pre.type,
+    ).sort((a, b) => a.start_time.localeCompare(b.start_time));
+  }, [Session, data.date]);
 
-  const [value, setValue] = React.useState<string>("");
+  const [value, setValue] = React.useState<string>(data.id);
 
   const navigate = useNavigate();
 
@@ -75,162 +77,9 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
       showCloseButton
       classname="overflow-hidden custom-scrollbar p-2 sm:p-4"
     >
-      {!selectedValue ? (
+      {!selectedValue || selectedValue.length === 0 ? (
         <div>No such data found</div>
       ) : (
-        // !Array.isArray(selectedValue) ? (
-        //   <div className="w-full overflow-auto max-h-[70vh] custom-scrollbar">
-        //     {eventCategory !== selectedValue. && (
-        //       <div className="title text-primary mb-3">{eventCategory}</div>
-        //     )}
-        //     <div className="flex flex-col sm:flex-row gap-5 items-center">
-        //       <div className="flex items-center justify-center h-full">
-        //         <img
-        //           src={selectedValue.bg_image ? selectedValue.bg_image : dummy}
-        //           alt={selectedValue.title}
-        //           className="w-full sm:w-[200px] h-[118px] rounded-lg object-cover opacity-80"
-        //         />
-        //       </div>
-        //       <div className="flex flex-col justify-between h-full gap-3">
-        //         <h2 className="text-xl font-bold text-primary mb-2">
-        //           {selectedValue.title}
-        //         </h2>
-        //         <div className="flex gap-5 text-sm items-center">
-        //           <div className="text-sm text-primary font-semibold flex items-center gap-1">
-        //             <Calendar1 size={17} />{" "}
-        //             {selectedValue.start_date === selectedValue.end_date
-        //               ? selectedValue.start_date
-        //               : `${selectedValue.start_date} - ${selectedValue.end_date}`}
-        //           </div>
-        //           <div className="flex text-sm text-primary font-semibold gap-1 items-center">
-        //             <Clock size={17} />{" "}
-        //             {`${selectedValue.start_time} - ${selectedValue.end_time}`}
-        //           </div>
-        //         </div>
-        //         {selectedValue.venue && (
-        //           <Button
-        //             onClick={() =>
-        //               navigate(
-        //                 `/venue?id=${selectedValue.venue.designId}&venueid=${selectedValue.venue.id}`,
-        //               )
-        //             }
-        //             variant={"link"}
-        //             size={"sm"}
-        //             className="p-0 ml-4"
-        //           >
-        //             Room no: {selectedValue.venue.design_label} -{" "}
-        //             {selectedValue.venue.name}
-        //           </Button>
-        //         )}
-        //         <button
-        //           onClick={() => onClose(null)}
-        //           className="absolute hover:cursor-pointer top-3 right-3 p-1 rounded-full bg-white/90 hover:bg-white transition-colors"
-        //           aria-label="Close"
-        //         >
-        //           <X className="w-4 h-4 text-gray-700 font-semibold" />
-        //         </button>
-        //         <div className="flex flex-col w-full items-start">
-        //           <Button variant={"link"} size={"sm"} className="p-0!">
-        //             <MapPin /> {selectedValue.location}
-        //           </Button>
-        //           <div className="flex w-full gap-5">
-        //             <Button
-        //               onClick={() =>
-        //                 addToGoogleCalendar({
-        //                   title: selectedValue.title,
-        //                   start: formatForGoogleCalendar(
-        //                     selectedValue.start_date,
-        //                     selectedValue.start_time,
-        //                   ),
-        //                   end: formatForGoogleCalendar(
-        //                     selectedValue.end_date,
-        //                     selectedValue.end_time,
-        //                   ),
-        //                   location: selectedValue.location,
-        //                 })
-        //               }
-        //               variant={"link"}
-        //               size={"sm"}
-        //               className="p-0!"
-        //             >
-        //               <CalendarArrowDown /> Add to calendar
-        //             </Button>
-        //             <Button
-        //               variant={"link"}
-        //               size={"sm"}
-        //               className="p-0!"
-        //               onClick={() => notify({ id: selectedValue.id })}
-        //               disabled={isPending}
-        //             >
-        //               <BellDot /> Notify me
-        //             </Button>
-        //           </div>
-        //         </div>
-        //       </div>
-        //     </div>
-        //     <div className="relative">
-        //       <p className="text-sm text-gray-600 leading-relaxed mb-4">
-        //         {selectedValue.description}
-        //       </p>
-
-        //       {
-        //         selectedValue.attachments &&
-        //           selectedValue.attachments.length > 0 &&
-        //           // <a href={selectedValue.attachments.file} target="_blank">
-        //           selectedValue.attachments
-        //             .filter((p) => p.has_attachment)
-        //             .map((e) => (
-        //               <div
-        //                 key={e.id}
-        //                 onClick={() =>
-        //                   navigate(`/Attachment/${selectedValue.id}`, {
-        //                     state: { Title: e.filename, file_id: e.id },
-        //                   })
-        //                 }
-        //                 className="flex flex-col sm:flex-row sm:items-center gap-2 mb-5 text-sm text-gray-700"
-        //               >
-        //                 <FileText className="w-4 h-4" />
-        //                 <span className="hover:underline cursor-pointer">
-        //                   {e.filename}
-        //                 </span>
-        //               </div>
-        //             ))
-        //         // </a>
-        //       }
-
-        //       <div className="flex items-center gap-6">
-        //         {selectedValue.speakers.map((speaker, index) => (
-        //           <div
-        //             key={index}
-        //             className="flex flex-col items-center cursor-pointer"
-        //             onClick={() => navigate(`/speaker/${speaker.speaker_id}`)}
-        //           >
-        //             <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center mb-2 overflow-hidden">
-        //               {speaker.profile_img ? (
-        //                 <img
-        //                   src={speaker.profile_img}
-        //                   alt={speaker.fullname}
-        //                   className="w-full h-full object-cover"
-        //                 />
-        //               ) : (
-        //                 <svg
-        //                   className="w-6 h-6 text-white"
-        //                   fill="currentColor"
-        //                   viewBox="0 0 24 24"
-        //                 >
-        //                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-        //                 </svg>
-        //               )}
-        //             </div>
-        //             <span className="text-xs text-gray-700 text-center">
-        //               {speaker.fullname}
-        //             </span>
-        //           </div>
-        //         ))}
-        //       </div>
-        //     </div>
-        //   </div>
-        // ) :
         <div className="w-full min-h-[400px] sm:min-h-[350px]">
           <div className="flex flex-row items-end sm:items-center w-full gap-4 sm:gap-8">
             <p className="text-lg sm:text-2xl sm:mb-4 font-bold text-primary">Day View</p>
@@ -349,8 +198,8 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                 key={s.id}
               >
                 <div className="flex flex-col items-start gap-4 mb-2 px-4 pb-4">
-                  {Object.entries(s.categories).map(([_, value]) => (
-                    <p style={{ color: value.color }} className="font-semibold">
+                  {Object.entries(s.categories).map(([key, value]) => (
+                    <p key={key} style={{ color: value.color }} className="font-semibold">
                       {value.name}
                     </p>
                   ))}
