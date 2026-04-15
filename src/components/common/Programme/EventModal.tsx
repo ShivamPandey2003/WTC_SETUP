@@ -11,7 +11,7 @@ import {
   Calendar1,
   Clock,
 } from "lucide-react";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { addToGoogleCalendar, cn, formatForGoogleCalendar } from "@/lib/utils";
@@ -19,6 +19,7 @@ import { useNavigate } from "react-router";
 import { useNotifyProgramme } from "@/api/programme_design_api/Programme_design_api";
 import Description from "@/components/ui/Description";
 import { useIsMobile } from "@/hooks/use-mobile";
+import MultiSelect from "@/v2_components/global/MultiSelect";
 
 type ModalProps = {
   isOpen: boolean;
@@ -27,17 +28,22 @@ type ModalProps = {
 };
 
 const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
-  const { Session } = useSelector((state: RootState) => state.Global_Slice);
+  const { Session, Types } = useSelector(
+    (state: RootState) => state.Global_Slice,
+  );
   const listRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const { notify, isPending } = useNotifyProgramme();
   const isMobile = useIsMobile();
+  const [type, setType] = useState<string[]>([]);
 
   const selectedValue = Session.filter(
-    (pre) => data.date === pre.start_date,
+    (pre) => data.date === pre.start_date && type.includes(pre.type),
   ).sort((a, b) => a.start_time.localeCompare(b.start_time));
 
   const [value, setValue] = React.useState<string>("");
+
+  console.log(selectedValue);
 
   const navigate = useNavigate();
 
@@ -54,9 +60,15 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   //   };
   // }, [value]);
 
+  console.log(type);
+
   React.useEffect(() => {
     if (data.id) {
       setValue(data.id);
+      const type = Session.find((pre) => pre.id === data.id)?.type;
+      if (type) {
+        setType([type]);
+      }
     }
   }, [data]);
 
@@ -236,7 +248,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
         //     </div>
         //   </div>
         // ) :
-        <div className="w-full sm:min-h-[300px]">
+        <div className="w-full sm:min-h-[350px]">
           <div className="flex flex-col sm:flex-row sm:items-center w-full sm:gap-8">
             <div className="flex items-center gap-4">
               {/* {!menuBar ? (
@@ -258,7 +270,12 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
               {data.date}
             </p>
             {isMobile && (
-              <select name="items" value={value} onChange={(e)=>setValue(e.target.value)} className="outline-0 mb-4 border border-gray-300 rounded-lg p-1 shadow">
+              <select
+                name="items"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                className="outline-0 mb-4 border border-gray-300 rounded-lg p-1 shadow"
+              >
                 {selectedValue.map((item) => {
                   return (
                     <option key={item.id} value={item.id}>
@@ -268,6 +285,18 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                 })}
               </select>
             )}
+          </div>
+          <div className="mb-2">
+            <MultiSelect
+              onChange={setType}
+              selected={type}
+              placeholder="Search type..."
+              options={Types.map((item) => ({
+                label: item,
+                value: item,
+              }))}
+              className="w-[23vw]"
+            />
           </div>
           <Tabs
             defaultValue={data.id}
@@ -306,7 +335,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
 
             <TabsList
               ref={listRef}
-              className="flex-col hidden sm:flex items-start rounded-none border-r border-gray-300 min-h-[300px] sm:w-[30%] h-full justify-start gap-4 pr-2 overflow-y-auto max-h-[52vh] sm:max-h-[70vh]"
+              className="flex-col hidden sm:flex items-start rounded-none border-r border-gray-300 min-h-[300px] sm:w-[30%] h-full justify-start gap-4 pr-2 overflow-y-auto max-h-[52vh] sm:max-h-[65vh]"
             >
               <span className="text-lg font-semibold text-gray-400">
                 Programme

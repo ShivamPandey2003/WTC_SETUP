@@ -35,6 +35,7 @@ export interface Session {
   color: string;
   start_time: string;
   end_time: string;
+  SessionType: string
   type: "normal";
 }
 
@@ -46,6 +47,7 @@ export interface NormalItem {
   start: string;
   end: string;
   color: string;
+  SessionType: string
   type: "normal" | "extra";
 }
 
@@ -57,6 +59,7 @@ export interface MergeItem {
   start: string;
   end: string;
   color: string;
+  SessionType: string
   type: "merge";
 }
 
@@ -66,6 +69,7 @@ export interface GroupItem {
   start: string;
   end: string;
   Item: {
+    SessionType: string
     categoryId: string;
     session_id: string | string[];
     id: string;
@@ -160,6 +164,7 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
           type: "merge",
           title: group[0].title,
           color: group[0].color,
+          SessionType: group[0].SessionType,
           start: earliest.start_time,
           end: latest.end_time,
           session_id: group.map((s) => s.session_id),
@@ -183,11 +188,13 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
               start: catGroup[0].start_time,
               end: catGroup[0].end_time,
               color: catGroup[0].color,
+              SessionType: catGroup[0].SessionType
             };
           }
 
           const s = catGroup[0];
           return {
+            SessionType: s.SessionType,
             categoryId: s.categoryId,
             session_id: s.session_id,
             id: s.id,
@@ -240,6 +247,7 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
           id: nanoid(),
           categoryId: cluster[0].categoryId,
           type: "merge",
+          SessionType:cluster[0].SessionType,
           title: cluster[0].title,
           color: cluster[0].color,
           start: earliest.start_time,
@@ -252,6 +260,7 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
         result.push({
           session_id: s.session_id,
           categoryId: s.categoryId,
+          SessionType: s.SessionType,
           id: s.id,
           title: s.title,
           start: s.start_time,

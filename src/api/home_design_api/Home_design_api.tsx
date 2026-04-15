@@ -325,6 +325,42 @@ export const useUploadBulkNews = () => {
   return { UploadBulk, isBulkPending, BulkData, isBulkError };
 };
 
+export const useUploadCSVBulk = (onClose:()=>void) => {
+  const {
+    mutate: UploadCSV,
+    isPending: isCSVPending,
+    data: CSVData,
+    isError: isCSVError,
+  } = useMutation<
+    BulkImageResponse,
+    AxiosError,
+    { module: string; file_key: string }
+  >({
+    mutationFn: async (data) => {
+      const res = await apiRequest("post", `upload/process-csv?module=${data.module}&file_key=${data.file_key}`);
+      return res.response;
+    },
+    onSuccess: (_, variable) => {
+      switch(variable.module){
+        case "news":
+           queryClient.invalidateQueries({ queryKey: ["newsList"] })
+           break;
+        case "session":
+          queryClient.invalidateQueries({ queryKey: ["sessionList"] })
+          break;
+        case "speaker":
+          queryClient.invalidateQueries({ queryKey: ["adminSpeakerList"] })
+          break;
+        case "exhibitor":
+          queryClient.invalidateQueries({ queryKey: ["exhibitor-design-list"] })
+      }
+      onClose()
+    },
+  });
+
+  return { UploadCSV, isCSVPending, CSVData, isCSVError };
+};
+
 // export const useUploadNewsImages = () => {
 //   const {
 //     mutate: UploadBulkImages,

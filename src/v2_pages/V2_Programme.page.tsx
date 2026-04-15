@@ -10,7 +10,7 @@ import {
 } from "@/lib/extra";
 import { groupIntoColumns } from "@/lib/GroupintoColumn";
 import { setProgrammes, type ProgrammeRecord } from "@/redux/ExtraSlice";
-import { setProgramme } from "@/redux/GlobalSlice";
+import { setAll_Categories, setProgramme, setType } from "@/redux/GlobalSlice";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
 import EventGrid from "@/v2_components/common/V2_Programme/EventGrid";
@@ -73,6 +73,7 @@ const V2_Programme_page = () => {
           if (detail.length === 0) return;
           return {
             session_id: Datas.id,
+            SessionType:Datas.type,
             id: nanoid(),
             categoryId: detail[0].id,
             title: detail[0]?.name,
@@ -82,6 +83,7 @@ const V2_Programme_page = () => {
             type: "normal",
           };
         });
+
       const result = transformSessions(val as any);
       const columns = result ? groupIntoColumns(result) : [];
 
@@ -93,6 +95,8 @@ const V2_Programme_page = () => {
 
     dispatch(setProgrammes(value));
     dispatch(setProgramme(ProgrammeList.data.response.programme));
+    dispatch(setAll_Categories(ProgrammeList.data.response.all_categories))
+    dispatch(setType(ProgrammeList.data.response.types))
   }, [ProgrammeList]);
 
   useEffect(() => {
@@ -131,11 +135,25 @@ const V2_Programme_page = () => {
           </div>
           {/* Day columns */}
           {[
-            [{ top: 1, span: 3 }, { top: 5, span: 2 }],
-            [{ top: 0, span: 2 }, { top: 0, span: 2, offset: true }, { top: 3, span: 3 }, { top: 7, span: 2 }],
-            [{ top: 2, span: 4 }, { top: 7, span: 3 }],
+            [
+              { top: 1, span: 3 },
+              { top: 5, span: 2 },
+            ],
+            [
+              { top: 0, span: 2 },
+              { top: 0, span: 2, offset: true },
+              { top: 3, span: 3 },
+              { top: 7, span: 2 },
+            ],
+            [
+              { top: 2, span: 4 },
+              { top: 7, span: 3 },
+            ],
           ].map((events, colIdx) => (
-            <div key={colIdx} className="flex-1 flex flex-col min-w-0 border-l border-gray-100">
+            <div
+              key={colIdx}
+              className="flex-1 flex flex-col min-w-0 border-l border-gray-100"
+            >
               {/* Day header */}
               <div className="h-8 flex items-center justify-center mb-0 border-b border-gray-100">
                 <Skeleton className="w-20 h-4 rounded" />
@@ -186,25 +204,31 @@ const V2_Programme_page = () => {
   return (
     <div className="px-4 mx-auto flex flex-col">
       <div className="hidden sm:flex gap-4 sm:justify-center mb-6 w-full">
-        <div className="flex items-center w-fit-content gap-2">
+        <div className="flex items-center w-fit gap-2">
           <MultiSelect
-            options={ProgrammeList.data.response.all_categories.map((item) => ({
-              label: item.name,
-              value: item.id,
-            }))}
+            options={[
+              ...ProgrammeList.data.response.all_categories.map((item) => ({
+                label: item.name,
+                value: item.id,
+              })),
+              ...ProgrammeList.data.response.types.map((item) => ({
+                label: item,
+                value: item,
+              })),
+            ]}
             selected={selectedCategories}
             onChange={setSelectedCategories}
             placeholder="Search categories..."
           />
           <Button
-              className="py-0 text-sm bg-primary text-white hover:text-white"
-              size={"sm"}
-              variant={"outline"}
-              disabled={selectedCategories.length === 0}
-              onClick={() => setSelectedCategories([])}
-            >
-              <X />
-            </Button>
+            className="py-0 text-sm bg-primary text-white hover:text-white"
+            size={"sm"}
+            variant={"outline"}
+            disabled={selectedCategories.length === 0}
+            onClick={() => setSelectedCategories([])}
+          >
+            <X />
+          </Button>
         </div>
       </div>
       <EventGrid selectedCategories={selectedCategories} />

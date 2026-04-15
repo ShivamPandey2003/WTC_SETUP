@@ -78,6 +78,7 @@ const EditFrom = () => {
 
     formData.append("title", newData.title);
     formData.append("description", newData?.description as string);
+    formData.append("type", newData?.type as string);
     formData.append("start_time", newData.start_time);
     formData.append("end_time", newData.end_time);
     formData.append("start_date", formatToYYYYMMDD(slectedDate));
@@ -162,6 +163,11 @@ const EditFrom = () => {
       label: "Description",
       type: "textarea",
       placeholder: "Enter detailed description...",
+    },
+    {
+      name:"type",
+      label:"Type",
+      placeholder:"Enter programme type"
     },
     { name: "start_time", label: "Start Time", type: "time" },
     { name: "end_time", label: "End Time", type: "time" },

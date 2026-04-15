@@ -359,6 +359,7 @@ declare type Programme = {
     filename: string;
     has_attachment: boolean;
   }[];
+  type:string;
   id: string;
   title: string;
   location: string;
@@ -416,6 +417,7 @@ declare type GlobalProgrammeListResponse = {
       name: string;
       color: string;
     }[];
+    types:string[]
   };
 };
 

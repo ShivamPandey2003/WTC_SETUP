@@ -50,10 +50,18 @@ const EventGrid = ({ selectedCategories }: Props) => {
     if (filters.length === 0) return true;
 
     if (event.type === "array") {
-      return event.Item.some((e) => !filters.includes(e.categoryId));
+      return event.Item.some((e) => {
+        const isCategoryFiltered = filters.includes(e.categoryId);
+        const isSessionTypeFiltered = filters.includes(e.SessionType);
+
+        return !(isCategoryFiltered || isSessionTypeFiltered);
+      });
     }
 
-    return !filters.includes(String(event.categoryId));
+    const isCategoryFiltered = filters.includes(String(event.categoryId));
+    const isSessionTypeFiltered = filters.includes(event.SessionType);
+
+    return !(isCategoryFiltered || isSessionTypeFiltered);
   };
 
   React.useLayoutEffect(() => {
@@ -133,7 +141,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
             return (
               <div
                 key={i}
-                className="text-center border-r px-1 border-r-gray-300"
+                className="text-center border-r border-r-gray-300"
                 style={{ minWidth: `${height}px` }}
               >
                 <h3>
@@ -204,7 +212,7 @@ const EventGrid = ({ selectedCategories }: Props) => {
                                   <div
                                     key={event.id}
                                     className={cn(
-                                      "text-white p-1 rounded-xl flex items-center justify-center text-center text-sm absolute w-full cursor-pointer",
+                                      "text-white p-1 rounded-xl flex items-center text-ellipsis justify-center text-center text-sm absolute w-full cursor-pointer",
                                     )}
                                     style={{
                                       top: `${
@@ -295,6 +303,9 @@ const EventGrid = ({ selectedCategories }: Props) => {
                     {extraColumn &&
                       [...extraColumn]
                         .sort((a, b) => a.start.localeCompare(b.start))
+                        .filter((event) =>
+                          eventHasFilteredCategory(event, selectedCategories),
+                        )
                         .map((c) => {
                           if (c.type === "extra") {
                             return (
