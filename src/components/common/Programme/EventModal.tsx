@@ -48,6 +48,17 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
 
   const navigate = useNavigate();
 
+  const ScrollWindow = (id:string)=>{
+    const el = tabRefs.current[id];
+    if (!el) return;
+
+    el.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "start", // vertical scroll
+    });
+  }
+
   React.useEffect(() => {
     if (data.id) {
       setValue(data.id);
@@ -57,6 +68,14 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
       }
     }
   }, [data]);
+
+  React.useEffect(()=>{
+    if(!value.trim() && selectedValue.length > 0){
+      let id = selectedValue[0].id
+      setValue(id)
+      ScrollWindow(id)
+    }
+  },[value, selectedValue])
 
   React.useEffect(() => {
     const el = tabRefs.current[data.id];
@@ -68,7 +87,6 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
       block: "start", // vertical scroll
     });
   }, [data.id, selectedValue]);
-
 
   return (
     <Modal
@@ -83,12 +101,9 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
         <div>No data found</div>
       ) : (
         <div className="w-full min-h-[400px] sm:min-h-[350px]">
-          <div className="flex flex-row items-end sm:items-center w-full gap-4 sm:mb-2">
+          <div className="flex flex-row items-end sm:items-center w-full gap-4 mb-2">
             <p className="text-lg sm:text-xl font-bold text-primary">
-              Day View
-            </p>
-            <p className="sm:text-xl font-bold text-primary">
-              {data.date}
+              Day View - {data.date}
             </p>
           </div>
           <div className="mb-2">
@@ -96,7 +111,10 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
               Programme Type
             </div>
             <SingleSelect
-              onChange={setType}
+              onChange={(e) => {
+                setType(e);
+                setValue("");
+              }}
               selected={type}
               placeholder="Search type..."
               options={Types.map((item) => ({
@@ -136,7 +154,9 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                 Programme
               </span>
               {selectedValue.length === 0 ? (
-                <div>No data found</div>
+                <div className="flex items-center w-full justify-center font-semibold min-h-[30vh]">
+                  No data found
+                </div>
               ) : (
                 selectedValue.map((value) => (
                   <TabsTrigger

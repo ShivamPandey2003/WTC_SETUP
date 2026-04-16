@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 
 /* ================= CONFIGURATION ================= */
 const PX_PER_MIN = 2; // Vertical scale (1 hour = 120px)
-const BASE_COL_WIDTH = 150; // Width of one lane
+const BASE_COL_WIDTH = 100; // Width of one lane
 const GAP = 6; // Space between cards
 
 /* ================= HELPERS ================= */
@@ -126,7 +126,8 @@ function DayColumn({
               width: `calc(${laneWidthPct}% - ${GAP * 2}px)`,
               left: `calc(${leftPct}% + ${GAP}px)`,
               backgroundColor: event.catColor,
-              fontSize: `${durationMins < 30 ? "7px" : "10px"}`,
+              fontSize: `${durationMins < 30 ? "7px" : "13px"}`,
+              lineHeight:`${durationMins < 30 && 1.2}`
             }}
           >
             <div className="event-inner">
@@ -224,7 +225,7 @@ export default function EventGrid_v2({
               return (
                 <div
                   key={date}
-                  className="day-header"
+                  className="day-header capitalize"
                   style={{ width, minWidth: width }}
                 >
                   {new Date(`${date}T00:00:00Z`)
@@ -233,8 +234,7 @@ export default function EventGrid_v2({
                       day: "numeric",
                       month: "short",
                       timeZone: "UTC",
-                    })
-                    .toUpperCase()}
+                    })}
                 </div>
               );
             })}
