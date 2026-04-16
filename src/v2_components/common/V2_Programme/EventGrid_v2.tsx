@@ -201,7 +201,7 @@ export default function EventGrid_v2({
         .filter(
           (e) =>
             !(selectedCategories.includes(e.type) ||
-            selectedCategories.includes(Object.keys(e.categories)[0]))
+            Object.keys(e.categories || {}).some(id => selectedCategories.includes(id)))
         );
       map[date] = calculateDayLayout(dayEvents);
     });

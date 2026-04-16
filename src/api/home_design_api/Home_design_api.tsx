@@ -349,12 +349,13 @@ export const useUploadCSVBulk = (onClose: () => void) => {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "news_upload_result.csv");
+      link.setAttribute("download",  `${variable.module}_upload_result.csv`);
 
       document.body.appendChild(link);
       link.click();
       link.remove();
-      
+      window.URL.revokeObjectURL(url);
+
       const queryMap: Record<string, string> = {
         news: "newsList",
         session: "sessionList",
