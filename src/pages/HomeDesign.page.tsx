@@ -535,6 +535,7 @@ const HomeDesign_page = () => {
         onClose={() => dispatch(setIsCreating(false))}
       />
       <CSVModel
+        CSV_MODULE="news_csv"
         isOpen={uploadCSV}
         onClose={() => dispatch(setUploadCSV(false))}
         title="News"

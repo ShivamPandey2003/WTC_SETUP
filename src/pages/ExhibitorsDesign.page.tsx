@@ -109,7 +109,7 @@ const ExhibitorsDesign_page = () => {
       ...pre,
       file_path: file_key,
     }));
-    
+
     await axios.put(upload_url, file, {
       headers: {
         "Content-Type": file.type,
@@ -435,6 +435,7 @@ const ExhibitorsDesign_page = () => {
       />
       <AddCategoryModel />
       <CSVModel
+        CSV_MODULE="exhibitor_csv"
         isOpen={uploadCSV}
         onClose={() => dispatch(setUploadCSV(false))}
         title="Exhibitors"
