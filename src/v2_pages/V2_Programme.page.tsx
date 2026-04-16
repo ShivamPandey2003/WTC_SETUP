@@ -15,7 +15,10 @@ import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
 // import EventGrid from "@/v2_components/common/V2_Programme/EventGrid";
 import EventGrid_V2 from "@/v2_components/common/V2_Programme/EventGrid_v2";
-import MultiSelect from "@/v2_components/global/MultiSelect";
+import {
+  MultiSelect,
+  type OptionGroup,
+} from "@/v2_components/global/MultiSelect";
 import { X } from "lucide-react";
 import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
@@ -23,7 +26,9 @@ import { useDispatch } from "react-redux";
 
 const V2_Programme_page = () => {
   const { ProgrammeList, isPending, error } = useGetProgrammeList();
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<
+    { name: string; value: string }[]
+  >([]);
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
@@ -74,7 +79,7 @@ const V2_Programme_page = () => {
           if (detail.length === 0) return;
           return {
             session_id: Datas.id,
-            SessionType:Datas.type,
+            SessionType: Datas.type,
             id: nanoid(),
             categoryId: detail[0].id,
             title: detail[0]?.name,
@@ -96,8 +101,8 @@ const V2_Programme_page = () => {
 
     dispatch(setProgrammes(value));
     dispatch(setProgramme(ProgrammeList.data.response.programme));
-    dispatch(setAll_Categories(ProgrammeList.data.response.all_categories))
-    dispatch(setType(ProgrammeList.data.response.types))
+    dispatch(setAll_Categories(ProgrammeList.data.response.all_categories));
+    dispatch(setType(ProgrammeList.data.response.types));
   }, [ProgrammeList]);
 
   useEffect(() => {
@@ -205,21 +210,33 @@ const V2_Programme_page = () => {
   return (
     <div className="px-4 mx-auto flex flex-col">
       <div className="hidden sm:flex gap-4 sm:justify-center mb-6 w-full">
-        <div className="flex items-center w-fit gap-2">
-          <MultiSelect
-            options={[
-              ...ProgrammeList.data.response.all_categories.map((item) => ({
-                label: item.name,
-                value: item.id,
-              })),
-              ...ProgrammeList.data.response.types.map((item) => ({
-                label: item,
-                value: item,
-              })),
-            ]}
-            selected={selectedCategories}
+        <div className="flex items-center w-md gap-2">
+          <MultiSelect<{ name: string; value: string }>
+            groups={
+              [
+                {
+                  title: "Types",
+                  option: ProgrammeList.data.response.types.map((item) => ({
+                    name: item,
+                    value: item,
+                  })),
+                },
+                {
+                  title: "Categories",
+                  option: ProgrammeList.data.response.all_categories.map(
+                    (item) => ({
+                      name: item.name,
+                      value: item.id,
+                    }),
+                  ),
+                },
+              ] as OptionGroup<{ name: string; value: string }>[]
+            }
+            value={selectedCategories}
             onChange={setSelectedCategories}
-            placeholder="Search categories..."
+            getLabel={(item) => item.name} // ✅ required
+            getValue={(item) => item.value} // ✅ required
+            placeholder="Search session types and categories..."
           />
           <Button
             className="py-0 text-sm bg-primary text-white hover:text-white"
@@ -233,7 +250,10 @@ const V2_Programme_page = () => {
         </div>
       </div>
       {/* <EventGrid selectedCategories={selectedCategories} /> */}
-      <EventGrid_V2 programmeData={ProgrammeList.data.response.programme} selectedCategories={selectedCategories}/>
+      <EventGrid_V2
+        programmeData={ProgrammeList.data.response.programme}
+        selectedCategories={selectedCategories.map((e)=>e.value)}
+      />
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 
 /* ================= CONFIGURATION ================= */
 const PX_PER_MIN = 2; // Vertical scale (1 hour = 120px)
-const BASE_COL_WIDTH = 150; // Width of one lane
+const BASE_COL_WIDTH = 100; // Width of one lane
 const GAP = 6; // Space between cards
 
 /* ================= HELPERS ================= */
@@ -92,9 +92,12 @@ function DayColumn({
   date: string;
 }) {
   const columnWidth = data.totalLanes * BASE_COL_WIDTH;
+  const [isActive, setIsActive] = useState<boolean>(false);
 
   return (
     <div
+      onMouseEnter={() => setIsActive(true)}
+      onMouseLeave={() => setIsActive(false)}
       className="day-column"
       style={{ width: columnWidth, minWidth: columnWidth }}
     >
@@ -125,8 +128,9 @@ function DayColumn({
               height: `${height - GAP * 2}px`,
               width: `calc(${laneWidthPct}% - ${GAP * 2}px)`,
               left: `calc(${leftPct}% + ${GAP}px)`,
-              backgroundColor: event.catColor,
-              fontSize: `${durationMins < 30 ? "7px" : "10px"}`,
+              backgroundColor: isActive?event.catColor:"gray",
+              fontSize: `${durationMins < 30 ? "7px" : "13px"}`,
+              lineHeight: `${durationMins < 30 && 1.2}`,
             }}
           >
             <div className="event-inner">
@@ -135,6 +139,7 @@ function DayColumn({
                 className={cn(
                   "event-title max-w-[70px]",
                   durationMins < 30 && "truncate",
+                  (height - GAP * 2) > 1050 && "rotate-90"
                 )}
               >
                 {event.categoryName}
@@ -200,8 +205,12 @@ export default function EventGrid_v2({
         .filter((e) => e.start_date === date)
         .filter(
           (e) =>
-            !(selectedCategories.includes(e.type) ||
-            Object.keys(e.categories || {}).some(id => selectedCategories.includes(id)))
+            !(
+              selectedCategories.includes(e.type) ||
+              Object.keys(e.categories || {}).some((id) =>
+                selectedCategories.includes(id),
+              )
+            ),
         );
       map[date] = calculateDayLayout(dayEvents);
     });
@@ -224,17 +233,15 @@ export default function EventGrid_v2({
               return (
                 <div
                   key={date}
-                  className="day-header"
+                  className="day-header capitalize"
                   style={{ width, minWidth: width }}
                 >
-                  {new Date(`${date}T00:00:00Z`)
-                    .toLocaleDateString("en-GB", {
-                      weekday: "short",
-                      day: "numeric",
-                      month: "short",
-                      timeZone: "UTC",
-                    })
-                    .toUpperCase()}
+                  {new Date(`${date}T00:00:00Z`).toLocaleDateString("en-GB", {
+                    weekday: "short",
+                    day: "numeric",
+                    month: "short",
+                    timeZone: "UTC",
+                  })}
                 </div>
               );
             })}
