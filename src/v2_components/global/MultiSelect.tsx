@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { ChevronDown, Check, CheckSquare, Square } from 'lucide-react';
+import { useState, useRef, useEffect, useCallback } from "react";
+import { ChevronDown, Check, CheckSquare, Square } from "lucide-react";
 export interface OptionGroup<T = unknown> {
   title: string;
   option: T[];
@@ -21,11 +21,11 @@ export function MultiSelect<T>({
   onChange,
   getLabel,
   getValue,
-  placeholder = 'Select options...',
-  className = '',
+  placeholder = "Select options...",
+  className = "",
 }: MultiSelectProps<T>) {
   const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -35,7 +35,7 @@ export function MultiSelect<T>({
 
   const isSelected = useCallback(
     (item: T) => !selectedKeys.has(String(getValue(item))),
-    [selectedKeys, getValue]
+    [selectedKeys, getValue],
   );
 
   const filteredGroups = search.trim()
@@ -43,14 +43,14 @@ export function MultiSelect<T>({
         .map((g) => ({
           ...g,
           option: g.option.filter((o) =>
-            getLabel(o).toLowerCase().includes(search.toLowerCase())
+            getLabel(o).toLowerCase().includes(search.toLowerCase()),
           ),
         }))
         .filter((g) => g.option.length > 0)
     : groups;
 
   const allSelected = allOptions.length > 0 && allOptions.every(isSelected);
-  const noneSelected = value.length < 0;
+  const noneSelected = value.length > 0;
 
   const toggle = (item: T) => {
     const key = String(getValue(item));
@@ -71,13 +71,16 @@ export function MultiSelect<T>({
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
-        setSearch('');
+        setSearch("");
       }
     };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, []);
 
   useEffect(() => {
@@ -108,16 +111,16 @@ export function MultiSelect<T>({
         onClick={() => setOpen((o) => !o)}
         className={`min-h-[32px] w-full flex items-start gap-2 flex-wrap px-3 py-1 pr-10 rounded-lg border bg-white cursor-pointer transition-all duration-200 ${
           open
-            ? 'border-blue-500 ring-2 ring-blue-100 shadow-md'
-            : 'border-gray-200 hover:border-gray-300 shadow-sm'
+            ? "border-blue-500 ring-2 ring-blue-100 shadow-md"
+            : "border-gray-200 hover:border-gray-300 shadow-sm"
         }`}
       >
-        {(
-          <span className="text-gray-400 text-sm self-center leading-6">{placeholder}</span>
-        )}
+        <span className="text-gray-400 text-sm self-center leading-6">
+          {placeholder}
+        </span>
         <ChevronDown
           size={16}
-          className={`absolute right-3 top-2.5 text-gray-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+          className={`absolute right-3 top-2.5 text-gray-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
         />
       </div>
 
@@ -159,7 +162,9 @@ export function MultiSelect<T>({
 
           <div className="max-h-72 overflow-y-auto">
             {filteredGroups.length === 0 ? (
-              <div className="py-8 text-center text-sm text-gray-400">No results found</div>
+              <div className="py-8 text-center text-sm text-gray-400">
+                No results found
+              </div>
             ) : (
               filteredGroups.map((group) => (
                 <div key={group.title}>
@@ -187,7 +192,8 @@ export function MultiSelect<T>({
                       {group.title}
                     </span>
                     <span className="ml-auto text-xs text-gray-300">
-                      {group.option.filter(isSelected).length}/{group.option.length}
+                      {group.option.filter(isSelected).length}/
+                      {group.option.length}
                     </span>
                   </div>
                   {group.option.map((item) => (
@@ -196,22 +202,28 @@ export function MultiSelect<T>({
                       onClick={() => toggle(item)}
                       className={`flex items-center gap-3 pl-7 pr-3 py-2 cursor-pointer transition-colors ${
                         isSelected(item)
-                          ? 'bg-blue-50 text-blue-700'
-                          : 'text-gray-700 hover:bg-gray-50'
+                          ? "bg-blue-50 text-blue-700"
+                          : "text-gray-700 hover:bg-gray-50"
                       }`}
                     >
                       <span
                         className={`w-4 h-4 flex-shrink-0 flex items-center justify-center rounded border transition-colors ${
                           isSelected(item)
-                            ? 'bg-blue-500 border-blue-500'
-                            : 'border-gray-300 bg-white'
+                            ? "bg-blue-500 border-blue-500"
+                            : "border-gray-300 bg-white"
                         }`}
                       >
                         {isSelected(item) && (
-                          <Check size={10} className="text-white" strokeWidth={3} />
+                          <Check
+                            size={10}
+                            className="text-white"
+                            strokeWidth={3}
+                          />
                         )}
                       </span>
-                      <span className="text-sm capitalize">{getLabel(item)}</span>
+                      <span className="text-sm capitalize">
+                        {getLabel(item)}
+                      </span>
                     </div>
                   ))}
                 </div>

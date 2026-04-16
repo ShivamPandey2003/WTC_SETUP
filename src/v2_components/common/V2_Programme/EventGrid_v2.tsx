@@ -79,6 +79,10 @@ function DayColumn({
   height,
   setSelected,
   date,
+  isAnyColumnHovered,
+  isThisColumnHovered,
+  onMouseEnter,
+  onMouseLeave,
 }: {
   data: any;
   globalStartMins: number;
@@ -90,16 +94,26 @@ function DayColumn({
     } | null>
   >;
   date: string;
+  isAnyColumnHovered: boolean;
+  isThisColumnHovered: boolean;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
 }) {
   const columnWidth = data.totalLanes * BASE_COL_WIDTH;
-  const [isActive, setIsActive] = useState<boolean>(false);
 
   return (
     <div
-      onMouseEnter={() => setIsActive(true)}
-      onMouseLeave={() => setIsActive(false)}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       className="day-column"
-      style={{ width: columnWidth, minWidth: columnWidth }}
+      style={{
+        width: columnWidth,
+        minWidth: columnWidth,
+        backgroundColor:
+          isAnyColumnHovered && !isThisColumnHovered
+            ? "rgba(0,0,0,0.02)"
+            : "transparent",
+      }}
     >
       {Array.from({ length: Math.ceil(height / (60 * PX_PER_MIN)) + 1 }).map(
         (_, i) => (
@@ -117,6 +131,7 @@ function DayColumn({
         const height = (event.endMins - event.startMins) * PX_PER_MIN;
         const laneWidthPct = 100 / data.totalLanes;
         const leftPct = event.laneIndex * laneWidthPct;
+        const shouldBeGray = isAnyColumnHovered && !isThisColumnHovered;
 
         return (
           <div
@@ -128,9 +143,9 @@ function DayColumn({
               height: `${height - GAP * 2}px`,
               width: `calc(${laneWidthPct}% - ${GAP * 2}px)`,
               left: `calc(${leftPct}% + ${GAP}px)`,
-              backgroundColor: isActive?event.catColor:"gray",
+              backgroundColor: shouldBeGray ?"gray": event.catColor ,
               fontSize: `${durationMins < 30 ? "7px" : "13px"}`,
-              lineHeight: `${durationMins < 30 && 1.2}`,
+              lineHeight: durationMins < 30 ? 1.2 : undefined,
             }}
           >
             <div className="event-inner">
@@ -139,7 +154,7 @@ function DayColumn({
                 className={cn(
                   "event-title max-w-[70px]",
                   durationMins < 30 && "truncate",
-                  (height - GAP * 2) > 1050 && "rotate-90"
+                  height - GAP * 2 > 1050 && "rotate-90",
                 )}
               >
                 {event.categoryName}
@@ -192,6 +207,7 @@ export default function EventGrid_v2({
       globalStartMins: sHour * 60,
     };
   }, [programmeData]);
+  const [hoveredDate, setHoveredDate] = useState<string | null>(null);
 
   const timeLabels = Array.from(
     { length: endHour - startHour + 1 },
@@ -266,6 +282,10 @@ export default function EventGrid_v2({
                 date={date}
                 globalStartMins={globalStartMins}
                 height={gridHeight}
+                isAnyColumnHovered={hoveredDate !== null}
+                isThisColumnHovered={hoveredDate === date}
+                onMouseEnter={() => setHoveredDate(date)}
+                onMouseLeave={() => setHoveredDate(null)}
               />
             ))}
           </div>

@@ -44,6 +44,10 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
     ).sort((a, b) => a.start_time.localeCompare(b.start_time));
   }, [Session, data.date, type]);
 
+  const TypesSortArr = React.useMemo(() => {
+    return [...Types].sort((a, b) => a.localeCompare(b));
+  }, [Types]);
+
   const [value, setValue] = React.useState<string>("");
 
   const navigate = useNavigate();
@@ -106,19 +110,25 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
               Day View - {data.date}
             </p>
           </div>
-          <div className="flex items-center gap-5 mb-2 overflow-x-auto max-w-[100%] custom-scrollbar">
-            {[...Types].sort((a, b) => a.localeCompare(b)).map((item) => (
-              <div
-                className={cn("cursor-pointer capitalize font-semibold min-w-fit",type === item ? "border-b text-primary": "text-gray-500")}
-                onClick={() => {
-                  setType(item);
-                  setValue("");
-                }}
-              >
-                {item}
-              </div>
-            ))}
-          </div>
+          {!isMobile && (
+            <div className="flex items-center gap-5 mb-2 overflow-x-auto max-w-[100%] custom-scrollbar">
+              {TypesSortArr.map((item) => (
+                <div
+                  key={item}
+                  className={cn(
+                    "cursor-pointer capitalize font-semibold min-w-fit",
+                    type === item ? "border-b text-primary" : "text-gray-500",
+                  )}
+                  onClick={() => {
+                    setType(item);
+                    setValue("");
+                  }}
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
+          )}
           {isMobile && (
             <div className="mb-2">
               <div className="truncate text-sm font-semibold ml-1 mb-1">
