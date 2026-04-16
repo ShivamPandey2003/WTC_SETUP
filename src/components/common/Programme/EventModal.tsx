@@ -141,7 +141,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                 }}
                 selected={type}
                 placeholder="Search type..."
-                options={Types.map((item) => ({
+                options={TypesSortArr.map((item) => ({
                   label: item,
                   value: item,
                 }))}
@@ -157,10 +157,12 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
               <SingleSelect
                 selected={value}
                 onChange={(e) => setValue(e as string)}
-                options={selectedValue.map((item) => ({
-                  label: item.title,
-                  value: item.id,
-                }))}
+                options={[...selectedValue]
+                  .sort((a, b) => a.title.localeCompare(b.title))
+                  .map((item) => ({
+                    label: item.title,
+                    value: item.id,
+                  }))}
                 className="w-full mb-2"
               />
             </div>
