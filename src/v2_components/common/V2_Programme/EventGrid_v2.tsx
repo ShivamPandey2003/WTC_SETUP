@@ -152,8 +152,10 @@ function DayColumn({
 
 export default function EventGrid_v2({
   programmeData,
+  selectedCategories,
 }: {
   programmeData: Programme[];
+  selectedCategories: string[];
 }) {
   const [seleted, setSelected] = useState<{
     id: string;
@@ -194,11 +196,17 @@ export default function EventGrid_v2({
   const layoutData = useMemo(() => {
     const map: any = {};
     dates.forEach((date) => {
-      const dayEvents = programmeData.filter((e) => e.start_date === date);
+      const dayEvents = programmeData
+        .filter((e) => e.start_date === date)
+        .filter(
+          (e) =>
+            !(selectedCategories.includes(e.type) ||
+            Object.keys(e.categories || {}).some(id => selectedCategories.includes(id)))
+        );
       map[date] = calculateDayLayout(dayEvents);
     });
     return map;
-  }, [dates]);
+  }, [dates, selectedCategories]);
 
   const gridHeight = (endHour - startHour) * 60 * PX_PER_MIN;
 
