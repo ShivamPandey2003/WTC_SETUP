@@ -67,7 +67,8 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
       inline: "center",
       block: "start", // vertical scroll
     });
-  }, [data.id]);
+  }, [data.id, selectedValue]);
+
 
   return (
     <Modal
@@ -82,28 +83,13 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
         <div>No data found</div>
       ) : (
         <div className="w-full min-h-[400px] sm:min-h-[350px]">
-          <div className="flex flex-row items-end sm:items-center w-full gap-4 sm:gap-8">
-            <p className="text-lg sm:text-2xl sm:mb-4 font-bold text-primary">
+          <div className="flex flex-row items-end sm:items-center w-full gap-4 sm:mb-2">
+            <p className="text-lg sm:text-xl font-bold text-primary">
               Day View
             </p>
-            <p className="sm:text-2xl sm:mb-4 font-bold text-primary">
+            <p className="sm:text-xl font-bold text-primary">
               {data.date}
             </p>
-            {/* {isMobile && (
-              <div>
-                <span className="truncate text-sm font-semibold">Type</span>
-                <SingleSelect
-                  onChange={setType}
-                  selected={type}
-                  placeholder="Search type..."
-                  options={Types.map((item) => ({
-                    label: item,
-                    value: item,
-                  }))}
-                  className="w-full mb-2"
-                />
-              </div>
-            )} */}
           </div>
           <div className="mb-2">
             <div className="truncate text-sm font-semibold ml-1 mb-1">
@@ -142,35 +128,6 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
             onValueChange={setValue}
             className="flex flex-row"
           >
-            {/* {menuBar && isMobile && (
-              <TabsList
-                ref={listRef}
-                className="flex-col items-start rounded-none border-r border-gray-300 min-h-[300px] sm:w-[30%] h-full justify-start gap-4 pr-2 overflow-y-auto max-h-[52vh] sm:max-h-[70vh]"
-              >
-                <span className="text-lg font-semibold text-gray-400">
-                  Programme
-                </span>
-                {selectedValue.map((value) => (
-                  <TabsTrigger
-                    ref={(el) => {
-                      tabRefs.current[value.id] = el;
-                    }}
-                    key={value.id}
-                    variant={"filled"}
-                    value={value.id}
-                    className={cn(
-                      "font-semibold w-full data-[active=false]:bg-gray-100 px-2 data-[active=true]:border-gray-200 data-[active=true]:shadow data-[active=true]:no-underline flex-col items-start",
-                    )}
-                  >
-                    <span>{`${value.start_time.slice(0, 5)} - ${value.end_time.slice(0, 5)}`}</span>
-                    <p className="line-clamp-2 whitespace-normal text-start">
-                      {value.title}
-                    </p>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            )} */}
-
             <TabsList
               ref={listRef}
               className="flex-col hidden sm:flex items-start rounded-none border-r border-gray-300 min-h-[300px] sm:w-[30%] h-full justify-start gap-4 pr-2 overflow-y-auto max-h-[52vh] sm:max-h-[59vh]"
@@ -210,7 +167,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
               selectedValue.map((s) => (
                 <TabsContent
                   value={s.id}
-                  className="overflow-y-auto max-h-[52vh] sm:max-h-[70vh] custom-scrollbar pb-2"
+                  className="overflow-y-auto max-h-[52vh] sm:max-h-[59vh] custom-scrollbar pb-2"
                   key={s.id}
                 >
                   <div className="flex flex-col items-start gap-4 mb-2 px-4 pb-4">

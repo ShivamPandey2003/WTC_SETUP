@@ -325,27 +325,37 @@ export const useUploadBulkNews = () => {
   return { UploadBulk, isBulkPending, BulkData, isBulkError };
 };
 
-export const useUploadCSVBulk = (onClose:()=>void) => {
+export const useUploadCSVBulk = (onClose: () => void) => {
   const {
     mutate: UploadCSV,
     isPending: isCSVPending,
     data: CSVData,
     isError: isCSVError,
-  } = useMutation<
-    BulkImageResponse,
-    AxiosError,
-    { module: string; file_key: string }
-  >({
+  } = useMutation<any, AxiosError, { module: string; file_key: string }>({
     mutationFn: async (data) => {
-       const params = new URLSearchParams({
+      const params = new URLSearchParams({
         module: data.module,
         file_key: data.file_key,
       });
-      const res = await apiRequest("post", `upload/process-csv?${params.toString()}`);
+      const res = await apiRequest(
+        "post",
+        `upload/process-csv?${params.toString()}`,
+      );
       return res.response;
     },
-    onSuccess: (_, variable) => {
-       const queryMap: Record<string, string> = {
+    onSuccess: (data, variable) => {
+      const blob = new Blob([data], { type: "text/csv;charset=utf-8;" });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "news_upload_result.csv");
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      
+      const queryMap: Record<string, string> = {
         news: "newsList",
         session: "sessionList",
         speaker: "adminSpeakerList",
@@ -355,7 +365,7 @@ export const useUploadCSVBulk = (onClose:()=>void) => {
       if (queryKey) {
         queryClient.invalidateQueries({ queryKey: [queryKey] });
       }
-      onClose()
+      onClose();
     },
   });
 

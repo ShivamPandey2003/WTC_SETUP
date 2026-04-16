@@ -233,7 +233,7 @@ const V2_Programme_page = () => {
         </div>
       </div>
       {/* <EventGrid selectedCategories={selectedCategories} /> */}
-      <EventGrid_V2 programmeData={ProgrammeList.data.response.programme}/>
+      <EventGrid_V2 programmeData={ProgrammeList.data.response.programme} selectedCategories={selectedCategories}/>
     </div>
   );
 };
