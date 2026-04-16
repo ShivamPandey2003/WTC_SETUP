@@ -130,7 +130,7 @@ function DayColumn({
               left: `calc(${leftPct}% + ${GAP}px)`,
               backgroundColor: isActive?event.catColor:"gray",
               fontSize: `${durationMins < 30 ? "7px" : "13px"}`,
-              lineHeight: `${durationMins < 30 && 1.2}`,
+              lineHeight:  durationMins < 30 ? 1.2 : undefined,
             }}
           >
             <div className="event-inner">
