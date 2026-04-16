@@ -44,11 +44,11 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
     ).sort((a, b) => a.start_time.localeCompare(b.start_time));
   }, [Session, data.date, type]);
 
-  const [value, setValue] = React.useState<string>(data.id);
+  const [value, setValue] = React.useState<string>("");
 
   const navigate = useNavigate();
 
-  const ScrollWindow = (id:string)=>{
+  const ScrollWindow = (id: string) => {
     const el = tabRefs.current[id];
     if (!el) return;
 
@@ -57,7 +57,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
       inline: "center",
       block: "start", // vertical scroll
     });
-  }
+  };
 
   React.useEffect(() => {
     if (data.id) {
@@ -69,13 +69,13 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
     }
   }, [data]);
 
-  React.useEffect(()=>{
-    if(!value.trim() && selectedValue.length > 0){
-      let id = selectedValue[0].id
-      setValue(id)
-      ScrollWindow(id)
+  React.useEffect(() => {
+    if (!value.trim() && selectedValue.length > 0) {
+      let id = selectedValue[0].id;
+      setValue(id);
+      ScrollWindow(id);
     }
-  },[value, selectedValue])
+  }, [value, selectedValue]);
 
   React.useEffect(() => {
     const el = tabRefs.current[data.id];
@@ -106,24 +106,39 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
               Day View - {data.date}
             </p>
           </div>
-          <div className="mb-2">
-            <div className="truncate text-sm font-semibold ml-1 mb-1">
-              Programme Type
-            </div>
-            <SingleSelect
-              onChange={(e) => {
-                setType(e);
-                setValue("");
-              }}
-              selected={type}
-              placeholder="Search type..."
-              options={Types.map((item) => ({
-                label: item,
-                value: item,
-              }))}
-              className="w-full sm:w-[23vw]"
-            />
+          <div className="flex items-center gap-5 mb-2 overflow-x-auto max-w-[100%] custom-scrollbar">
+            {[...Types].sort((a, b) => a.localeCompare(b)).map((item) => (
+              <div
+                className={cn("cursor-pointer capitalize font-semibold min-w-fit",type === item ? "border-b text-primary": "text-gray-500")}
+                onClick={() => {
+                  setType(item);
+                  setValue("");
+                }}
+              >
+                {item}
+              </div>
+            ))}
           </div>
+          {isMobile && (
+            <div className="mb-2">
+              <div className="truncate text-sm font-semibold ml-1 mb-1">
+                Programme Type
+              </div>
+              <SingleSelect
+                onChange={(e) => {
+                  setType(e);
+                  setValue("");
+                }}
+                selected={type}
+                placeholder="Search type..."
+                options={Types.map((item) => ({
+                  label: item,
+                  value: item,
+                }))}
+                className="w-full sm:w-[23vw]"
+              />
+            </div>
+          )}
           {isMobile && (
             <div>
               <div className="truncate text-sm font-semibold ml-1 mb-1">
@@ -150,9 +165,9 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
               ref={listRef}
               className="flex-col hidden sm:flex items-start rounded-none border-r border-gray-300 min-h-[300px] sm:w-[30%] h-full justify-start gap-4 pr-2 overflow-y-auto max-h-[52vh] sm:max-h-[59vh]"
             >
-              <span className="text-lg font-semibold text-gray-400">
-                Programme
-              </span>
+              <div className="sticky -top-1 text-lg font-semibold capitalize text-gray-400 bg-white w-full">
+                {type} Programme
+              </div>
               {selectedValue.length === 0 ? (
                 <div className="flex items-center w-full justify-center font-semibold min-h-[30vh]">
                   No data found

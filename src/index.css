@@ -146,7 +146,7 @@ h3{
 
 .day-column {
   position: relative;
-  max-height: fit-content;
+  /* max-height: fit-content; */
   /* height: 2880px; */
   border-right: 1px solid #ddd;
   background: #F2F2F2;
