@@ -216,19 +216,21 @@ const V2_Programme_page = () => {
               [
                 {
                   title: "Types",
-                  option: ProgrammeList.data.response.types.map((item) => ({
-                    name: item,
-                    value: item,
-                  })),
+                  option: [...ProgrammeList.data.response.types]
+                    .sort((a, b) => a.localeCompare(b))
+                    .map((item) => ({
+                      name: item,
+                      value: item,
+                    })),
                 },
                 {
                   title: "Categories",
-                  option: ProgrammeList.data.response.all_categories.map(
-                    (item) => ({
+                  option: [...ProgrammeList.data.response.all_categories]
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map((item) => ({
                       name: item.name,
                       value: item.id,
-                    }),
-                  ),
+                    })),
                 },
               ] as OptionGroup<{ name: string; value: string }>[]
             }
@@ -252,7 +254,7 @@ const V2_Programme_page = () => {
       {/* <EventGrid selectedCategories={selectedCategories} /> */}
       <EventGrid_V2
         programmeData={ProgrammeList.data.response.programme}
-        selectedCategories={selectedCategories.map((e)=>e.value)}
+        selectedCategories={selectedCategories.map((e) => e.value)}
       />
     </div>
   );
