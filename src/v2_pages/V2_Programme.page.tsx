@@ -143,7 +143,7 @@ const V2_Programme_page = () => {
           </div>
         </div>
         {/* Search bar */}
-        <div className="hidden sm:flex justify-center mb-6">
+        <div className="sm:flex justify-center mb-6">
           <div className="flex items-center gap-2">
             <Skeleton className="w-72 h-9 rounded-md" />
             <Skeleton className="w-9 h-9 rounded-md" />
