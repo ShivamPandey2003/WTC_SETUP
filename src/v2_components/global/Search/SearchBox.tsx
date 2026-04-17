@@ -16,7 +16,7 @@ interface Props {
   >;
 }
 
-export function SearchBox({handleSelect}:Props) {
+export function SearchBox({ handleSelect }: Props) {
   const [input, setInput] = React.useState<string>("");
   const debouncedSearch = useDebounce(input, 500);
 
@@ -61,7 +61,10 @@ export function SearchBox({handleSelect}:Props) {
       <SearchDropdown
         results={data?.response ?? []}
         isOpen={true}
-        onSelect={(e)=>handleSelect({id:e.id, date:""})}
+        onSelect={(e) => {
+          setInput("");
+          handleSelect({ id: e.id, date: "" })
+        }}
       />
     </div>
   );

@@ -52,7 +52,11 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   }, [Session, data.date, type, date]);
 
   const TypesSortArr = React.useMemo(() => {
-    return [...Types].sort((a, b) => a.localeCompare(b));
+    return [...Types].sort((a, b) => {
+      if (a === "e-poster") return 1; // move a to end
+      if (b === "e-poster") return -1; // keep b at end
+      return a.localeCompare(b); // normal sort
+    });
   }, [Types]);
 
   const [value, setValue] = React.useState<string>("");

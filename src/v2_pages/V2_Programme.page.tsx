@@ -143,7 +143,7 @@ const V2_Programme_page = () => {
           </div>
         </div>
         {/* Search bar */}
-        <div className="hidden sm:flex justify-center mb-6">
+        <div className="sm:flex justify-center mb-6">
           <div className="flex items-center gap-2">
             <Skeleton className="w-72 h-9 rounded-md" />
             <Skeleton className="w-9 h-9 rounded-md" />
@@ -236,7 +236,7 @@ const V2_Programme_page = () => {
 
   return (
     <div className="px-4 mx-auto flex flex-col">
-      <div className="hidden sm:flex justify-between gap-4 mb-6 w-full">
+      <div className="sm:flex justify-between gap-4 mb-6 w-full">
         {!isMobile && (
           <div className="p-1 bg-white w-fit rounded-full h-fit flex gap-1 shadow">
             <Button
@@ -257,46 +257,6 @@ const V2_Programme_page = () => {
             </Button>
           </div>
         )}
-        {/* <div className="flex items-center w-md gap-2">
-          <MultiSelect<{ name: string; value: string }>
-            groups={
-              [
-                {
-                  title: "Types",
-                  option: [...ProgrammeList.data.response.types]
-                    .sort((a, b) => a.localeCompare(b))
-                    .map((item) => ({
-                      name: item,
-                      value: item,
-                    })),
-                },
-                {
-                  title: "Categories",
-                  option: [...ProgrammeList.data.response.all_categories]
-                    .sort((a, b) => a.name.localeCompare(b.name))
-                    .map((item) => ({
-                      name: item.name,
-                      value: item.id,
-                    })),
-                },
-              ] as OptionGroup<{ name: string; value: string }>[]
-            }
-            value={selectedCategories}
-            onChange={setSelectedCategories}
-            getLabel={(item) => item.name} // ✅ required
-            getValue={(item) => item.value} // ✅ required
-            placeholder="Search session types and categories..."
-          />
-          <Button
-            className="py-0 text-sm bg-primary text-white hover:text-white"
-            size={"sm"}
-            variant={"outline"}
-            disabled={selectedCategories.length === 0}
-            onClick={() => setSelectedCategories([])}
-          >
-            <X />
-          </Button>
-        </div> */}
         <SearchBox handleSelect={setSelected} />
       </div>
       {/* <EventGrid selectedCategories={selectedCategories} /> */}
