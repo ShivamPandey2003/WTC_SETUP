@@ -1,35 +1,49 @@
-import { useGetProgrammeList } from "@/api/global_api/global_api";
+import {
+  useGetProgrammeList,
+  useGetProgrammeTypeList,
+} from "@/api/global_api/global_api";
+import EventModal from "@/components/common/Programme/EventModal";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   getDateRange,
   getEarliestAndLatest,
   transformSessions,
 } from "@/lib/extra";
 import { groupIntoColumns } from "@/lib/GroupintoColumn";
+import { cn } from "@/lib/utils";
 import { setProgrammes, type ProgrammeRecord } from "@/redux/ExtraSlice";
 import { setAll_Categories, setProgramme, setType } from "@/redux/GlobalSlice";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
+import EventGrid2_v2 from "@/v2_components/common/V2_Programme/EventGrid2_v2";
 // import EventGrid from "@/v2_components/common/V2_Programme/EventGrid";
 import EventGrid_V2 from "@/v2_components/common/V2_Programme/EventGrid_v2";
-import {
-  MultiSelect,
-  type OptionGroup,
-} from "@/v2_components/global/MultiSelect";
-import { X } from "lucide-react";
+import { SearchBox } from "@/v2_components/global/Search/SearchBox";
 import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 const V2_Programme_page = () => {
   const { ProgrammeList, isPending, error } = useGetProgrammeList();
-  const [selectedCategories, setSelectedCategories] = useState<
-    { name: string; value: string }[]
-  >([]);
+  const {
+    ProgrammeTypeList,
+    isPending: isPendingType,
+    error: errorType,
+  } = useGetProgrammeTypeList();
+  // const [selectedCategories, setSelectedCategories] = useState<
+  //   { name: string; value: string }[]
+  // >([]);
   const dispatch = useDispatch<AppDispatch>();
+  const isMobile = useIsMobile();
+  const [currentTab, setCurrentTab] = useState<"Types" | "Categories">("Types");
+  const [seleted, setSelected] = useState<{
+    id: string;
+    date: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!ProgrammeList) return;
@@ -109,7 +123,13 @@ const V2_Programme_page = () => {
     dispatch(setTitle(null));
   }, []);
 
-  if (isPending) {
+  useEffect(() => {
+    if (isMobile) {
+      setCurrentTab("Types");
+    }
+  }, [isMobile]);
+
+  if (isPending || isPendingType) {
     return (
       <div className="w-full flex flex-col px-4">
         {/* Navbar */}
@@ -187,16 +207,23 @@ const V2_Programme_page = () => {
     );
   }
 
-  if (error) {
+  if (error || errorType) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
-        <ErrorDisplay title="Programme Error" message={error.message} />
+        <ErrorDisplay
+          title="Programme Error"
+          message={
+            error?.message || errorType?.message || "An unknown error occurred"
+          }
+        />
       </div>
     );
   }
 
   if (
     !ProgrammeList ||
+    !ProgrammeTypeList ||
+    ProgrammeTypeList.response.length ||
     !ProgrammeList.data.response ||
     !ProgrammeList.data.response.programme.length
   ) {
@@ -209,8 +236,28 @@ const V2_Programme_page = () => {
 
   return (
     <div className="px-4 mx-auto flex flex-col">
-      <div className="hidden sm:flex gap-4 sm:justify-center mb-6 w-full">
-        <div className="flex items-center w-md gap-2">
+      <div className="hidden sm:flex justify-between gap-4 mb-6 w-full">
+        {!isMobile && (
+          <div className="p-1 bg-white w-fit rounded-full h-fit flex gap-1 shadow">
+            <Button
+              variant={currentTab === "Types" ? "default" : "ghost"}
+              size={"sm"}
+              className={cn("capitalize rounded-full p-2 w-28 h-6")}
+              onClick={() => setCurrentTab("Types")}
+            >
+              Types
+            </Button>
+            <Button
+              variant={currentTab === "Categories" ? "default" : "ghost"}
+              size={"sm"}
+              className={cn("capitalize rounded-full p-2 w-28 h-6")}
+              onClick={() => setCurrentTab("Categories")}
+            >
+              Categories
+            </Button>
+          </div>
+        )}
+        {/* <div className="flex items-center w-md gap-2">
           <MultiSelect<{ name: string; value: string }>
             groups={
               [
@@ -249,13 +296,28 @@ const V2_Programme_page = () => {
           >
             <X />
           </Button>
-        </div>
+        </div> */}
+        <SearchBox handleSelect={setSelected} />
       </div>
       {/* <EventGrid selectedCategories={selectedCategories} /> */}
-      <EventGrid_V2
-        programmeData={ProgrammeList.data.response.programme}
-        selectedCategories={selectedCategories.map((e) => e.value)}
-      />
+      {currentTab === "Categories" ? (
+        <EventGrid_V2
+          programmeData={ProgrammeList.data.response.programme}
+          selectedCategories={[]}
+        />
+      ) : (
+        <EventGrid2_v2
+          programmeData={ProgrammeTypeList.response}
+          selectedCategories={[]}
+        />
+      )}
+      {seleted && (
+        <EventModal
+          isOpen={Boolean(seleted)}
+          onClose={() => setSelected(null)}
+          data={seleted!}
+        />
+      )}
     </div>
   );
 };

@@ -25,7 +25,7 @@ import NoData from "@/components/global/NoData";
 type ModalProps = {
   isOpen: boolean;
   onClose: React.Dispatch<React.SetStateAction<string | null>>;
-  data: { id: string; date: string };
+  data: { id: string; date: string; type?: string };
 };
 
 const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
@@ -37,12 +37,19 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   const { notify, isPending } = useNotifyProgramme();
   const isMobile = useIsMobile();
   const [type, setType] = useState<string | null>(null);
+  const [date, setDate] = useState<string | null>(null);
 
   const selectedValue = React.useMemo(() => {
-    return Session.filter(
-      (pre) => data.date === pre.start_date && type === pre.type,
-    ).sort((a, b) => a.start_time.localeCompare(b.start_time));
-  }, [Session, data.date, type]);
+    if (data.date.trim()) {
+      return Session.filter(
+        (pre) => data.date === pre.start_date && type === pre.type,
+      ).sort((a, b) => a.start_time.localeCompare(b.start_time));
+    } else {
+      return Session.filter(
+        (pre) => pre.start_date === date && type === pre.type,
+      ).sort((a, b) => a.start_time.localeCompare(b.start_time));
+    }
+  }, [Session, data.date, type, date]);
 
   const TypesSortArr = React.useMemo(() => {
     return [...Types].sort((a, b) => a.localeCompare(b));
@@ -66,10 +73,17 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   React.useEffect(() => {
     if (data.id) {
       setValue(data.id);
-      const type = Session.find((pre) => pre.id === data.id)?.type;
-      if (type) {
-        setType(type);
+    }
+    const s = Session.find((pre) => pre.id === data.id);
+    if (data.type) {
+      setType(data.type);
+    } else {
+      if (s?.type) {
+        setType(s.type);
       }
+    }
+    if (!data.date.trim()) {
+      setDate(s?.start_date ?? null);
     }
   }, [data]);
 
@@ -107,7 +121,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
         <div className="w-full min-h-[400px] sm:min-h-[350px]">
           <div className="flex flex-row items-end sm:items-center w-full gap-4 mb-2">
             <p className="text-lg sm:text-xl font-bold text-primary">
-              Day View - {data.date}
+              Day View - {data.date.trim() ? data.date : date}
             </p>
           </div>
           {!isMobile && (
@@ -169,7 +183,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
           )}
           <Tabs
             defaultValue={data.id}
-            value={value}
+            value={value ?? selectedValue[0]?.id}
             onValueChange={setValue}
             className="flex flex-row"
           >
