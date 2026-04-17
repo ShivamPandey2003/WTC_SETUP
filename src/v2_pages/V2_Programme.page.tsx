@@ -223,7 +223,7 @@ const V2_Programme_page = () => {
   if (
     !ProgrammeList ||
     !ProgrammeTypeList ||
-    ProgrammeTypeList.response.length ||
+    !ProgrammeTypeList.response.length ||
     !ProgrammeList.data.response ||
     !ProgrammeList.data.response.programme.length
   ) {
