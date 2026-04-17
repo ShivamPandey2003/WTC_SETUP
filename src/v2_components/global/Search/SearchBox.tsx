@@ -26,7 +26,7 @@ export function SearchBox({handleSelect}:Props) {
   >({
     queryKey: ["search", debouncedSearch],
     queryFn: async () => {
-      const res = await apiRequest("get", `program/filter?search=${input}`);
+      const res = await apiRequest("get", `program/filter?search=${debouncedSearch}`);
       return res.response;
     },
     enabled: !!debouncedSearch,

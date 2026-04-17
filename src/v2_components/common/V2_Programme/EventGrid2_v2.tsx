@@ -2,7 +2,7 @@ import EventModal from "@/components/common/Programme/EventModal";
 import { cn } from "@/lib/utils";
 import React, { useMemo, useState } from "react";
 
-let color: Record<string, string> = {
+const color: Record<string, string> = {
   "e-poster": "#084F41",
   "technical track 2": "#1B967C",
   "technical track 1": "#E4F223",
@@ -143,7 +143,7 @@ function DayColumn({
         ),
       )}
 
-      {data.events.map((event: any) => {
+      {data.events.map((event: any, i:number) => {
         const durationMins = event.endMins - event.startMins;
         const top = (event.startMins - globalStartMins) * PX_PER_MIN;
         const height = (event.endMins - event.startMins) * PX_PER_MIN;
@@ -153,7 +153,7 @@ function DayColumn({
 
         return (
           <div
-            key={event.id}
+            key={i}
             onClick={() => setSelected({ id: event.id, date: date, type: event.categoryName })}
             className="event-card cursor-pointer"
             style={{
@@ -240,7 +240,7 @@ export default function EventGrid2_v2({
         map[date] = calculateDayLayout(dayEvents);
       });
       return map;
-    }, [dates, selectedCategories]);
+    }, [dates, programmeData]);
 
   const gridHeight = (endHour - startHour) * 60 * PX_PER_MIN;
 
