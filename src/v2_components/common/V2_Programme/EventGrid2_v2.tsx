@@ -190,7 +190,6 @@ function DayColumn({
 
 export default function EventGrid2_v2({
   programmeData,
-  selectedCategories,
 }: {
   programmeData: ProgrammeTypeList[];
   selectedCategories: string[];
