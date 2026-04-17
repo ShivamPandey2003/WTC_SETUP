@@ -249,6 +249,25 @@ export const useGetProgrammeList = () => {
   return { ProgrammeList, isPending, error, refetch };
 };
 
+export const useGetProgrammeTypeList = () => {
+  const {
+    data: ProgrammeTypeList,
+    isPending,
+    error,
+    refetch,
+  } = useQuery<GlobalProgrammeTypeListResponse, AxiosError>({
+    queryKey: ["global-programme-types"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "program/merged");
+      return res.response;
+    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  return { ProgrammeTypeList, isPending, error, refetch };
+};
+
 export const useGetNavMenu = () => {
   const {
     data: NavMenu,

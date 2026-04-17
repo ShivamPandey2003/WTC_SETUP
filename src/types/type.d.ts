@@ -97,7 +97,7 @@ declare type Session = {
   description: string;
   bg_img: null | string;
   is_active: boolean;
-  venue: Shape & {designId:string};
+  venue: Shape & { designId: string };
   attachments: { file: string, id: string }[]
 };
 
@@ -359,7 +359,7 @@ declare type Programme = {
     filename: string;
     has_attachment: boolean;
   }[];
-  type:string;
+  type: string;
   id: string;
   title: string;
   location: string;
@@ -417,8 +417,20 @@ declare type GlobalProgrammeListResponse = {
       name: string;
       color: string;
     }[];
-    types:string[]
+    types: string[]
   };
+};
+
+type ProgrammeTypeList = {
+   "type": string,
+    "date": string,
+    "start_time": string,
+    "end_time": string
+}
+
+declare type GlobalProgrammeTypeListResponse = {
+  header: ResponseHeader;
+  response: ProgrammeTypeList[]
 };
 
 declare type ProgrammeCreateCategoryResponse = {
@@ -640,7 +652,7 @@ declare type VenueDesignMap = {
 
 declare type GlobalVenueDesignMap = {
   header: ResponseHeader;
-  response: (MapT & { programmes: (Programme& { venue_id: string; })[]; created_by: string })[];
+  response: (MapT & { programmes: (Programme & { venue_id: string; })[]; created_by: string })[];
 };
 
 declare type Infinity = {

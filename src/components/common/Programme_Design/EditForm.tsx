@@ -18,18 +18,12 @@ import { setIsCreating as CreateSpeaker } from "@/redux/SpeakerDesignSlice";
 import { useV2GetFloorMApList } from "@/api/Venue_api/Venue_Design_api";
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 
 const EditFrom = () => {
   const { AllCategory, isPending } = useGetCategoryAll();
   const { SpeakerList, isPending: isSpeakersListPenindg } = useGetSpeakerList();
   const { V2_FloorMapList, V2_isFloorMapListPending } = useV2GetFloorMApList();
-  const [Values, setValues] = useState<
-    {
-      label: string;
-      value: string;
-    }[]
-  >([]);
   const { selected, session, slectedDate } = useSelector(
     (state: RootState) => state.Programme_Design,
   );
@@ -110,25 +104,23 @@ const EditFrom = () => {
     name: "floorID",
   });
 
-  useEffect(() => {
-    const Value = V2_FloorMapList?.response
-      .find((pre) =>
-        pre.id === value?.venue?.designId
-          ? value?.venue?.designId
-          : selectedFloorID,
-      )
-      ?.map_list.filter((i) => !["IMAGE", "TEXT", "SCRIBBLE"].includes(i.type))
-      .map((item) => {
-        return {
-          label: `${item.name ?? item.type}`,
-          value: item.id,
-        };
-      });
+  const filteredValues = useMemo(() => {
+    const floorId =
+      value?.venue?.designId !== selectedFloorID
+        ? selectedFloorID
+        : value?.venue?.designId;
 
-    if (!Value) return;
+    const found = V2_FloorMapList?.response?.find((pre) => pre.id === floorId);
 
-    setValues(Value);
-  }, [selectedFloorID,value]);
+    if (!found) return [];
+
+    return found.map_list
+      .filter((i) => !["IMAGE", "TEXT", "SCRIBBLE"].includes(i.type))
+      .map((item) => ({
+        label: item.name ?? item.type,
+        value: item.id,
+      }));
+  }, [selectedFloorID, value?.venue?.designId, V2_FloorMapList]);
 
   if (isPending || isSpeakersListPenindg || V2_isFloorMapListPending) {
     return (
@@ -165,9 +157,9 @@ const EditFrom = () => {
       placeholder: "Enter detailed description...",
     },
     {
-      name:"type",
-      label:"Type",
-      placeholder:"Enter programme type"
+      name: "type",
+      label: "Type",
+      placeholder: "Enter programme type",
     },
     { name: "start_time", label: "Start Time", type: "time" },
     { name: "end_time", label: "End Time", type: "time" },
@@ -227,7 +219,7 @@ const EditFrom = () => {
       label: "Venue",
       type: "select",
       placeholder: "Select location",
-      options: Values,
+      options: filteredValues,
     },
   ];
 
