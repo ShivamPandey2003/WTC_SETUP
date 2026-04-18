@@ -65,7 +65,7 @@ export const useCreateSession = () => {
       }
 
       queryClient.invalidateQueries({
-        queryKey: ["Admin-Programme-pagination"],
+        queryKey: ["sessionList"],
       });
     },
   });
@@ -341,7 +341,7 @@ export const useEditSession = () => {
         ]);
       }
       queryClient.invalidateQueries({
-        queryKey: ["Admin-Programme-pagination"],
+        queryKey: ["sessionList"],
       });
     },
   });

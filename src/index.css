@@ -129,13 +129,14 @@ h3{
 }
 
 .time-label {
-  height: 120px; /* Must match PX_PER_MIN * 60 */
+  height: 96px; /* Must match PX_PER_MIN * 60 = 1.6 * 60 */
   display: flex;
   justify-content: center;
-  padding-top: 10px;
+  padding-top: 0px;
   font-size: 12px;
   color: #888;
   font-weight: 500;
+  border-top: 1px solid #ddd;
 }
 
 .calendar-grid {
