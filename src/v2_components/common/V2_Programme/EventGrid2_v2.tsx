@@ -154,7 +154,7 @@ function DayColumn({
           return (
             <div
               key={i}
-              onClick={() => setSelected({ id: event.id, date: date, type: event.categoryName })}
+              onClick={() => setSelected({ id: event?.id, date: date, type: event.categoryName })}
               className="event-card cursor-pointer"
               style={{
                 top: `${Math.round(top + V_GAP)}px`,
@@ -194,7 +194,7 @@ export default function EventGrid2_v2({
   programmeData: ProgrammeTypeList[];
   selectedCategories: string[];
 }) {
-  const [seleted, setSelected] = useState<{
+  const [selected, setSelected] = useState<{
     id: string;
     date: string;
     type: string;
@@ -232,7 +232,7 @@ export default function EventGrid2_v2({
   );
 
   const layoutData = useMemo(() => {
-    const map: any = {};
+    const map: Record<string, ReturnType<typeof calculateDayLayout>> = {};
     dates.forEach((date) => {
       const dayEvents = programmeData
         .filter((e) => e.date === date)
@@ -299,11 +299,11 @@ export default function EventGrid2_v2({
           </div>
         </div>
       </div>
-      {seleted && (
+      {selected && (
         <EventModal
-          isOpen={Boolean(seleted)}
+          isOpen={Boolean(selected)}
           onClose={() => setSelected(null)}
-          data={seleted!}
+          data={selected!}
         />
       )}
     </>

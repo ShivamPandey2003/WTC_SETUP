@@ -182,7 +182,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
           )}
           <Tabs
             defaultValue={data.id}
-            value={value ?? selectedValue[0]?.id}
+            value={value || selectedValue[0]?.id}
             onValueChange={setValue}
             className="flex flex-row"
           >

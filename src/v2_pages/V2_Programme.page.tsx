@@ -40,7 +40,7 @@ const V2_Programme_page = () => {
   const dispatch = useDispatch<AppDispatch>();
   const isMobile = useIsMobile();
   const [currentTab, setCurrentTab] = useState<"Types" | "Categories">("Types");
-  const [seleted, setSelected] = useState<{
+  const [selected, setSelected] = useState<{
     id: string;
     date: string;
   } | null>(null);
@@ -271,11 +271,11 @@ const V2_Programme_page = () => {
           selectedCategories={[]}
         />
       )}
-      {seleted && (
+      {selected && (
         <EventModal
-          isOpen={Boolean(seleted)}
+          isOpen={Boolean(selected)}
           onClose={() => setSelected(null)}
-          data={seleted!}
+          data={selected!}
         />
       )}
     </div>
