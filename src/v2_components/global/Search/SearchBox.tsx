@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/services/apiService";
 import type { AxiosError } from "axios";
 import { useDebounce } from "@/hooks/useDebounce";
-// import type { SearchResult } from "./type";
+import type { SearchResult } from "./type";
 
 interface Props {
   handleSelect: React.Dispatch<
@@ -20,10 +20,9 @@ export function SearchBox({ handleSelect }: Props) {
   const [input, setInput] = React.useState<string>("");
   const debouncedSearch = useDebounce(input, 500);
 
-  const { data } = useQuery<
-    any,
-    AxiosError
-  >({
+  const { data } = useQuery<{
+    response: SearchResult[];
+  }, AxiosError>({
     queryKey: ["search", debouncedSearch],
     queryFn: async () => {
       const res = await apiRequest("get", `program/filter?search=${debouncedSearch}`);

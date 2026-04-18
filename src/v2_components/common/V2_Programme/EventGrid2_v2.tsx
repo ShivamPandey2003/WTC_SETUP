@@ -161,7 +161,7 @@ function DayColumn({
                 height: `${Math.round(height - V_GAP * 2)}px`,
                 width: `calc(${laneWidthPct}% - ${H_GAP * 2}px)`,
                 left: `calc(${leftPct}% + ${H_GAP}px)`,
-                backgroundColor: shouldBeGray ? "gray" : event.catColor,
+                backgroundColor: shouldBeGray ? "#9CA3AF" : event.catColor,
                 fontSize: `${durationMins < 30 ? "7px" : "13px"}`,
                 lineHeight: durationMins < 30 ? 1.2 : undefined,
               }}
@@ -192,7 +192,6 @@ export default function EventGrid2_v2({
   programmeData,
 }: {
   programmeData: ProgrammeTypeList[];
-  selectedCategories: string[];
 }) {
   const [selected, setSelected] = useState<{
     id: string;

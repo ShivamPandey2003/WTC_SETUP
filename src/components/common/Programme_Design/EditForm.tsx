@@ -105,10 +105,7 @@ const EditFrom = () => {
   });
 
   const filteredValues = useMemo(() => {
-    const floorId =
-      value?.venue?.designId !== selectedFloorID
-        ? selectedFloorID
-        : value?.venue?.designId;
+    const floorId = selectedFloorID || value?.venue?.designId;
 
     const found = V2_FloorMapList?.response?.find((pre) => pre.id === floorId);
 
@@ -134,94 +131,94 @@ const EditFrom = () => {
     name: keyof SessionForm;
     label: string;
     type?:
-      | "text"
-      | "textarea"
-      | "number"
-      | "file"
-      | "checkbox"
-      | "date"
-      | "array-string"
-      | "time"
-      | "array-attachment"
-      | "select";
+    | "text"
+    | "textarea"
+    | "number"
+    | "file"
+    | "checkbox"
+    | "date"
+    | "array-string"
+    | "time"
+    | "array-attachment"
+    | "select";
     placeholder?: string;
     accept?: string;
     options?: { label: string; value: string }[];
     addMoreHandler?: () => void;
   }[] = [
-    { name: "title", label: "Title", placeholder: "Enter title here" },
-    {
-      name: "description",
-      label: "Description",
-      type: "textarea",
-      placeholder: "Enter detailed description...",
-    },
-    {
-      name: "type",
-      label: "Type",
-      placeholder: "Enter programme type",
-    },
-    { name: "start_time", label: "Start Time", type: "time" },
-    { name: "end_time", label: "End Time", type: "time" },
-    {
-      name: "attachments",
-      label: "Paper",
-      type: "array-attachment",
-      accept: "application/pdf",
-    },
-    {
-      name: "bg_image",
-      label: "Image",
-      type: "file",
-      accept: "image/png,image/jpg,image/webp,image/jpeg",
-    },
-    { name: "location", label: "Location" },
-    { name: "external_link", label: "External Link" },
-    {
-      name: "category",
-      label: "Category",
-      type: "select",
-      placeholder: "Select a category",
-      options: AllCategory?.response
-        .filter((pre) => !Boolean(pre.type))
-        .map((item) => {
-          return { label: item.name, value: item.id };
+      { name: "title", label: "Title", placeholder: "Enter title here" },
+      {
+        name: "description",
+        label: "Description",
+        type: "textarea",
+        placeholder: "Enter detailed description...",
+      },
+      {
+        name: "type",
+        label: "Type",
+        placeholder: "Enter programme type",
+      },
+      { name: "start_time", label: "Start Time", type: "time" },
+      { name: "end_time", label: "End Time", type: "time" },
+      {
+        name: "attachments",
+        label: "Paper",
+        type: "array-attachment",
+        accept: "application/pdf",
+      },
+      {
+        name: "bg_image",
+        label: "Image",
+        type: "file",
+        accept: "image/png,image/jpg,image/webp,image/jpeg",
+      },
+      { name: "location", label: "Location" },
+      { name: "external_link", label: "External Link" },
+      {
+        name: "category",
+        label: "Category",
+        type: "select",
+        placeholder: "Select a category",
+        options: AllCategory?.response
+          .filter((pre) => !Boolean(pre.type))
+          .map((item) => {
+            return { label: item.name, value: item.id };
+          }),
+        addMoreHandler: () => dispatch(setCategoryModal(true)),
+      },
+      {
+        name: "speakers",
+        label: "Speaker",
+        type: "select",
+        placeholder: "Select a speaker",
+        options: SpeakerList?.response.map((item) => {
+          return {
+            label: item.name,
+            value: item.id,
+          };
         }),
-      addMoreHandler: () => dispatch(setCategoryModal(true)),
-    },
-    {
-      name: "speakers",
-      label: "Speaker",
-      type: "select",
-      placeholder: "Select a speaker",
-      options: SpeakerList?.response.map((item) => {
-        return {
-          label: item.name,
-          value: item.id,
-        };
-      }),
-      addMoreHandler: () => dispatch(CreateSpeaker(true)),
-    },
-    {
-      name: "floorID",
-      label: "Floor",
-      type: "select",
-      placeholder: "Select Floor",
-      options: V2_FloorMapList?.response.map((item) => {
-        return {
-          label: `${item.label}`,
-          value: item.id,
-        };
-      }),
-    },
-    {
-      name: "venueID",
-      label: "Venue",
-      type: "select",
-      placeholder: "Select location",
-      options: filteredValues,
-    },
-  ];
+        addMoreHandler: () => dispatch(CreateSpeaker(true)),
+      },
+      {
+        name: "floorID",
+        label: "Floor",
+        type: "select",
+        placeholder: "Select Floor",
+        options: V2_FloorMapList?.response.map((item) => {
+          return {
+            label: `${item.label}`,
+            value: item.id,
+          };
+        }),
+      },
+      {
+        name: "venueID",
+        label: "Venue",
+        type: "select",
+        placeholder: "Select location",
+        options: filteredValues,
+      },
+    ];
 
   return (
     <CustomForm
