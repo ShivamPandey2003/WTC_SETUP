@@ -65,13 +65,13 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
 
   const ScrollWindow = (id: string) => {
     const el = tabRefs.current[id];
-    if (!el) return;
+    const container = listRef.current;
+    if (!el || !container) return;
 
-    el.scrollIntoView({
-      behavior: "smooth",
-      inline: "center",
-      block: "start", // vertical scroll
-    });
+    const stickyHeaderHeight = 36;
+    const containerTop = container.getBoundingClientRect().top;
+    const elTop = el.getBoundingClientRect().top;
+    container.scrollTop += elTop - containerTop - stickyHeaderHeight;
   };
 
   React.useEffect(() => {
@@ -100,14 +100,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   }, [value, selectedValue]);
 
   React.useEffect(() => {
-    const el = tabRefs.current[data.id];
-    if (!el) return;
-
-    el.scrollIntoView({
-      behavior: "smooth",
-      inline: "center",
-      block: "start", // vertical scroll
-    });
+    ScrollWindow(data.id);
   }, [data.id, selectedValue]);
 
   return (
@@ -129,13 +122,15 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
             </p>
           </div>
           {!isMobile && (
-            <div className="flex items-center gap-5 mb-2 overflow-x-auto max-w-[100%] custom-scrollbar">
+            <div className="flex items-center gap-2 mb-3 overflow-x-auto custom-scrollbar pb-1">
               {TypesSortArr.map((item) => (
-                <div
+                <button
                   key={item}
                   className={cn(
-                    "cursor-pointer capitalize font-semibold min-w-fit",
-                    type === item ? "border-b text-primary" : "text-gray-500",
+                    "cursor-pointer capitalize text-sm font-medium min-w-fit px-3 py-1 rounded-full transition-colors",
+                    type === item
+                      ? "bg-primary text-white"
+                      : "bg-gray-100 text-gray-500 hover:bg-gray-200",
                   )}
                   onClick={() => {
                     setType(item);
@@ -143,7 +138,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                   }}
                 >
                   {item}
-                </div>
+                </button>
               ))}
             </div>
           )}
@@ -193,11 +188,8 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
           >
             <TabsList
               ref={listRef}
-              className="flex-col hidden sm:flex items-start rounded-none border-r border-gray-300 min-h-[300px] sm:w-[30%] h-full justify-start gap-4 pr-2 overflow-y-auto max-h-[52vh] sm:max-h-[59vh]"
+              className="flex-col hidden sm:flex items-start rounded-none border-r border-gray-300 min-h-[300px] sm:w-[30%] h-full justify-start gap-1.5 pr-2 overflow-y-auto max-h-[52vh] sm:max-h-[59vh]"
             >
-              <div className="sticky -top-1 text-lg font-semibold capitalize text-gray-400 bg-white w-full">
-                {type} Programme
-              </div>
               {selectedValue.length === 0 ? (
                 <div className="flex items-center w-full justify-center font-semibold min-h-[30vh]">
                   No data found
@@ -212,11 +204,13 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                     variant={"filled"}
                     value={value.id}
                     className={cn(
-                      "font-semibold w-full data-[active=false]:bg-gray-100 px-2 data-[active=true]:border-gray-200 data-[active=true]:shadow data-[active=true]:no-underline flex-col items-start",
+                      "w-full flex-col items-start px-3 py-2 rounded-lg border transition-colors",
+                      "data-[active=false]:bg-gray-50 data-[active=false]:border-transparent data-[active=false]:text-gray-600 hover:bg-gray-100",
+                      "data-[active=true]:bg-primary/10 data-[active=true]:border-primary/20 data-[active=true]:text-primary data-[active=true]:shadow-none",
                     )}
                   >
-                    <span>{`${value.start_time.slice(0, 5)} - ${value.end_time.slice(0, 5)}`}</span>
-                    <div className="line-clamp-2 whitespace-normal text-start truncate">
+                    <span className="text-xs font-medium opacity-60">{`${value.start_time.slice(0, 5)} – ${value.end_time.slice(0, 5)}`}</span>
+                    <div className="text-sm font-semibold line-clamp-2 whitespace-normal text-start mt-0.5">
                       {value.title}
                     </div>
                   </TabsTrigger>
