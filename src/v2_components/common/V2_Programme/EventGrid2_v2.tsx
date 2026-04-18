@@ -48,39 +48,28 @@ const calculateDayLayout = (dayEvents: ProgrammeTypeList[]) => {
     }
   });
 
-  // Sort events by start time
   const groupedEvents = Array.from(groups.values()).sort(
     (a, b) => a.startMins - b.startMins,
   );
 
-  // 2. Collision Detection (Lanes)
-  const lanes: any[][] = [];
+  // Assign lanes based on alphabetical category order, e-poster always last
+  const uniqueCategories = [...new Set(groupedEvents.map((e) => e.categoryName))].sort(
+    (a, b) => {
+      if (a === 'e-poster') return 1;
+      if (b === 'e-poster') return -1;
+      return a.localeCompare(b);
+    },
+  );
+
+  const categoryLaneMap = new Map(uniqueCategories.map((cat, i) => [cat, i]));
 
   groupedEvents.forEach((event) => {
-    let placed = false;
-
-    for (let i = 0; i < lanes.length; i++) {
-      const lane = lanes[i];
-      const lastInLane = lane[lane.length - 1];
-
-      // If the event starts after or exactly when the last one in this lane ends
-      if (event.startMins >= lastInLane.endMins) {
-        lane.push(event);
-        event.laneIndex = i;
-        placed = true;
-        break;
-      }
-    }
-
-    if (!placed) {
-      event.laneIndex = lanes.length;
-      lanes.push([event]);
-    }
+    event.laneIndex = categoryLaneMap.get(event.categoryName) ?? 0;
   });
 
   return {
     events: groupedEvents,
-    totalLanes: Math.max(1, lanes.length),
+    totalLanes: Math.max(1, uniqueCategories.length),
   };
 };
 
@@ -151,7 +140,7 @@ function DayColumn({
 
           if (aName === 'e-poster') return 1;
           if (bName === 'e-poster') return -1;
-
+          console.log(aName, bName, a.startMins, b.startMins);
           return aName.localeCompare(bName);
         })
         .map((event: any, i: number) => {
