@@ -11,9 +11,10 @@ const color: Record<string, string> = {
   "technical track 5": "#C8553D",
   general: "#F2545B",
 };
-const PX_PER_MIN = 2; // Vertical scale (1 hour = 120px)
+const PX_PER_MIN = 1.6; // Vertical scale (1 hour = 96px)
 const BASE_COL_WIDTH = 100; // Width of one lane
-const GAP = 6; // Space between cards
+const V_GAP = 1; // Vertical padding inside each card (top + bottom)
+const H_GAP = 6; // Horizontal inset between cards in the same column
 
 const calculateDayLayout = (dayEvents: ProgrammeTypeList[]) => {
   const groups = new Map();
@@ -140,7 +141,6 @@ function DayColumn({
 
           if (aName === 'e-poster') return 1;
           if (bName === 'e-poster') return -1;
-          console.log(aName, bName, a.startMins, b.startMins);
           return aName.localeCompare(bName);
         })
         .map((event: any, i: number) => {
@@ -157,10 +157,10 @@ function DayColumn({
               onClick={() => setSelected({ id: event.id, date: date, type: event.categoryName })}
               className="event-card cursor-pointer"
               style={{
-                top: `${top + GAP}px`,
-                height: `${height - GAP * 2}px`,
-                width: `calc(${laneWidthPct}% - ${GAP * 2}px)`,
-                left: `calc(${leftPct}% + ${GAP}px)`,
+                top: `${Math.round(top + V_GAP)}px`,
+                height: `${Math.round(height - V_GAP * 2)}px`,
+                width: `calc(${laneWidthPct}% - ${H_GAP * 2}px)`,
+                left: `calc(${leftPct}% + ${H_GAP}px)`,
                 backgroundColor: shouldBeGray ? "gray" : event.catColor,
                 fontSize: `${durationMins < 30 ? "7px" : "13px"}`,
                 lineHeight: durationMins < 30 ? 1.2 : undefined,
@@ -172,7 +172,7 @@ function DayColumn({
                   className={cn(
                     "capitalize event-title max-w-[70px]",
                     durationMins < 30 && "truncate",
-                    height - GAP * 2 > 1050 && "rotate-90",
+                    height - V_GAP * 2 > 1050 && "rotate-90",
                   )}
                 >
                   {event.categoryName}
