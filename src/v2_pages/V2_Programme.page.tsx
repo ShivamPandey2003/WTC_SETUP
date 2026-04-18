@@ -268,7 +268,6 @@ const V2_Programme_page = () => {
       ) : (
         <EventGrid2_v2
           programmeData={ProgrammeTypeList.response}
-          selectedCategories={[]}
         />
       )}
       {selected && (
