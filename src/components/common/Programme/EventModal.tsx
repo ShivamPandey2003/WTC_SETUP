@@ -319,65 +319,79 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                       </div>
                     </div>
                   </div>
-                  <div className="relative">
-                    <Description text={s.description} />
-                    {/* <p className="text-sm text-gray-600 leading-relaxed mb-4">
-                    {}
-                  </p> */}
-                    {
-                      s.attachments &&
-                        s.attachments.length > 0 &&
-                        // <a href={s.attachments.file} target="_blank">
-                        s.attachments
-                          .filter((p) => p.has_attachment)
-                          .map((e) => (
+                  <div className="relative px-4">
+                    {s.attachments && s.attachments.length > 0 && (
+                      <div className="mb-6">
+                        <p className="mb-2 font-semibold">Paper</p>
+                        {
+                          // <a href={s.attachments.file} target="_blank">
+                          s.attachments
+                            .filter((p) => p.has_attachment)
+                            .map((e) => (
+                              <div
+                                key={e.id}
+                                onClick={() =>
+                                  navigate(`/Attachment/${s.id}`, {
+                                    state: { Title: e.filename, file_id: e.id },
+                                  })
+                                }
+                                className="flex flex-col sm:flex-row items-center gap-2 mb-5 text-sm text-gray-700"
+                              >
+                                <FileText className="w-4 h-4" />
+                                <span className="hover:underline cursor-pointer">
+                                  {e.filename}
+                                </span>
+                              </div>
+                            ))
+
+                          // </a>
+                        }
+                      </div>
+                    )}
+                    {s.speakers && s.speakers.length > 0 && (
+                      <div className="mb-6">
+                        <p className="font-semibold">Speakers</p>
+                        <div className="flex items-center gap-6 mt-4">
+                          {s.speakers.map((speaker, index) => (
                             <div
-                              onClick={() =>
-                                navigate(`/Attachment/${s.id}`, {
-                                  state: { Title: e.filename, file_id: e.id },
-                                })
-                              }
-                              className="flex flex-col sm:flex-row items-center gap-2 mb-5 text-sm text-gray-700"
+                              key={index}
+                              className="flex flex-col items-center cursor-pointer"
                             >
-                              <FileText className="w-4 h-4" />
-                              <span className="hover:underline cursor-pointer">
-                                {e.filename}
+                              <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center mb-2 overflow-hidden">
+                                {!speaker.profile_img ? (
+                                  <img
+                                    src={
+                                      speaker.profile_img
+                                        ? speaker.profile_img
+                                        : dummy
+                                    }
+                                    alt={speaker.fullname}
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <svg
+                                    className="w-6 h-6 text-white"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                  </svg>
+                                )}
+                              </div>
+                              <span className="text-xs text-gray-700 text-center">
+                                {speaker.fullname}
                               </span>
                             </div>
-                          ))
-
-                      // </a>
-                    }
-
-                    <div className="flex items-center gap-6 mt-4">
-                      {s.speakers.map((speaker, index) => (
-                        <div
-                          key={index}
-                          className="flex flex-col items-center cursor-pointer"
-                        >
-                          <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center mb-2 overflow-hidden">
-                            {!speaker ? (
-                              <img
-                                src={speaker}
-                                alt={speaker}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <svg
-                                className="w-6 h-6 text-white"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                              </svg>
-                            )}
-                          </div>
-                          <span className="text-xs text-gray-700 text-center">
-                            {speaker.fullname}
-                          </span>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    )}
+                    {s.description && s.description.trim() && (
+                      <div>
+                        <p className="font-semibold">Description</p>
+                        <Description text={s.description} />
+                      </div>
+                    )}
                   </div>
                 </TabsContent>
               ))
