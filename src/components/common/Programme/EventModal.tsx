@@ -381,10 +381,10 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                         </div>
                       </div>
                     )}
-                    <div>
+                   {s.description && s.description.trim() && ( <div>
                       <p className="font-semibold">Description</p>
                       <Description text={s.description} />
-                    </div>
+                    </div>)}
                   </div>
                 </TabsContent>
               ))
