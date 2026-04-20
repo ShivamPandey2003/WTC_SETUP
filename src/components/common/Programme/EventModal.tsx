@@ -319,7 +319,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                       </div>
                     </div>
                   </div>
-                  <div className="relative">
+                  <div className="relative px-4">
                     <Description text={s.description} />
                     {/* <p className="text-sm text-gray-600 leading-relaxed mb-4">
                     {}
