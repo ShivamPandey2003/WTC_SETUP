@@ -11,9 +11,10 @@ const color: Record<string, string> = {
   "technical track 5": "#C8553D",
   general: "#F2545B",
 };
-const PX_PER_MIN = 2; // Vertical scale (1 hour = 120px)
+const PX_PER_MIN = 1.6; // Vertical scale (1 hour = 96px)
 const BASE_COL_WIDTH = 100; // Width of one lane
-const GAP = 6; // Space between cards
+const V_GAP = 1; // Vertical padding inside each card (top + bottom)
+const H_GAP = 6; // Horizontal inset between cards in the same column
 
 const calculateDayLayout = (dayEvents: ProgrammeTypeList[]) => {
   const groups = new Map();
@@ -48,39 +49,28 @@ const calculateDayLayout = (dayEvents: ProgrammeTypeList[]) => {
     }
   });
 
-  // Sort events by start time
   const groupedEvents = Array.from(groups.values()).sort(
     (a, b) => a.startMins - b.startMins,
   );
 
-  // 2. Collision Detection (Lanes)
-  const lanes: any[][] = [];
+  // Assign lanes based on alphabetical category order, e-poster always last
+  const uniqueCategories = [...new Set(groupedEvents.map((e) => e.categoryName))].sort(
+    (a, b) => {
+      if (a === 'e-poster') return 1;
+      if (b === 'e-poster') return -1;
+      return a.localeCompare(b);
+    },
+  );
+
+  const categoryLaneMap = new Map(uniqueCategories.map((cat, i) => [cat, i]));
 
   groupedEvents.forEach((event) => {
-    let placed = false;
-
-    for (let i = 0; i < lanes.length; i++) {
-      const lane = lanes[i];
-      const lastInLane = lane[lane.length - 1];
-
-      // If the event starts after or exactly when the last one in this lane ends
-      if (event.startMins >= lastInLane.endMins) {
-        lane.push(event);
-        event.laneIndex = i;
-        placed = true;
-        break;
-      }
-    }
-
-    if (!placed) {
-      event.laneIndex = lanes.length;
-      lanes.push([event]);
-    }
+    event.laneIndex = categoryLaneMap.get(event.categoryName) ?? 0;
   });
 
   return {
     events: groupedEvents,
-    totalLanes: Math.max(1, lanes.length),
+    totalLanes: Math.max(1, uniqueCategories.length),
   };
 };
 
@@ -143,47 +133,57 @@ function DayColumn({
         ),
       )}
 
-      {data.events.map((event: any, i:number) => {
-        const durationMins = event.endMins - event.startMins;
-        const top = (event.startMins - globalStartMins) * PX_PER_MIN;
-        const height = (event.endMins - event.startMins) * PX_PER_MIN;
-        const laneWidthPct = 100 / data.totalLanes;
-        const leftPct = event.laneIndex * laneWidthPct;
-        const shouldBeGray = isAnyColumnHovered && !isThisColumnHovered;
+      {data.events
+        .slice()
+        .sort((a: any, b: any) => {
+          const aName = a.categoryName.toLowerCase();
+          const bName = b.categoryName.toLowerCase();
 
-        return (
-          <div
-            key={i}
-            onClick={() => setSelected({ id: event.id, date: date, type: event.categoryName })}
-            className="event-card cursor-pointer"
-            style={{
-              top: `${top + GAP}px`,
-              height: `${height - GAP * 2}px`,
-              width: `calc(${laneWidthPct}% - ${GAP * 2}px)`,
-              left: `calc(${leftPct}% + ${GAP}px)`,
-              backgroundColor: shouldBeGray ? "gray" : event.catColor,
-              fontSize: `${durationMins < 30 ? "7px" : "13px"}`,
-              lineHeight: durationMins < 30 ? 1.2 : undefined,
-            }}
-          >
-            <div className="event-inner">
-              {/* <span className="event-time">{event.start_time} - {event.end_time}</span> */}
-              <div
-                className={cn(
-                  "event-title max-w-[70px]",
-                  durationMins < 30 && "truncate",
-                  height - GAP * 2 > 1050 && "rotate-90",
-                )}
-              >
-                {event.categoryName}
-              </div>
-              {/* {event.titles.map((title, i) => (
+          if (aName === 'e-poster') return 1;
+          if (bName === 'e-poster') return -1;
+          return aName.localeCompare(bName);
+        })
+        .map((event: any, i: number) => {
+          const durationMins = event.endMins - event.startMins;
+          const top = (event.startMins - globalStartMins) * PX_PER_MIN;
+          const height = (event.endMins - event.startMins) * PX_PER_MIN;
+          const laneWidthPct = 100 / data.totalLanes;
+          const leftPct = event.laneIndex * laneWidthPct;
+          const shouldBeGray = isAnyColumnHovered && !isThisColumnHovered;
+
+          return (
+            <div
+              key={i}
+              onClick={() => setSelected({ id: event?.id, date: date, type: event.categoryName })}
+              className="event-card cursor-pointer"
+              style={{
+                top: `${Math.round(top + V_GAP)}px`,
+                height: `${Math.round(height - V_GAP * 2)}px`,
+                width: `calc(${laneWidthPct}% - ${H_GAP * 2}px)`,
+                left: `calc(${leftPct}% + ${H_GAP}px)`,
+                backgroundColor: shouldBeGray ? "#9CA3AF" : event.catColor,
+                fontSize: `${durationMins < 30 ? "7px" : "13px"}`,
+                lineHeight: durationMins < 30 ? 1.2 : undefined,
+              }}
+            >
+              <div className="event-inner">
+                {/* <span className="event-time">{event.start_time} - {event.end_time}</span> */}
+                <div
+                  className={cn(
+                    "capitalize event-title max-w-[70px]",
+                    durationMins < 30 && "truncate",
+                    height - V_GAP * 2 > 1050 && "rotate-90",
+                  )}
+                >
+                  {event.categoryName}
+                </div>
+                {/* {event.titles.map((title, i) => (
                 <div key={i} className="event-title">{title}</div>
               ))} */}
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
     </div>
   );
 }
@@ -192,9 +192,8 @@ export default function EventGrid2_v2({
   programmeData,
 }: {
   programmeData: ProgrammeTypeList[];
-  selectedCategories: string[];
 }) {
-  const [seleted, setSelected] = useState<{
+  const [selected, setSelected] = useState<{
     id: string;
     date: string;
     type: string;
@@ -231,15 +230,15 @@ export default function EventGrid2_v2({
     (_, i) => `${startHour + i}:00`,
   );
 
-    const layoutData = useMemo(() => {
-      const map: any = {};
-      dates.forEach((date) => {
-        const dayEvents = programmeData
-          .filter((e) => e.date === date)
-        map[date] = calculateDayLayout(dayEvents);
-      });
-      return map;
-    }, [dates, programmeData]);
+  const layoutData = useMemo(() => {
+    const map: Record<string, ReturnType<typeof calculateDayLayout>> = {};
+    dates.forEach((date) => {
+      const dayEvents = programmeData
+        .filter((e) => e.date === date)
+      map[date] = calculateDayLayout(dayEvents);
+    });
+    return map;
+  }, [dates, programmeData]);
 
   const gridHeight = (endHour - startHour) * 60 * PX_PER_MIN;
 
@@ -253,12 +252,12 @@ export default function EventGrid2_v2({
           {/* Sticky Headers */}
           <div className="header-row">
             {dates.map((date) => {
-                const width = layoutData[date].totalLanes * BASE_COL_WIDTH;
+              const width = layoutData[date].totalLanes * BASE_COL_WIDTH;
               return (
                 <div
                   key={date}
                   className="day-header capitalize"
-                    style={{ width, minWidth: width }}
+                  style={{ width, minWidth: width }}
                 >
                   {new Date(`${date}T00:00:00Z`).toLocaleDateString("en-GB", {
                     weekday: "short",
@@ -299,11 +298,11 @@ export default function EventGrid2_v2({
           </div>
         </div>
       </div>
-      {seleted && (
+      {selected && (
         <EventModal
-          isOpen={Boolean(seleted)}
+          isOpen={Boolean(selected)}
           onClose={() => setSelected(null)}
-          data={seleted!}
+          data={selected!}
         />
       )}
     </>

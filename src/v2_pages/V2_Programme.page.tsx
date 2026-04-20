@@ -40,7 +40,7 @@ const V2_Programme_page = () => {
   const dispatch = useDispatch<AppDispatch>();
   const isMobile = useIsMobile();
   const [currentTab, setCurrentTab] = useState<"Types" | "Categories">("Types");
-  const [seleted, setSelected] = useState<{
+  const [selected, setSelected] = useState<{
     id: string;
     date: string;
   } | null>(null);
@@ -143,7 +143,7 @@ const V2_Programme_page = () => {
           </div>
         </div>
         {/* Search bar */}
-        <div className="hidden sm:flex justify-center mb-6">
+        <div className="sm:flex justify-center mb-6">
           <div className="flex items-center gap-2">
             <Skeleton className="w-72 h-9 rounded-md" />
             <Skeleton className="w-9 h-9 rounded-md" />
@@ -268,14 +268,13 @@ const V2_Programme_page = () => {
       ) : (
         <EventGrid2_v2
           programmeData={ProgrammeTypeList.response}
-          selectedCategories={[]}
         />
       )}
-      {seleted && (
+      {selected && (
         <EventModal
-          isOpen={Boolean(seleted)}
+          isOpen={Boolean(selected)}
           onClose={() => setSelected(null)}
-          data={seleted!}
+          data={selected!}
         />
       )}
     </div>
