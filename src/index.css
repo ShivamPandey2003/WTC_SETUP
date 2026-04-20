@@ -71,16 +71,17 @@ h3{
 
 
 .calendar-outer-wrapper {
-  height: calc(100vh - 120px);
+  /* height: calc(100vh - 120px); */
   /* width: calc(100vw - 90px); */
   background-color: #F2F2F2;
+  zoom: 0.8;
 }
 
 .calendar-scroll-container {
   display: grid;
   grid-template-columns: 80px 1fr; /* Gutter width */
   grid-template-rows: 60px 1fr;   /* Header height */
-  height: 100%;
+  height: calc(105vh);
   overflow: auto; /* The main scrollable area */
 }
 
@@ -202,4 +203,33 @@ h3{
 
 .event-title {
   font-weight: 700;
+}
+
+@media screen and (max-width: 1024px) {
+  .calendar-outer-wrapper {
+    zoom: 0.8;
+  }
+  .calendar-scroll-container{
+    height: 105vh;
+  }
+}
+
+/* Tablet */
+@media screen and (max-width: 768px) {
+  .calendar-outer-wrapper {
+    zoom: 0.3;
+  }
+   .calendar-scroll-container{
+    height: inherit;
+  }
+}
+
+/* Mobile */
+@media screen and (max-width: 450px) {
+  .calendar-outer-wrapper {
+    zoom: 0.2;
+  }
+  .calendar-scroll-container{
+    height: inherit;
+  }
 }
