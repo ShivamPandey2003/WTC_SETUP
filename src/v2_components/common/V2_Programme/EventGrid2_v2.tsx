@@ -5,7 +5,7 @@ import React, { useMemo, useState } from "react";
 const color: Record<string, string> = {
   "e-poster": "#084F41",
   "technical track 2": "#1B967C",
-  "technical track 1": "#E4F223",
+  "technical track 1": "#6F9F11",
   "technical track 3": "#F2B705",
   "technical track 4": "#F28D35",
   "technical track 5": "#C8553D",
