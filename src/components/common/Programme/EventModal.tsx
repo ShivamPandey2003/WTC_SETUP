@@ -322,13 +322,14 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                   <div className="relative px-4">
                     {s.attachments && s.attachments.length > 0 && (
                       <div className="mb-6">
-                        <p className="mb-2 font-semibold text">Paper</p>
+                        <p className="mb-2 font-semibold">Paper</p>
                         {
                           // <a href={s.attachments.file} target="_blank">
                           s.attachments
                             .filter((p) => p.has_attachment)
                             .map((e) => (
                               <div
+                                key={e.id}
                                 onClick={() =>
                                   navigate(`/Attachment/${s.id}`, {
                                     state: { Title: e.filename, file_id: e.id },
@@ -357,10 +358,14 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                               className="flex flex-col items-center cursor-pointer"
                             >
                               <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center mb-2 overflow-hidden">
-                                {!speaker ? (
+                                {!speaker.profile_img ? (
                                   <img
-                                    src={speaker}
-                                    alt={speaker}
+                                    src={
+                                      speaker.profile_img
+                                        ? speaker.profile_img
+                                        : dummy
+                                    }
+                                    alt={speaker.fullname}
                                     className="w-full h-full object-cover"
                                   />
                                 ) : (
@@ -381,10 +386,12 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                         </div>
                       </div>
                     )}
-                   {s.description && s.description.trim() && ( <div>
-                      <p className="font-semibold">Description</p>
-                      <Description text={s.description} />
-                    </div>)}
+                    {s.description && s.description.trim() && (
+                      <div>
+                        <p className="font-semibold">Description</p>
+                        <Description text={s.description} />
+                      </div>
+                    )}
                   </div>
                 </TabsContent>
               ))
