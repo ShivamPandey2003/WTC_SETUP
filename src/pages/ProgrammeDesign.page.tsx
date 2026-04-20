@@ -120,7 +120,7 @@ const ProgrammeDesign_page = () => {
         setSelectedDate(formatDate(SpeakerSettings.conference_end_date)),
       );
     }
-  }, [SpeakerSettings.conference_end_date, slectedDate, dispatch]);
+  }, [SpeakerSettings.conference_end_date, dispatch]);
 
   useEffect(() => {
     if (value !== "Session Data") return;
