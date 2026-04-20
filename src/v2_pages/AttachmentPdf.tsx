@@ -13,21 +13,26 @@ const AttachmentPdf = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
   const { state } = useLocation();
+  const renderIdRef = useRef(0);
 
   const { Attachment, isPending, error } = useGetAttachment(
     id as string,
-    state.type as number,
-    state.file_id as string
+     (state as any)?.type as number,
+    (state as any)?.file_id as string
   );
 
   const renderPdf = useCallback(async () => {
     if (!Attachment || !containerRef.current) return;
+    const currentRenderId = ++renderIdRef.current;
 
     setLoading(true);
     const container = containerRef.current;
     
     try {
       const pdf = await pdfjsLib.getDocument(Attachment as string).promise;
+
+      if (currentRenderId !== renderIdRef.current) return;
+
       container.innerHTML = ""; // Clear previous render
 
       // Get container width for responsiveness
