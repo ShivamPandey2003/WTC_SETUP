@@ -175,7 +175,7 @@ function DayColumn({
           return (
             <div
               key={event.id || i}
-              onClick={() => setSelected({ id: event.id, date: date })}
+              onClick={() => setSelected({ id: event.id, date: date, type:event.type })}
               className="event-card cursor-pointer"
               style={{
                 top: `${top + GAP}px`,
@@ -221,6 +221,7 @@ export default function EventGrid3_v2({
   const [seleted, setSelected] = useState<{
     id: string;
     date: string;
+    type:string
   } | null>(null);
   const { startHour, endHour, globalStartMins } = useMemo(() => {
     let minMins = 1440; // End of day

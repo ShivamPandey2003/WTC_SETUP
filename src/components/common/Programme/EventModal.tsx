@@ -112,6 +112,13 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
       showCloseButton
       classname="overflow-hidden custom-scrollbar p-2 sm:p-4"
     >
+      <button
+        onClick={() => onClose(null)}
+        className="absolute top-3 hover:cursor-pointer right-3 p-1 rounded-full transition-colors"
+        aria-label="Close"
+      >
+        <X className="w-4 h-4 text-gray-700 font-semibold" />
+      </button>
       {!selectedValue ? (
         <div>No data found</div>
       ) : (
@@ -277,13 +284,6 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                             </Button>
                           )}
                         </div>
-                        <button
-                          onClick={() => onClose(null)}
-                          className="absolute top-3 hover:cursor-pointer right-3 p-1 rounded-full bg-white/90 hover:bg-white transition-colors"
-                          aria-label="Close"
-                        >
-                          <X className="w-4 h-4 text-gray-700 font-semibold" />
-                        </button>
                         <div className="flex gap-3 mb-5">
                           <Button
                             onClick={() =>
