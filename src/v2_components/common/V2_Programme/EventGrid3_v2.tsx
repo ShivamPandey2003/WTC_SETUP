@@ -112,7 +112,7 @@ function DayColumn({
   onMouseLeave,
 }: any) {
     const lastVisibleType = [...types].reverse().find(type => data[type]?.length > 0);
-  return types.map((str: any, i: number) => {
+  return types.map((str: any) => {
     // 1. Get events for this track or default to empty array
     const rawEvents = data[str] || [];
 

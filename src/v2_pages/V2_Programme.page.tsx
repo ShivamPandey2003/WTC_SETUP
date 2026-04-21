@@ -6,7 +6,6 @@ import {
 import EventModal from "@/components/common/Programme/EventModal";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
-import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -15,12 +14,11 @@ import {
   transformSessions,
 } from "@/lib/extra";
 import { groupIntoColumns } from "@/lib/GroupintoColumn";
-import { cn } from "@/lib/utils";
 import { setProgrammes, type ProgrammeRecord } from "@/redux/ExtraSlice";
 import { setAll_Categories, setProgramme, setType } from "@/redux/GlobalSlice";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
-import EventGrid2_v2 from "@/v2_components/common/V2_Programme/EventGrid2_v2";
+// import EventGrid2_v2 from "@/v2_components/common/V2_Programme/EventGrid2_v2";
 import EventGrid3_v2 from "@/v2_components/common/V2_Programme/EventGrid3_v2";
 // import EventGrid from "@/v2_components/common/V2_Programme/EventGrid";
 // import EventGrid_V2 from "@/v2_components/common/V2_Programme/EventGrid_v2";
@@ -46,7 +44,6 @@ const V2_Programme_page = () => {
   // >([]);
   const dispatch = useDispatch<AppDispatch>();
   const isMobile = useIsMobile();
-  const [currentTab, setCurrentTab] = useState<"Types" | "Categories">("Types");
   const [selected, setSelected] = useState<{
     id: string;
     date: string;
@@ -129,12 +126,6 @@ const V2_Programme_page = () => {
   useEffect(() => {
     dispatch(setTitle(null));
   }, []);
-
-  useEffect(() => {
-    if (isMobile) {
-      setCurrentTab("Types");
-    }
-  }, [isMobile]);
 
   if (isPending || isPendingType || isPendingNewList) {
     return (
