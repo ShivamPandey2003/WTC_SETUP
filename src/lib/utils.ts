@@ -265,7 +265,11 @@ export function generateExhibitorId(length: number = 8): string {
 
 export function getContrastTextColor(hexColor: string): string {
   // Strip # if present
-  const hex = hexColor.replace('#', '');
+  let hex = hexColor.replace('#', '');
+
+  if (hex.length === 3) {
+    hex = hex.split('').map(char => char + char).join('');
+  }
   
   // Parse RGB
   const r = parseInt(hex.substring(0, 2), 16);

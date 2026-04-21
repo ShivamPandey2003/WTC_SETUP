@@ -8,7 +8,7 @@ const PX_PER_MIN = 1.6; // Vertical scale (1 hour = 120px)
 const BASE_COL_WIDTH = 100; // Width of one lane
 const GAP = 6; // Space between cards
 
-const calculateOverlaps = (events: any[]) => {
+const calculateOverlaps = (events: Programme[]) => {
   if (!events || events.length === 0) return [];
 
   // 1. PRE-PROCESS: Merge events with same start, end, and category
@@ -126,7 +126,7 @@ function DayColumn({
     const hasData = rawEvents.length > 0;
     const isLastTypeWithData = str === lastVisibleType;
 
-    if (!rawEvents.length) return;
+    if (!rawEvents.length) return null;
 
     return (
       <div
@@ -182,7 +182,7 @@ function DayColumn({
                 height: `${cardHeight - GAP * 2}px`, // Subtracted GAP for spacing
                 width:
                   event.space_type === "full"
-                    ? `calc(100% + ${columnWidth}px - 106px)`
+                    ? `calc(100% + ${columnWidth}px - ${BASE_COL_WIDTH + GAP}px)`
                     : `calc(${laneWidthPct}% - ${GAP * 2}px)`,
                 left:
                   event.space_type !== "full"
