@@ -201,9 +201,7 @@ function DayColumn({
                       ? "truncate max-w-[70px]"
                       : "font-bold whitespace-normal break-words w-full"
                   )}
-                  style={{
-                    color: shouldBeGray ? "#fff" : getContrastTextColor(eventColor),
-                  }}
+                  style={{ color: shouldBeGray ? "#fff" : getContrastTextColor(eventColor) }}
                 >
                   {event.title}
                 </div>
