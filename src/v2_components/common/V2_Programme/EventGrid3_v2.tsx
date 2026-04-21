@@ -193,15 +193,17 @@ function DayColumn({
                 zIndex: event.space_type === "full" ? 3 : 10,
               }}
             >
-              <div className="event-inner p-1 w-full min-w-0">
+              <div className="event-inner p-1 w-full min-w-0 flex items-center justify-center">
                 <div
                   className={cn(
-                    "event-title text-[11px]",
+                    "event-title text-[11px] text-center",
                     duration < 30
                       ? "truncate max-w-[70px]"
                       : "font-bold whitespace-normal break-words w-full"
                   )}
-                  style={{ color: shouldBeGray ? "#fff" : getContrastTextColor(eventColor) }}
+                  style={{
+                    color: shouldBeGray ? "#fff" : getContrastTextColor(eventColor),
+                  }}
                 >
                   {event.title}
                 </div>
