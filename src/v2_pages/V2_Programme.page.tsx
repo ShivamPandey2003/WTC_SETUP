@@ -7,7 +7,6 @@ import EventModal from "@/components/common/Programme/EventModal";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useIsMobile } from "@/hooks/use-mobile";
 import {
   getDateRange,
   getEarliestAndLatest,
@@ -43,7 +42,6 @@ const V2_Programme_page = () => {
   //   { name: string; value: string }[]
   // >([]);
   const dispatch = useDispatch<AppDispatch>();
-  const isMobile = useIsMobile();
   const [selected, setSelected] = useState<{
     id: string;
     date: string;
