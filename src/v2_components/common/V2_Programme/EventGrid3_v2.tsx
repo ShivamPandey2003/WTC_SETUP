@@ -199,7 +199,7 @@ function DayColumn({
                     "event-title text-[11px] font-bold",
                     duration < 30 && "truncate max-w-[70px]",
                   )}
-                  style={{ color: getContrastTextColor(eventColor) }}
+                  style={{ color: shouldBeGray ? "#fff" : getContrastTextColor(eventColor) }}
                 >
                   {event.title}
                 </div>
