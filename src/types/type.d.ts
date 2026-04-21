@@ -382,6 +382,7 @@ declare type Programme = {
   description: string;
   bg_image: string;
   venue: Shape & { designId: string; design_label: string };
+  space_type:string;
 };
 
 // declare type Programme = {
@@ -401,16 +402,6 @@ declare type Programme = {
 declare type GlobalProgrammeListResponse = {
   header: ResponseHeader;
   response: {
-    // conference_title: string;
-    // conference_start_date: string;
-    // conference_end_date: string;
-    // conference_start_time: sring;
-    // conference_end_time: string;
-    // conference_location: string;
-    // programme: {
-    //   [date: string]: Programme[];
-    // };
-    // seq: string[];
     programme: Programme[];
     all_categories: {
       id: string;
@@ -421,11 +412,24 @@ declare type GlobalProgrammeListResponse = {
   };
 };
 
+declare type GlobalProgrammeListResponse3_v2_Response_T = {
+  data: Record<string, Record<string, Programme[]>>;
+  dates: string[];
+  types: string[]
+}
+
+declare type GlobalProgrammeListResponse3_v2 = {
+  header: ResponseHeader;
+  response: GlobalProgrammeListResponse3_v2_Response_T;
+};
+
 type ProgrammeTypeList = {
-   "type": string,
-    "date": string,
-    "start_time": string,
-    "end_time": string
+  "type": string,
+  "date": string,
+  "start_time": string,
+  "end_time": string,
+  "title": string,
+  "category_color": string,
 }
 
 declare type GlobalProgrammeTypeListResponse = {
