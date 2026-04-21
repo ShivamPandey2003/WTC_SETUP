@@ -111,7 +111,7 @@ function DayColumn({
   onMouseEnter,
   onMouseLeave,
 }: any) {
-    const lastVisibleType = [...types].reverse().find(type => data[type]?.length > 0);
+  const lastVisibleType = [...types].reverse().find(type => data[type]?.length > 0);
   return types.map((str: any) => {
     // 1. Get events for this track or default to empty array
     const rawEvents = data[str] || [];
@@ -175,7 +175,7 @@ function DayColumn({
           return (
             <div
               key={event.id || i}
-              onClick={() => setSelected({ id: event.id, date: date, type:event.type })}
+              onClick={() => setSelected({ id: event.id, date: date, type: event.type })}
               className="event-card cursor-pointer"
               style={{
                 top: `${top + GAP}px`,
@@ -193,13 +193,17 @@ function DayColumn({
                 zIndex: event.space_type === "full" ? 3 : 10,
               }}
             >
-              <div className="event-inner p-1">
+              <div className="event-inner p-1 w-full min-w-0">
                 <div
                   className={cn(
-                    "event-title text-[11px] font-bold",
-                    duration < 30 && "truncate max-w-[70px]",
+                    "event-title text-[11px]",
+                    duration < 30
+                      ? "truncate max-w-[70px]"
+                      : "font-bold whitespace-normal break-words w-full"
                   )}
-                  style={{ color: getContrastTextColor(eventColor) }}
+                  style={{
+                    color: shouldBeGray ? "#fff" : getContrastTextColor(eventColor),
+                  }}
                 >
                   {event.title}
                 </div>
@@ -221,7 +225,7 @@ export default function EventGrid3_v2({
   const [seleted, setSelected] = useState<{
     id: string;
     date: string;
-    type:string
+    type: string
   } | null>(null);
   const { startHour, endHour, globalStartMins } = useMemo(() => {
     let minMins = 1440; // End of day
