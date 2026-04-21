@@ -26,7 +26,8 @@ type FieldConfig<T extends Record<string, any>> = {
     | "array-attachment"
     | "time"
     | "select"
-    | "color";
+    | "color"
+    | "multi-select";
   placeholder?: string;
   accept?: string;
   options?: { label: string; value: string }[];
@@ -383,6 +384,18 @@ const CustomForm = <T extends Record<string, any>>({
                       className="w-full rounded outline-0 border-[1px] border-gray-200 px-2 py-1 focus:border-primary"
                     />
                   </div>
+                ) : field.type === "multi-select" ? (
+                  <select
+                    multiple
+                    {...register(field.name)}
+                    className="w-full rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary"
+                  >
+                    {field.options?.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
                 ) : (
                   <input
                     type={field.type ?? "text"}
@@ -424,13 +437,3 @@ const CustomForm = <T extends Record<string, any>>({
 };
 
 export default CustomForm;
-
-// : field.type === "checkbox" ? (
-//                   <div className="flex items-center gap-2 pt-1.5">
-//                     <input
-//                       type="checkbox"
-//                       {...register(field.name)}
-//                       className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
-//                     />
-//                   </div>
-//                 )

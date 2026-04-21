@@ -2,7 +2,7 @@ import EventModal from "@/components/common/Programme/EventModal";
 import { cn } from "@/lib/utils";
 import React, { useMemo, useState } from "react";
 
-const color: Record<string, string> = {
+export const color: Record<string, string> = {
   "e-poster": "#084F41",
   "technical track 2": "#1B967C",
   "technical track 1": "#6F9F11",

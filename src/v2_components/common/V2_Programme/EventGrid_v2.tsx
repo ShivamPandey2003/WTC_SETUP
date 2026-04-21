@@ -1,6 +1,7 @@
 import EventModal from "@/components/common/Programme/EventModal";
 import { cn } from "@/lib/utils";
 import { useMemo, useState } from "react";
+import { color } from "./EventGrid2_v2";
 
 /* ================= CONFIGURATION ================= */
 const PX_PER_MIN = 2; // Vertical scale (1 hour = 120px)
@@ -33,9 +34,10 @@ const calculateDayLayout = (dayEvents: Programme[]) => {
         start_time: event.start_time,
         end_time: event.end_time,
         titles: [event.title],
-        categoryName: catData.name || "General",
-        catColor: catData.color || "#333",
+        categoryName: catData.name || event.type,
+        catColor: catData.color || color[event.type] || "#1B967C",
         laneIndex: 0,
+        type:event.type
       });
     }
   });
@@ -214,24 +216,48 @@ export default function EventGrid_v2({
     (_, i) => `${startHour + i}:00`,
   );
 
+  // const layoutData = useMemo(() => {
+  //   const map: any = {};
+  //   dates.forEach((date) => {
+  //     const dayEvents = programmeData
+  //       .filter((e) => e.start_date === date)
+  //       .filter(
+  //         (e) =>
+  //           !(
+  //             selectedCategories.includes(e.type) ||
+  //             Object.keys(e.categories || {}).some((id) =>
+  //               selectedCategories.includes(id),
+  //             )
+  //           ),
+  //       );
+  //     map[date] = calculateDayLayout(dayEvents);
+  //   });
+  //   return map;
+  // }, [dates, selectedCategories]);
+
   const layoutData = useMemo(() => {
-    const map: any = {};
-    dates.forEach((date) => {
-      const dayEvents = programmeData
-        .filter((e) => e.start_date === date)
-        .filter(
-          (e) =>
-            !(
-              selectedCategories.includes(e.type) ||
-              Object.keys(e.categories || {}).some((id) =>
-                selectedCategories.includes(id),
-              )
-            ),
+  const map: any = {};
+  dates.forEach((date) => {
+    const dayEvents = programmeData
+      .filter((e) => e.start_date === date)
+      .filter((e) => {
+        // If nothing is selected, show everything (optional)
+        if (selectedCategories.length === 0) return true;
+
+        // Check if event type matches selectedCategories
+        const typeMatches = selectedCategories.includes(e.type);
+        
+        // Check if any of the event's category IDs match
+        const categoryMatches = Object.keys(e.categories || {}).some((id) =>
+          selectedCategories.includes(id)
         );
-      map[date] = calculateDayLayout(dayEvents);
-    });
-    return map;
-  }, [dates, selectedCategories]);
+
+        return typeMatches || categoryMatches; // Return true to keep the event
+      });
+    map[date] = calculateDayLayout(dayEvents);
+  });
+  return map;
+}, [dates, selectedCategories, programmeData]); // Added programmeData to dependency
 
   const gridHeight = (endHour - startHour) * 60 * PX_PER_MIN;
 
