@@ -1,5 +1,6 @@
 import {
   useGetProgrammeList,
+  useGetProgrammeList3_v2,
   useGetProgrammeTypeList,
 } from "@/api/global_api/global_api";
 import EventModal from "@/components/common/Programme/EventModal";
@@ -20,8 +21,9 @@ import { setAll_Categories, setProgramme, setType } from "@/redux/GlobalSlice";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
 import EventGrid2_v2 from "@/v2_components/common/V2_Programme/EventGrid2_v2";
+import EventGrid3_v2 from "@/v2_components/common/V2_Programme/EventGrid3_v2";
 // import EventGrid from "@/v2_components/common/V2_Programme/EventGrid";
-import EventGrid_V2 from "@/v2_components/common/V2_Programme/EventGrid_v2";
+// import EventGrid_V2 from "@/v2_components/common/V2_Programme/EventGrid_v2";
 import { SearchBox } from "@/v2_components/global/Search/SearchBox";
 import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
@@ -29,6 +31,11 @@ import { useDispatch } from "react-redux";
 
 const V2_Programme_page = () => {
   const { ProgrammeList, isPending, error } = useGetProgrammeList();
+  const {
+    ProgrammeList: ProgrammeList3_v2,
+    isPending: isPendingNewList,
+    error: errorNewList,
+  } = useGetProgrammeList3_v2();
   const {
     ProgrammeTypeList,
     isPending: isPendingType,
@@ -129,7 +136,7 @@ const V2_Programme_page = () => {
     }
   }, [isMobile]);
 
-  if (isPending || isPendingType) {
+  if (isPending || isPendingType || isPendingNewList) {
     return (
       <div className="w-full flex flex-col px-4">
         {/* Navbar */}
@@ -207,7 +214,7 @@ const V2_Programme_page = () => {
     );
   }
 
-  if (error || errorType) {
+  if (error || errorType || errorNewList) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <ErrorDisplay
@@ -225,7 +232,10 @@ const V2_Programme_page = () => {
     !ProgrammeTypeList ||
     !ProgrammeTypeList.response.length ||
     !ProgrammeList.data.response ||
-    !ProgrammeList.data.response.programme.length
+    !ProgrammeList.data.response.programme.length ||
+    !ProgrammeList3_v2 ||
+    !ProgrammeList3_v2.response ||
+    Object.keys(ProgrammeList3_v2.response).length === 0
   ) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
@@ -236,8 +246,8 @@ const V2_Programme_page = () => {
 
   return (
     <div className="px-4 mx-auto flex flex-col">
-      <div className="sm:flex justify-between gap-4 mb-6 w-full">
-        {!isMobile && (
+      <div className="sm:flex justify-center gap-4 mb-6 w-full">
+        {/* {!isMobile && (
           <div className="p-1 bg-white w-fit rounded-full h-fit flex gap-1 shadow">
             <Button
               variant={currentTab === "Types" ? "default" : "ghost"}
@@ -256,20 +266,15 @@ const V2_Programme_page = () => {
               Categories
             </Button>
           </div>
-        )}
+        )} */}
         <SearchBox handleSelect={setSelected} />
       </div>
       {/* <EventGrid selectedCategories={selectedCategories} /> */}
-      {currentTab === "Categories" ? (
-        <EventGrid_V2
-          programmeData={ProgrammeList.data.response.programme}
-          selectedCategories={[]}
-        />
-      ) : (
-        <EventGrid2_v2
-          programmeData={ProgrammeTypeList.response}
-        />
-      )}
+      {/* {currentTab === "Categories" ? ( */}
+        <EventGrid3_v2 programmeData={ProgrammeList3_v2.response} selectedCategories={[]} />
+      {/* ) : ( */}
+        {/* <EventGrid2_v2 programmeData={ProgrammeTypeList.response} /> */}
+      {/* )} */}
       {selected && (
         <EventModal
           isOpen={Boolean(selected)}

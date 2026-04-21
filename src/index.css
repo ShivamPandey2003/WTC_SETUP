@@ -150,7 +150,6 @@ h3{
   position: relative;
   /* max-height: fit-content; */
   /* height: 2880px; */
-  border-right: 1px solid #ddd;
   background: #F2F2F2;
   flex-shrink: 0;
 }

@@ -121,7 +121,8 @@ const NewFrom = () => {
       | "array-string"
       | "time"
       | "array-attachment"
-      | "select";
+      | "select"
+      | "multi-select";
     placeholder?: string;
     accept?: string;
     options?: { label: string; value: string }[];
