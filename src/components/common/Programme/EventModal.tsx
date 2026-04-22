@@ -252,7 +252,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                         alt={s.title}
                         className="w-full sm:w-[200px] h-[130px] rounded-lg object-cover opacity-80"
                       />
-                      <div className="flex flex-col">
+                      <div className="flex flex-col gap-1">
                         <h2 className="text-xl font-bold text-primary mb-2 line-clamp-2">
                           {s.title}
                         </h2>
@@ -278,13 +278,13 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                               }
                               variant={"link"}
                               size={"sm"}
-                              className="p-0! ml-4"
+                              className="p-0! ml-4 underline"
                             >
                              <MapPin size={17} /> Room no: {s.venue.name}
                             </Button>
                           )}
                         </div>
-                        <div className="flex gap-3 mb-5">
+                        <div className="flex gap-3">
                           <Button
                             onClick={() =>
                               addToGoogleCalendar({
@@ -302,14 +302,14 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                             }
                             variant={"link"}
                             size={"sm"}
-                            className="p-0!"
+                            className="p-0! underline"
                           >
                             <CalendarArrowDown /> Add to calendar
                           </Button>
                           <Button
                             variant={"link"}
                             size={"sm"}
-                            className="p-0!"
+                            className="p-0! underline"
                             onClick={() => notify({ id: s.id })}
                             disabled={isPending}
                           >
