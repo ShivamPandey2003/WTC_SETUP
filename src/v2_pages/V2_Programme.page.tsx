@@ -1,7 +1,6 @@
 import {
   useGetProgrammeList,
   useGetProgrammeList3_v2,
-  useGetProgrammeTypeList,
 } from "@/api/global_api/global_api";
 import EventModal from "@/components/common/Programme/EventModal";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
@@ -33,11 +32,6 @@ const V2_Programme_page = () => {
     isPending: isPendingNewList,
     error: errorNewList,
   } = useGetProgrammeList3_v2();
-  const {
-    ProgrammeTypeList,
-    isPending: isPendingType,
-    error: errorType,
-  } = useGetProgrammeTypeList();
   // const [selectedCategories, setSelectedCategories] = useState<
   //   { name: string; value: string }[]
   // >([]);
@@ -125,7 +119,7 @@ const V2_Programme_page = () => {
     dispatch(setTitle(null));
   }, []);
 
-  if (isPending || isPendingType || isPendingNewList) {
+  if (isPending || isPendingNewList) {
     return (
       <div className="w-full flex flex-col px-4">
         {/* Navbar */}
@@ -203,13 +197,13 @@ const V2_Programme_page = () => {
     );
   }
 
-  if (error || errorType || errorNewList) {
+  if (error || errorNewList) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <ErrorDisplay
           title="Programme Error"
           message={
-            error?.message || errorType?.message || "An unknown error occurred"
+            error?.message || "An unknown error occurred"
           }
         />
       </div>
@@ -218,8 +212,6 @@ const V2_Programme_page = () => {
 
   if (
     !ProgrammeList ||
-    !ProgrammeTypeList ||
-    !ProgrammeTypeList.response.length ||
     !ProgrammeList.data.response ||
     !ProgrammeList.data.response.programme.length ||
     !ProgrammeList3_v2 ||

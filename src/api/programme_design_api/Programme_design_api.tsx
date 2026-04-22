@@ -171,7 +171,7 @@ export const useDeleteSession = () => {
       toast.success("Session deleted successfully");
       dispatch(setIsDeleting(null));
       queryClient.invalidateQueries({
-        queryKey: ["Admin-Programme-pagination"],
+        queryKey: ["sessionList"],
       });
     },
   });
