@@ -267,7 +267,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                         </div>
                         <div className="flex flex-start gap-3">
                           <div className="flex items-center gap-1 text-sm text-primary font-semibold">
-                            <MapPin size={17} /> {s.location}
+                            {s.location}
                           </div>
                           {s.venue && (
                             <Button
@@ -280,7 +280,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                               size={"sm"}
                               className="p-0! ml-4"
                             >
-                              Room no: {s.venue.name}
+                             <MapPin size={17} /> Room no: {s.venue.name}
                             </Button>
                           )}
                         </div>
