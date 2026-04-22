@@ -36,6 +36,7 @@ const EditFrom = () => {
     control,
     reset,
     formState: { errors },
+    watch,
     setValue,
   } = useForm<z.infer<typeof EditSessionSchema>>({
     resolver: zodResolver(EditSessionSchema),
@@ -46,7 +47,7 @@ const EditFrom = () => {
     const { attachments, ...rest } = value;
     reset({
       ...rest,
-      speakers: value.speakers[0],
+      speakers: value.speakers,
       venueID: value?.venue?.id ? value?.venue?.id : "",
       floorID: value?.venue?.designId ? value?.venue?.designId : "",
       category: value.category[0],
@@ -80,8 +81,8 @@ const EditFrom = () => {
     formData.append("location", newData.location);
     formData.append("external_link", newData?.external_link as string);
     formData.append("category", newData.category);
-    if (newData.speakers) {
-      formData.append("speakers", newData.speakers);
+    if (newData.speakers && newData.speakers.length>0) {
+      formData.append("speakers", JSON.stringify(newData.speakers));
     }
     if (newData.bg_image?.[0]) {
       formData.append("bg_image", newData.bg_image[0] as Blob);
@@ -140,7 +141,8 @@ const EditFrom = () => {
     | "array-string"
     | "time"
     | "array-attachment"
-    | "select";
+    | "select"
+    | "multi-select";
     placeholder?: string;
     accept?: string;
     options?: { label: string; value: string }[];
@@ -189,7 +191,7 @@ const EditFrom = () => {
       {
         name: "speakers",
         label: "Speaker",
-        type: "select",
+        type: "multi-select",
         placeholder: "Select a speaker",
         options: SpeakerList?.response.map((item) => {
           return {
@@ -224,11 +226,13 @@ const EditFrom = () => {
     <CustomForm
       onSubmit={handleSubmit(onSubmit)}
       fields={fields}
+      control={control}
       register={register}
       errors={errors}
       isLoading={isEditSessionPending}
       onClose={onClose}
       setValue={setValue}
+      watch={watch}
     />
   );
 };

@@ -10,6 +10,7 @@ import {
 } from "react-hook-form";
 import { Button } from "../ui/Button";
 import { Save, X, Plus } from "lucide-react";
+import Select from "react-select";
 
 type FieldConfig<T extends Record<string, any>> = {
   name: Path<T>;
@@ -185,6 +186,8 @@ const CustomForm = <T extends Record<string, any>>({
           }
 
           const field = item;
+
+          const formValues = control && useWatch({ control });
 
           const colorValue =
             control &&
@@ -385,18 +388,39 @@ const CustomForm = <T extends Record<string, any>>({
                     />
                   </div>
                 ) : field.type === "multi-select" ? (
-                  <select
-                    multiple
-                    {...register(field.name)}
-                    className="w-full rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary"
-                  >
-                    {field.options?.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </option>
-                    ))}
-                  </select>
+                  <Select
+                    isMulti
+                    value={
+                      field.options?.filter((option) =>
+                        formValues?.[field.name]?.includes(option.value),
+                      ) || []
+                    }
+                    options={field.options}
+                    onChange={(selected) => {
+                      setValue?.(
+                        field.name,
+                        selected
+                          ? selected.map((item) => item.value)
+                          : ([] as any),
+                        {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        },
+                      );
+                    }}
+                  />
                 ) : (
+                  // <select
+                  //   multiple
+                  //   {...register(field.name)}
+                  //   className="w-full rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary"
+                  // >
+                  //   {field.options?.map((opt) => (
+                  //     <option key={opt.value} value={opt.value}>
+                  //       {opt.label}
+                  //     </option>
+                  //   ))}
+                  // </select>
                   <input
                     type={field.type ?? "text"}
                     {...register(field.name, {
