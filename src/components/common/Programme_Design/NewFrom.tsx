@@ -65,7 +65,7 @@ const NewFrom = () => {
     formData.append("location", newData.location);
     formData.append("external_link", newData?.external_link as string);
     formData.append("category", newData.category);
-    formData.append("speakers", newData.speakers);
+    formData.append("speakers", JSON.stringify(newData.speakers));
     formData.append("venueID", `${newData.floorID}__${newData.venueID}`);
     if (newData.bg_image?.[0]) {
       formData.append("bg_image", newData.bg_image[0] as Blob);
@@ -136,9 +136,9 @@ const NewFrom = () => {
       placeholder: "Enter detailed description...",
     },
     {
-      name:"type",
-      label:"Type",
-      placeholder:"Enter programme type"
+      name: "type",
+      label: "Type",
+      placeholder: "Enter programme type",
     },
     { name: "start_time", label: "Start Time", type: "time" },
     { name: "end_time", label: "End Time", type: "time" },
@@ -171,7 +171,7 @@ const NewFrom = () => {
     {
       name: "speakers",
       label: "Speaker",
-      type: "select",
+      type: "multi-select",
       placeholder: "Select a speaker",
       options: SpeakerList?.response.map((item) => {
         return {
@@ -210,6 +210,7 @@ const NewFrom = () => {
       fields={fields}
       register={register}
       errors={errors}
+      control={control}
       isLoading={isCreateSessionPending}
       onClose={onClose}
       setValue={setValue}
