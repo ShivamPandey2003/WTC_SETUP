@@ -159,6 +159,8 @@ const CustomForm = <T extends Record<string, any>>({
     onSubmit(e);
   };
 
+  const formValues = control && useWatch({ control });
+
   return (
     <div className="relative">
       <form
@@ -186,8 +188,6 @@ const CustomForm = <T extends Record<string, any>>({
           }
 
           const field = item;
-
-          const formValues = control && useWatch({ control });
 
           const colorValue =
             control &&
