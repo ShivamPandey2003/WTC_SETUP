@@ -7,7 +7,7 @@ import {
   X,
   CalendarArrowDown,
   BellDot,
-  MapPin,
+  LocateFixed,
   Calendar1,
   Clock,
 } from "lucide-react";
@@ -280,7 +280,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                               size={"sm"}
                               className="p-0! ml-4 underline"
                             >
-                             <MapPin size={17} /> Room no: {s.venue.name}
+                              <LocateFixed size={17} /> Room no: {s.venue.name}
                             </Button>
                           )}
                         </div>
