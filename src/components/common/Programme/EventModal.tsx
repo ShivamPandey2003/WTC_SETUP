@@ -10,6 +10,7 @@ import {
   LocateFixed,
   Calendar1,
   Clock,
+  MapPin,
 } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -267,7 +268,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                         </div>
                         <div className="flex flex-start gap-3">
                           <div className="flex items-center gap-1 text-sm text-primary font-semibold">
-                            {s.location}
+                            <MapPin size={17} /> {s.location}
                           </div>
                           {s.venue && (
                             <Button
