@@ -112,16 +112,28 @@ function DayColumn({
   onMouseLeave,
 }: any) {
   const lastVisibleType = [...types].reverse().find(type => data[type]?.length > 0);
-  return types.map((str: any) => {
-    // 1. Get events for this track or default to empty array
+
+  // 1. DYNAMICALLY CALCULATE TOTAL DAY WIDTH
+  // This sums up the width of every column in this day to know how far a "full" block should stretch
+  const columnWidths = types.map((str: any) => {
+    const events = data[str] || [];
+    const overlaps = calculateOverlaps(events);
+    const lanes = overlaps.length > 0 ? overlaps[0].totalLanesCount : 1;
+    return events.length > 0 ? lanes * BASE_COL_WIDTH : 0;
+  });
+
+  const totalDayWidth = columnWidths.reduce((a: number, b: number) => a + b, 0);
+
+  return types.map((str: any, index: number) => {
     const rawEvents = data[str] || [];
-
-    // 2. Calculate overlaps (Ensure calculateOverlaps handles empty arrays)
     const New_data: any[] = calculateOverlaps(rawEvents);
+    
+    // Width of the current specific track
+    const columnWidth = columnWidths[index];
 
-    // 3. Safe Width Calculation: Default to 1 lane if no events
-    const totalLanes = New_data.length > 0 ? New_data[0].totalLanesCount : 1;
-    const columnWidth = totalLanes * BASE_COL_WIDTH;
+    // 2. DYNAMICALLY CALCULATE LEFT OFFSET
+    // How many pixels from the left of the container is THIS specific column starting?
+    const currentColumnLeftOffset = columnWidths.slice(0, index).reduce((a: number, b: number) => a + b, 0);
 
     const hasData = rawEvents.length > 0;
     const isLastTypeWithData = str === lastVisibleType;
@@ -136,27 +148,17 @@ function DayColumn({
         className="day-column"
         style={{
           width: `${columnWidth}px`,
-          minWidth: `${columnWidth}px`, // Added min-width to prevent shrinking
-          position: "relative", // Ensure absolute events position correctly
-          backgroundColor:
-            isAnyColumnHovered && !isThisColumnHovered
-              ? "rgba(0,0,0,0.05)"
-              : "transparent",
+          minWidth: `${columnWidth}px`,
+          position: "relative",
+          backgroundColor: isAnyColumnHovered && !isThisColumnHovered ? "rgba(0,0,0,0.05)" : "transparent",
           borderRight: hasData && isLastTypeWithData ? "2px solid #ddd" : "none"
         }}
       >
-        {/* Render Grid Lines regardless of data */}
-        {Array.from({
-          length: Math.ceil(height / (60 * PX_PER_MIN)) + 1,
-        }).map((_, i) => (
-          <div
-            key={i}
-            className="grid-line"
-            style={{ top: `${i * 60 * PX_PER_MIN}px` }}
-          />
+        {/* Grid Lines */}
+        {Array.from({ length: Math.ceil(height / (60 * PX_PER_MIN)) + 1 }).map((_, i) => (
+          <div key={i} className="grid-line" style={{ top: `${i * 60 * PX_PER_MIN}px` }} />
         ))}
 
-        {/* 4. Render events if they exist */}
         {New_data.map((event, i) => {
           const start = timeToMins(event.start_time);
           const end = timeToMins(event.end_time);
@@ -166,11 +168,12 @@ function DayColumn({
 
           const laneWidthPct = 100 / event.totalLanesCount;
           const leftOffset = event.laneIndex * laneWidthPct;
-          // Safe Color Access
+          
           const firstCatKey = Object.keys(event.categories || {})[0];
-          const eventColor =
-            event.categories?.[firstCatKey]?.color || color[event.type];
+          const eventColor = event.categories?.[firstCatKey]?.color || color[event.type];
           const shouldBeGray = isAnyColumnHovered && !isThisColumnHovered;
+
+          const isFull = event.space_type === "full";
 
           return (
             <div
@@ -178,32 +181,30 @@ function DayColumn({
               onClick={() => setSelected({ id: event.id, date: date, type: event.type })}
               className="event-card cursor-pointer"
               style={{
+                position: "absolute",
                 top: `${top + GAP}px`,
-                height: `${cardHeight - GAP * 2}px`, // Subtracted GAP for spacing
-                width:
-                  event.space_type === "full"
-                    ? `calc(100% + ${columnWidth}px - ${BASE_COL_WIDTH + GAP}px)`
-                    : `calc(${laneWidthPct}% - ${GAP * 2}px)`,
-                left:
-                  event.space_type !== "full"
-                    ? `calc(${leftOffset}% + ${GAP}px)`
-                    : 0,
+                height: `${cardHeight - GAP * 2}px`,
+                zIndex: isFull ? 1 : 10, // Fixed as per request
                 backgroundColor: shouldBeGray ? "#d1d5db" : eventColor,
-                position: "absolute", // CRITICAL for timeline rendering
-                zIndex: event.space_type === "full" ? 3 : 10,
+
+                // DYNAMIC WIDTH CALCULATION:
+                // If full: (Total Width of all columns) - (Width of columns to the left of this one)
+                width: isFull 
+                  ? `${totalDayWidth - currentColumnLeftOffset - GAP}px` 
+                  : `calc(${laneWidthPct}% - ${GAP * 2}px)`,
+
+                left: isFull 
+                  ? `0px` 
+                  : `calc(${leftOffset}% + ${GAP}px)`,
               }}
             >
-              <div className="event-inner p-1 w-full min-w-0 flex items-center justify-center">
+              <div className="event-inner p-1 w-full h-full min-w-0 flex items-center justify-center">
                 <div
                   className={cn(
                     "event-title text-[11px] text-center",
-                    duration < 30
-                      ? "truncate max-w-[70px]"
-                      : "font-bold whitespace-normal break-words w-full"
+                    duration < 30 ? "truncate max-w-[70px]" : "font-bold whitespace-normal break-words w-full"
                   )}
-                  style={{
-                    color: shouldBeGray ? "#fff" : getContrastTextColor(eventColor),
-                  }}
+                  style={{ color: shouldBeGray ? "#fff" : getContrastTextColor(eventColor) }}
                 >
                   {event.title}
                 </div>
