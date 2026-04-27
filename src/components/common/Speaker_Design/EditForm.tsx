@@ -92,6 +92,7 @@ const EditFrom = () => {
       | "array-attachment";
     placeholder?: string;
     accept?: string;
+    disable?: boolean;
   }[] = [
     { name: "prefix", label: "Prefix", placeholder: "Enter prefix here" },
     {
@@ -110,11 +111,12 @@ const EditFrom = () => {
       type: "textarea",
       placeholder: "Enter detailed bio...",
     },
-    // {
-    //   name: "email",
-    //   label: "Email",
-    //   placeholder: "Enter a valid email address",
-    // },
+    {
+      name: "email",
+      label: "Email",
+      placeholder: "Enter a valid email address",
+      disable:true
+    },
     { name: "designation", label: "Designation" },
     { name: "company", label: "Company" },
     {

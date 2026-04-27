@@ -15,7 +15,7 @@ import { useDispatch } from "react-redux";
 import ExhibitorsDetails from "./ExhibitorsDetails";
 import { useSearchParams } from "react-router";
 
-const adjustHexColor = (hex: string, amount: number): string => {
+export const adjustHexColor = (hex: string, amount: number): string => {
   const clean = hex.replace("#", "");
   const num = parseInt(clean.length === 3
     ? clean.split("").map((c) => c + c).join("")
@@ -205,7 +205,7 @@ const V2_exhibitors_page = () => {
                   <div className="w-10 h-2 rounded-full shadow-sm" style={{
                     background: `linear-gradient(135deg, ${adjustHexColor(ExhibitorList.colors[value] as string, 10)}, ${adjustHexColor(ExhibitorList.colors[value] as string, -10)})`,
                   }} />
-                  <h4 className="font-[700] text-[26px]">
+                  <h4 className="font-[700] text-[26px] min-w-fit">
                     {value}
                   </h4>
                   <div className="w-full h-2 rounded-full shadow-sm" style={{

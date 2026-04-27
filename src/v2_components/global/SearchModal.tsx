@@ -79,7 +79,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             ref={inputRef}
             type="text"
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search anything..."
+            placeholder={`Search ${title}`}
             className="flex-1 outline-none text-lg placeholder:text-gray-400"
           />
           <button
@@ -141,7 +141,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     <img
                       src={item.user_img ?? PlaceholderImage}
                       alt={item.name}
-                      className="h-[7rem] sm:h-[10rem] w-[11rem] sm:w-[15rem] rounded-2xl object-cover"
+                      className="h-[7rem] sm:h-[10rem] w-[11rem] sm:w-[10rem] rounded-2xl object-cover"
                     />
                     <div className="">
                       <h2 className="mb-2 line-clamp-2 font-bold sm:text-xl">
