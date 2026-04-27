@@ -20,7 +20,10 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
 
   return (
     <>
-      <div className="cursor-pointer" onClick={() => navigate("/")}>
+      <div className="cursor-pointer" onClick={() => {
+        navigate("/");
+        setOpen?.()
+        }}>
         {appConfig?.logo?.logo_img ? (
           <img
             src={appConfig?.logo?.logo_img}
@@ -109,6 +112,20 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
                 </NavLink>
               );
             })}
+        
+        {/* Static redirection added */}
+        <div className="flex items-center justify-center my-2">
+          <a
+            href="https://wtc2026.ca"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full text-black hover:bg-primary hover:text-white cursor-pointer inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive justify-start px-4 py-2 has-[>svg]:px-3 bg-gray-100"
+          >
+            <span className="overflow-hidden text-ellipsis">
+              WTC2026.ca
+            </span>
+          </a>
+        </div>
       </div>
     </>
   );

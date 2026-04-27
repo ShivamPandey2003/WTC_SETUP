@@ -95,7 +95,6 @@ export default function ProfileForm() {
 
         const newForm = new FormData();
         newForm.append("module", "user");
-        // newForm.append("record_id", user_info.image_id);
         newForm.append("file_path", file_key);
 
         await apiRequest("post", "/user/profile/upload-image", newForm);

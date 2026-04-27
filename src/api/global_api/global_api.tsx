@@ -249,6 +249,44 @@ export const useGetProgrammeList = () => {
   return { ProgrammeList, isPending, error, refetch };
 };
 
+export const useGetProgrammeList3_v2 = () => {
+  const {
+    data: ProgrammeList,
+    isPending,
+    error,
+    refetch,
+  } = useQuery<GlobalProgrammeListResponse3_v2, AxiosError>({
+    queryKey: ["global-programme-calender"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "program/hybrid-calendar");
+      return res.response;
+    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  return { ProgrammeList, isPending, error, refetch };
+};
+
+export const useGetProgrammeTypeList = () => {
+  const {
+    data: ProgrammeTypeList,
+    isPending,
+    error,
+    refetch,
+  } = useQuery<GlobalProgrammeTypeListResponse, AxiosError>({
+    queryKey: ["global-programme-types"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "program/merged");
+      return res.response;
+    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  return { ProgrammeTypeList, isPending, error, refetch };
+};
+
 export const useGetNavMenu = () => {
   const {
     data: NavMenu,
@@ -403,7 +441,6 @@ export const useVenueDesignUpdate = () => {
     typeof image === "string"
       ? {
           ...rest,
-          file_path: image,
           venue_tab,
           floor_plan: "",
           visa_title: "",
@@ -414,7 +451,6 @@ export const useVenueDesignUpdate = () => {
         }
       : {
           ...venue,
-          file_path: image,
           venue_tab,
           floor_plan: "",
           visa_title: "",

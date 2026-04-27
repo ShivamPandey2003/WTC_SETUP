@@ -100,9 +100,13 @@ const SpeakersDesign_page = () => {
                 className="outline-0 py-1 px-2"
                 placeholder="Search Speakers"
               />
-              {
-                (searchText && searchText.trim()) && <X className="cursor-pointer" size={20} onClick={()=>dispatch(setSearchText(""))}/>
-              }
+              {searchText && searchText.trim() && (
+                <X
+                  className="cursor-pointer"
+                  size={20}
+                  onClick={() => dispatch(setSearchText(""))}
+                />
+              )}
             </div>
             {speakers.length > 0 && (
               <Button
@@ -237,6 +241,7 @@ const SpeakersDesign_page = () => {
         onClose={() => dispatch(setIsCreating(false))}
       />
       <CSVModel
+        CSV_MODULE="speaker_csv"
         isOpen={uploadCSV}
         onClose={() => dispatch(setUploadCSV(false))}
         title="Speakers"

@@ -19,17 +19,18 @@ const TestMode = ({ id, x, y, onClose, filterId }: prop) => {
 
   const CurrentItem = useMemo(() => {
     if (!id || !filterId) return null;
-
+    
     const Map = GlobalMap.find((pre) => pre.id === filterId);
 
     if (!Map) return null;
 
-    const data = Map.programmes.find((pre) => pre.id === id);
+    const data = Map.programmes.find((pre) => pre.venue_id === `${filterId}__${id}`);
 
     if (!data) return null;
 
     return data;
   }, [GlobalMap, id, filterId]);
+
 
   if (!id || !filterId || !CurrentItem) {
     return null;

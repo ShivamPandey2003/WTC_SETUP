@@ -10,6 +10,8 @@ import {
 } from "react-hook-form";
 import { Button } from "../ui/Button";
 import { Save, X, Plus } from "lucide-react";
+import Select from "react-select";
+import { cn } from "@/lib/utils";
 
 type FieldConfig<T extends Record<string, any>> = {
   name: Path<T>;
@@ -26,12 +28,14 @@ type FieldConfig<T extends Record<string, any>> = {
     | "array-attachment"
     | "time"
     | "select"
-    | "color";
+    | "color"
+    | "multi-select";
   placeholder?: string;
   accept?: string;
   options?: { label: string; value: string }[];
   addMoreHandler?: () => void;
   file?: File;
+  disable?: boolean
 };
 
 type Props<T extends Record<string, any>> = {
@@ -156,6 +160,8 @@ const CustomForm = <T extends Record<string, any>>({
 
     onSubmit(e);
   };
+
+  const formValues = control && useWatch({ control });
 
   return (
     <div className="relative">
@@ -383,14 +389,48 @@ const CustomForm = <T extends Record<string, any>>({
                       className="w-full rounded outline-0 border-[1px] border-gray-200 px-2 py-1 focus:border-primary"
                     />
                   </div>
+                ) : field.type === "multi-select" ? (
+                  <Select
+                    isMulti
+                    value={
+                      field.options?.filter((option) =>
+                        formValues?.[field.name]?.includes(option.value),
+                      ) || []
+                    }
+                    options={field.options}
+                    onChange={(selected) => {
+                      setValue?.(
+                        field.name,
+                        selected
+                          ? selected.map((item) => item.value)
+                          : ([] as any),
+                        {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        },
+                      );
+                    }}
+                  />
                 ) : (
+                  // <select
+                  //   multiple
+                  //   {...register(field.name)}
+                  //   className="w-full rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary"
+                  // >
+                  //   {field.options?.map((opt) => (
+                  //     <option key={opt.value} value={opt.value}>
+                  //       {opt.label}
+                  //     </option>
+                  //   ))}
+                  // </select>
                   <input
                     type={field.type ?? "text"}
                     {...register(field.name, {
                       valueAsNumber: field.type === "number",
                     })}
+                    disabled={field.disable}
                     placeholder={field.placeholder}
-                    className="w-full rounded outline-0 border-[1px] border-gray-200 px-2 py-1 focus:border-primary"
+                    className={cn("w-full rounded outline-0 border-[1px] border-gray-200 px-2 py-1 focus:border-primary", field.disable && "bg-gray-200")}
                   />
                 )}
 
@@ -424,13 +464,3 @@ const CustomForm = <T extends Record<string, any>>({
 };
 
 export default CustomForm;
-
-// : field.type === "checkbox" ? (
-//                   <div className="flex items-center gap-2 pt-1.5">
-//                     <input
-//                       type="checkbox"
-//                       {...register(field.name)}
-//                       className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
-//                     />
-//                   </div>
-//                 )

@@ -97,7 +97,7 @@ declare type Session = {
   description: string;
   bg_img: null | string;
   is_active: boolean;
-  venue: Shape;
+  venue: Shape & { designId: string };
   attachments: { file: string, id: string }[]
 };
 
@@ -359,6 +359,7 @@ declare type Programme = {
     filename: string;
     has_attachment: boolean;
   }[];
+  type: string;
   id: string;
   title: string;
   location: string;
@@ -381,6 +382,7 @@ declare type Programme = {
   description: string;
   bg_image: string;
   venue: Shape & { designId: string; design_label: string };
+  space_type:string;
 };
 
 // declare type Programme = {
@@ -400,23 +402,39 @@ declare type Programme = {
 declare type GlobalProgrammeListResponse = {
   header: ResponseHeader;
   response: {
-    // conference_title: string;
-    // conference_start_date: string;
-    // conference_end_date: string;
-    // conference_start_time: sring;
-    // conference_end_time: string;
-    // conference_location: string;
-    // programme: {
-    //   [date: string]: Programme[];
-    // };
-    // seq: string[];
     programme: Programme[];
     all_categories: {
       id: string;
       name: string;
       color: string;
     }[];
+    types: string[]
   };
+};
+
+declare type GlobalProgrammeListResponse3_v2_Response_T = {
+  data: Record<string, Record<string, Programme[]>>;
+  dates: string[];
+  types: string[]
+}
+
+declare type GlobalProgrammeListResponse3_v2 = {
+  header: ResponseHeader;
+  response: GlobalProgrammeListResponse3_v2_Response_T;
+};
+
+type ProgrammeTypeList = {
+  "type": string,
+  "date": string,
+  "start_time": string,
+  "end_time": string,
+  "title": string,
+  "category_color": string,
+}
+
+declare type GlobalProgrammeTypeListResponse = {
+  header: ResponseHeader;
+  response: ProgrammeTypeList[]
 };
 
 declare type ProgrammeCreateCategoryResponse = {
@@ -638,7 +656,7 @@ declare type VenueDesignMap = {
 
 declare type GlobalVenueDesignMap = {
   header: ResponseHeader;
-  response: (MapT & { programmes: Programme[]; created_by: string })[];
+  response: (MapT & { programmes: (Programme & { venue_id: string; })[]; created_by: string })[];
 };
 
 declare type Infinity = {

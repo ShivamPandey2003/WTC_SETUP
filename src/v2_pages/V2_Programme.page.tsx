@@ -1,7 +1,10 @@
-import { useGetProgrammeList } from "@/api/global_api/global_api";
+import {
+  useGetProgrammeList,
+  useGetProgrammeList3_v2,
+} from "@/api/global_api/global_api";
+import EventModal from "@/components/common/Programme/EventModal";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
-import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   getDateRange,
@@ -10,20 +13,33 @@ import {
 } from "@/lib/extra";
 import { groupIntoColumns } from "@/lib/GroupintoColumn";
 import { setProgrammes, type ProgrammeRecord } from "@/redux/ExtraSlice";
-import { setProgramme } from "@/redux/GlobalSlice";
+import { setAll_Categories, setProgramme, setType } from "@/redux/GlobalSlice";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
-import EventGrid from "@/v2_components/common/V2_Programme/EventGrid";
-import MultiSelect from "@/v2_components/global/MultiSelect";
-import { X } from "lucide-react";
+// import EventGrid2_v2 from "@/v2_components/common/V2_Programme/EventGrid2_v2";
+import EventGrid3_v2 from "@/v2_components/common/V2_Programme/EventGrid3_v2";
+// import EventGrid from "@/v2_components/common/V2_Programme/EventGrid";
+// import EventGrid_V2 from "@/v2_components/common/V2_Programme/EventGrid_v2";
+import { SearchBox } from "@/v2_components/global/Search/SearchBox";
 import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 const V2_Programme_page = () => {
   const { ProgrammeList, isPending, error } = useGetProgrammeList();
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const {
+    ProgrammeList: ProgrammeList3_v2,
+    isPending: isPendingNewList,
+    error: errorNewList,
+  } = useGetProgrammeList3_v2();
+  // const [selectedCategories, setSelectedCategories] = useState<
+  //   { name: string; value: string }[]
+  // >([]);
   const dispatch = useDispatch<AppDispatch>();
+  const [selected, setSelected] = useState<{
+    id: string;
+    date: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!ProgrammeList) return;
@@ -73,6 +89,7 @@ const V2_Programme_page = () => {
           if (detail.length === 0) return;
           return {
             session_id: Datas.id,
+            SessionType: Datas.type,
             id: nanoid(),
             categoryId: detail[0].id,
             title: detail[0]?.name,
@@ -82,6 +99,7 @@ const V2_Programme_page = () => {
             type: "normal",
           };
         });
+
       const result = transformSessions(val as any);
       const columns = result ? groupIntoColumns(result) : [];
 
@@ -93,13 +111,15 @@ const V2_Programme_page = () => {
 
     dispatch(setProgrammes(value));
     dispatch(setProgramme(ProgrammeList.data.response.programme));
+    dispatch(setAll_Categories(ProgrammeList.data.response.all_categories));
+    dispatch(setType(ProgrammeList.data.response.types));
   }, [ProgrammeList]);
 
   useEffect(() => {
     dispatch(setTitle(null));
   }, []);
 
-  if (isPending) {
+  if (isPending || isPendingNewList) {
     return (
       <div className="w-full flex flex-col px-4">
         {/* Navbar */}
@@ -113,7 +133,7 @@ const V2_Programme_page = () => {
           </div>
         </div>
         {/* Search bar */}
-        <div className="hidden sm:flex justify-center mb-6">
+        <div className="sm:flex justify-center mb-6">
           <div className="flex items-center gap-2">
             <Skeleton className="w-72 h-9 rounded-md" />
             <Skeleton className="w-9 h-9 rounded-md" />
@@ -131,11 +151,25 @@ const V2_Programme_page = () => {
           </div>
           {/* Day columns */}
           {[
-            [{ top: 1, span: 3 }, { top: 5, span: 2 }],
-            [{ top: 0, span: 2 }, { top: 0, span: 2, offset: true }, { top: 3, span: 3 }, { top: 7, span: 2 }],
-            [{ top: 2, span: 4 }, { top: 7, span: 3 }],
+            [
+              { top: 1, span: 3 },
+              { top: 5, span: 2 },
+            ],
+            [
+              { top: 0, span: 2 },
+              { top: 0, span: 2, offset: true },
+              { top: 3, span: 3 },
+              { top: 7, span: 2 },
+            ],
+            [
+              { top: 2, span: 4 },
+              { top: 7, span: 3 },
+            ],
           ].map((events, colIdx) => (
-            <div key={colIdx} className="flex-1 flex flex-col min-w-0 border-l border-gray-100">
+            <div
+              key={colIdx}
+              className="flex-1 flex flex-col min-w-0 border-l border-gray-100"
+            >
               {/* Day header */}
               <div className="h-8 flex items-center justify-center mb-0 border-b border-gray-100">
                 <Skeleton className="w-20 h-4 rounded" />
@@ -163,10 +197,15 @@ const V2_Programme_page = () => {
     );
   }
 
-  if (error) {
+  if (error || errorNewList) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
-        <ErrorDisplay title="Programme Error" message={error.message} />
+        <ErrorDisplay
+          title="Programme Error"
+          message={
+            error?.message || "An unknown error occurred"
+          }
+        />
       </div>
     );
   }
@@ -174,7 +213,10 @@ const V2_Programme_page = () => {
   if (
     !ProgrammeList ||
     !ProgrammeList.data.response ||
-    !ProgrammeList.data.response.programme.length
+    !ProgrammeList.data.response.programme.length ||
+    !ProgrammeList3_v2 ||
+    !ProgrammeList3_v2.response ||
+    Object.keys(ProgrammeList3_v2.response).length === 0
   ) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
@@ -185,29 +227,42 @@ const V2_Programme_page = () => {
 
   return (
     <div className="px-4 mx-auto flex flex-col">
-      <div className="hidden sm:flex gap-4 sm:justify-center mb-6 w-full">
-        <div className="flex items-center w-fit-content gap-2">
-          <MultiSelect
-            options={ProgrammeList.data.response.all_categories.map((item) => ({
-              label: item.name,
-              value: item.id,
-            }))}
-            selected={selectedCategories}
-            onChange={setSelectedCategories}
-            placeholder="Search categories..."
-          />
-          <Button
-              className="py-0 text-sm bg-primary text-white hover:text-white"
+      <div className="sm:flex justify-center gap-4 mb-6 w-full">
+        {/* {!isMobile && (
+          <div className="p-1 bg-white w-fit rounded-full h-fit flex gap-1 shadow">
+            <Button
+              variant={currentTab === "Types" ? "default" : "ghost"}
               size={"sm"}
-              variant={"outline"}
-              disabled={selectedCategories.length === 0}
-              onClick={() => setSelectedCategories([])}
+              className={cn("capitalize rounded-full p-2 w-28 h-6")}
+              onClick={() => setCurrentTab("Types")}
             >
-              <X />
+              Types
             </Button>
-        </div>
+            <Button
+              variant={currentTab === "Categories" ? "default" : "ghost"}
+              size={"sm"}
+              className={cn("capitalize rounded-full p-2 w-28 h-6")}
+              onClick={() => setCurrentTab("Categories")}
+            >
+              Categories
+            </Button>
+          </div>
+        )} */}
+        <SearchBox handleSelect={setSelected} />
       </div>
-      <EventGrid selectedCategories={selectedCategories} />
+      {/* <EventGrid selectedCategories={selectedCategories} /> */}
+      {/* {currentTab === "Categories" ? ( */}
+        <EventGrid3_v2 programmeData={ProgrammeList3_v2.response} selectedCategories={[]} />
+      {/* ) : ( */}
+        {/* <EventGrid2_v2 programmeData={ProgrammeTypeList.response} /> */}
+      {/* )} */}
+      {selected && (
+        <EventModal
+          isOpen={Boolean(selected)}
+          onClose={() => setSelected(null)}
+          data={selected!}
+        />
+      )}
     </div>
   );
 };

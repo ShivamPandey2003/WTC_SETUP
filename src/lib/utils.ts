@@ -6,13 +6,13 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const Height_OBJ = {
-  1: "100",
-  2: "200",
-  3: "300",
-  4: "500",
-  5: "850",
-  6: "1200",
-  7: "1400",
+  1: "80",
+  2: "150",
+  3: "200",
+  4: "400",
+  5: "750",
+  6: "900",
+  7: "1100",
   8: "1600",
   9: "1800",
   10: "2000",
@@ -209,6 +209,76 @@ export const addToGoogleCalendar = ({
   window.open(url, "_blank");
 };
 
+export const addToOutlookCalendar = ({
+  title,
+  start,
+  end,
+  location,
+}: {
+  title: string;
+  start: string;
+  end: string;
+  location: string;
+}) => {
+  const url = `https://outlook.live.com/calendar/0/action/compose?subject=${encodeURIComponent(title)}&startdt=${start}&enddt=${end}&location=${encodeURIComponent(location)}`;
+
+  window.open(url, "_blank");
+};
+
+export const addToICalendar = ({
+  title,
+  start,
+  end,
+  location,
+}: {
+  title: string;
+  start: string;
+  end: string;
+  location: string;
+}) => {
+  const formatDate = (iso: string) =>
+    iso.replace(/[-:]/g, "").replace(".000", "");
+
+  const icsContent = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "BEGIN:VEVENT",
+    `SUMMARY:${title}`,
+    `DTSTART:${formatDate(start)}`,
+    `DTEND:${formatDate(end)}`,
+    `LOCATION:${location}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\n");
+
+  const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${title}.ics`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
+
+export const addToYahooCalendar = ({
+  title,
+  start,
+  end,
+  location,
+}: {
+  title: string;
+  start: string;
+  end: string;
+  location: string;
+}) => {
+  const url = `https://calendar.yahoo.com/?v=60&title=${encodeURIComponent(title)}&st=${start}&et=${end}&in_loc=${encodeURIComponent(location)}`;
+
+  window.open(url, "_blank");
+};
+
 export function base64ToFile(
   base64: string,
   filename = "image.png"
@@ -261,4 +331,23 @@ export function generateExhibitorId(length: number = 8): string {
   }
 
   return result;
+}
+
+export function getContrastTextColor(hexColor: string): string {
+  // Strip # if present
+  let hex = hexColor.replace('#', '');
+
+  if (hex.length === 3) {
+    hex = hex.split('').map(char => char + char).join('');
+  }
+  
+  // Parse RGB
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  
+  // Calculate relative luminance (WCAG formula)
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  
+  return luminance > 0.5 ? '#1A1A1A' : '#FFFFFF';
 }
