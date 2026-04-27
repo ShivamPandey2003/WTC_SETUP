@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React, { useState, useRef, useEffect } from "react";
 
 export interface DropdownItem {
@@ -13,6 +14,7 @@ interface DropdownProps {
   items: DropdownItem[];
   position?: "top-left" | "top-right" | "bottom-left" | "bottom-right" | "left" | "right" | "top" | "bottom";
   className?: string;
+  ListClassName?:string
 }
 
 const NewDropdown: React.FC<DropdownProps> = ({
@@ -20,6 +22,7 @@ const NewDropdown: React.FC<DropdownProps> = ({
   items,
   position = "bottom-left",
   className = "",
+  ListClassName=""
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -90,7 +93,7 @@ const NewDropdown: React.FC<DropdownProps> = ({
       </div>
 
       {isOpen && (
-        <div className={getPositionClasses()}>
+        <div className={cn(getPositionClasses(), ListClassName)}>
           <div className="py-1" role="menu" aria-orientation="vertical">
             {items.map((item) => (
               <button
