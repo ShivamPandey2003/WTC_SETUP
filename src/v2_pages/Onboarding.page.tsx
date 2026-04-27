@@ -7,7 +7,7 @@ const Onboarding_page = () => {
     (state: RootState) => state.Global_DesignSlice,
   );
   return (
-    <div className="flex items-center justify-center bg-gray-100 h-screen">
+    <div className="flex items-center justify-center bg-gray-100 sm:h-screen">
       <div className="rounded-lg relative w-full sm:max-w-2xl p-8 bg-white min-h-[60vh] h-fit shadow border border-gray-200 flex flex-col items-center justify-center">
         <div className="flex items-center gap-2">
           <img

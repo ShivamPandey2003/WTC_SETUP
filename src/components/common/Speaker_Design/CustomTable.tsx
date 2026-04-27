@@ -130,7 +130,7 @@ const CustomTable = () => {
                 <tr key={index} className="bg-white border">
                   <td className="px-3 text-center py-2 rounded-l-xl max-w-[50px]">{index + 1}</td>
                   <td className="px-3 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px]">
-                    {`${item.prefix} ${item.firstname} ${item.lastname}`}
+                    {`${(item.prefix && item.prefix.toLocaleLowerCase() !== "null")?item.prefix:""} ${item.firstname} ${item.lastname}`}
                   </td>
                   <td className="px-3 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
                     {item.bio}

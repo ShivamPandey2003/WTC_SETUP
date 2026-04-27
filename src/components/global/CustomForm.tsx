@@ -11,6 +11,7 @@ import {
 import { Button } from "../ui/Button";
 import { Save, X, Plus } from "lucide-react";
 import Select from "react-select";
+import { cn } from "@/lib/utils";
 
 type FieldConfig<T extends Record<string, any>> = {
   name: Path<T>;
@@ -34,6 +35,7 @@ type FieldConfig<T extends Record<string, any>> = {
   options?: { label: string; value: string }[];
   addMoreHandler?: () => void;
   file?: File;
+  disable?: boolean
 };
 
 type Props<T extends Record<string, any>> = {
@@ -426,8 +428,9 @@ const CustomForm = <T extends Record<string, any>>({
                     {...register(field.name, {
                       valueAsNumber: field.type === "number",
                     })}
+                    disabled={field.disable}
                     placeholder={field.placeholder}
-                    className="w-full rounded outline-0 border-[1px] border-gray-200 px-2 py-1 focus:border-primary"
+                    className={cn("w-full rounded outline-0 border-[1px] border-gray-200 px-2 py-1 focus:border-primary", field.disable && "bg-gray-200")}
                   />
                 )}
 

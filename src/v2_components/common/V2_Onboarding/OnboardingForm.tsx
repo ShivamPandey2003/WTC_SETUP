@@ -164,7 +164,7 @@ const OnboardingForm = () => {
   }
 
   return (
-    <div className="w-full mx-auto mt-4 bg-white rounded-xl space-y-2 relative">
+    <div className="w-full h-fit sm:mx-auto mt-4 bg-white rounded-xl space-y-2 relative">
       {/* Profile Image */}
       <div className="flex flex-col items-center justify-start mb-4">
         {isPending ? (
@@ -203,25 +203,25 @@ const OnboardingForm = () => {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-        <div className="flex items-center justify-center">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-center">
           <label className="text-sm font-medium text-gray-600 w-[170px]">
             Name Prefix
           </label>
           <input
             {...register("prefix")}
-            className="border border-[#ddd] outline-0 rounded-md px-2 py-1 w-[400px]"
+            className="border border-[#ddd] outline-0 rounded-md px-2 py-1 sm:w-[400px]"
             placeholder="Dr."
           />
         </div>
 
-        <div className="flex items-center justify-center">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-center">
           <label className="block text-sm font-medium text-gray-600 w-[170px]">
             First Name
           </label>
           <div>
             <input
               {...register("firstName")}
-              className="w-[400px] border border-[#ddd] outline-0 rounded-md px-2 py-1"
+              className="w-full sm:w-[400px] border border-[#ddd] outline-0 rounded-md px-2 py-1"
               placeholder="First Name"
             />
             {errors.firstName && (
@@ -230,14 +230,14 @@ const OnboardingForm = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-center">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-center">
           <label className="block text-sm font-medium text-gray-600 w-[170px]">
             Last Name
           </label>
           <div>
             <input
               {...register("lastName")}
-              className="w-[400px] border border-[#ddd] outline-0 rounded-md px-2 py-1"
+              className="w-full sm:w-[400px] border border-[#ddd] outline-0 rounded-md px-2 py-1"
               placeholder="Last Name"
             />
             {errors.lastName && (
@@ -246,13 +246,13 @@ const OnboardingForm = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-center">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-center">
           <label className="block text-sm font-medium text-gray-600 w-[170px]">
             Gender
           </label>
           <select
             {...register("gender")}
-            className="w-[400px] border border-[#ddd] outline-0 rounded-md px-2 py-1"
+            className="w-full sm:w-[400px] border border-[#ddd] outline-0 rounded-md px-2 py-1"
           >
             <option value="Male">Male</option>
             <option value="Female">Female</option>
@@ -260,24 +260,24 @@ const OnboardingForm = () => {
           </select>
         </div>
 
-        <div className="flex items-center justify-center">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-center">
           <label className="block text-sm font-medium text-gray-600 w-[170px]">
             Company Name
           </label>
           <input
             {...register("company")}
-            className="w-[400px] border border-[#ddd] outline-0 rounded-md px-2 py-1"
+            className="w-full sm:w-[400px] border border-[#ddd] outline-0 rounded-md px-2 py-1"
             placeholder="Company"
           />
         </div>
 
-        <div className="flex items-center justify-center">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-center">
           <label className="block text-sm font-medium text-gray-600 w-[170px]">
             Designation
           </label>
           <input
             {...register("designation")}
-            className="w-[400px] border border-[#ddd] outline-0 rounded-md px-2 py-1"
+            className="w-full sm:w-[400px] border border-[#ddd] outline-0 rounded-md px-2 py-1"
             placeholder="Designation"
           />
         </div>
@@ -298,14 +298,14 @@ const OnboardingForm = () => {
           </div>
         </div> */}
 
-        <div className="flex items-center justify-center">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-center">
           <label className="block text-sm font-medium text-gray-600 w-[170px]">
             LinkedIn
           </label>
           <div>
             <input
               {...register("linkedin")}
-              className="w-[400px] border border-[#ddd] outline-0 rounded-md px-2 py-1"
+              className="w-full sm:w-[400px] border border-[#ddd] outline-0 rounded-md px-2 py-1"
               placeholder="LinkedIn URL"
             />
             {errors.linkedin && (
