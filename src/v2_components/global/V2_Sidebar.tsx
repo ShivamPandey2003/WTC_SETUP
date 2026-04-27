@@ -20,7 +20,10 @@ export const V2_Sidebar_Context = ({ setOpen }: prop) => {
 
   return (
     <>
-      <div className="cursor-pointer" onClick={() => navigate("/")}>
+      <div className="cursor-pointer" onClick={() => {
+        navigate("/");
+        setOpen?.()
+        }}>
         {appConfig?.logo?.logo_img ? (
           <img
             src={appConfig?.logo?.logo_img}

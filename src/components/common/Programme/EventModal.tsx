@@ -15,19 +15,71 @@ import {
 import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { addToGoogleCalendar, cn, formatForGoogleCalendar } from "@/lib/utils";
+import { addToGoogleCalendar, addToICalendar, addToOutlookCalendar, addToYahooCalendar, cn, formatForGoogleCalendar } from "@/lib/utils";
 import { useNavigate } from "react-router";
 import { useNotifyProgramme } from "@/api/programme_design_api/Programme_design_api";
 import Description from "@/components/ui/Description";
 import { useIsMobile } from "@/hooks/use-mobile";
 import SingleSelect from "@/v2_components/global/SingleSelect";
 import NoData from "@/components/global/NoData";
+import NewDropdown from "@/v2_components/global/V2_DropDown";
 
 type ModalProps = {
   isOpen: boolean;
   onClose: React.Dispatch<React.SetStateAction<string | null>>;
   data: { id: string; date: string; type?: string };
 };
+
+const Menu =(s:any)=> [
+  {
+    id: "Google",
+    label: "Google",
+    onClick: () => {
+      addToGoogleCalendar({
+        title: s.title,
+        start: formatForGoogleCalendar(s.start_date, s.start_time),
+        end: formatForGoogleCalendar(s.end_date, s.end_time),
+        location: s.location,
+      });
+    },
+  },
+  {
+    id: "Outlook",
+    label: "Outlook",
+    onClick: () => {
+      addToOutlookCalendar({
+        title: s.title,
+        start: formatForGoogleCalendar(s.start_date, s.start_time),
+        end: formatForGoogleCalendar(s.end_date, s.end_time),
+        location: s.location,
+      });
+    },
+  },
+  {
+    id: "Yahoo",
+    label: "Yahoo",
+    onClick: () => {
+      addToYahooCalendar({
+        title: s.title,
+        start: formatForGoogleCalendar(s.start_date, s.start_time),
+        end: formatForGoogleCalendar(s.end_date, s.end_time),
+        location: s.location,
+      });
+    },
+  },
+  {
+    id: "Ical",
+    label: "Ical",
+    onClick: () => {
+      addToICalendar({
+        title: s.title,
+        start: formatForGoogleCalendar(s.start_date, s.start_time),
+        end: formatForGoogleCalendar(s.end_date, s.end_time),
+        location: s.location,
+      });
+    },
+  },
+];
 
 const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   const { Session, Types } = useSelector(
@@ -286,27 +338,20 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                           )}
                         </div>
                         <div className="flex gap-3">
-                          <Button
-                            onClick={() =>
-                              addToGoogleCalendar({
-                                title: s.title,
-                                start: formatForGoogleCalendar(
-                                  s.start_date,
-                                  s.start_time,
-                                ),
-                                end: formatForGoogleCalendar(
-                                  s.end_date,
-                                  s.end_time,
-                                ),
-                                location: s.location,
-                              })
+                          <NewDropdown
+                            className=""
+                            position="bottom-right"
+                            trigger={
+                              <Button
+                                variant={"link"}
+                                size={"sm"}
+                                className="p-0! underline"
+                              >
+                                <CalendarArrowDown /> Add to calendar
+                              </Button>
                             }
-                            variant={"link"}
-                            size={"sm"}
-                            className="p-0! underline"
-                          >
-                            <CalendarArrowDown /> Add to calendar
-                          </Button>
+                            items={Menu(s)}
+                          />
                           <Button
                             variant={"link"}
                             size={"sm"}
