@@ -39,7 +39,7 @@ type ModalProps = {
   data: { id: string; date: string; type?: string };
 };
 
-const Menu = (s: any) => [
+const Menu = (s: Programme) => [
   {
     id: "Google",
     label: "Google",
