@@ -309,7 +309,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                     {Object.entries(s.categories).map(([key, value]) => (
                       <div className="flex items-center gap-4 w-full" key={key}>
                         <p
-                          style={{ color: appConfig.color_schema.primary_color }}
+                          style={{ color: appConfig.color_schema.primary_color || "#318061" }}
                           className="font-semibold min-w-fit"
                         >
                           {value.name}
@@ -317,7 +317,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                         <div
                           className="w-full h-2 rounded-full shadow-sm"
                           style={{
-                            background: `linear-gradient(135deg, ${appConfig.color_schema.primary_color}, ${appConfig.color_schema.primary_color})`,
+                            background: appConfig?.color_schema?.primary_color || "#318061",
                           }}
                         />
                       </div>
