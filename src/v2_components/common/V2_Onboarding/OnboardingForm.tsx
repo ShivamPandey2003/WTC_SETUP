@@ -209,7 +209,7 @@ const OnboardingForm = () => {
           </label>
           <input
             {...register("prefix")}
-            className="border border-[#ddd] outline-0 rounded-md px-2 py-1 sm:w-[400px]"
+            className="border border-[#ddd] outline-0 rounded-md px-2 py-1 w-full sm:w-[400px]"
             placeholder="Dr."
           />
         </div>

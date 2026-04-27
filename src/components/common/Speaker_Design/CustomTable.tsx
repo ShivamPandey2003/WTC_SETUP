@@ -128,9 +128,15 @@ const CustomTable = () => {
             <tbody>
               {SpeakersList.map((item, index) => (
                 <tr key={index} className="bg-white border">
-                  <td className="px-3 text-center py-2 rounded-l-xl max-w-[50px]">{index + 1}</td>
+                  <td className="px-3 text-center py-2 rounded-l-xl max-w-[50px]">
+                    {index + 1}
+                  </td>
                   <td className="px-3 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px]">
-                    {`${(item.prefix && item.prefix.toLocaleLowerCase() !== "null")?item.prefix:""} ${item.firstname} ${item.lastname}`}
+                    {[item.prefix, item.firstname, item.lastname]
+                      .filter(
+                        (val) => val && val.toLocaleLowerCase() !== "null",
+                      )
+                      .join(" ")}
                   </td>
                   <td className="px-3 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
                     {item.bio}
@@ -196,7 +202,7 @@ const CustomTable = () => {
               className="hover:bg-primary hover:text-white bg-white text-black border-r rounded-r-none"
               disabled={page === 1}
               onClick={() => setPage((pre) => pre - 1)}
-            // className={cn(hasPreviousPage && "cursor-pointer")}
+              // className={cn(hasPreviousPage && "cursor-pointer")}
             >
               Previous
             </Button>
@@ -222,7 +228,7 @@ const CustomTable = () => {
               className="hover:bg-primary hover:text-white bg-white text-black rounded-l-none"
               disabled={page === SpeakerList?.response.max_page}
               onClick={() => setPage((pre) => pre + 1)}
-            // className={cn(hasPreviousPage && "cursor-pointer")}
+              // className={cn(hasPreviousPage && "cursor-pointer")}
             >
               Next
             </Button>
