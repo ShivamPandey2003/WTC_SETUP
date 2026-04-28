@@ -7,7 +7,7 @@ const Auth_page = () => {
   const { appConfig } = useSelector(
     (state: RootState) => state.Global_DesignSlice,
   );
-  const { step } = useSelector((state: RootState) => state.AuthSlice);
+  const { step } = useSelector((state: RootState) => state.ExtraSlice);
 
   return (
     <div className="flex items-center justify-center bg-gray-100 h-screen">

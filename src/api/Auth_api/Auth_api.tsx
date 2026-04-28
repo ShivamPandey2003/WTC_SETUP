@@ -10,18 +10,17 @@ import {
   setEmail,
   setOtp,
   setResendCooldown,
-  setStep,
   setUserInfo,
 } from "@/redux/AuthSlice";
 import { setLoginModel, setResgister } from "@/redux/ModalSlice";
 import { useNavigate } from "react-router";
+import { setStep } from "@/redux/ExtraSlice";
 
 const coolDownTime =
   Number(import.meta.env.VITE_REACT_COOLDOWN_TIME_SECONDS) || 60000;
 
 export const useSendOtp = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { resendCount } = useSelector((state: RootState) => state.AuthSlice);
   const { mutate: sendOtp, isPending: isSendingOtp } = useMutation<
     ProfilePicResponse,
     AxiosError,
@@ -35,13 +34,12 @@ export const useSendOtp = () => {
       toast.success("OTP sent successfully!");
       dispatch(setEmail(variables.email));
       const now = Date.now();
-
-      if (resendCount + 1 === 1) {
-        dispatch(setResendCooldown(now + coolDownTime));
-      }
+      // if (resendCount + 1 === 1) {
+      dispatch(setResendCooldown(now + coolDownTime));
+      // }
       dispatch(setStep("otp"));
       dispatch(increaseResendCount());
-    }
+    },
   });
 
   return { sendOtp, isSendingOtp };
@@ -81,7 +79,7 @@ export const useVerifyOtp = () => {
       dispatch(setStep("email"));
       dispatch(setOtp(["", "", "", "", "", ""]));
       dispatch(setLoginModel(false));
-    }
+    },
   });
 
   return { verifyOtp, isVerifying };
@@ -105,16 +103,14 @@ export const useResendOtp = () => {
 
       const now = Date.now();
 
-      if (resendCount + 1 === 2) {
+      if (resendCount + 1 >= 4) {
+        dispatch(setResendCooldown(Infinity));
+      } else {
         dispatch(setResendCooldown(now + coolDownTime));
       }
 
-      if (resendCount + 1 >= 3) {
-        dispatch(setResendCooldown(Infinity));
-      }
-
       toast.success("OTP Resent!");
-    }
+    },
   });
 
   return { Resend, isResendPending };
@@ -132,7 +128,7 @@ export const useUserRegistration = () => {
         toast.success("User signed up successfully!");
         dispatch(setEmail(variables.email));
         dispatch(setResgister(false));
-      }
+      },
     });
 
   return { userRegistration, isUserRegistrationPending };

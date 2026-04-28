@@ -23,6 +23,7 @@ import V2_UserProfile_page from "@/v2_pages/V2_UserProfile.page";
 import AttachmentPdf from "@/v2_pages/AttachmentPdf";
 import Auth_page from "@/v2_pages/Auth.page";
 import Onboarding_page from "@/v2_pages/Onboarding.page";
+import Not_Found from "@/v2_components/global/Not_Found";
 
 const Router = createBrowserRouter(
   [
@@ -79,6 +80,10 @@ const Router = createBrowserRouter(
         {
           path: "attachment/:id",
           element: <AttachmentPdf />,
+        },
+        {
+          path: "*",
+          element: <Not_Found/>,
         },
       ],
     },
