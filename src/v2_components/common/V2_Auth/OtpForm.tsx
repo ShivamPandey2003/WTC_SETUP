@@ -42,12 +42,8 @@ const OtpForm = () => {
     return () => clearInterval(interval);
   }, [resendCooldownEnd]);
 
-  console.log(timeLeft);
-
   const isDisabled =
     isResendPending || resendCooldownEnd === Infinity || timeLeft > 0;
-
-  console.log(isDisabled);
 
   const handleOtpChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;

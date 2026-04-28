@@ -21,7 +21,6 @@ const coolDownTime =
 
 export const useSendOtp = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { resendCount } = useSelector((state: RootState) => state.AuthSlice);
   const { mutate: sendOtp, isPending: isSendingOtp } = useMutation<
     ProfilePicResponse,
     AxiosError,
@@ -35,7 +34,6 @@ export const useSendOtp = () => {
       toast.success("OTP sent successfully!");
       dispatch(setEmail(variables.email));
       const now = Date.now();
-      console.log(resendCount);
       // if (resendCount + 1 === 1) {
       dispatch(setResendCooldown(now + coolDownTime));
       // }
@@ -107,11 +105,9 @@ export const useResendOtp = () => {
 
       if (resendCount + 1 >= 4) {
         dispatch(setResendCooldown(Infinity));
+      } else {
+        dispatch(setResendCooldown(now + coolDownTime));
       }
-
-      // if (resendCount + 1 === 2) {
-      dispatch(setResendCooldown(now + coolDownTime));
-      // }
 
       toast.success("OTP Resent!");
     },
