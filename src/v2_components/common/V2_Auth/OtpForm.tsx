@@ -13,8 +13,8 @@ const OtpForm = () => {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [timeLeft, setTimeLeft] = React.useState(0);
   const { verifyOtp, isVerifying } = useVerifyOtp();
-    const { Resend, isResendPending } = useResendOtp();
-    const dispatch = useDispatch<AppDispatch>();
+  const { Resend, isResendPending } = useResendOtp();
+  const dispatch = useDispatch<AppDispatch>();
   const { email, otp, resendCooldownEnd } = useSelector(
     (state: RootState) => state.AuthSlice,
   );
@@ -25,23 +25,31 @@ const OtpForm = () => {
   });
 
   React.useEffect(() => {
-    const interval = setInterval(() => {
+    const update = () => {
       if (resendCooldownEnd === Infinity) {
         setTimeLeft(0);
         return;
       }
 
       const diff = resendCooldownEnd - Date.now();
-      setTimeLeft(Math.max(0, Math.floor(diff / 1000)));
-    }, 1000);
+      setTimeLeft(Math.max(0, Math.ceil(diff / 1000))); // use ceil
+    };
+
+    update(); // immediate sync
+
+    const interval = setInterval(update, 1000);
 
     return () => clearInterval(interval);
   }, [resendCooldownEnd]);
 
+  console.log(timeLeft);
+
   const isDisabled =
     isResendPending || resendCooldownEnd === Infinity || timeLeft > 0;
 
-    const handleOtpChange = (index: number, value: string) => {
+  console.log(isDisabled);
+
+  const handleOtpChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
     const newOtp = [...otp] as OTP;
     newOtp[index] = value.slice(-1);
@@ -53,7 +61,7 @@ const OtpForm = () => {
 
   const handleOtpKeyDown = (
     index: number,
-    e: KeyboardEvent<HTMLInputElement>
+    e: KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
@@ -118,14 +126,14 @@ const OtpForm = () => {
           type="button"
           onClick={() => Resend()}
           disabled={isDisabled}
-          className={`text-primary text-sm font-medium mt-4 transition-colors ${
+          className={`text-primary text-sm font-medium mt-4 transition-colors underline ${
             isDisabled
               ? "opacity-50 cursor-not-allowed"
               : "hover:text-green-800 cursor-pointer"
           }`}
         >
           {resendCooldownEnd === Infinity
-            ? "Resend disabled"
+            ? "Resend code"
             : timeLeft > 0
               ? `Resend in ${timeLeft}s`
               : "Resend code"}

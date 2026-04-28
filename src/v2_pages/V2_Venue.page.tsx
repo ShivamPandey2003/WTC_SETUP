@@ -142,19 +142,22 @@ const V2_Venue_page = () => {
                 Venue.response.bg_venue ? "bg-white" : "bg-gray-300 h-90",
               )}
             >
-              {Venue.response.bg_venue && Venue.response.bg_venue.trim() && (
-                <img
-                  src={Venue.response.bg_venue}
-                  alt="BG"
-                  className="w-full h-90 object-cover"
-                />
-              )}
+              {typeof Venue?.response?.bg_venue === "string" &&
+                Venue.response.bg_venue.trim() !== "" && (
+                  <img
+                    src={Venue.response.bg_venue}
+                    alt="BG"
+                    className="w-full h-90 object-cover"
+                  />
+                )}
             </div>
             <TextCard />
           </div>
           <div className="bg-white rounded-3xl h-fit overflow-hidden shadow-sm p-6">
-            {venue.getting_there.latitude && venue.getting_there.longitude && venue.getting_there.latitude.trim() &&
-            venue.getting_there.longitude.trim() ? (
+            {venue?.getting_there?.latitude &&
+            venue?.getting_there?.longitude &&
+            venue?.getting_there?.latitude.trim() &&
+            venue?.getting_there?.longitude.trim() ? (
               <>
                 <LoadScriptNext
                   loadingElement={<Skeleton className="w-full h-80 mb-8" />}
@@ -283,13 +286,15 @@ const V2_Venue_page = () => {
                 </a>
               )}
             </div>
-           {(venue.attachment && venue.attachment.trim()) && <a
-              href={venue.attachment}
-              target="_blank"
-              className="flex items-center text-blue-600 gap-1"
-            >
-              <Link size={18} /> Floor Plan
-            </a>}
+            {typeof venue?.attachment === "string" && venue?.attachment.trim() !== "" && (
+              <a
+                href={venue.attachment}
+                target="_blank"
+                className="flex items-center text-blue-600 gap-1"
+              >
+                <Link size={18} /> Floor Plan
+              </a>
+            )}
           </div>
           <div className="w-full">
             {V2_Global_FloorMapList?.response &&
