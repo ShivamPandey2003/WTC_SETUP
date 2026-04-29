@@ -89,21 +89,6 @@ export function MultiSelect<T>({
     }
   }, [open]);
 
-  // const groupIsAllSelected = (opts: T[]) => opts.every(isSelected);
-  // const groupIsPartialSelected = (opts: T[]) =>
-  //   !opts.some(isSelected) && opts.every(isSelected);
-
-  // const toggleGroup = (opts: T[]) => {
-  //   console.log(opts)
-  //   if (groupIsAllSelected(opts)) {
-  //     const keys = new Set(opts.map((o) => String(getValue(o))));
-  //     onChange(value.filter((v) => !keys.has(String(getValue(v)))));
-  //   } else {
-  //     const keys = new Set(value.map((v) => String(getValue(v))));
-  //     const toAdd = opts.filter((o) => !keys.has(String(getValue(o))));
-  //     onChange([...value, ...toAdd]);
-  //   }
-  // };
 
   return (
     <div ref={containerRef} className={`relative w-full ${className}`}>
