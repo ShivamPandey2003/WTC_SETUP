@@ -42,7 +42,7 @@ export function SearchBox({ handleSelect }: Props) {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Search..."
+          placeholder="Search Sessions"
           className="flex-1 text-sm outline-none bg-transparent"
           autoComplete="off"
         />

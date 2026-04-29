@@ -101,6 +101,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   const { appConfig } = useSelector(
     (state: RootState) => state.Global_DesignSlice,
   );
+  const token = localStorage.getItem("token");
   const listRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const { notify, isPending } = useNotifyProgramme();
@@ -375,6 +376,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                             }
                             items={Menu(s)}
                           />
+                          {token && (
                           <Button
                             variant={"link"}
                             size={"sm"}
@@ -383,7 +385,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                             disabled={isPending}
                           >
                             <BellDot /> Notify me
-                          </Button>
+                          </Button>)}
                         </div>
                       </div>
                     </div>

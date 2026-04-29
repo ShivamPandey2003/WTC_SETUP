@@ -460,13 +460,14 @@ export const useVenueDesignUpdate = () => {
           travel_description: "",
         };
 
-  const formData = new FormData();
+  const payload: Record<string, any> = {};
 
   Object.entries(data).forEach(([key, value]) => {
     if (value !== null) {
       if (key === "image" && typeof value === "string") return;
       if (key === "attachment" && typeof value === "string") return;
-      formData.append(key, value);
+
+      payload[key] = value;
     }
   });
 
@@ -474,9 +475,9 @@ export const useVenueDesignUpdate = () => {
     mutate: UpdateVenueDesign,
     isPending: isUpdateVenueDesignPending,
     error: errorInUpdateVenueDesign,
-  } = useMutation<ProfilePicResponse, AxiosError>({
+  } = useMutation<ProfilePicResponse, AxiosError, Record<string, any>>({
     mutationFn: async () => {
-      const res = await apiRequest("post", "/venue/save", formData);
+      const res = await apiRequest("post", "/venue/save", payload);
       return res.response;
     },
     onSuccess: (data) => {

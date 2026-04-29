@@ -15,6 +15,7 @@ import axios from "axios";
 import { Link } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 
 const VenueDesign_page = () => {
   const { isPending, SpeakerSettings: Data } = useGetSpeakerSetting();
@@ -115,7 +116,7 @@ const VenueDesign_page = () => {
             <div className="flex items-start gap-4">
               <Section
                 title="Basic info"
-                ClassName="w-full h-[67.5vh]"
+                ClassName="w-full h-[calc(100vh-180px)] overflow-auto"
                 onSave={() => UpdateVenueDesign()}
                 show={true}
                 loading={isUpdateVenueDesignPending}
@@ -181,81 +182,109 @@ const VenueDesign_page = () => {
                   }
                   containerClassname="mb-4"
                 />
-                <div className={cn("flex items-center gap-4 py-2 w-full")}>
-                  <div className="text-sm font-[500] w-[220px] shrink-0">
-                    {normalizeLabel("Attachment")}
+               
+                {/* Two Column Upload Section */}
+                <div className="grid grid-cols-2 gap-8 py-4 w-full border-t border-gray-100">
+
+                  {/* Column 1: Attachment */}
+                  <div className="flex flex-col gap-3">
+                    <div className="text-sm font-[500] text-gray-900">
+                      {normalizeLabel("Attachment")}
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <input
+                        type="file"
+                        multiple={false}
+                        onChange={onAttachmentChange}
+                        accept={"application/pdf"}
+                        className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary/20 file:text-primary hover:file:bg-primary/40"
+                      />
+
+                      {/* PDF Link Box */}
+                      <div className="mt-2 w-full max-w-[200px] aspect-video rounded-lg border border-dashed border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden">
+                        {url ? (
+                          <a
+                            href={url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex flex-col items-center justify-center w-full h-full gap-2 text-primary hover:bg-primary/5 transition-colors"
+                          >
+                            <Link size={24} />
+                            <span className="text-sm font-medium">View Floor Plan (PDF)</span>
+                          </a>
+                        ) : (
+                          <span className="text-xs text-gray-400 italic">No attachment uploaded</span>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-8">
-                    <input
-                      type="file"
-                      multiple={false}
-                      onChange={onAttachmentChange}
-                      accept={"application/pdf"}
-                      className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary/20 file:text-primary hover:file:bg-primary/40"
-                    />
+
+                  {/* Column 2: Image Preview */}
+                  <div className="flex flex-col gap-3">
+                    <div className="text-sm font-[500] text-gray-900">
+                      Image
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <input
+                        type="file"
+                        multiple={false}
+                        accept={"image/*"}
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+
+                          const url = URL.createObjectURL(file);
+                          setVenueImage(url);
+
+                          const res = await apiRequest(
+                            "post",
+                            `/upload/presigned-url?file_name=${file.name}&module=${"venue_image"}`,
+                          );
+
+                          const { file_key, upload_url } = res.response.response;
+                          await axios.put(upload_url, file, {
+                            headers: {
+                              "Content-Type": file.type,
+                            },
+                            responseType: "blob",
+                          });
+
+                          const newForm = new FormData();
+                          newForm.append("file_path_image", file_key);
+                          apiRequest("post", "/venue/upload-files", newForm);
+                          
+                          dispatch(
+                            setSpeakerSettings({
+                              ...SpeakerSettings,
+                              venue: {
+                                ...SpeakerSettings.venue,
+                                image: file_key,
+                              },
+                            }),
+                          );
+                        }}
+                        className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary/20 file:text-primary hover:file:bg-primary/40"
+                      />
+
+                      {/* Image Box */}
+                      <div className="mt-2 w-full max-w-[200px] aspect-video rounded-lg border border-dashed border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden">
+                        {venueImage ? (
+                          <img
+                            src={venueImage}
+                            alt="Venue"
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-xs text-gray-400 italic">No image uploaded</span>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  {url && (
-                    <a
-                      href={url}
-                      target="_blank"
-                      className="flex items-center text-primary gap-1"
-                    >
-                      <Link size={18} /> Floor Plan
-                    </a>
-                  )}
-                </div>
-                <div className="flex items-center gap-4 py-2 w-full">
-                  <div className="text-sm font-[500] w-[220px] shrink-0">
-                    Image
-                  </div>
-                  <input
-                    type="file"
-                    multiple={false}
-                    accept={"image/*"}
-                    onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
-
-                      const url = URL.createObjectURL(file);
-                      setVenueImage(url);
-
-                      const res = await apiRequest(
-                        "post",
-                        `/upload/presigned-url?file_name=${file.name}&module=${"venue_image"}`,
-                      );
-
-                      const { file_key, upload_url } = res.response.response;
-                      await axios.put(upload_url, file, {
-                        headers: {
-                          "Content-Type": file.type,
-                        },
-                        responseType: "blob",
-                      });
-
-                      const newForm = new FormData();
-                      newForm.append("file_path_image", file_key);
-                      apiRequest("post", "/venue/upload-files", newForm);
-
-                      dispatch(
-                        setSpeakerSettings({
-                          ...SpeakerSettings,
-                          venue: {
-                            ...SpeakerSettings.venue,
-                            image: file_key,
-                          },
-                        }),
-                      );
-                    }}
-                    className="text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary/20 file:text-primary hover:file:bg-primary/40"
-                  />
-                  {venueImage && (
-                    <img src={venueImage} alt="" className="w-24 rounded-lg" />
-                  )}
                 </div>
               </Section>
               <Section
                 title={normalizeLabel("getting_there_description")}
-                ClassName="w-full"
+                ClassName="w-full w-full h-[calc(100vh-180px)] overflow-auto"
                 onSave={() => UpdateVenueDesign()}
                 show={true}
                 loading={isUpdateVenueDesignPending}
