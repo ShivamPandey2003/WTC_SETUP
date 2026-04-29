@@ -477,7 +477,6 @@ export const useVenueDesignUpdate = () => {
           payload[key] = value;
         }
       });
-
       const res = await apiRequest("post", "/venue/save", payload);
       return res.response;
     },
