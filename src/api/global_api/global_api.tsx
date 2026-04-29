@@ -426,6 +426,118 @@ export const useSpeakerDesignUpdate = () => {
   };
 };
 
+type Segment = {
+  text: string;
+  bold: boolean;
+  italic: boolean;
+  underline: boolean;
+  color: string | null;
+};
+
+type Block = {
+  type: "paragraph";
+  segments: Segment[];
+};
+
+export const convertHtmlToBlocks = (html: string): { blocks: Block[] } => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+
+  const blocks: Block[] = [];
+
+  const getStyles = (node: HTMLElement, parentStyles: Segment): Segment => {
+    const tag = node.tagName?.toLowerCase();
+
+    const style = node.getAttribute("style") || "";
+    const colorMatch = style.match(/color:\s*([^;]+)/i);
+
+    return {
+      text: "",
+      bold: parentStyles.bold || tag === "b" || tag === "strong",
+      italic: parentStyles.italic || tag === "i" || tag === "em",
+      underline: parentStyles.underline || tag === "u",
+      color: colorMatch ? colorMatch[1].trim() : parentStyles.color,
+    };
+  };
+
+  const traverse = (
+    node: ChildNode,
+    currentStyles: Segment,
+    segments: Segment[]
+  ) => {
+    // TEXT NODE
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent || "";
+
+      // DO NOT TRIM → preserve spacing
+      if (text.length > 0) {
+        segments.push({
+          ...currentStyles,
+          text,
+        });
+      }
+      return;
+    }
+
+    // ELEMENT NODE
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const el = node as HTMLElement;
+
+      // HANDLE <br>
+      if (el.tagName.toLowerCase() === "br") {
+        segments.push({
+          ...currentStyles,
+          text: "\n", // important for BE
+        });
+        return;
+      }
+
+      const newStyles = getStyles(el, currentStyles);
+
+      el.childNodes.forEach((child) =>
+        traverse(child, newStyles, segments)
+      );
+    }
+  };
+
+  // HANDLE PARAGRAPHS PROPERLY
+  const paragraphs = doc.body.querySelectorAll("p");
+
+  paragraphs.forEach((p) => {
+    const segments: Segment[] = [];
+
+    traverse(
+      p,
+      {
+        text: "",
+        bold: false,
+        italic: false,
+        underline: false,
+        color: null,
+      },
+      segments
+    );
+
+    // Even empty paragraph should be preserved
+    if (segments.length === 0) {
+      segments.push({
+        text: "\n",
+        bold: false,
+        italic: false,
+        underline: false,
+        color: null,
+      });
+    }
+
+    blocks.push({
+      type: "paragraph",
+      segments,
+    });
+  });
+
+  return { blocks };
+};
+
 export const useVenueDesignUpdate = () => {
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice
@@ -473,8 +585,13 @@ export const useVenueDesignUpdate = () => {
         if (value !== null) {
           if (key === "image" && typeof value === "string") return;
           if (key === "attachment" && typeof value === "string") return;
-
-          payload[key] = value;
+          if (key === "getting_there_description" && typeof value === "string") {
+            const result = convertHtmlToBlocks(value);
+            payload[key] = result;
+          }
+          else {
+            payload[key] = value;
+          }
         }
       });
       const res = await apiRequest("post", "/venue/save", payload);
