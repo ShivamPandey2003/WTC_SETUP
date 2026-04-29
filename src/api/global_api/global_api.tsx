@@ -435,104 +435,166 @@ type Segment = {
 };
 
 type Block = {
-  type: "paragraph";
+  type: "paragraph" | "heading";
+  level?: number;
   segments: Segment[];
 };
 
-export const convertHtmlToBlocks = (html: string): { blocks: Block[] } => {
+
+export const convertHtmlToBlocks = (input: string): { blocks: Block[] } => {
+  // STEP 1: Detect plain text (no HTML tags)
+  const isHtml = /<\/?[a-z][\s\S]*>/i.test(input);
+
+  // -----------------------------
+  // HANDLE PLAIN TEXT
+  // -----------------------------
+  if (!isHtml) {
+    const lines = input.split("\n");
+
+    const blocks: Block[] = [];
+
+    lines.forEach((line) => {
+      const trimmed = line.trim();
+
+      // empty line → paragraph break
+      if (!trimmed) {
+        blocks.push({
+          type: "paragraph",
+          segments: [
+            {
+              text: "\n",
+              bold: false,
+              italic: false,
+              underline: false,
+              color: null,
+            },
+          ],
+        });
+        return;
+      }
+
+      // Simple heading detection (optional logic)
+      let blockType: Block["type"] = "paragraph";
+      let level: number | undefined = undefined;
+
+      if (/^this is h1/i.test(trimmed)) {
+        blockType = "heading";
+        level = 1;
+      } else if (/^this is h2/i.test(trimmed)) {
+        blockType = "heading";
+        level = 2;
+      } else if (/^this is h3/i.test(trimmed)) {
+        blockType = "heading";
+        level = 3;
+      }
+
+      blocks.push({
+        type: blockType,
+        level,
+        segments: [
+          {
+            text: line,
+            bold: false,
+            italic: false,
+            underline: false,
+            color: null,
+          },
+        ],
+      });
+    });
+
+    return { blocks };
+  }
+
+  // -----------------------------
+  // HANDLE HTML (your existing logic)
+  // -----------------------------
   const parser = new DOMParser();
-  const doc = parser.parseFromString(html, "text/html");
+  const doc = parser.parseFromString(input, "text/html");
 
   const blocks: Block[] = [];
 
-  const getStyles = (node: HTMLElement, parentStyles: Segment): Segment => {
+  const getStyles = (node: HTMLElement, parent: Segment): Segment => {
     const tag = node.tagName?.toLowerCase();
-
-    const style = node.getAttribute("style") || "";
-    const colorMatch = style.match(/color:\s*([^;]+)/i);
 
     return {
       text: "",
-      bold: parentStyles.bold || tag === "b" || tag === "strong",
-      italic: parentStyles.italic || tag === "i" || tag === "em",
-      underline: parentStyles.underline || tag === "u",
-      color: colorMatch ? colorMatch[1].trim() : parentStyles.color,
+      bold: parent.bold || tag === "b" || tag === "strong",
+      italic: parent.italic || tag === "i" || tag === "em",
+      underline: parent.underline || tag === "u",
+      color: null,
     };
   };
 
   const traverse = (
     node: ChildNode,
-    currentStyles: Segment,
+    styles: Segment,
     segments: Segment[]
   ) => {
-    // TEXT NODE
     if (node.nodeType === Node.TEXT_NODE) {
       const text = node.textContent || "";
-
-      // DO NOT TRIM → preserve spacing
       if (text.length > 0) {
-        segments.push({
-          ...currentStyles,
-          text,
-        });
+        segments.push({ ...styles, text });
       }
       return;
     }
 
-    // ELEMENT NODE
     if (node.nodeType === Node.ELEMENT_NODE) {
       const el = node as HTMLElement;
+      const tag = el.tagName.toLowerCase();
 
-      // HANDLE <br>
-      if (el.tagName.toLowerCase() === "br") {
-        segments.push({
-          ...currentStyles,
-          text: "\n", // important for BE
-        });
+      if (tag === "br") {
+        segments.push({ ...styles, text: "\n" });
         return;
       }
 
-      const newStyles = getStyles(el, currentStyles);
-
+      const newStyles = getStyles(el, styles);
       el.childNodes.forEach((child) =>
         traverse(child, newStyles, segments)
       );
     }
   };
 
-  // HANDLE PARAGRAPHS PROPERLY
-  const paragraphs = doc.body.querySelectorAll("p");
+  const allowedTags = ["p", "h1", "h2", "h3"];
 
-  paragraphs.forEach((p) => {
-    const segments: Segment[] = [];
+  doc.body.childNodes.forEach((node) => {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const el = node as HTMLElement;
+      const tag = el.tagName.toLowerCase();
 
-    traverse(
-      p,
-      {
-        text: "",
-        bold: false,
-        italic: false,
-        underline: false,
-        color: null,
-      },
-      segments
-    );
+      if (allowedTags.includes(tag)) {
+        const segments: Segment[] = [];
 
-    // Even empty paragraph should be preserved
-    if (segments.length === 0) {
-      segments.push({
-        text: "\n",
-        bold: false,
-        italic: false,
-        underline: false,
-        color: null,
-      });
+        traverse(
+          el,
+          {
+            text: "",
+            bold: false,
+            italic: false,
+            underline: false,
+            color: null,
+          },
+          segments
+        );
+
+        blocks.push({
+          type: tag === "p" ? "paragraph" : "heading",
+          level: tag.startsWith("h") ? Number(tag[1]) : undefined,
+          segments:
+            segments.length > 0
+              ? segments
+              : [
+                  {
+                    text: "\n",
+                    bold: false,
+                    italic: false,
+                    underline: false,
+                    color: null,
+                  },
+                ],
+        });
+      }
     }
-
-    blocks.push({
-      type: "paragraph",
-      segments,
-    });
   });
 
   return { blocks };
