@@ -183,7 +183,7 @@ const VenueDesign_page = () => {
                 />
                
                 {/* Two Column Upload Section */}
-                <div className="grid grid-cols-2 gap-8 py-4 w-full border-t border-gray-100">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-4 w-full border-t border-gray-100">
 
                   {/* Column 1: Attachment */}
                   <div className="flex flex-col gap-3">
@@ -283,7 +283,7 @@ const VenueDesign_page = () => {
               </Section>
               <Section
                 title={normalizeLabel("getting_there_description")}
-                ClassName="w-full w-full h-[calc(100vh-180px)] overflow-auto"
+                ClassName="w-full h-[calc(100vh-180px)] overflow-auto"
                 onSave={() => UpdateVenueDesign()}
                 show={true}
                 loading={isUpdateVenueDesignPending}

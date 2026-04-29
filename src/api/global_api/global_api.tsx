@@ -428,55 +428,56 @@ export const useSpeakerDesignUpdate = () => {
 
 export const useVenueDesignUpdate = () => {
   const { SpeakerSettings } = useSelector(
-    (state: RootState) => state.Speaker_DesignSlice,
+    (state: RootState) => state.Speaker_DesignSlice
   );
-  const { venue_tab, venue } = CustomPick(SpeakerSettings, [
-    "venue_tab",
-    "venue",
-  ]);
-
-  const { image, ...rest } = venue;
-
-  const data =
-    typeof image === "string"
-      ? {
-          ...rest,
-          venue_tab,
-          floor_plan: "",
-          visa_title: "",
-          visa_sub_title: "",
-          visa_description: "",
-          travel_title: "",
-          travel_description: "",
-        }
-      : {
-          ...venue,
-          venue_tab,
-          floor_plan: "",
-          visa_title: "",
-          visa_sub_title: "",
-          visa_description: "",
-          travel_title: "",
-          travel_description: "",
-        };
-
-  const payload: Record<string, any> = {};
-
-  Object.entries(data).forEach(([key, value]) => {
-    if (value !== null) {
-      if (key === "image" && typeof value === "string") return;
-      if (key === "attachment" && typeof value === "string") return;
-
-      payload[key] = value;
-    }
-  });
 
   const {
     mutate: UpdateVenueDesign,
     isPending: isUpdateVenueDesignPending,
     error: errorInUpdateVenueDesign,
-  } = useMutation<ProfilePicResponse, AxiosError, Record<string, any>>({
+  } = useMutation<ProfilePicResponse, AxiosError>({
     mutationFn: async () => {
+      const { venue_tab, venue } = CustomPick(SpeakerSettings, [
+        "venue_tab",
+        "venue",
+      ]);
+
+      const { image, ...rest } = venue;
+
+      const data =
+        typeof image === "string"
+          ? {
+              ...rest,
+              venue_tab,
+              floor_plan: "",
+              visa_title: "",
+              visa_sub_title: "",
+              visa_description: "",
+              travel_title: "",
+              travel_description: "",
+            }
+          : {
+              ...venue,
+              venue_tab,
+              floor_plan: "",
+              visa_title: "",
+              visa_sub_title: "",
+              visa_description: "",
+              travel_title: "",
+              travel_description: "",
+            };
+
+      const payload: Record<string, any> = {};
+
+      Object.entries(data).forEach(([key, value]) => {
+        if (value !== null) {
+          if (key === "image" && typeof value === "string") return;
+          if (key === "attachment" && typeof value === "string") return;
+
+          payload[key] = value;
+        }
+      });
+
       const res = await apiRequest("post", "/venue/save", payload);
       return res.response;
     },
