@@ -187,9 +187,7 @@ function DayColumn({
           const eventColor =
             event.categories?.[firstCatKey]?.color || color[event.type];
           const shouldBeGray = isAnyColumnHovered && !isThisColumnHovered;
-          const Title =Object.keys(event.categories).length?Object.entries(event.categories).map(([_, value])=>(value as any)?.name)[0]: event.title
-                ? event.title
-                : event.type;
+          const Title =(Object.values(event.categories)[0] as any)?.name || event.title || event.type;
 
           const isFull = event.space_type === "full";
 

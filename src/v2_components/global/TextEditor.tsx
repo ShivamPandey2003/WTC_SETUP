@@ -27,10 +27,8 @@ export default function TextEditor({ save, initialHtml }: TextEditorProp) {
     nodes: [HeadingNode, QuoteNode],
     editorState: (editor: any) => {
       if (initialHtml) {
-        console.log("comming :-",initialHtml)
         const parser = new DOMParser();
         const dom = parser.parseFromString(initialHtml, "text/html");
-        console.log("after parse:", dom)
 
         const nodes = $generateNodesFromDOM(editor, dom);
 

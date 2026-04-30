@@ -189,8 +189,6 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
     ScrollWindow(data.id);
   }, [data.id, selectedValue]);
 
-  console.log(selectedValue)
-
   return (
     <Modal
       showHeader={false}

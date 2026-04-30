@@ -440,7 +440,6 @@ type Block = {
   segments: Segment[];
 };
 
-
 export const convertHtmlToBlocks = (input: string): { blocks: Block[] } => {
   // STEP 1: Detect plain text (no HTML tags)
   const isHtml = /<\/?[a-z][\s\S]*>/i.test(input);
@@ -526,11 +525,7 @@ export const convertHtmlToBlocks = (input: string): { blocks: Block[] } => {
     };
   };
 
-  const traverse = (
-    node: ChildNode,
-    styles: Segment,
-    segments: Segment[]
-  ) => {
+  const traverse = (node: ChildNode, styles: Segment, segments: Segment[]) => {
     if (node.nodeType === Node.TEXT_NODE) {
       const text = node.textContent || "";
       if (text.length > 0) {
@@ -549,9 +544,7 @@ export const convertHtmlToBlocks = (input: string): { blocks: Block[] } => {
       }
 
       const newStyles = getStyles(el, styles);
-      el.childNodes.forEach((child) =>
-        traverse(child, newStyles, segments)
-      );
+      el.childNodes.forEach((child) => traverse(child, newStyles, segments));
     }
   };
 
@@ -574,7 +567,7 @@ export const convertHtmlToBlocks = (input: string): { blocks: Block[] } => {
             underline: false,
             color: null,
           },
-          segments
+          segments,
         );
 
         blocks.push({
@@ -602,7 +595,7 @@ export const convertHtmlToBlocks = (input: string): { blocks: Block[] } => {
 
 export const useVenueDesignUpdate = () => {
   const { SpeakerSettings } = useSelector(
-    (state: RootState) => state.Speaker_DesignSlice
+    (state: RootState) => state.Speaker_DesignSlice,
   );
 
   const {
@@ -647,11 +640,13 @@ export const useVenueDesignUpdate = () => {
         if (value !== null) {
           if (key === "image" && typeof value === "string") return;
           if (key === "attachment" && typeof value === "string") return;
-          if (key === "getting_there_description" && typeof value === "string") {
+          if (
+            key === "getting_there_description" &&
+            typeof value === "string"
+          ) {
             const result = convertHtmlToBlocks(value);
             payload[key] = result;
-          }
-          else {
+          } else {
             payload[key] = value;
           }
         }
