@@ -90,7 +90,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
           </button>
         </div>
         <div className="px-6 pb-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
-          <h2 className="text-2xl font-semibold my-6">{title}</h2>
+          <h2 className="text-2xl font-semibold my-6">Search in {title}</h2>
           {status === "pending" ? (
             <div className="text-center text-gray-400 py-8">
               <LoaderCircle className="w-12 h-12 mx-auto mb-3 opacity-30 animate-spin" />
