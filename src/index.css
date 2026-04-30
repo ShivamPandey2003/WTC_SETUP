@@ -24,6 +24,25 @@
 :root {
   @apply bg-background;
   font-size: var(--app-normal-text);
+  ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px; /* for horizontal scroll */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #318061;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #318061 transparent;
+}
 }
 
 h1{
@@ -68,6 +87,15 @@ h3{
   scrollbar-color: #318061 transparent;
 }
 
+.editor-wrapper h1,
+.editor-wrapper h2,
+.editor-wrapper h3 {
+  font-size: revert;
+}
+
+.editor-wrapper u {
+  text-decoration: underline !important;
+}
 
 
 .calendar-outer-wrapper {

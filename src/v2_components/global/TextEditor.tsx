@@ -27,8 +27,10 @@ export default function TextEditor({ save, initialHtml }: TextEditorProp) {
     nodes: [HeadingNode, QuoteNode],
     editorState: (editor: any) => {
       if (initialHtml) {
+        console.log("comming :-",initialHtml)
         const parser = new DOMParser();
         const dom = parser.parseFromString(initialHtml, "text/html");
+        console.log("after parse:", dom)
 
         const nodes = $generateNodesFromDOM(editor, dom);
 
@@ -50,7 +52,7 @@ export default function TextEditor({ save, initialHtml }: TextEditorProp) {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="border border-gray-100 rounded-[7px] bg-[#1111110D] h-[62vh] w-full">
+      <div className="editor-wrapper border border-gray-100 rounded-[7px] bg-[#1111110D] h-[62vh] w-full">
         <Toolbar />
 
         <RichTextPlugin

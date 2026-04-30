@@ -111,7 +111,9 @@ function DayColumn({
   onMouseEnter,
   onMouseLeave,
 }: any) {
-  const lastVisibleType = [...types].reverse().find(type => data[type]?.length > 0);
+  const lastVisibleType = [...types]
+    .reverse()
+    .find((type) => data[type]?.length > 0);
 
   // 1. DYNAMICALLY CALCULATE TOTAL DAY WIDTH
   // This sums up the width of every column in this day to know how far a "full" block should stretch
@@ -127,13 +129,15 @@ function DayColumn({
   return types.map((str: any, index: number) => {
     const rawEvents = data[str] || [];
     const New_data: any[] = calculateOverlaps(rawEvents);
-    
+
     // Width of the current specific track
     const columnWidth = columnWidths[index];
 
     // 2. DYNAMICALLY CALCULATE LEFT OFFSET
     // How many pixels from the left of the container is THIS specific column starting?
-    const currentColumnLeftOffset = columnWidths.slice(0, index).reduce((a: number, b: number) => a + b, 0);
+    const currentColumnLeftOffset = columnWidths
+      .slice(0, index)
+      .reduce((a: number, b: number) => a + b, 0);
 
     const hasData = rawEvents.length > 0;
     const isLastTypeWithData = str === lastVisibleType;
@@ -150,14 +154,24 @@ function DayColumn({
           width: `${columnWidth}px`,
           minWidth: `${columnWidth}px`,
           position: "relative",
-          backgroundColor: isAnyColumnHovered && !isThisColumnHovered ? "rgba(0,0,0,0.05)" : "transparent",
-          borderRight: hasData && isLastTypeWithData ? "2px solid #ddd" : "none"
+          backgroundColor:
+            isAnyColumnHovered && !isThisColumnHovered
+              ? "rgba(0,0,0,0.05)"
+              : "transparent",
+          borderRight:
+            hasData && isLastTypeWithData ? "2px solid #ddd" : "none",
         }}
       >
         {/* Grid Lines */}
-        {Array.from({ length: Math.ceil(height / (60 * PX_PER_MIN)) + 1 }).map((_, i) => (
-          <div key={i} className="grid-line" style={{ top: `${i * 60 * PX_PER_MIN}px` }} />
-        ))}
+        {Array.from({ length: Math.ceil(height / (60 * PX_PER_MIN)) + 1 }).map(
+          (_, i) => (
+            <div
+              key={i}
+              className="grid-line"
+              style={{ top: `${i * 60 * PX_PER_MIN}px` }}
+            />
+          ),
+        )}
 
         {New_data.map((event, i) => {
           const start = timeToMins(event.start_time);
@@ -168,17 +182,23 @@ function DayColumn({
 
           const laneWidthPct = 100 / event.totalLanesCount;
           const leftOffset = event.laneIndex * laneWidthPct;
-          
+
           const firstCatKey = Object.keys(event.categories || {})[0];
-          const eventColor = event.categories?.[firstCatKey]?.color || color[event.type];
+          const eventColor =
+            event.categories?.[firstCatKey]?.color || color[event.type];
           const shouldBeGray = isAnyColumnHovered && !isThisColumnHovered;
+          const Title =Object.keys(event.categories).length?Object.entries(event.categories).map(([_, value])=>(value as any)?.name)[0]: event.title
+                ? event.title
+                : event.type;
 
           const isFull = event.space_type === "full";
 
           return (
             <div
               key={event.id || i}
-              onClick={() => setSelected({ id: event.id, date: date, type: event.type })}
+              onClick={() =>
+                setSelected({ id: event.id, date: date, type: event.type })
+              }
               className="event-card cursor-pointer"
               style={{
                 position: "absolute",
@@ -189,24 +209,28 @@ function DayColumn({
 
                 // DYNAMIC WIDTH CALCULATION:
                 // If full: (Total Width of all columns) - (Width of columns to the left of this one)
-                width: isFull 
-                  ? `${totalDayWidth - currentColumnLeftOffset - GAP}px` 
+                width: isFull
+                  ? `${totalDayWidth - currentColumnLeftOffset - GAP}px`
                   : `calc(${laneWidthPct}% - ${GAP * 2}px)`,
 
-                left: isFull 
-                  ? `0px` 
-                  : `calc(${leftOffset}% + ${GAP}px)`,
+                left: isFull ? `0px` : `calc(${leftOffset}% + ${GAP}px)`,
               }}
             >
               <div className="event-inner p-1 w-full h-full min-w-0 flex items-center justify-center">
                 <div
                   className={cn(
                     "event-title text-[11px] text-center",
-                    duration < 30 ? "truncate max-w-[70px]" : "font-bold whitespace-normal break-words w-full"
+                    duration < 30
+                      ? "truncate max-w-[70px]"
+                      : "font-bold whitespace-normal break-words w-full",
                   )}
-                  style={{ color: shouldBeGray ? "#fff" : getContrastTextColor(eventColor) }}
+                  style={{
+                    color: shouldBeGray
+                      ? "#fff"
+                      : getContrastTextColor(eventColor),
+                  }}
                 >
-                  {event.title}
+                  {Title}
                 </div>
               </div>
             </div>
@@ -226,7 +250,7 @@ export default function EventGrid3_v2({
   const [seleted, setSelected] = useState<{
     id: string;
     date: string;
-    type: string
+    type: string;
   } | null>(null);
   const { startHour, endHour, globalStartMins } = useMemo(() => {
     let minMins = 1440; // End of day
