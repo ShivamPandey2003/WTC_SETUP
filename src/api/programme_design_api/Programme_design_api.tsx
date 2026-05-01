@@ -414,7 +414,7 @@ export const useSessionDownload = () => {
         const blob = new Blob([res.response]);
 
         // Extract filename safely
-        let filename = "programme_list.csv";
+        let filename = "programme_list.xlsx";
 
         if (contentDisposition?.includes("filename=")) {
           filename = contentDisposition.split("filename=")[1].replace(/"/g, "");
