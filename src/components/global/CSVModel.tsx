@@ -92,11 +92,7 @@ const CSVModel = ({
 
   const handleSubmit = () => {
     if (file === null) return;
-    if (
-      Type === "CSV" &&
-      typeof file === "object" &&
-      "file_path" in file
-    ) {
+    if (Type === "CSV" && typeof file === "object" && "file_path" in file) {
       // const formData = new FormData();
       // formData.append("file", file);
       // onSubmit(formData);
@@ -139,7 +135,8 @@ const CSVModel = ({
   const downloadTemplate = () => {
     const link = document.createElement("a");
     link.href = path;
-    link.download = "template.csv";
+    link.download =
+      CSV_MODULE === "session_csv" ? "programme.xlsx" : "template.csv";
     link.click();
   };
 
@@ -175,7 +172,11 @@ const CSVModel = ({
             value={Type}
             onChange={(e) => setType(e.target.value as "CSV" | "IMAGE")}
           >
-            <option value="CSV">{"Upload Entries (CSV)"}</option>
+            <option value="CSV">
+              {CSV_MODULE === "session_csv"
+                ? "Upload Entries (XLSX)"
+                : "Upload Entries (CSV)"}
+            </option>
             <option value="IMAGE">{"Upload Images (ZIP)"}</option>
             {Object.keys(type).length > 0 && (
               <option value="ATTACHMENT">{"Upload Attachments (ZIP)"}</option>
@@ -186,7 +187,7 @@ const CSVModel = ({
           <div className="flex items-center gap-2">
             <Input
               type="file"
-              accept=".csv"
+              accept={CSV_MODULE === "session_csv" ? ".xlsx" : ".csv"}
               onChange={handleFileChange}
               disabled={isBulkPending || isLoading}
               className="flex-1 border border-gray-400 outline-0 ring-0"
