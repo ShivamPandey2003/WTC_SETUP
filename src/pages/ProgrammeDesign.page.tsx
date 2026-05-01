@@ -423,7 +423,7 @@ const ProgrammeDesign_page = () => {
         title="Sessions"
         isLoading={isUploadSessionsCSV}
         onSubmit={UploadNewsCSV}
-        description="Upload CSV file to create Sessions entries. CSV Columns: title, category, location, start_date, end_date, start_time, end_time, speakers, external_link, description"
+        description="Upload XLSX file to create Sessions entries. XLSX Columns: title, category, location, start_date, end_date, start_time, end_time, speakers, external_link, description"
         path="/programme.xlsx"
         type={{ ATTACHMENT: 3, IMAGE: 6 }}
         ImageDescription="Upload a ZIP file containing pdf for Sessions entries. The pdf file names should match the corresponding Image IDs."
