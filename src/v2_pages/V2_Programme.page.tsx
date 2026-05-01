@@ -202,9 +202,7 @@ const V2_Programme_page = () => {
       <div className="flex items-center justify-center h-[80vh]">
         <ErrorDisplay
           title="Programme Error"
-          message={
-            error?.message || "An unknown error occurred"
-          }
+          message={error?.message || "An unknown error occurred"}
         />
       </div>
     );
@@ -226,9 +224,10 @@ const V2_Programme_page = () => {
   }
 
   return (
-    <div className="px-4 mx-auto flex flex-col">
-      <div className="sm:flex justify-center gap-4 mb-6 w-full">
-        {/* {!isMobile && (
+    <>
+      <div className="px-4 mx-auto flex flex-col">
+        <div className="sm:flex justify-center gap-4 mb-6 w-full">
+          {/* {!isMobile && (
           <div className="p-1 bg-white w-fit rounded-full h-fit flex gap-1 shadow">
             <Button
               variant={currentTab === "Types" ? "default" : "ghost"}
@@ -248,22 +247,26 @@ const V2_Programme_page = () => {
             </Button>
           </div>
         )} */}
-        <SearchBox handleSelect={setSelected} />
-      </div>
-      {/* <EventGrid selectedCategories={selectedCategories} /> */}
-      {/* {currentTab === "Categories" ? ( */}
-        <EventGrid3_v2 programmeData={ProgrammeList3_v2.response} selectedCategories={[]} />
-      {/* ) : ( */}
-        {/* <EventGrid2_v2 programmeData={ProgrammeTypeList.response} /> */}
-      {/* )} */}
-      {selected && (
-        <EventModal
-          isOpen={Boolean(selected)}
-          onClose={() => setSelected(null)}
-          data={selected!}
+          <SearchBox handleSelect={setSelected} />
+        </div>
+        {/* <EventGrid selectedCategories={selectedCategories} /> */}
+        {/* {currentTab === "Categories" ? ( */}
+        <EventGrid3_v2
+          programmeData={ProgrammeList3_v2.response}
+          selectedCategories={[]}
         />
-      )}
-    </div>
+        {/* ) : ( */}
+        {/* <EventGrid2_v2 programmeData={ProgrammeTypeList.response} /> */}
+        {/* )} */}
+        {selected && (
+          <EventModal
+            isOpen={Boolean(selected)}
+            onClose={() => setSelected(null)}
+            data={selected!}
+          />
+        )}
+      </div>
+    </>
   );
 };
 

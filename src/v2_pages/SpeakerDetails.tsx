@@ -237,7 +237,7 @@ const SpeakerDetails = ({ id, close }: SpeakerProps) => {
           speakerDetails.coming_sessions.length > 0 && (
             <div className="mt-12 pt-8 border-t border-slate-200">
               <h2 className="text-2xl font-bold text-slate-900 mb-6">
-                Coming Sessions
+                Upcoming Sessions
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
                 {speakerDetails.coming_sessions.map((session, index) => (
