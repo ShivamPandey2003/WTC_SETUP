@@ -263,7 +263,6 @@ const V2_Programme_page = () => {
             isOpen={Boolean(selected)}
             onClose={() => setSelected(null)}
             data={selected!}
-            // setSpeaker={(e)=>setSelectedSpeaker(e)}
           />
         )}
       </div>
