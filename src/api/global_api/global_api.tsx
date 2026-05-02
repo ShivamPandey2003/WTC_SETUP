@@ -435,104 +435,187 @@ type Segment = {
 };
 
 type Block = {
-  type: "paragraph";
+  type: "paragraph" | "heading";
+  level?: number;
   segments: Segment[];
 };
 
-export const convertHtmlToBlocks = (html: string): { blocks: Block[] } => {
+export const convertHtmlToBlocks = (input: string): { blocks: Block[] } => {
+  // -----------------------------
+  // STEP 1: Parse once (no duplicate parser)
+  // -----------------------------
   const parser = new DOMParser();
-  const doc = parser.parseFromString(html, "text/html");
+  const doc = parser.parseFromString(input, "text/html");
 
-  const blocks: Block[] = [];
+  // Detect REAL HTML (not fake <text>)
+  const hasRealHtml = Array.from(doc.body.childNodes).some(
+    (node) => node.nodeType === Node.ELEMENT_NODE
+  );
 
-  const getStyles = (node: HTMLElement, parentStyles: Segment): Segment => {
-    const tag = node.tagName?.toLowerCase();
+  // -----------------------------
+  // HANDLE PLAIN TEXT
+  // -----------------------------
+  if (!hasRealHtml) {
+    const lines = input.split("\n");
 
-    const style = node.getAttribute("style") || "";
-    const colorMatch = style.match(/color:\s*([^;]+)/i);
+    const blocks: Block[] = [];
 
-    return {
-      text: "",
-      bold: parentStyles.bold || tag === "b" || tag === "strong",
-      italic: parentStyles.italic || tag === "i" || tag === "em",
-      underline: parentStyles.underline || tag === "u",
-      color: colorMatch ? colorMatch[1].trim() : parentStyles.color,
-    };
-  };
+    lines.forEach((line) => {
+      const trimmed = line.trim();
 
-  const traverse = (
-    node: ChildNode,
-    currentStyles: Segment,
-    segments: Segment[]
-  ) => {
-    // TEXT NODE
-    if (node.nodeType === Node.TEXT_NODE) {
-      const text = node.textContent || "";
-
-      // DO NOT TRIM → preserve spacing
-      if (text.length > 0) {
-        segments.push({
-          ...currentStyles,
-          text,
-        });
-      }
-      return;
-    }
-
-    // ELEMENT NODE
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      const el = node as HTMLElement;
-
-      // HANDLE <br>
-      if (el.tagName.toLowerCase() === "br") {
-        segments.push({
-          ...currentStyles,
-          text: "\n", // important for BE
+      // empty line → paragraph break
+      if (!trimmed) {
+        blocks.push({
+          type: "paragraph",
+          segments: [
+            {
+              text: "\n",
+              bold: false,
+              italic: false,
+              underline: false,
+              color: null,
+            },
+          ],
         });
         return;
       }
 
-      const newStyles = getStyles(el, currentStyles);
+      // heading detection (unchanged)
+      let blockType: Block["type"] = "paragraph";
+      let level: number | undefined = undefined;
 
-      el.childNodes.forEach((child) =>
-        traverse(child, newStyles, segments)
-      );
+      if (/^this is h1/i.test(trimmed)) {
+        blockType = "heading";
+        level = 1;
+      } else if (/^this is h2/i.test(trimmed)) {
+        blockType = "heading";
+        level = 2;
+      } else if (/^this is h3/i.test(trimmed)) {
+        blockType = "heading";
+        level = 3;
+      }
+
+      blocks.push({
+        type: blockType,
+        level,
+        segments: [
+          {
+            text: line,
+            bold: false,
+            italic: false,
+            underline: false,
+            color: null,
+          },
+        ],
+      });
+    });
+
+    return { blocks };
+  }
+
+  // -----------------------------
+  // HANDLE HTML (SAFE VERSION)
+  // -----------------------------
+  const blocks: Block[] = [];
+
+  const getStyles = (node: HTMLElement, parent: Segment): Segment => {
+    const tag = node.tagName?.toLowerCase();
+
+    return {
+      text: "",
+      bold: parent.bold || tag === "b" || tag === "strong",
+      italic: parent.italic || tag === "i" || tag === "em",
+      underline: parent.underline || tag === "u",
+      color: null,
+    };
+  };
+
+  const traverse = (node: ChildNode, styles: Segment, segments: Segment[]) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent || "";
+      if (text.length > 0) {
+        segments.push({ ...styles, text });
+      }
+      return;
+    }
+
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const el = node as HTMLElement;
+      const tag = el.tagName.toLowerCase();
+
+      if (tag === "br") {
+        segments.push({ ...styles, text: "\n" });
+        return;
+      }
+
+      const newStyles = getStyles(el, styles);
+      el.childNodes.forEach((child) => traverse(child, newStyles, segments));
     }
   };
 
-  // HANDLE PARAGRAPHS PROPERLY
-  const paragraphs = doc.body.querySelectorAll("p");
+  const allowedTags = ["p", "h1", "h2", "h3"];
 
-  paragraphs.forEach((p) => {
-    const segments: Segment[] = [];
+  doc.body.childNodes.forEach((node) => {
+    // -----------------------------
+    // ELEMENT NODE
+    // -----------------------------
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const el = node as HTMLElement;
+      const tag = el.tagName.toLowerCase();
 
-    traverse(
-      p,
-      {
-        text: "",
-        bold: false,
-        italic: false,
-        underline: false,
-        color: null,
-      },
-      segments
-    );
+      const segments: Segment[] = [];
 
-    // Even empty paragraph should be preserved
-    if (segments.length === 0) {
-      segments.push({
-        text: "\n",
-        bold: false,
-        italic: false,
-        underline: false,
-        color: null,
-      });
+      traverse(
+        el,
+        {
+          text: "",
+          bold: false,
+          italic: false,
+          underline: false,
+          color: null,
+        },
+        segments
+      );
+
+      if (segments.length === 0) return;
+
+      // Allowed tags → original behavior
+      if (allowedTags.includes(tag)) {
+        blocks.push({
+          type: tag === "p" ? "paragraph" : "heading",
+          level: tag.startsWith("h") ? Number(tag[1]) : undefined,
+          segments,
+        });
+      } else {
+        // Fallback (prevents data loss)
+        blocks.push({
+          type: "paragraph",
+          segments,
+        });
+      }
     }
 
-    blocks.push({
-      type: "paragraph",
-      segments,
-    });
+    // -----------------------------
+    // TEXT NODE (previously ignored → FIXED)
+    // -----------------------------
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent?.trim();
+
+      if (text) {
+        blocks.push({
+          type: "paragraph",
+          segments: [
+            {
+              text,
+              bold: false,
+              italic: false,
+              underline: false,
+              color: null,
+            },
+          ],
+        });
+      }
+    }
   });
 
   return { blocks };
@@ -540,7 +623,7 @@ export const convertHtmlToBlocks = (html: string): { blocks: Block[] } => {
 
 export const useVenueDesignUpdate = () => {
   const { SpeakerSettings } = useSelector(
-    (state: RootState) => state.Speaker_DesignSlice
+    (state: RootState) => state.Speaker_DesignSlice,
   );
 
   const {
@@ -585,11 +668,13 @@ export const useVenueDesignUpdate = () => {
         if (value !== null) {
           if (key === "image" && typeof value === "string") return;
           if (key === "attachment" && typeof value === "string") return;
-          if (key === "getting_there_description" && typeof value === "string") {
+          if (
+            key === "getting_there_description" &&
+            typeof value === "string"
+          ) {
             const result = convertHtmlToBlocks(value);
             payload[key] = result;
-          }
-          else {
+          } else {
             payload[key] = value;
           }
         }

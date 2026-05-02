@@ -32,6 +32,7 @@ import NoData from "@/components/global/NoData";
 import NewDropdown from "@/v2_components/global/V2_DropDown";
 import { PiMicrosoftOutlookLogoFill } from "react-icons/pi";
 import { FaGoogle, FaYahoo, FaApple } from "react-icons/fa";
+import SpeakerDetails from "@/v2_pages/SpeakerDetails";
 
 type ModalProps = {
   isOpen: boolean;
@@ -43,7 +44,11 @@ const Menu = (s: Programme) => [
   {
     id: "Google",
     label: "Google",
-    icon: <FaGoogle/>,
+    icon: (
+      <div className="w-[38px] h-[38px] rounded-[9px] border-[0.5px] flex items-center justify-center bg-[#fff] border-[#DADCE0]">
+        <FaGoogle color="#4285F4" />
+      </div>
+    ),
     onClick: () => {
       addToGoogleCalendar({
         title: s.title,
@@ -56,7 +61,11 @@ const Menu = (s: Programme) => [
   {
     id: "Outlook",
     label: "Outlook",
-    icon:<PiMicrosoftOutlookLogoFill/>,
+    icon: (
+      <div className="w-[38px] h-[38px] rounded-[9px] border-[0.5px] flex items-center justify-center bg-[#E8F0FC] border-[#E8F0FC]">
+        <PiMicrosoftOutlookLogoFill color="#0078D4" />
+      </div>
+    ),
     onClick: () => {
       addToOutlookCalendar({
         title: s.title,
@@ -69,7 +78,11 @@ const Menu = (s: Programme) => [
   {
     id: "Yahoo",
     label: "Yahoo",
-    icon:<FaYahoo/>,
+    icon: (
+      <div className="w-[38px] h-[38px] rounded-[9px] border-[0.5px] flex items-center justify-center bg-[#F3E8FA] border-[#F3E8FA]">
+        <FaYahoo color="#720E9E" />
+      </div>
+    ),
     onClick: () => {
       addToYahooCalendar({
         title: s.title,
@@ -82,7 +95,11 @@ const Menu = (s: Programme) => [
   {
     id: "Ical",
     label: "Ical",
-    icon:<FaApple/>,
+    icon: (
+      <div className="w-[38px] h-[38px] rounded-[9px] border-[0.5px] flex items-center justify-center bg-[#FFF0EF] border-[#FFF0EF]">
+        <FaApple color="#FF3B30" />
+      </div>
+    ),
     onClick: () => {
       addToICalendar({
         title: s.title,
@@ -101,6 +118,8 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   const { appConfig } = useSelector(
     (state: RootState) => state.Global_DesignSlice,
   );
+  const [selectedSpeaker, setSelectedSpeaker] = useState<string | null>(null);
+
   const token = localStorage.getItem("token");
   const listRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -174,6 +193,23 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   }, [data.id, selectedValue]);
 
   return (
+    <>
+    {selectedSpeaker && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30 animate-in fade-in duration-200"
+          onClick={() => setSelectedSpeaker(null)}
+        >
+          <div
+            className="bg-white rounded-xl p-6 animate-in fade-in zoom-in-95 duration-200 max-w-10/12 overflow-auto max-h-9/12"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <SpeakerDetails
+              id={selectedSpeaker}
+              close={() => setSelectedSpeaker(null)}
+            />
+          </div>
+        </div>
+      )}
     <Modal
       showHeader={false}
       isOpen={isOpen}
@@ -222,7 +258,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
           {isMobile && (
             <div className="mb-2">
               <div className="truncate text-sm font-semibold ml-1 mb-1">
-                Programme Type
+                Session Type
               </div>
               <SingleSelect
                 onChange={(e) => {
@@ -242,7 +278,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
           {isMobile && (
             <div>
               <div className="truncate text-sm font-semibold ml-1 mb-1">
-                Programme
+                Session Name
               </div>
               <SingleSelect
                 selected={value}
@@ -310,7 +346,11 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                     {Object.entries(s.categories).map(([key, value]) => (
                       <div className="flex items-center gap-4 w-full" key={key}>
                         <p
-                          style={{ color: appConfig?.color_schema?.primary_color || "#318061" }}
+                          style={{
+                            color:
+                              appConfig?.color_schema?.primary_color ||
+                              "#318061",
+                          }}
                           className="font-semibold min-w-fit"
                         >
                           {value.name}
@@ -318,7 +358,9 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                         <div
                           className="w-full h-2 rounded-full shadow-sm"
                           style={{
-                            background: appConfig?.color_schema?.primary_color || "#318061",
+                            background:
+                              appConfig?.color_schema?.primary_color ||
+                              "#318061",
                           }}
                         />
                       </div>
@@ -377,15 +419,16 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                             items={Menu(s)}
                           />
                           {token && (
-                          <Button
-                            variant={"link"}
-                            size={"sm"}
-                            className="p-0! underline"
-                            onClick={() => notify({ id: s.id })}
-                            disabled={isPending}
-                          >
-                            <BellDot /> Notify me
-                          </Button>)}
+                            <Button
+                              variant={"link"}
+                              size={"sm"}
+                              className="p-0! underline"
+                              onClick={() => notify({ id: s.id })}
+                              disabled={isPending}
+                            >
+                              <BellDot /> Notify me
+                            </Button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -427,9 +470,12 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                             <div
                               key={index}
                               className="flex flex-col items-center cursor-pointer"
+                              onClick={()=>{
+                                setSelectedSpeaker(speaker.speaker_id)
+                              }}
                             >
                               <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center mb-2 overflow-hidden">
-                                {!speaker.profile_img ? (
+                                {speaker.profile_img ? (
                                   <img
                                     src={
                                       speaker.profile_img
@@ -471,6 +517,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
         </div>
       )}
     </Modal>
+    </>
   );
 };
 
