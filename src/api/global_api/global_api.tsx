@@ -441,13 +441,21 @@ type Block = {
 };
 
 export const convertHtmlToBlocks = (input: string): { blocks: Block[] } => {
-  // STEP 1: Detect plain text (no HTML tags)
-  const isHtml = /<\/?[a-z][\s\S]*>/i.test(input);
+  // -----------------------------
+  // STEP 1: Parse once (no duplicate parser)
+  // -----------------------------
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(input, "text/html");
+
+  // Detect REAL HTML (not fake <text>)
+  const hasRealHtml = Array.from(doc.body.childNodes).some(
+    (node) => node.nodeType === Node.ELEMENT_NODE
+  );
 
   // -----------------------------
   // HANDLE PLAIN TEXT
   // -----------------------------
-  if (!isHtml) {
+  if (!hasRealHtml) {
     const lines = input.split("\n");
 
     const blocks: Block[] = [];
@@ -472,7 +480,7 @@ export const convertHtmlToBlocks = (input: string): { blocks: Block[] } => {
         return;
       }
 
-      // Simple heading detection (optional logic)
+      // heading detection (unchanged)
       let blockType: Block["type"] = "paragraph";
       let level: number | undefined = undefined;
 
@@ -506,11 +514,8 @@ export const convertHtmlToBlocks = (input: string): { blocks: Block[] } => {
   }
 
   // -----------------------------
-  // HANDLE HTML (your existing logic)
+  // HANDLE HTML (SAFE VERSION)
   // -----------------------------
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(input, "text/html");
-
   const blocks: Block[] = [];
 
   const getStyles = (node: HTMLElement, parent: Segment): Segment => {
@@ -551,40 +556,63 @@ export const convertHtmlToBlocks = (input: string): { blocks: Block[] } => {
   const allowedTags = ["p", "h1", "h2", "h3"];
 
   doc.body.childNodes.forEach((node) => {
+    // -----------------------------
+    // ELEMENT NODE
+    // -----------------------------
     if (node.nodeType === Node.ELEMENT_NODE) {
       const el = node as HTMLElement;
       const tag = el.tagName.toLowerCase();
 
+      const segments: Segment[] = [];
+
+      traverse(
+        el,
+        {
+          text: "",
+          bold: false,
+          italic: false,
+          underline: false,
+          color: null,
+        },
+        segments
+      );
+
+      if (segments.length === 0) return;
+
+      // Allowed tags → original behavior
       if (allowedTags.includes(tag)) {
-        const segments: Segment[] = [];
-
-        traverse(
-          el,
-          {
-            text: "",
-            bold: false,
-            italic: false,
-            underline: false,
-            color: null,
-          },
-          segments,
-        );
-
         blocks.push({
           type: tag === "p" ? "paragraph" : "heading",
           level: tag.startsWith("h") ? Number(tag[1]) : undefined,
-          segments:
-            segments.length > 0
-              ? segments
-              : [
-                  {
-                    text: "\n",
-                    bold: false,
-                    italic: false,
-                    underline: false,
-                    color: null,
-                  },
-                ],
+          segments,
+        });
+      } else {
+        // Fallback (prevents data loss)
+        blocks.push({
+          type: "paragraph",
+          segments,
+        });
+      }
+    }
+
+    // -----------------------------
+    // TEXT NODE (previously ignored → FIXED)
+    // -----------------------------
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent?.trim();
+
+      if (text) {
+        blocks.push({
+          type: "paragraph",
+          segments: [
+            {
+              text,
+              bold: false,
+              italic: false,
+              underline: false,
+              color: null,
+            },
+          ],
         });
       }
     }
