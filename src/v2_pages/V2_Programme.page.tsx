@@ -120,78 +120,114 @@ const V2_Programme_page = () => {
   }, []);
 
   if (isPending || isPendingNewList) {
+    // PX_PER_MIN=1.6, so 1 hour = 96px; start at 7:00
+    const HOURS = Array.from({ length: 12 }, (_, i) => `${7 + i}:00`);
+    const toTop = (h: number, m = 0) => (h * 60 + m - 420) * 1.6;
+    const toH = (mins: number) => mins * 1.6;
+    const GAP = 6;
+
+    const days: { label: string; width: number; blocks: { t: number; h: number; l: number; w: number }[] }[] = [
+      {
+        label: "Fri 15 May",
+        width: 200,
+        blocks: [
+          { t: toTop(9) + GAP,      h: toH(180) - GAP * 2, l: GAP,       w: 88 },
+          { t: toTop(11) + GAP,     h: toH(90)  - GAP * 2, l: 106,        w: 88 },
+          { t: toTop(12, 30) + GAP, h: toH(60)  - GAP * 2, l: GAP,       w: 188 },
+        ],
+      },
+      {
+        label: "Sat 16 May",
+        width: 500,
+        blocks: [
+          { t: toTop(7) + GAP,      h: toH(390) - GAP * 2, l: GAP,       w: 88 },
+          { t: toTop(9) + GAP,      h: toH(120) - GAP * 2, l: 106,        w: 88 },
+          { t: toTop(10, 30) + GAP, h: toH(90)  - GAP * 2, l: 106,        w: 88 },
+          { t: toTop(9) + GAP,      h: toH(180) - GAP * 2, l: 206,        w: 88 },
+          { t: toTop(10) + GAP,     h: toH(120) - GAP * 2, l: 306,        w: 88 },
+          { t: toTop(11) + GAP,     h: toH(150) - GAP * 2, l: 406,        w: 88 },
+          { t: toTop(12, 30) + GAP, h: toH(60)  - GAP * 2, l: 106,        w: 388 },
+        ],
+      },
+      {
+        label: "Sun 17 May",
+        width: 400,
+        blocks: [
+          { t: toTop(7) + GAP,      h: toH(390) - GAP * 2, l: GAP,       w: 88 },
+          { t: toTop(9) + GAP,      h: toH(120) - GAP * 2, l: 106,        w: 88 },
+          { t: toTop(11) + GAP,     h: toH(120) - GAP * 2, l: 106,        w: 88 },
+          { t: toTop(8) + GAP,      h: toH(270) - GAP * 2, l: 206,        w: 88 },
+          { t: toTop(10, 30) + GAP, h: toH(150) - GAP * 2, l: 306,        w: 88 },
+          { t: toTop(12, 30) + GAP, h: toH(60)  - GAP * 2, l: 106,        w: 288 },
+        ],
+      },
+      {
+        label: "Mon 18 May",
+        width: 300,
+        blocks: [
+          { t: toTop(7) + GAP,      h: toH(390) - GAP * 2, l: GAP,       w: 88 },
+          { t: toTop(8) + GAP,      h: toH(60)  - GAP * 2, l: 206,        w: 88 },
+          { t: toTop(9) + GAP,      h: toH(180) - GAP * 2, l: 206,        w: 88 },
+          { t: toTop(11) + GAP,     h: toH(180) - GAP * 2, l: 106,        w: 88 },
+          { t: toTop(11) + GAP,     h: toH(210) - GAP * 2, l: 206,        w: 88 },
+        ],
+      },
+    ];
+
     return (
-      <div className="w-full flex flex-col px-4">
-        {/* Navbar */}
-        <div className="navbar flex justify-between px-4 py-2">
-          <div className="left-header">
-            <Skeleton className="w-[150px] h-7" />
-          </div>
-          <div className="right-header flex gap-4 mb-5">
-            <Skeleton className="w-[200px] h-10" />
-            <Skeleton className="w-10 h-10 rounded-full" />
-          </div>
-        </div>
+      <div className="px-4 mx-auto flex flex-col">
         {/* Search bar */}
-        <div className="sm:flex justify-center mb-6">
-          <div className="flex items-center gap-2">
-            <Skeleton className="w-72 h-9 rounded-md" />
-            <Skeleton className="w-9 h-9 rounded-md" />
-          </div>
+        <div className="sm:flex justify-center gap-4 mb-6 w-full">
+          <Skeleton className="w-72 h-9 rounded-full" />
         </div>
-        {/* Calendar grid */}
-        <div className="flex gap-0 overflow-hidden">
-          {/* Time column */}
-          <div className="flex flex-col pt-8 gap-0 shrink-0 w-14">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="h-12 flex items-start justify-end pr-2">
-                <Skeleton className="w-8 h-3 rounded" />
-              </div>
-            ))}
-          </div>
-          {/* Day columns */}
-          {[
-            [
-              { top: 1, span: 3 },
-              { top: 5, span: 2 },
-            ],
-            [
-              { top: 0, span: 2 },
-              { top: 0, span: 2, offset: true },
-              { top: 3, span: 3 },
-              { top: 7, span: 2 },
-            ],
-            [
-              { top: 2, span: 4 },
-              { top: 7, span: 3 },
-            ],
-          ].map((events, colIdx) => (
-            <div
-              key={colIdx}
-              className="flex-1 flex flex-col min-w-0 border-l border-gray-100"
-            >
-              {/* Day header */}
-              <div className="h-8 flex items-center justify-center mb-0 border-b border-gray-100">
-                <Skeleton className="w-20 h-4 rounded" />
-              </div>
-              {/* Grid cells with event blocks */}
-              <div className="relative">
-                {Array.from({ length: 12 }).map((_, i) => (
-                  <div key={i} className="h-12 border-b border-gray-50" />
-                ))}
-                {events.map((ev, i) => (
-                  <Skeleton
-                    key={i}
-                    className="absolute left-1 right-1 rounded-lg"
-                    style={{
-                      top: `${ev.top * 48}px`,
-                      height: `${ev.span * 48 - 4}px`,
-                    }}
-                  />
-                ))}
-              </div>
+
+        {/* Calendar — same CSS classes as the real grid */}
+        <div className="calendar-outer-wrapper">
+          <div className="calendar-scroll-container">
+            <div className="corner-cell" />
+
+            <div className="header-row">
+              {days.map(({ label, width }) => (
+                <div key={label} className="day-header" style={{ width, minWidth: width }}>
+                  <Skeleton className="w-20 h-4 rounded" />
+                </div>
+              ))}
             </div>
-          ))}
+
+            <div className="time-gutter">
+              {HOURS.map((h) => (
+                <div key={h} className="time-label">
+                  <span>{h}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="calendar-grid">
+              {days.map(({ label, width, blocks }, di) => (
+                <div
+                  key={label}
+                  className="day-column"
+                  style={{
+                    width,
+                    minWidth: width,
+                    borderRight: di < days.length - 1 ? "2px solid #ddd" : undefined,
+                    height: HOURS.length * 96,
+                  }}
+                >
+                  {HOURS.map((_, i) => (
+                    <div key={i} className="grid-line" style={{ top: i * 96 }} />
+                  ))}
+                  {blocks.map((b, i) => (
+                    <Skeleton
+                      key={i}
+                      className="absolute rounded-lg"
+                      style={{ top: b.t, height: b.h, left: b.l, width: b.w }}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );
