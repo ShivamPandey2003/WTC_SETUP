@@ -271,6 +271,7 @@ export const useEditCategory = () => {
       name: string;
       color: string;
       category_type: number;
+      sequence: number;
     }
   >({
     mutationFn: async (data) => {

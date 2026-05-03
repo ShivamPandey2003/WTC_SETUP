@@ -746,9 +746,12 @@ export const useCategoryList = () => {
       const res = await apiRequest("get", "category/all");
       return res.response;
     },
-    select: (data) => {
-      return data;
-    },
+    select: (data) => ({
+      ...data,
+      response: [...data.response].sort(
+        (a, b) => (a.seq ?? 0) - (b.seq ?? 0),
+      ),
+    }),
     retry: 1,
     refetchOnWindowFocus: false,
   });

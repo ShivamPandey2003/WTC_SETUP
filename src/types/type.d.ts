@@ -577,6 +577,7 @@ declare type Category = {
   name: string;
   color: string;
   type: number;
+  seq?: number;
 };
 
 declare type CategoryListResponse = {
