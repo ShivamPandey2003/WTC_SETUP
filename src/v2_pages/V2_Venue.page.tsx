@@ -93,7 +93,7 @@ const V2_Venue_page = () => {
       <div className="w-full h-[80vh] flex flex-col items-center justify-center">
         <Loader className="text-primary animate-spin" size={30} />
         <p className="text-primary font-semibold text-lg">
-          Venue details is loading...
+          Loading venue details...
         </p>
       </div>
     );
