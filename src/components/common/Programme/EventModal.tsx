@@ -8,7 +8,6 @@ import {
   CalendarArrowDown,
   BellDot,
   LocateFixed,
-  Calendar1,
   Clock,
   MapPin,
 } from "lucide-react";
