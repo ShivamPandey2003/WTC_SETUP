@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect, useMemo } from "react";
-import { ChevronDown, Check } from "lucide-react";
+import { ChevronDown, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface SingleSelectOption {
   label: string;
   value: string;
+  start_time?: string;
+  end_time?: string;
 }
 
 interface SingleSelectProps {
@@ -19,13 +21,15 @@ const SingleSelect = ({
   options,
   selected,
   onChange,
-  placeholder = "Select...",
+  placeholder = "Select session",
   className,
 }: SingleSelectProps) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const selectedRef = useRef<HTMLLIElement>(null);
 
   const filtered = useMemo(
     () =>
@@ -50,6 +54,12 @@ const SingleSelect = ({
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+
+  useEffect(() => {
+    if (open && selectedRef.current && listRef.current) {
+      selectedRef.current.scrollIntoView({ block: "nearest" });
+    }
+  }, [open]);
 
   const select = (value: string) => {
     onChange(selected === value ? null : value);
@@ -84,27 +94,32 @@ const SingleSelect = ({
         ) : (
           <span
             className={`flex-1 truncate text-sm ${
-              selectedOption ? "text-gray-800 capitalize" : "text-gray-400"
+              selectedOption ? "text-primary font-medium" : "text-gray-400"
             }`}
           >
             {selectedOption ? selectedOption.label : placeholder}
           </span>
         )}
-        <ChevronDown
-          onClick={(e) => {
-            e.stopPropagation();
-            setOpen(false);
-            setSearch("");
-          }}
-          size={16}
-          className={`ml-auto shrink-0 text-gray-400 transition-transform ${
-            open ? "rotate-180" : ""
-          }`}
-        />
+        {open ? (
+          <X
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen(false);
+              setSearch("");
+            }}
+            size={16}
+            className="ml-auto shrink-0 text-gray-400"
+          />
+        ) : (
+          <ChevronDown
+            size={16}
+            className="ml-auto shrink-0 text-gray-400"
+          />
+        )}
       </div>
 
       {open && (
-        <ul className="absolute z-[999] mt-1 max-h-60 w-full overflow-auto rounded-lg border border-gray-200 bg-white p-1 shadow-lg capitalize">
+        <ul ref={listRef} className="absolute z-[999] mt-1 max-h-60 w-full overflow-auto rounded-lg border border-gray-200 bg-white p-1 shadow-lg">
           {filtered.length === 0 ? (
             <li className="px-3 py-2 text-sm text-gray-400">
               No results found
@@ -115,21 +130,27 @@ const SingleSelect = ({
               return (
                 <li
                   key={o.value}
+                  ref={isSelected ? selectedRef : null}
                   onClick={() => select(o.value)}
                   className={`flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors hover:bg-gray-100 ${
-                    isSelected ? "text-gray-800 font-medium" : "text-gray-500"
+                    isSelected ? "text-primary font-medium" : "text-gray-500"
                   }`}
                 >
                   <span
                     className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
                       isSelected
-                        ? "border-blue-500 bg-blue-500 text-white"
+                        ? "border-primary bg-primary text-white"
                         : "border-gray-300"
                     }`}
                   >
                     {isSelected && <Check size={10} />}
                   </span>
-                  {o.label}
+                  <span className="flex flex-col">
+                    {o.start_time && o.end_time && (
+                      <span className="text-xs opacity-60">{o.start_time} - {o.end_time}</span>
+                    )}
+                    {o.label}
+                  </span>
                 </li>
               );
             })

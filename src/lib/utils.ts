@@ -110,6 +110,16 @@ export const formatDate = (date: string) =>
     timeZone: "UTC",
   });
 
+export const formatDateDisplay = (date: string | null) => {
+  if (!date) return "";
+  const dateObj = new Date(date + "T00:00:00");
+  return dateObj.toLocaleDateString("en-US", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+};
+
 export function formatSpeakers(arr: string[]) {
   if (arr.length <= 1) return arr[0] || "";
   return arr.join(" & ");
