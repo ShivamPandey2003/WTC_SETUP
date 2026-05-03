@@ -392,7 +392,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                             className="w-full sm:w-[200px] h-[130px] rounded-lg object-cover opacity-80"
                           />
                         )}
-                        <div className="flex flex-col gap-1.5 sm:gap-1 flex-1">
+                        <div className="flex flex-col gap-1.5 sm:gap-1 flex-1 w-full">
                           <h2 className="text-base sm:text-xl font-bold text-primary mb-1 sm:mb-2 line-clamp-2">
                             {s.title}
                           </h2>
@@ -428,7 +428,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                               </div>
                             )}
                           </div>
-                          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 flex-wrap">
+                          <div className="flex flex-row sm:flex-row flex-wrap gap-x-4 w-full">
                             <NewDropdown
                               ListClassName="border-none w-fit outline-0 ml-0 mt-0 ring-1 ring-gray-200 font-bold text-xs sm:text-sm"
                               position="bottom-left"
@@ -444,15 +444,17 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                               items={Menu(s)}
                             />
                             {token && (
-                              <Button
-                                variant={"link"}
-                                size={"sm"}
-                                className="p-0! underline text-xs sm:text-sm"
-                                onClick={() => notify({ id: s.id })}
-                                disabled={isPending}
-                              >
-                                <BellDot size={14} /> Notify me
-                              </Button>
+                              <div className="flex items-center">
+                                <Button
+                                  variant={"link"}
+                                  size={"sm"}
+                                  className="p-0! h-fit underline text-xs sm:text-sm"
+                                  onClick={() => notify({ id: s.id })}
+                                  disabled={isPending}
+                                >
+                                  <BellDot size={14} /> Notify me
+                                </Button>
+                              </div>
                             )}
                           </div>
                         </div>
