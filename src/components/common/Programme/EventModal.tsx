@@ -290,6 +290,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                       value: item,
                     }))}
                     className="w-full text-xs"
+                    capitalize
                   />
                 </div>
                 <div>
