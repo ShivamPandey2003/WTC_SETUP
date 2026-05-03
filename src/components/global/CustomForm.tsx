@@ -38,6 +38,7 @@ type FieldConfig<T extends Record<string, any>> = {
   disable?: boolean;
   onFileChange?: (file: File) => Promise<void>;
   isFileUploading?: boolean;
+  uploadedFile?: File | null;
 };
 
 type Props<T extends Record<string, any>> = {
@@ -219,6 +220,15 @@ const CustomForm = <T extends Record<string, any>>({
                     <div className="flex items-center gap-2 text-sm text-gray-500 py-2">
                       <LoaderCircle className="animate-spin" size={16} />
                       Uploading image...
+                    </div>
+                  ) : field.uploadedFile ? (
+                    <div className="flex items-center gap-3 p-2 bg-gray-50 rounded border border-gray-200">
+                      <img
+                        src={URL.createObjectURL(field.uploadedFile)}
+                        alt="preview"
+                        className="h-16 w-16 rounded object-cover shrink-0"
+                      />
+                      <p className="text-sm text-gray-600 truncate">{field.uploadedFile.name}</p>
                     </div>
                   ) : field.onFileChange ? (
                     <input

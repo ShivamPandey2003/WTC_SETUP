@@ -28,6 +28,7 @@ const NewFrom = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [fileKey, setFileKey] = useState<string | null>(null);
   const [isFileUploading, setIsFileUploading] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
   const {
     register,
@@ -52,6 +53,7 @@ const NewFrom = () => {
         responseType: "blob",
       });
       setFileKey(file_key);
+      setUploadedFile(file);
     } catch (error) {
       toast.error("Image upload failed: " + (error instanceof Error ? error.message : "Unknown error"));
     } finally {
@@ -81,6 +83,7 @@ const NewFrom = () => {
     options?: { label: string; value: string }[];
     onFileChange?: (file: File) => Promise<void>;
     isFileUploading?: boolean;
+    uploadedFile?: File | null;
   }[] = [
     { name: "title", label: "Title", placeholder: "Enter title here" },
     {
@@ -96,6 +99,7 @@ const NewFrom = () => {
       accept: "image/png,image/jpg,image/webp,image/jpeg",
       onFileChange: handleFileChange,
       isFileUploading,
+      uploadedFile,
     },
   ];
 
