@@ -21,7 +21,7 @@ export const useCreateNews = () => {
     mutate: CreateNews,
     isPending,
     error,
-  } = useMutation<NewsCreateResponse, AxiosError, FormData>({
+  } = useMutation<News, AxiosError, FormData>({
     mutationFn: async (data) => {
       const apiData = new FormData();
       ["title", "description", "tile_space"].forEach((key) => {
@@ -39,7 +39,7 @@ export const useCreateNews = () => {
       if (fileKey) {
         const newForm = new FormData();
         newForm.append("module", "news");
-        newForm.append("record_id", data.response.id);
+        newForm.append("record_id", data.id);
         newForm.append("file_path", fileKey);
         await apiRequest("post", "common/files", newForm);
       }
@@ -57,7 +57,7 @@ export const useEditNews = () => {
     mutate: EditNews,
     isPending,
     error,
-  } = useMutation<NewsCreateResponse, AxiosError, FormData>({
+  } = useMutation<News, AxiosError, FormData>({
     mutationFn: async (data) => {
       const id = data.get("id");
       const apiData = new FormData();
@@ -76,7 +76,7 @@ export const useEditNews = () => {
       if (fileKey) {
         const newForm = new FormData();
         newForm.append("module", "news");
-        newForm.append("record_id", data.response.id);
+        newForm.append("record_id", data.id);
         newForm.append("file_path", fileKey);
         await apiRequest("post", "common/files", newForm);
       }
