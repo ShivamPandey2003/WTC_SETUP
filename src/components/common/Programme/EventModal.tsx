@@ -300,7 +300,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                     selected={value}
                     onChange={(e) => setValue(e as string)}
                     options={[...selectedValue]
-                      .sort((a, b) => a.title.localeCompare(b.title))
+                      .sort((a, b) => a.start_time.localeCompare(b.start_time))
                       .map((item) => ({
                         label: item.title,
                         value: item.id,

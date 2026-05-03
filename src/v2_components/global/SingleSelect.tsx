@@ -94,7 +94,7 @@ const SingleSelect = ({
         ) : (
           <span
             className={`flex-1 truncate text-sm ${
-              selectedOption ? "text-primary capitalize font-medium" : "text-gray-400"
+              selectedOption ? "text-primary font-medium" : "text-gray-400"
             }`}
           >
             {selectedOption ? selectedOption.label : placeholder}
@@ -119,7 +119,7 @@ const SingleSelect = ({
       </div>
 
       {open && (
-        <ul ref={listRef} className="absolute z-[999] mt-1 max-h-60 w-full overflow-auto rounded-lg border border-gray-200 bg-white p-1 shadow-lg capitalize">
+        <ul ref={listRef} className="absolute z-[999] mt-1 max-h-60 w-full overflow-auto rounded-lg border border-gray-200 bg-white p-1 shadow-lg">
           {filtered.length === 0 ? (
             <li className="px-3 py-2 text-sm text-gray-400">
               No results found
