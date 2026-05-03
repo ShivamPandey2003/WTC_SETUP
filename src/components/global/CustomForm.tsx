@@ -9,7 +9,7 @@ import {
   useWatch,
 } from "react-hook-form";
 import { Button } from "../ui/Button";
-import { Save, X, Plus } from "lucide-react";
+import { Save, X, Plus, LoaderCircle } from "lucide-react";
 import Select from "react-select";
 import { cn } from "@/lib/utils";
 
@@ -35,7 +35,9 @@ type FieldConfig<T extends Record<string, any>> = {
   options?: { label: string; value: string }[];
   addMoreHandler?: () => void;
   file?: File;
-  disable?: boolean
+  disable?: boolean;
+  onFileChange?: (file: File) => Promise<void>;
+  isFileUploading?: boolean;
 };
 
 type Props<T extends Record<string, any>> = {
@@ -213,13 +215,32 @@ const CustomForm = <T extends Record<string, any>>({
                     rows={1}
                   />
                 ) : field.type === "file" ? (
-                  <input
-                    type="file"
-                    multiple={false}
-                    {...register(field.name)}
-                    accept={field.accept}
-                    className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                  />
+                  field.isFileUploading ? (
+                    <div className="flex items-center gap-2 text-sm text-gray-500 py-2">
+                      <LoaderCircle className="animate-spin" size={16} />
+                      Uploading image...
+                    </div>
+                  ) : field.onFileChange ? (
+                    <input
+                      type="file"
+                      multiple={false}
+                      accept={field.accept}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        await field.onFileChange!(file);
+                      }}
+                      className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    />
+                  ) : (
+                    <input
+                      type="file"
+                      multiple={false}
+                      {...register(field.name)}
+                      accept={field.accept}
+                      className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    />
+                  )
                 ) : field.type === "date" ? (
                   <input
                     type="date"
