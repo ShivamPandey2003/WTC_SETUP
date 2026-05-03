@@ -172,7 +172,7 @@ const V2_Venue_page = () => {
                     options={{
                       disableDefaultUI: true,
                     }}
-                    zoom={12}
+                    zoom={14}
                   >
                     <Marker
                       position={{
