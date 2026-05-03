@@ -40,8 +40,8 @@ export const useCreateNews = () => {
         const newForm = new FormData();
         newForm.append("module", "news");
         newForm.append("record_id", data.id);
-        newForm.append("file_path", fileKey);
-        await apiRequest("post", "common/files", newForm);
+        newForm.append("file_path_image", fileKey);
+        await apiRequest("post", "upload/common/files", newForm);
       }
 
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
@@ -77,8 +77,8 @@ export const useEditNews = () => {
         const newForm = new FormData();
         newForm.append("module", "news");
         newForm.append("record_id", data.id);
-        newForm.append("file_path", fileKey);
-        await apiRequest("post", "common/files", newForm);
+        newForm.append("file_path_image", fileKey);
+        await apiRequest("post", "upload/common/files", newForm);
       }
 
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
