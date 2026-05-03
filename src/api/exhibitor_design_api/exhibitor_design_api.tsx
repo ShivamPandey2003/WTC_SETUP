@@ -304,10 +304,10 @@ export const useExhibitorsDownload = () => {
         return blob;
       },
       onMutate: () => {
-        toast.info("File is preparing for download");
+        toast.info("Preparing file for download");
       },
       onSuccess: () => {
-        toast.success("File download successfully");
+        toast.success("File ready");
       },
     });
 

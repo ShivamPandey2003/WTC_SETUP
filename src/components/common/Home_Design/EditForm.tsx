@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { EditSchema } from "@/Schema/newSchema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,7 +8,9 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { useEditNews } from "@/api/home_design_api/Home_design_api";
 import { setSelected } from "@/redux/HomeDesignSlice";
-import { useEffect } from "react";
+import { apiRequest } from "@/services/apiService";
+import axios from "axios";
+import { toast } from "sonner";
 
 export const FormSchema = EditSchema.omit({
   "Created On": true,
@@ -27,6 +30,8 @@ const EditFrom = () => {
   const data = news.find((item) => item.id === selected);
   const { EditNews, isPending } = useEditNews();
   const dispatch = useDispatch<AppDispatch>();
+  const [fileKey, setFileKey] = useState<string | null>(null);
+  const [isFileUploading, setIsFileUploading] = useState(false);
 
   const {
     register,
@@ -47,17 +52,36 @@ const EditFrom = () => {
     });
   }, [data, reset, setValue]);
 
+  const handleFileChange = async (file: File) => {
+    setIsFileUploading(true);
+    try {
+      const res = await apiRequest(
+        "post",
+        `/upload/presigned-url?file_name=${file.name}&module=news&ref_id=${selected}`,
+      );
+      if (!res?.response?.response) return;
+      const { file_key, upload_url } = res.response.response;
+      await axios.put(upload_url, file, {
+        headers: { "Content-Type": file.type },
+        responseType: "blob",
+      });
+      setFileKey(file_key);
+    } catch (error) {
+      toast.error("Image upload failed: " + (error instanceof Error ? error.message : "Unknown error"));
+    } finally {
+      setIsFileUploading(false);
+    }
+  };
+
   const onSubmit = (newData: FormData) => {
     const formData = new FormData();
-
     formData.append("title", newData.title);
     formData.append("description", newData.description as string);
     formData.append("tile_space", "1x");
-    if (newData.attachments?.[0]) {
-      formData.append("attachment", newData.attachments?.[0] as Blob);
-    }
-
     formData.append("id", selected as string);
+    if (fileKey) {
+      formData.append("file_key", fileKey);
+    }
     EditNews(formData);
   };
 
@@ -70,6 +94,8 @@ const EditFrom = () => {
     placeholder?: string;
     accept?: string;
     options?: { label: string; value: string }[];
+    onFileChange?: (file: File) => Promise<void>;
+    isFileUploading?: boolean;
   }[] = [
     { name: "title", label: "Title", placeholder: "Enter title here" },
     {
@@ -83,6 +109,8 @@ const EditFrom = () => {
       label: "Image",
       type: "file",
       accept: "image/png,image/jpg,image/webp,image/jpeg",
+      onFileChange: handleFileChange,
+      isFileUploading,
     },
   ];
 
@@ -92,7 +120,7 @@ const EditFrom = () => {
       fields={fields}
       register={register}
       errors={errors}
-      isLoading={isPending}
+      isLoading={isPending || isFileUploading}
       onClose={() => onClose()}
     />
   );

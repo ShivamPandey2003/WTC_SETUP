@@ -12,7 +12,6 @@ import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 
@@ -24,38 +23,26 @@ export const useCreateNews = () => {
     error,
   } = useMutation<NewsCreateResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
-      const res = await apiRequest("post", "news/create", data);
+      const apiData = new FormData();
+      ["title", "description", "tile_space"].forEach((key) => {
+        const val = data.get(key);
+        if (val !== null) apiData.append(key, val as string);
+      });
+      const res = await apiRequest("post", "news/create", apiData);
       return res.response;
     },
-    onSuccess: async (data, Variable) => {
+    onSuccess: async (data, variable) => {
       toast.success("News created successfully");
       dispatch(setIsCreating(false));
 
-      const file = Variable.get("attachment") as File;
-      if (!file) {
-        queryClient.invalidateQueries({ queryKey: ["newsList"] });
-        return;
+      const fileKey = variable.get("file_key") as string | null;
+      if (fileKey) {
+        const newForm = new FormData();
+        newForm.append("module", "news");
+        newForm.append("record_id", data.response.id);
+        newForm.append("file_path_image", fileKey);
+        await apiRequest("post", "upload/common/files", newForm);
       }
-
-      const res = await apiRequest(
-        "post",
-        `/upload/presigned-url?file_name=${file.name}&module=${"news"}&ref_id=${data.response.id}`,
-      );
-      const { file_key, upload_url } = res.response.response;
-
-      await axios.put(upload_url, file, {
-        headers: {
-          "Content-Type": file.type,
-        },
-        responseType: "blob",
-      });
-
-      const newForm = new FormData();
-      newForm.append("module", "news");
-      newForm.append("record_id", data.response.id);
-      newForm.append("file_path_image", file_key);
-
-      await apiRequest("post", "upload/common/files", newForm);
 
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
     },
@@ -73,37 +60,26 @@ export const useEditNews = () => {
   } = useMutation<NewsCreateResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
       const id = data.get("id");
-      const res = await apiRequest("post", `news/edit/${id}`, data);
+      const apiData = new FormData();
+      ["title", "description", "tile_space"].forEach((key) => {
+        const val = data.get(key);
+        if (val !== null) apiData.append(key, val as string);
+      });
+      const res = await apiRequest("post", `news/edit/${id}`, apiData);
       return res.response;
     },
     onSuccess: async (data, variable) => {
       toast.success("News edited successfully");
       dispatch(setSelected(null));
-      const file = variable.get("attachment") as File;
-      if (!file) {
-        queryClient.invalidateQueries({ queryKey: ["newsList"] });
-        return;
+
+      const fileKey = variable.get("file_key") as string | null;
+      if (fileKey) {
+        const newForm = new FormData();
+        newForm.append("module", "news");
+        newForm.append("record_id", data.response.id);
+        newForm.append("file_path_image", fileKey);
+        await apiRequest("post", "upload/common/files", newForm);
       }
-
-      const res = await apiRequest(
-        "post",
-        `/upload/presigned-url?file_name=${file.name}&module=${"news"}&ref_id=${data.response.id}`,
-      );
-      const { file_key, upload_url } = res.response.response;
-
-      await axios.put(upload_url, file, {
-        headers: {
-          "Content-Type": file.type,
-        },
-        responseType: "blob",
-      });
-
-      const newForm = new FormData();
-      newForm.append("module", "news");
-      newForm.append("record_id", data.response.id);
-      newForm.append("file_path_image", file_key);
-
-      await apiRequest("post", "upload/common/files", newForm);
 
       queryClient.invalidateQueries({ queryKey: ["newsList"] });
     },
@@ -423,10 +399,10 @@ export const useNewsDownload = () => {
       return blob;
     },
     onMutate: () => {
-      toast.info("File is preparing for download");
+      toast.info("Preparing file for download");
     },
     onSuccess: () => {
-      toast.success("File download successfully");
+      toast.success("File ready");
     },
   });
 
