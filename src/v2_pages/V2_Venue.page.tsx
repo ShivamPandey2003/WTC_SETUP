@@ -10,7 +10,7 @@ import {
 import TextCard from "@/v2_components/common/V2_Venue/TextCard";
 import { useEffect, useState } from "react";
 // import MapText from "@/assets/Images/MapText.png";
-import { Calendar, Link, Loader, Navigation } from "lucide-react";
+import { Calendar, Link, Navigation } from "lucide-react";
 import { useGetVenue } from "@/api/global_api/global_api";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
@@ -90,11 +90,57 @@ const V2_Venue_page = () => {
 
   if (isPending || V2_Global_isFloorMapListPending) {
     return (
-      <div className="w-full h-[80vh] flex flex-col items-center justify-center">
-        <Loader className="text-primary animate-spin" size={30} />
-        <p className="text-primary font-semibold text-lg">
-          Venue details is loading...
-        </p>
+      <div className="px-4 mx-auto pb-4">
+        {/* Tab buttons */}
+        <div className="p-1 bg-white w-fit rounded-full flex gap-2 mb-4">
+          <Skeleton className="h-10 w-28 rounded-full" />
+          <Skeleton className="h-10 w-28 rounded-full" />
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-4">
+          {/* Left column */}
+          <div className="col-span-1 space-y-4">
+            {/* Venue image */}
+            <Skeleton className="w-full h-90 rounded-3xl" />
+            {/* Text card */}
+            <div className="bg-white rounded-3xl p-6 shadow-sm space-y-3">
+              <Skeleton className="h-7 w-40 rounded" />
+              <Skeleton className="h-4 w-full rounded" />
+              <Skeleton className="h-4 w-full rounded" />
+              <Skeleton className="h-4 w-3/4 rounded" />
+              <Skeleton className="h-4 w-full rounded" />
+              <Skeleton className="h-4 w-5/6 rounded" />
+            </div>
+          </div>
+
+          {/* Right column */}
+          <div className="bg-white rounded-3xl overflow-hidden shadow-sm p-6 space-y-6">
+            {/* Map */}
+            <Skeleton className="w-full h-[20rem] rounded-xl" />
+            {/* Location row */}
+            <div className="flex items-center justify-between">
+              <div className="flex gap-6 items-center">
+                <Skeleton className="h-6 w-6 rounded" />
+                <div className="space-y-2">
+                  <Skeleton className="h-5 w-52 rounded" />
+                  <Skeleton className="h-4 w-36 rounded" />
+                </div>
+              </div>
+              <Skeleton className="h-9 w-36 rounded-full" />
+            </div>
+            {/* Date row */}
+            <div className="flex items-center justify-between">
+              <div className="flex gap-6 items-center">
+                <Skeleton className="h-6 w-6 rounded" />
+                <div className="space-y-2">
+                  <Skeleton className="h-5 w-56 rounded" />
+                  <Skeleton className="h-4 w-28 rounded" />
+                </div>
+              </div>
+              <Skeleton className="h-9 w-36 rounded-full" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -172,7 +218,7 @@ const V2_Venue_page = () => {
                     options={{
                       disableDefaultUI: true,
                     }}
-                    zoom={12}
+                    zoom={14}
                   >
                     <Marker
                       position={{

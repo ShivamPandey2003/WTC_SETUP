@@ -25,7 +25,7 @@ import { useNavigate } from "react-router";
 
 interface SpeakerProps {
   id: string
-  close: () => void
+  close?: (() => void) | null
 }
 
 const SpeakerDetails = ({ id, close }: SpeakerProps) => {
@@ -67,8 +67,47 @@ const SpeakerDetails = ({ id, close }: SpeakerProps) => {
 
   if (isLoading) {
     return (
-      <div className="px-4 pb-4 mx-auto">
-        <Skeleton className="max-w-5xl mx-auto h-[85vh]" />
+      <div className="rounded-2xl overflow-hidden">
+        <div className="relative">
+          <div className="flex flex-col sm:flex-row gap-8">
+            {/* Profile Image Skeleton */}
+            <div className="flex-shrink-0">
+              <div className="relative p-4">
+                <Skeleton className="w-48 h-48 sm:w-56 sm:h-56 rounded-2xl" />
+              </div>
+            </div>
+
+            {/* Content Skeleton */}
+            <div className="flex-1 pt-0 sm:pt-8">
+              {/* Name Skeleton */}
+              <div className="mb-4">
+                <Skeleton className="h-12 w-3/4 mb-4 rounded-lg" />
+                {/* Designation & Company Skeleton */}
+                <div className="flex flex-col gap-2">
+                  <Skeleton className="h-5 w-1/2 rounded" />
+                  <Skeleton className="h-5 w-1/3 rounded" />
+                </div>
+              </div>
+
+              {/* Social Buttons Skeleton */}
+              <div className="flex flex-wrap gap-3 mt-6">
+                <Skeleton className="h-10 w-28 rounded-lg" />
+                <Skeleton className="h-10 w-28 rounded-lg" />
+                <Skeleton className="h-10 w-28 rounded-lg" />
+              </div>
+            </div>
+          </div>
+
+          {/* Bio Section Skeleton */}
+          <div className="mt-4 pt-8 border-t border-slate-200">
+            <Skeleton className="h-8 w-24 mb-4 rounded-lg" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-full rounded" />
+              <Skeleton className="h-4 w-full rounded" />
+              <Skeleton className="h-4 w-2/3 rounded" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -84,18 +123,20 @@ const SpeakerDetails = ({ id, close }: SpeakerProps) => {
   return (
     <div className=" rounded-2xl overflow-hidden">
       <div className="relative">
-        <div 
-        onClick={() => close()}
-        className="absolute top-2 right-0 cursor-pointer border border-gray-400 text-gray-600 text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-          Close
-        </div>
-        <div className="flex flex-col sm:flex-row gap-8">
+        {close && (
+          <div
+            onClick={() => close()}
+            className="absolute top-2 right-0 cursor-pointer border border-gray-400 text-gray-600 text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+            Close
+          </div>
+        )}
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
           <div className="flex-shrink-0">
-            <div className="relative p-4">
+            <div className="relative p-2 sm:p-4">
               <img
                 src={speakerDetails.profile_image ?? PlaceholderImage}
                 alt={`${speakerDetails.firstname} ${speakerDetails.lastname}`}
-                className="w-48 h-48 sm:w-56 sm:h-56 rounded-2xl object-cover object-top"
+                className="w-32 h-32 sm:w-56 sm:h-56 rounded-2xl object-cover object-top"
               />
               {speakerDetails.keyNote && (
                 <div className="absolute top-2 -right-2 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
@@ -105,10 +146,10 @@ const SpeakerDetails = ({ id, close }: SpeakerProps) => {
             </div>
           </div>
 
-          <div className="flex-1 pt-0 sm:pt-8">
+          <div className="flex-1 pt-1 sm:pt-8">
             <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
               <div>
-                <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-2 leading-tight">
+                <h1 className="text-2xl sm:text-5xl font-bold text-slate-900 mb-2 leading-tight">
                   {speakerDetails.prefix} {speakerDetails.firstname}{" "}
                   {speakerDetails.lastname}
                 </h1>
@@ -193,7 +234,7 @@ const SpeakerDetails = ({ id, close }: SpeakerProps) => {
         {speakerDetails.bio &&
           <div className="mt-4 pt-8 border-t border-slate-200">
             <h2 className="text-2xl font-bold text-slate-900 mb-4">About</h2>
-            <p className="text-lg text-slate-700 leading-relaxed">
+            <p className="text-md text-slate-700 leading-relaxed">
               {speakerDetails.bio}
             </p>
           </div>
@@ -239,49 +280,35 @@ const SpeakerDetails = ({ id, close }: SpeakerProps) => {
               <h2 className="text-2xl font-bold text-slate-900 mb-6">
                 Upcoming Sessions
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-4">
                 {speakerDetails.coming_sessions.map((session, index) => (
                   <div
                     key={index}
-                    className="border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-3"
+                    className="border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-4"
                   >
-                    <h3 className="text-lg font-semibold text-slate-900 mb-1">
+                    <h3 className="text-base font-semibold text-slate-900 mb-2 line-clamp-2">
                       {session.title}
                     </h3>
-                    <p className="text-slate-700 text-sm line-clamp-2">
+                    <p className="text-slate-600 text-xs line-clamp-1 mb-3">
                       {session.description}
                     </p>
-                    <div className="flex items-center gap-2 my-3">
-                      <MapPin className="w-4 h-4 text-slate-600" />
-                      <p className="text-slate-700 text-sm">
-                        {session.location}
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-between mt-2">
+                    <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <CalendarDays className="w-4 h-4 text-slate-600" />
-                        <p className="text-slate-700 text-sm">
-                          Start date: {session.start_date}
+                        <MapPin className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                        <p className="text-slate-700 text-xs truncate">
+                          {session.location}
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <CalendarDays className="w-4 h-4 text-slate-600" />
-                        <p className="text-slate-700 text-sm">
-                          End date: {session.end_date}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between mt-1">
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-slate-600" />
-                        <p className="text-slate-700 text-sm">
-                          Start time: {session.start_time}
+                        <CalendarDays className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                        <p className="text-slate-700 text-xs">
+                          {session.start_date} → {session.end_date}
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-slate-600" />
-                        <p className="text-slate-700 text-sm">
-                          End time: {session.end_time}
+                        <Clock className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                        <p className="text-slate-700 text-xs">
+                          {session.start_time} - {session.end_time}
                         </p>
                       </div>
                     </div>

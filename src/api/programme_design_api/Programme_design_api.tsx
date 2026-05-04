@@ -271,6 +271,7 @@ export const useEditCategory = () => {
       name: string;
       color: string;
       category_type: number;
+      sequence: number;
     }
   >({
     mutationFn: async (data) => {
@@ -434,10 +435,10 @@ export const useSessionDownload = () => {
         return blob;
       },
       onMutate: () => {
-        toast.info("File is preparing for download");
+        toast.info("Preparing file for download");
       },
       onSuccess: () => {
-        toast.success("File download successfully");
+        toast.success("File ready");
       },
     },
   );

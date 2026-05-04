@@ -104,7 +104,7 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
   return (
     <header
       className={cn(
-        "sticky top-0 z-99 bg-[#F2F2F2] flex items-center justify-between p-2 pl-4 pr-4 transition-colors duration-200 ",
+        "sticky top-0 z-99 bg-[#F2F2F2] flex items-center justify-between p-2 pl-4 pr-4 transition-colors duration-200 gap-x-2 ",
         showBackground && "bg-[#F2F2F2] shadow",
       )}
     >
@@ -120,11 +120,11 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
           />
         )}
         {state ? (
-          <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize text-ellipsis whitespace-nowrap overflow-hidden max-w-[100px] sm:max-w-[300px] md:max-w-[600px]">
+          <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize text-ellipsis whitespace-nowrap overflow-hidden sm:max-w-[300px] md:max-w-[600px]">
             {state.Title}
           </h2>
         ) : (
-          <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize text-ellipsis whitespace-nowrap overflow-hidden max-w-[100px] sm:max-w-[300px] md:max-w-[600px]">
+          <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize text-ellipsis whitespace-nowrap overflow-hidden sm:max-w-[300px] md:max-w-[600px]">
             {TitleFetch(pathname.split("/")[1])}
           </h2>
         )}
