@@ -183,7 +183,7 @@ export default function ExhibitorForm() {
           <input
             {...register("booth_no")}
             className="w-full sm:w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
-            placeholder="XXXX"
+            placeholder="XXXX" disabled
           />
         </div>
         <Button
