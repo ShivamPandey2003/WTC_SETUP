@@ -356,12 +356,14 @@ const ProgrammeDesign_page = () => {
                   <div className="">
                     {AllCategory?.response
                       .filter((pre) => !Boolean(pre.type))
+                      .sort((a, b) => (a.seq ?? 0) - (b.seq ?? 0))
                       .map((data, index) => (
                         <Custom_Text_Row
                           type={data.type}
-                          key={index}
+                          key={data.id}
                           id={data.id}
                           index={String(index + 1)}
+                          seq={data.seq ?? index + 1}
                           value={data.name}
                           color={data.color}
                         />
