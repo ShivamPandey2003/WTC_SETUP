@@ -3,7 +3,6 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 export type OTP = [string, string, string, string, string, string];
 
 type initialStateType = {
-  email: string;
   otp: OTP;
   resendCount: number;
   resendCooldownEnd: number;
@@ -16,7 +15,6 @@ type initialStateType = {
 };
 
 const initialState: initialStateType = {
-  email: "",
   otp: ["", "", "", "", "", ""],
   resendCount: 0,
   resendCooldownEnd: 0,
@@ -32,10 +30,6 @@ const AuthSlice = createSlice({
   name: "AuthSlice",
   initialState,
   reducers: {
-    setEmail: (state, payload: PayloadAction<string>) => {
-      state.email = payload.payload;
-      return state;
-    },
     setOtp: (state, payload: PayloadAction<OTP>) => {
       state.otp = payload.payload;
       return state;
@@ -65,7 +59,6 @@ const AuthSlice = createSlice({
 });
 
 export const {
-  setEmail,
   setOtp,
   setResendCooldown,
   increaseResendCount,

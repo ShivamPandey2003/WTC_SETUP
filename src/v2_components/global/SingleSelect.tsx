@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 export interface SingleSelectOption {
   label: string;
   value: string;
+  subLabel?: string;
 }
 
 interface SingleSelectProps {
@@ -30,9 +31,9 @@ const SingleSelect = ({
   const filtered = useMemo(
     () =>
       options.filter((o) =>
-        o.label.toLowerCase().includes(search.toLowerCase())
+        o.label.toLowerCase().includes(search.toLowerCase()),
       ),
-    [options, search]
+    [options, search],
   );
 
   const selectedOption = options.find((o) => o.value === selected) ?? null;
@@ -58,10 +59,7 @@ const SingleSelect = ({
   };
 
   return (
-    <div
-      ref={containerRef}
-      className={cn(`relative w-[30vw]`, className)}
-    >
+    <div ref={containerRef} className={cn(`relative w-[30vw]`, className)}>
       <div
         className="flex min-h-[20px] cursor-pointer flex-wrap items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 transition-colors hover:border-gray-400 focus-within:ring-0"
         onClick={(e) => {
@@ -123,13 +121,18 @@ const SingleSelect = ({
                   <span
                     className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
                       isSelected
-                        ? "border-blue-500 bg-blue-500 text-white"
+                        ? "border-primary bg-primary text-white"
                         : "border-gray-300"
                     }`}
                   >
                     {isSelected && <Check size={10} />}
                   </span>
-                  {o.label}
+                  <div>
+                    {o.subLabel && (
+                      <div className="capitalize text-primary font-medium text-xs">{o.subLabel}</div>
+                    )}
+                    <div className="capitalize text-primary font-bold line-clamp-2">{o.label}</div>
+                  </div>
                 </li>
               );
             })
