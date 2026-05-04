@@ -25,7 +25,14 @@ export const useCreateSession = () => {
     error,
   } = useMutation<CreateSessionResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
-      const res = await apiRequest("post", "programme/create", data);
+      const cloned = new FormData();
+
+      for (let [key, value] of data.entries()) {
+        cloned.append(key, value);
+      }
+      cloned.delete("bg_image")
+      cloned.delete("attachment")
+      const res = await apiRequest("post", "programme/create", cloned);
       return res.response;
     },
     onSuccess: async (data, variable) => {
@@ -303,7 +310,14 @@ export const useEditSession = () => {
   } = useMutation<CreateSpeakerResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
       const id = data.get("id");
-      const res = await apiRequest("post", `/programme/edit/${id}`, data);
+      const cloned = new FormData();
+
+      for (let [key, value] of data.entries()) {
+        cloned.append(key, value);
+      }
+      cloned.delete("bg_image")
+      cloned.delete("attachment")
+      const res = await apiRequest("post", `/programme/edit/${id}`, cloned);
       return res.response;
     },
     onSuccess: async (data, variable) => {
