@@ -18,7 +18,7 @@ const V2_SplashScreen = ({ open, setOpen }: V2_SplashScreenProps) => {
     setOpen(false);
   };
 
-  if (!open || !appConfig.show_splash) return null;
+  if (!open || !appConfig.show_splash || !appConfig.splash.image) return null;
 
   return (
     <div

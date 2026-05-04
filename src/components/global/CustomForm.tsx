@@ -9,7 +9,9 @@ import {
   useWatch,
 } from "react-hook-form";
 import { Button } from "../ui/Button";
-import { Save, X, Plus } from "lucide-react";
+import { Save, X, Plus, LoaderCircle } from "lucide-react";
+import Select from "react-select";
+import { cn } from "@/lib/utils";
 
 type FieldConfig<T extends Record<string, any>> = {
   name: Path<T>;
@@ -26,12 +28,17 @@ type FieldConfig<T extends Record<string, any>> = {
     | "array-attachment"
     | "time"
     | "select"
-    | "color";
+    | "color"
+    | "multi-select";
   placeholder?: string;
   accept?: string;
   options?: { label: string; value: string }[];
   addMoreHandler?: () => void;
   file?: File;
+  disable?: boolean;
+  onFileChange?: (file: File) => Promise<void>;
+  isFileUploading?: boolean;
+  uploadedFile?: File | null;
 };
 
 type Props<T extends Record<string, any>> = {
@@ -157,6 +164,8 @@ const CustomForm = <T extends Record<string, any>>({
     onSubmit(e);
   };
 
+  const formValues = control && useWatch({ control });
+
   return (
     <div className="relative">
       <form
@@ -207,13 +216,41 @@ const CustomForm = <T extends Record<string, any>>({
                     rows={1}
                   />
                 ) : field.type === "file" ? (
-                  <input
-                    type="file"
-                    multiple={false}
-                    {...register(field.name)}
-                    accept={field.accept}
-                    className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                  />
+                  field.isFileUploading ? (
+                    <div className="flex items-center gap-2 text-sm text-gray-500 py-2">
+                      <LoaderCircle className="animate-spin" size={16} />
+                      Uploading image...
+                    </div>
+                  ) : field.uploadedFile ? (
+                    <div className="flex items-center gap-3 p-2 bg-gray-50 rounded border border-gray-200">
+                      <img
+                        src={URL.createObjectURL(field.uploadedFile)}
+                        alt="preview"
+                        className="h-16 w-16 rounded object-cover shrink-0"
+                      />
+                      <p className="text-sm text-gray-600 truncate">{field.uploadedFile.name}</p>
+                    </div>
+                  ) : field.onFileChange ? (
+                    <input
+                      type="file"
+                      multiple={false}
+                      accept={field.accept}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        await field.onFileChange!(file);
+                      }}
+                      className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    />
+                  ) : (
+                    <input
+                      type="file"
+                      multiple={false}
+                      {...register(field.name)}
+                      accept={field.accept}
+                      className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    />
+                  )
                 ) : field.type === "date" ? (
                   <input
                     type="date"
@@ -383,14 +420,48 @@ const CustomForm = <T extends Record<string, any>>({
                       className="w-full rounded outline-0 border-[1px] border-gray-200 px-2 py-1 focus:border-primary"
                     />
                   </div>
+                ) : field.type === "multi-select" ? (
+                  <Select
+                    isMulti
+                    value={
+                      field.options?.filter((option) =>
+                        formValues?.[field.name]?.includes(option.value),
+                      ) || []
+                    }
+                    options={field.options}
+                    onChange={(selected) => {
+                      setValue?.(
+                        field.name,
+                        selected
+                          ? selected.map((item) => item.value)
+                          : ([] as any),
+                        {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        },
+                      );
+                    }}
+                  />
                 ) : (
+                  // <select
+                  //   multiple
+                  //   {...register(field.name)}
+                  //   className="w-full rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary"
+                  // >
+                  //   {field.options?.map((opt) => (
+                  //     <option key={opt.value} value={opt.value}>
+                  //       {opt.label}
+                  //     </option>
+                  //   ))}
+                  // </select>
                   <input
                     type={field.type ?? "text"}
                     {...register(field.name, {
                       valueAsNumber: field.type === "number",
                     })}
+                    disabled={field.disable}
                     placeholder={field.placeholder}
-                    className="w-full rounded outline-0 border-[1px] border-gray-200 px-2 py-1 focus:border-primary"
+                    className={cn("w-full rounded outline-0 border-[1px] border-gray-200 px-2 py-1 focus:border-primary", field.disable && "bg-gray-200")}
                   />
                 )}
 
@@ -424,13 +495,3 @@ const CustomForm = <T extends Record<string, any>>({
 };
 
 export default CustomForm;
-
-// : field.type === "checkbox" ? (
-//                   <div className="flex items-center gap-2 pt-1.5">
-//                     <input
-//                       type="checkbox"
-//                       {...register(field.name)}
-//                       className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
-//                     />
-//                   </div>
-//                 )

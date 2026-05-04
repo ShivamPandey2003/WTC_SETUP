@@ -24,6 +24,12 @@ type initialStateType = {
     venue_tab: string;
     exhibitors_tab: string;
   };
+  Types: string[];
+  all_categories: {
+    id: string;
+    name: string;
+    color: string;
+  }[];
 };
 
 const todayDate = new Date().toLocaleDateString("en-US", {
@@ -42,7 +48,7 @@ const initialState: initialStateType = {
   Session: [],
   Venue: {
     bg_venue: "",
-    attachent:"",
+    attachment: "",
     getting_there: {
       sub_title: "",
       description: "",
@@ -71,6 +77,8 @@ const initialState: initialStateType = {
     venue_tab: "",
     exhibitors_tab: "",
   },
+  Types: [],
+  all_categories: []
 };
 
 const Global_Slice = createSlice({
@@ -126,6 +134,16 @@ const Global_Slice = createSlice({
       state.ArrayTabs = payload.payload;
       return state;
     },
+    setType: (state, payload: PayloadAction<string[]>) => {
+      state.Types = payload.payload
+    },
+    setAll_Categories: (state, payload: PayloadAction<{
+      id: string;
+      name: string;
+      color: string;
+    }[]>) => {
+      state.all_categories = payload.payload
+    }
   },
 });
 
@@ -138,5 +156,7 @@ export const {
   setSearchParams,
   setSearchParams2,
   setArrayTabs,
+  setType,
+  setAll_Categories
 } = Global_Slice.actions;
 export default Global_Slice.reducer;

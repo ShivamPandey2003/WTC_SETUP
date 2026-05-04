@@ -1,25 +1,27 @@
 import { nanoid } from "nanoid";
 
 export const getDateRange = (start: string, end: string): string[] => {
-  const parse = (dateStr: string): Date => {
+  const parseUTC = (dateStr: string): Date => {
     const [y, m, d] = dateStr.split("-").map(Number);
-    return new Date(y, m - 1, d); // safe local date
+    return new Date(Date.UTC(y, m - 1, d)); // ✅ UTC date
   };
 
-  const format = (date: Date): string => {
-    return date.toLocaleDateString("en-CA"); // YYYY-MM-DD
+  const formatUTC = (date: Date): string => {
+    return date.toISOString().split("T")[0]; // ✅ YYYY-MM-DD in UTC
   };
 
-  const startDate = parse(start);
-  const endDate = parse(end);
+  const startDate = parseUTC(start);
+  const endDate = parseUTC(end);
 
   const result: string[] = [];
 
   let current = new Date(startDate);
 
   while (current <= endDate) {
-    result.push(format(current));
-    current.setDate(current.getDate() + 1);
+    result.push(formatUTC(current));
+
+    // ✅ increment in UTC (IMPORTANT)
+    current.setUTCDate(current.getUTCDate() + 1);
   }
 
   return result;
@@ -33,6 +35,7 @@ export interface Session {
   color: string;
   start_time: string;
   end_time: string;
+  SessionType: string
   type: "normal";
 }
 
@@ -44,6 +47,7 @@ export interface NormalItem {
   start: string;
   end: string;
   color: string;
+  SessionType: string
   type: "normal" | "extra";
 }
 
@@ -55,6 +59,7 @@ export interface MergeItem {
   start: string;
   end: string;
   color: string;
+  SessionType: string
   type: "merge";
 }
 
@@ -64,8 +69,9 @@ export interface GroupItem {
   start: string;
   end: string;
   Item: {
+    SessionType: string
     categoryId: string;
-    session_id: string;
+    session_id: string | string[];
     id: string;
     title: string;
     start: string;
@@ -86,7 +92,7 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
 
   const durationType = (s: Session) => {
     const diff = toMinutes(s.end_time) - toMinutes(s.start_time);
-    return diff > 210 ? "extra" : "normal";
+    return diff > 300 ? "extra" : "normal";
   };
 
   const isIntersect = (a: Session, b: Session) => {
@@ -125,37 +131,91 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
 
   const timeGroups: Record<string, Session[]> = {};
 
-  sessions.forEach((s) => {
+
+  sessions.filter(pre => pre).forEach((s) => {
     const start = s.start_time;
     const end = s.end_time;
-
     const key = `${start}-${end}`;
     if (!timeGroups[key]) timeGroups[key] = [];
     timeGroups[key].push(s);
   });
 
+
   const leftover: Session[] = [];
 
   Object.values(timeGroups).forEach((group) => {
     if (group.length > 1) {
-      // ARRAY TYPE
-      result.push({
-        id: nanoid(),
-        type: "array",
-        start: group[0].start_time,
-        end: group[0].end_time,
-        Item: group.map((s) => ({
-          categoryId: s.categoryId,
-          session_id: s.session_id,
-          id: s.id,
-          title: s.title,
-          start: s.start_time,
-          end: s.end_time,
-          color: s.color,
-        })),
-      });
+      const allSameCategory = group.every(
+        (s) => s.categoryId === group[0].categoryId
+      );
+
+      if (allSameCategory) {
+        const earliest = group.reduce((a, b) =>
+          toMinutes(a.start_time) < toMinutes(b.start_time) ? a : b
+        );
+
+        const latest = group.reduce((a, b) =>
+          toMinutes(a.end_time) > toMinutes(b.end_time) ? a : b
+        );
+
+        result.push({
+          id: nanoid(),
+          categoryId: group[0].categoryId,
+          type: "merge",
+          title: group[0].title,
+          color: group[0].color,
+          SessionType: group[0].SessionType,
+          start: earliest.start_time,
+          end: latest.end_time,
+          session_id: group.map((s) => s.session_id),
+        });
+      } 
+      else {
+        const groupedByCategory: Record<string, Session[]> = {};
+
+        group.forEach((s) => {
+          const key = `${s.categoryId}-${s.title}`;
+          if (!groupedByCategory[key]) groupedByCategory[key] = [];
+          groupedByCategory[key].push(s);
+        });
+
+        const items = Object.values(groupedByCategory).map((catGroup) => {
+          if (catGroup.length > 1) {
+            return {
+              categoryId: catGroup[0].categoryId,
+              session_id: catGroup.map((s) => s.session_id),
+              id: catGroup[0].id,
+              title: catGroup[0].title,
+              start: catGroup[0].start_time,
+              end: catGroup[0].end_time,
+              color: catGroup[0].color,
+              SessionType: catGroup[0].SessionType
+            };
+          }
+
+          const s = catGroup[0];
+          return {
+            SessionType: s.SessionType,
+            categoryId: s.categoryId,
+            session_id: s.session_id,
+            id: s.id,
+            title: s.title,
+            start: s.start_time,
+            end: s.end_time,
+            color: s.color,
+          };
+        });
+
+        result.push({
+          id: nanoid(),
+          type: "array",
+          start: group[0].start_time,
+          end: group[0].end_time,
+          Item: items,
+        });
+      }
     } else {
-      leftover.push(group[0]); // keep for merge/normal
+      leftover.push(group[0]);
     }
   });
 
@@ -188,6 +248,7 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
           id: nanoid(),
           categoryId: cluster[0].categoryId,
           type: "merge",
+          SessionType:cluster[0].SessionType,
           title: cluster[0].title,
           color: cluster[0].color,
           start: earliest.start_time,
@@ -200,6 +261,7 @@ export const transformSessions = (sessions: Session[]): OutputItem[] => {
         result.push({
           session_id: s.session_id,
           categoryId: s.categoryId,
+          SessionType: s.SessionType,
           id: s.id,
           title: s.title,
           start: s.start_time,

@@ -27,7 +27,7 @@ function Description({ text }:{text:string}) {
       {showButton && (
         <button
           onClick={() => setExpanded(!expanded)}
-          className="text-blue-500 text-sm font-medium self-end"
+          className="text-primary text-sm font-medium self-end"
         >
           {expanded ? "Show less" : "Read more"}
         </button>

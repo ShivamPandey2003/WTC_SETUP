@@ -5,8 +5,8 @@ import AddCategoryModel from "@/components/common/Programme_Design/AddCategoryMo
 import CreateModal from "@/components/common/Programme_Design/CreateModal";
 import CustomTable from "@/components/common/Programme_Design/CustomTable";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
-import ErrorDisplay from "@/components/global/ErrorDisplay";
-import NoData from "@/components/global/NoData";
+// import ErrorDisplay from "@/components/global/ErrorDisplay";
+// import NoData from "@/components/global/NoData";
 import Section from "@/components/global/Section";
 import TextStyleRow from "@/components/global/TextStyleRow";
 import { Button } from "@/components/ui/Button";
@@ -59,6 +59,11 @@ const ProgrammeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
   const scrollRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const {
+    // SpeakerSettings: SettingsValue,
+    isPending,
+    // error,
+  } = useGetSpeakerSetting();
   const { DeleteCategory, isDeleteCategoryPending } = useDeleteCategory();
   const { AllCategory, isPending: isCategoriesPending } = useGetCategoryAll();
   const { UpdateProgrammeDesign, isUpdateProgrammeDesignPending } =
@@ -66,9 +71,12 @@ const ProgrammeDesign_page = () => {
   const { downloadSession, isdownloadPending } = useSessionDownload();
   const { UploadNewsCSV, isPending: isUploadSessionsCSV } =
     useUploadSessionsCSV();
-  const { isCreating, slectedDate, uploadCSV, session=[] } = useSelector(
-    (state: RootState) => state.Programme_Design,
-  );
+  const {
+    isCreating,
+    slectedDate,
+    uploadCSV,
+    session = [],
+  } = useSelector((state: RootState) => state.Programme_Design);
   const { isCreating: isSpeakerCreating, SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
@@ -81,11 +89,6 @@ const ProgrammeDesign_page = () => {
     (state: RootState) => state.ExhibitorSlice,
   );
   const dispatch = useDispatch<AppDispatch>();
-  const {
-    SpeakerSettings: SettingsValue,
-    isPending,
-    error,
-  } = useGetSpeakerSetting();
   const Dates = getDatesInRangeFormatted(
     SpeakerSettings.conference_start_date,
     SpeakerSettings.conference_end_date,
@@ -103,14 +106,21 @@ const ProgrammeDesign_page = () => {
 
   useEffect(() => {
     const end = new Date(formatDate(SpeakerSettings.conference_end_date));
+    const start = new Date(formatDate(SpeakerSettings.conference_start_date));
     const sel = new Date(slectedDate);
+
+    if (start > sel) {
+      dispatch(
+        setSelectedDate(formatDate(SpeakerSettings.conference_start_date)),
+      );
+    }
 
     if (end < sel) {
       dispatch(
         setSelectedDate(formatDate(SpeakerSettings.conference_end_date)),
       );
     }
-  }, [SpeakerSettings.conference_end_date, slectedDate, dispatch]);
+  }, [SpeakerSettings.conference_end_date, dispatch]);
 
   useEffect(() => {
     if (value !== "Session Data") return;
@@ -136,21 +146,21 @@ const ProgrammeDesign_page = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <ErrorDisplay title="News Feed Error" message={error.message} />
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <ErrorDisplay title="News Feed Error" message={error.message} />
+  //     </div>
+  //   );
+  // }
 
-  if (!SettingsValue || !SettingsValue.response) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <NoData />
-      </div>
-    );
-  }
+  // if (!SettingsValue || !SettingsValue.response) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <NoData />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -162,7 +172,7 @@ const ProgrammeDesign_page = () => {
           loading={isUpdateProgrammeDesignPending}
         />
         {Boolean(value === "Session Data") && (
-          <div className="absolute right-10 top-23 flex items-center gap-4">
+          <div className="absolute right-10 top-24 flex items-center gap-4">
             <div className="w-full max-w-xl flex items-center gap-2">
               <Button
                 variant="ghost"
@@ -190,7 +200,9 @@ const ProgrammeDesign_page = () => {
                         variant={"ghost"}
                         className={cn(
                           "h-7 shrink-0",
-                          date === slectedDate && "bg-primary/20 text-primary",
+                          date === slectedDate
+                            ? "bg-primary text-white hover:bg-primary hover:text-white"
+                            : "hover:bg-primary/10 hover:text-primary/80 hover:border hover:border-green-700 border border-gray-100",
                         )}
                       >
                         {date}
@@ -207,20 +219,22 @@ const ProgrammeDesign_page = () => {
                 <ChevronRight />
               </Button>
             </div>
-            {session.length > 0 && <Button
-              onClick={() => downloadSession()}
-              disabled={isdownloadPending}
-              className="w-fit py-1 h-7"
-            >
-              <Download />
-              Download
-            </Button>}
+            {session.length > 0 && (
+              <Button
+                onClick={() => downloadSession()}
+                disabled={isdownloadPending}
+                className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
+                title="Download Programme Data"
+              >
+                <Download />
+              </Button>
+            )}
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
-              className="w-fit py-1 h-7"
+              className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
+              title="Upload Programme Data"
             >
               <Upload />
-              Upload
             </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}
@@ -245,7 +259,7 @@ const ProgrammeDesign_page = () => {
               value={"Session Data"}
               className="text-[15px] font-semibold leading-[15px] px-0"
             >
-              Session Data
+              Programme Data
             </TabsTrigger>
           </TabsList>
           <TabsContent value="General Settings">
@@ -342,12 +356,14 @@ const ProgrammeDesign_page = () => {
                   <div className="">
                     {AllCategory?.response
                       .filter((pre) => !Boolean(pre.type))
+                      .sort((a, b) => (a.seq ?? 0) - (b.seq ?? 0))
                       .map((data, index) => (
                         <Custom_Text_Row
                           type={data.type}
-                          key={index}
+                          key={data.id}
                           id={data.id}
                           index={String(index + 1)}
+                          seq={data.seq ?? index + 1}
                           value={data.name}
                           color={data.color}
                         />
@@ -378,6 +394,11 @@ const ProgrammeDesign_page = () => {
             </div>
           </TabsContent>
           <TabsContent value="Session Data">
+            {slectedDate && (
+              <div className="text-sm pb-1 w-full text-gray-500">
+                Showing programme data for {slectedDate}
+              </div>
+            )}
             <CustomTable />
           </TabsContent>
         </Tabs>
@@ -398,14 +419,15 @@ const ProgrammeDesign_page = () => {
         isDeleting={isDeleteCategoryPending}
       />
       <CSVModel
+        CSV_MODULE="session_csv"
         isOpen={uploadCSV}
         onClose={() => dispatch(setUploadCSV(false))}
         title="Sessions"
         isLoading={isUploadSessionsCSV}
         onSubmit={UploadNewsCSV}
-        description="Upload CSV file to create Sessions entries. CSV Columns: title, category, location, start_date, end_date, start_time, end_time, speakers, external_link, description"
-        path="/session_entry.csv"
-        type={{ATTACHMENT:3, IMAGE:6}}
+        description="Upload XLSX file to create Sessions entries. XLSX Columns: title, category, location, start_date, end_date, start_time, end_time, speakers, external_link, description"
+        path="/programme.xlsx"
+        type={{ ATTACHMENT: 3, IMAGE: 6 }}
         ImageDescription="Upload a ZIP file containing pdf for Sessions entries. The pdf file names should match the corresponding Image IDs."
       />
       {responseModal && (

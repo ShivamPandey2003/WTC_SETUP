@@ -5,7 +5,7 @@ import Section from "@/components/global/Section";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
-import { Download, Loader, Plus, Upload } from "lucide-react";
+import { Download, Loader, Plus, Upload, X } from "lucide-react";
 import React, { useEffect } from "react";
 import CreateModal from "@/components/common/Exhibitors_Design/CreateModal";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +15,7 @@ import {
   setDeletingCategory,
   setIsCreating,
   setIsEditable,
+  setSearchText,
   setUploadCSV,
 } from "@/redux/ExhibitorSlice";
 import {
@@ -24,8 +25,8 @@ import {
 } from "@/api/global_api/global_api";
 import { useGetSpeakerSetting } from "@/api/speaker_design_api/speaker_design_api";
 import { setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
-import ErrorDisplay from "@/components/global/ErrorDisplay";
-import NoData from "@/components/global/NoData";
+// import ErrorDisplay from "@/components/global/ErrorDisplay";
+// import NoData from "@/components/global/NoData";
 import CSVModel from "@/components/global/CSVModel";
 import {
   useExhibitorsDownload,
@@ -38,6 +39,8 @@ import DeleteModal from "@/components/global/DeleteModel";
 import { useDeleteCategory } from "@/api/programme_design_api/Programme_design_api";
 import { setResponseModal } from "@/redux/ModalSlice";
 import ErrorModal from "@/components/global/ErrorModal";
+import { apiRequest } from "@/services/apiService";
+import axios from "axios";
 
 const ExhibitorsDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
@@ -45,15 +48,16 @@ const ExhibitorsDesign_page = () => {
     image: string | File;
     title: string;
     subtitle: string;
-  }>({ image: "", title: "", subtitle: "" });
+    file_path?: string;
+  }>({ image: "", title: "", subtitle: "", file_path: "" });
   const { UploadExhibitorsCSV, isPending: isUploadPending } =
     useUploadExhibitorsCSV();
   const { Category, isCategoryPending } = useCategoryList();
   const dispatch = useDispatch();
   const {
-    SpeakerSettings: SettingValue,
+    // SpeakerSettings: SettingValue,
     isPending,
-    error,
+    // error,
   } = useGetSpeakerSetting();
   const { GlobalDesign, isGlobalDesignPending } = useGlobalDesign();
   const {
@@ -62,6 +66,7 @@ const ExhibitorsDesign_page = () => {
     uploadCSV,
     deletingCategory,
     Exhibitors = [],
+    searchText,
   } = useSelector((state: RootState) => state.ExhibitorSlice);
   const { responseModal, responseData } = useSelector(
     (state: RootState) => state.model,
@@ -73,12 +78,43 @@ const ExhibitorsDesign_page = () => {
 
   const OnSave = () => {
     const formData = new FormData();
-    formData.append("file", splashValue.image);
+    if (Object.keys(splashValue).length === 0 && !splashValue.file_path) return;
+    formData.append("file_path", splashValue.file_path as string);
     formData.append("title", splashValue.title);
     formData.append("subtitle", splashValue.subtitle);
 
     UploadSplash({
       form: formData,
+    });
+  };
+
+  const onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const url = URL.createObjectURL(file);
+    setSplashValue((pre) => ({
+      ...pre,
+      image: url,
+    }));
+
+    const res = await apiRequest(
+      "post",
+      `/upload/presigned-url?file_name=${file.name}&module=${"exhibitor_splash"}`,
+    );
+
+    const { file_key, upload_url } = res.response.response;
+
+    setSplashValue((pre) => ({
+      ...pre,
+      file_path: file_key,
+    }));
+
+    await axios.put(upload_url, file, {
+      headers: {
+        "Content-Type": file.type,
+      },
+      responseType: "blob",
     });
   };
 
@@ -97,6 +133,7 @@ const ExhibitorsDesign_page = () => {
   useEffect(() => {
     if (!GlobalDesign?.response) return;
     const splash = GlobalDesign.response.exhibitor_splash;
+    if (!splash) return;
     setSplashValue(splash);
   }, [GlobalDesign]);
 
@@ -117,21 +154,21 @@ const ExhibitorsDesign_page = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <ErrorDisplay title="News Feed Error" message={error.message} />
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <ErrorDisplay title="News Feed Error" message={error.message} />
+  //     </div>
+  //   );
+  // }
 
-  if (!SettingValue || !SettingValue.response) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <NoData />
-      </div>
-    );
-  }
+  // if (!SettingValue || !SettingValue.response) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <NoData />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -144,22 +181,38 @@ const ExhibitorsDesign_page = () => {
         />
         {Boolean(value === "Session Data") && (
           <div className="absolute right-10 flex items-center gap-4">
+            <div className="w-[15vw] flex items-center bg-white border border-gray-300 rounded-md gap-1">
+              <input
+                value={searchText}
+                onChange={(e) => dispatch(setSearchText(e.target.value))}
+                type="text"
+                className="outline-0 py-1 px-2"
+                placeholder="Search Exhibitors"
+              />
+              {searchText && searchText.trim() && (
+                <X
+                  className="cursor-pointer"
+                  size={20}
+                  onClick={() => dispatch(setSearchText(""))}
+                />
+              )}
+            </div>
             {Exhibitors.length > 0 && (
               <Button
                 onClick={() => downloadExhibitor()}
                 disabled={isdownloadPending}
-                className="w-fit py-1 h-7"
+                className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
+                title="Download Exhibitor Data"
               >
                 <Download />
-                Download
               </Button>
             )}
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
-              className="w-fit py-1 h-7"
+              className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
+              title="Upload Exhibitor Data"
             >
               <Upload />
-              Upload
             </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}
@@ -322,25 +375,21 @@ const ExhibitorsDesign_page = () => {
                       type="file"
                       multiple={false}
                       accept={"image/*"}
-                      onChange={(e) =>
-                        setSplashValue((pre) => ({
-                          ...pre,
-                          image: e.target.files?.[0] as File,
-                        }))
-                      }
+                      onChange={onChange}
                       className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                     />
-                    {GlobalDesign?.response.exhibitor_splash.image && (
-                      <img
-                        src={
-                          typeof splashValue.image === "string"
-                            ? (splashValue.image as string)
-                            : URL.createObjectURL(splashValue.image as File)
-                        }
-                        alt=""
-                        className="w-40 rounded-lg"
-                      />
-                    )}
+                    {GlobalDesign &&
+                      GlobalDesign?.response?.exhibitor_splash?.image && (
+                        <img
+                          src={
+                            typeof splashValue.image === "string"
+                              ? (splashValue.image as string)
+                              : URL.createObjectURL(splashValue.image as File)
+                          }
+                          alt=""
+                          className="w-40 rounded-lg"
+                        />
+                      )}
                   </div>
                 </Section>
               </div>
@@ -354,12 +403,14 @@ const ExhibitorsDesign_page = () => {
                 <div className="">
                   {Category?.response
                     .filter((pre) => Boolean(pre.type))
+                    .sort((a, b) => (a.seq ?? 0) - (b.seq ?? 0))
                     .map((data, index) => (
                       <Custom_Text_Row
                         type={data.type}
-                        key={index}
+                        key={data.id}
                         id={data.id}
                         index={String(index + 1)}
+                        seq={data.seq ?? index + 1}
                         value={data.name}
                         color={data.color}
                       />
@@ -386,6 +437,7 @@ const ExhibitorsDesign_page = () => {
       />
       <AddCategoryModel />
       <CSVModel
+        CSV_MODULE="exhibitor_csv"
         isOpen={uploadCSV}
         onClose={() => dispatch(setUploadCSV(false))}
         title="Exhibitors"

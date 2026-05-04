@@ -5,11 +5,12 @@ export const SessionSchema = z.object({
   title: z.string().min(1, "Title is required"),
   category: z.string().min(1, "Category is required"),
   location: z.string().min(1, "Location is required"),
+  type:z.string().min(1, "Type is required"),
   start_time: z.string().min(1, "Start time is required"),
   end_time: z.string().min(1, "End time is required"),
   floorID: z.string().optional(),
   venueID: z.string().optional(),
-  speakers: z.string().min(1, "Speakers are required"),
+  speakers: z.array(z.string()).min(1, "Speakers are required"),
   description: z.string().optional(),
   external_link: z.string().url("Invalid URL").optional().or(z.literal("")),
   bg_image: z
@@ -33,9 +34,10 @@ export const EditSessionSchema = z.object({
   location: z.string().min(1, "Location is required"),
   start_time: z.string().min(1, "Start time is required"),
   end_time: z.string().min(1, "End time is required"),
+  type:z.string().min(1, "Type is required"),
   floorID: z.string().optional(),
   venueID: z.string().optional(),
-  speakers: z.string().min(1, "Speakers are required"),
+  speakers: z.array(z.string()).optional(),
   description: z.string().optional(),
   external_link: z.string().url("Invalid URL").optional().or(z.literal("")),
   bg_image: z
@@ -57,3 +59,4 @@ export const EditSessionSchema = z.object({
 
 // Infer the form type:
 export type SessionForm = z.infer<typeof SessionSchema>;
+export type EditSessionForm = z.infer<typeof EditSessionSchema>;

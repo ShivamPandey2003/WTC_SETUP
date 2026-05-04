@@ -79,7 +79,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             ref={inputRef}
             type="text"
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search anything..."
+            placeholder={`Search ${title}`}
             className="flex-1 outline-none text-lg placeholder:text-gray-400"
           />
           <button
@@ -90,7 +90,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
           </button>
         </div>
         <div className="px-6 pb-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
-          <h2 className="text-2xl font-semibold my-6">{title}</h2>
+          <h2 className="text-2xl font-semibold my-6">Search in {title}</h2>
           {status === "pending" ? (
             <div className="text-center text-gray-400 py-8">
               <LoaderCircle className="w-12 h-12 mx-auto mb-3 opacity-30 animate-spin" />
@@ -134,14 +134,14 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     className="flex items-start mb-6 gap-4 cursor-pointer"
                     key={item.speaker_id}
                     onClick={() => {
-                      navigate(`/speaker/${item.speaker_id}`);
+                      navigate(`/speaker?s=${item.speaker_id}`);
                       onClose();
                     }}
                   >
                     <img
                       src={item.user_img ?? PlaceholderImage}
                       alt={item.name}
-                      className="h-[7rem] sm:h-[10rem] w-[11rem] sm:w-[15rem] rounded-2xl object-cover"
+                      className="h-[7rem] sm:h-[10rem] w-[11rem] sm:w-[10rem] rounded-2xl object-cover"
                     />
                     <div className="">
                       <h2 className="mb-2 line-clamp-2 font-bold sm:text-xl">
@@ -163,7 +163,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                             className="flex items-start mb-6 gap-4 cursor-pointer"
                             key={value.id}
                             onClick={() => {
-                              navigate(`/exhibitors/${value.id}`);
+                              navigate(`/exhibitors?e=${value.id}`);
                               onClose();
                             }}
                           >

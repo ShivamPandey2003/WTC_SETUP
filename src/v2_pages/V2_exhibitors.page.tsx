@@ -3,25 +3,35 @@ import ExibitorSection from "@/components/common/Exhibitors/Section";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
 import NoData from "@/components/global/NoData";
 import { Skeleton } from "@/components/ui/skeleton";
-import { setExhibitors } from "@/redux/ExhibitorSlice";
+import { setShowSearch } from "@/redux/ExhibitorSlice";
 import { setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch } from "@/redux/store";
 import Exhi_SplashScreen from "@/v2_components/common/V2_Exhibitors/Exhi_SplashScreen";
 // import Exhibitors from "@/data/Exhibitors";
 import ExhibitorCard from "@/v2_components/common/V2_Exhibitors/ExhibitorCard";
-import ExhibitorModal from "@/v2_components/common/V2_Exhibitors/ExhibitorModal";
 import { Loader } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
+import ExhibitorsDetails from "./ExhibitorsDetails";
+import { useSearchParams } from "react-router";
+
+export const adjustHexColor = (hex: string, amount: number): string => {
+  const clean = hex.replace("#", "");
+  const num = parseInt(clean.length === 3
+    ? clean.split("").map((c) => c + c).join("")
+    : clean, 16);
+  const r = Math.min(255, Math.max(0, (num >> 16) + amount));
+  const g = Math.min(255, Math.max(0, ((num >> 8) & 0xff) + amount));
+  const b = Math.min(255, Math.max(0, (num & 0xff) + amount));
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
+};
 
 const V2_exhibitors_page = () => {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [spashScreen, setSpashScreen] = useState<boolean>(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const loadMoreRef = useRef<HTMLDivElement>(null);
-  const navigation = useNavigate();
+  const [selectedExhibitor, setSelectedExhibitor] = useState<string | null>(null);
   const {
     AllExhibitors,
     fetchNextPage,
@@ -30,16 +40,68 @@ const V2_exhibitors_page = () => {
     status,
     error,
   } = useInfiniteExhibitors();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const e = searchParams.get("e");
+    if (e) {
+      setSelectedExhibitor(e);
+    }
+  }, [searchParams])
+
+  useEffect(() => {
+    if (selectedExhibitor) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [selectedExhibitor])
 
   const ExhibitorList = useMemo(() => {
-    if (!AllExhibitors) return [];
-    const newExhibitorsData = AllExhibitors.pages.flatMap(
-      (page) => page.response.data,
-    );
-    if (!newExhibitorsData) return [];
+    if (!AllExhibitors || !AllExhibitors.pages) return { grouped: {}, seq: [], colors: {} };
 
-    return newExhibitorsData;
+    const finalGrouped: Record<string, any[]> = {};
+    const finalSeq = new Set<string>();
+    const finalColors: Record<string, string> = {};
+
+
+    AllExhibitors.pages.forEach((page) => {
+      const data = page.response.data;
+
+      if (!Object.keys(data).length) return;
+
+      // collect keys (seq + dynamic keys)
+      data.seq.forEach((key) => finalSeq.add(key));
+      Object.keys(data.grouped).forEach((key) => finalSeq.add(key));
+
+      // merge grouped data
+      Object.entries(data.grouped).forEach(([key, list]) => {
+        if (!finalGrouped[key]) {
+          finalGrouped[key] = [];
+        }
+
+        finalGrouped[key].push(...list);
+      });
+
+      // merge colors
+      if (data.colors) {
+        Object.assign(finalColors, data.colors);
+      }
+    });
+
+    return {
+      grouped: finalGrouped,
+      seq: Array.from(finalSeq),
+      colors: finalColors,
+    };
   }, [AllExhibitors]);
+
+  useEffect(() => {
+    if (ExhibitorList && Object.entries(ExhibitorList.grouped).length) {
+      dispatch(setShowSearch(true));
+    }
+  }, [ExhibitorList]);
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
@@ -60,20 +122,6 @@ const V2_exhibitors_page = () => {
   }, [handleObserver]);
 
   useEffect(() => {
-    if (!ExhibitorList.length || !Object.keys(ExhibitorList[0]).length) return;
-
-    dispatch(
-      setExhibitors(
-        ExhibitorList.flatMap((item) =>
-          item.seq.flatMap((pr) =>
-            item.grouped[pr].map((s) => ({ ...s, SponsorType: pr })),
-          ),
-        ),
-      ),
-    );
-  }, [ExhibitorList]);
-
-  useEffect(() => {
     dispatch(setTitle(null));
   }, []);
 
@@ -83,26 +131,36 @@ const V2_exhibitors_page = () => {
       setSpashScreen(true);
       sessionStorage.setItem("Exhibitor_Splash", JSON.stringify(true));
     }
-    // const timer = setTimeout(() => {
-    //   setSpashScreen(false);
-    // }, 6000);
-
-    // return () => clearTimeout(timer);
   }, [setSpashScreen]);
 
   if (status === "pending") {
     return (
-      <div className="mx-[7.5%]">
-        {[1, 2].map((i) => (
-          <ExibitorSection key={i} title={""}>
-            <div className="flex gap-2">
-              {[1, 2, 3].map((v) => (
-                <Skeleton key={v} className="w-[200px] mr-2 h-[200px]" />
-              ))}
+      <>
+        {selectedExhibitor && (
+          <div
+            className="fixed inset-0 z-6 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 sm:ml-32"
+            onClick={() => setSelectedExhibitor(null)}
+          >
+            <div
+              className="bg-white rounded-xl p-6 animate-in fade-in zoom-in-95 duration-200 max-w-9/12 overflow-auto max-h-9/12"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ExhibitorsDetails id={selectedExhibitor} close={() => setSelectedExhibitor(null)} />
             </div>
-          </ExibitorSection>
-        ))}
-      </div>
+          </div>
+        )}
+        <div className="mx-[7.5%]">
+          {[1, 2].map((i) => (
+            <ExibitorSection key={i} title={""}>
+              <div className="flex gap-2">
+                {[1, 2, 3].map((v) => (
+                  <Skeleton key={v} className="w-[200px] mr-2 h-[200px]" />
+                ))}
+              </div>
+            </ExibitorSection>
+          ))}
+        </div>
+      </>
     );
   }
 
@@ -114,7 +172,7 @@ const V2_exhibitors_page = () => {
     );
   }
 
-  if (!ExhibitorList || !ExhibitorList.length || !Object.keys(ExhibitorList[0]).length) {
+  if (!ExhibitorList || !Object.keys(ExhibitorList.grouped).length) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
         <NoData />
@@ -123,52 +181,65 @@ const V2_exhibitors_page = () => {
   }
 
   return (
-    <div className="px-4 pb-4 mx-auto">
-      {ExhibitorList?.map((item) =>
-        item.seq.map(
+    <>
+      {selectedExhibitor && (
+        <div
+          className="fixed inset-0 z-6 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 sm:ml-32"
+          onClick={() => setSelectedExhibitor(null)}
+        >
+          <div
+            className="bg-white rounded-xl p-6 animate-in fade-in zoom-in-95 duration-200 max-w-9/12
+             overflow-auto max-h-9/12"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ExhibitorsDetails id={selectedExhibitor} close={() => setSelectedExhibitor(null)} />
+          </div>
+        </div>
+      )}
+      <div id="Exhibitors_Scroll" className="pb-4 mx-auto">
+        {ExhibitorList.seq.map(
           (value, i) =>
-            Boolean(item.grouped[value].length) && (
-              <div key={i} className="mt-4">
-                <h3 className="font-[700] text-[18px] text-[#353535] mb-6">
-                  {value}
-                </h3>
-                <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
-                  {item.grouped[value].map((item, i) => (
+            Boolean(ExhibitorList.grouped[value].length) && (
+              <div key={i} className="mb-3 mx-5">
+                <div className="flex title-bar w-full items-center justify-between gap-4 my-3 sticky top-14 z-3 from-80% bg-linear-to-b from-background to-transparent py-2">
+                  <div className="w-10 h-2 rounded-full shadow-sm" style={{
+                    background: `linear-gradient(135deg, ${adjustHexColor(ExhibitorList.colors[value] as string, 10)}, ${adjustHexColor(ExhibitorList.colors[value] as string, -10)})`,
+                  }} />
+                  <h4 className="font-[700] text-[26px] min-w-fit">
+                    {value}
+                  </h4>
+                  <div className="w-full h-2 rounded-full shadow-sm" style={{
+                    background: `linear-gradient(135deg, ${adjustHexColor(ExhibitorList.colors[value] as string, 10)}, ${adjustHexColor(ExhibitorList.colors[value] as string, -10)})`,
+                  }} />
+                </div>
+                <div className="flex flex-wrap gap-4 px-4 justify-center sm:justify-start">
+                  {ExhibitorList.grouped[value].map((item, i) => (
                     <ExhibitorCard
                       key={i}
                       {...item}
-                      onClick={() => navigation(`/exhibitors/${item.id}`)}
+                      // onClick={() => navigation(`/exhibitors/${item.id}`)}
+                      onClick={() => setSelectedExhibitor(item.id)}
+                      colorTag={ExhibitorList?.colors && ExhibitorList.colors[value] as string}
                     />
                   ))}
                 </div>
               </div>
             ),
-        ),
-      )}
-      <ExhibitorModal
-        data={ExhibitorList[0].seq.flatMap((pre) =>
-          ExhibitorList[0].grouped[pre].map((s) => ({
-            ...s,
-            SponsorType: pre,
-          })),
         )}
-        id={selectedId as string}
-        isOpen={Boolean(selectedId)}
-        onClose={() => setSelectedId(null)}
-      />
 
-      <div
-        ref={loadMoreRef}
-        className="w-full flex items-center justify-center my-4"
-      >
-        {isFetchingNextPage ? (
-          <Loader size={30} className="animate-spin text-primary" />
-        ) : (
-          ""
-        )}
+        <div
+          ref={loadMoreRef}
+          className="w-full flex items-center justify-center my-4"
+        >
+          {isFetchingNextPage ? (
+            <Loader size={30} className="animate-spin text-primary" />
+          ) : (
+            ""
+          )}
+        </div>
+        <Exhi_SplashScreen open={spashScreen} setOpen={setSpashScreen} />
       </div>
-      <Exhi_SplashScreen open={spashScreen} setOpen={setSpashScreen} />
-    </div>
+    </>
   );
 };
 

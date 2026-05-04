@@ -18,13 +18,14 @@ const AddFloorLevelModel = () => {
     handleSubmit,
     formState: { errors },
     control,
+    reset
   } = useForm({ resolver: zodResolver(FloorLevelSchema) });
   const dispatch = useDispatch<AppDispatch>();
   const { FloorLevelModal } = useSelector(
     (state: RootState) => state.Venue_Design_V2,
   );
   const [url, setUrl] = useState<boolean>(false);
-  const { CreateFloorLevel, isPending } = useCreateFloorLevel();
+  const { CreateFloorLevel, isPending } = useCreateFloorLevel(reset);
   const designType = useWatch({
     control,
     name: "design_type",
@@ -34,7 +35,7 @@ const AddFloorLevelModel = () => {
     const formData = new FormData();
     formData.append("label", newData.label);
     formData.append("floor_level", String(newData.floor_level));
-    formData.append("design_type", String(designType));
+    formData.append("design_type", String(designType ?? false));
     if (url) {
       formData.append("iframe_url", newData.iframe_url as string);
     } else {

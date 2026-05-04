@@ -5,6 +5,45 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const Height_OBJ = {
+  1: "80",
+  2: "150",
+  3: "200",
+  4: "400",
+  5: "750",
+  6: "900",
+  7: "1100",
+  8: "1600",
+  9: "1800",
+  10: "2000",
+}
+
+export const convertToDate = (data: { dayMonth: string }) => {
+  const [monthStr, day] = data.dayMonth.split(" ");
+
+  const months: Record<string, string> = {
+    Jan: "01",
+    Feb: "02",
+    Mar: "03",
+    Apr: "04",
+    May: "05",
+    Jun: "06",
+    Jul: "07",
+    Aug: "08",
+    Sep: "09",
+    Oct: "10",
+    Nov: "11",
+    Dec: "12",
+  };
+
+  const month = months[monthStr];
+  const paddedDay = day.padStart(2, "0");
+
+  const year = new Date().getFullYear();
+
+  return `${year}-${month}-${paddedDay}`;
+};
+
 export function getDatesInRangeFormatted(
   startDate: string,
   endDate: string,
@@ -19,6 +58,7 @@ export function getDatesInRangeFormatted(
       month: "short",
       day: "2-digit",
       year: "numeric",
+      timeZone:"UTC"
     });
     dates.push(formatted);
     current.setDate(current.getDate() + 1);
@@ -67,7 +107,18 @@ export const formatDate = (date: string) =>
     month: "short",
     day: "2-digit",
     year: "numeric",
+    timeZone: "UTC",
   });
+
+export const formatDateDisplay = (date: string | null) => {
+  if (!date) return "";
+  const dateObj = new Date(date + "T00:00:00");
+  return dateObj.toLocaleDateString("en-US", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+};
 
 export function formatSpeakers(arr: string[]) {
   if (arr.length <= 1) return arr[0] || "";
@@ -93,6 +144,7 @@ export const filterDates = (dates: { date: string; day_name: string }[]) => {
     month: "short",
     day: "2-digit",
     year: "numeric",
+    timeZone: "UTC",
   });
 
   const todayIndex = dates.findIndex((d) => d.date === todayStr);
@@ -117,6 +169,7 @@ export function getNewDatesInRangeFormatted(
       month: "short",
       day: "2-digit",
       year: "numeric",
+      timeZone: "UTC",
     });
 
     const dayName = current.toLocaleDateString("en-US", {
@@ -166,6 +219,76 @@ export const addToGoogleCalendar = ({
   window.open(url, "_blank");
 };
 
+export const addToOutlookCalendar = ({
+  title,
+  start,
+  end,
+  location,
+}: {
+  title: string;
+  start: string;
+  end: string;
+  location: string;
+}) => {
+  const url = `https://outlook.live.com/calendar/0/action/compose?subject=${encodeURIComponent(title)}&startdt=${start}&enddt=${end}&location=${encodeURIComponent(location)}`;
+
+  window.open(url, "_blank");
+};
+
+export const addToICalendar = ({
+  title,
+  start,
+  end,
+  location,
+}: {
+  title: string;
+  start: string;
+  end: string;
+  location: string;
+}) => {
+  const formatDate = (iso: string) =>
+    iso.replace(/[-:]/g, "").replace(".000", "");
+
+  const icsContent = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "BEGIN:VEVENT",
+    `SUMMARY:${title}`,
+    `DTSTART:${formatDate(start)}`,
+    `DTEND:${formatDate(end)}`,
+    `LOCATION:${location}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\n");
+
+  const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${title}.ics`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
+
+export const addToYahooCalendar = ({
+  title,
+  start,
+  end,
+  location,
+}: {
+  title: string;
+  start: string;
+  end: string;
+  location: string;
+}) => {
+  const url = `https://calendar.yahoo.com/?v=60&title=${encodeURIComponent(title)}&st=${start}&et=${end}&in_loc=${encodeURIComponent(location)}`;
+
+  window.open(url, "_blank");
+};
+
 export function base64ToFile(
   base64: string,
   filename = "image.png"
@@ -206,4 +329,35 @@ export function shuffleArray<T>(array: T[]): T[] {
   }
 
   return newArray;
+}
+
+export function generateExhibitorId(length: number = 8): string {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * chars.length);
+    result += chars[randomIndex];
+  }
+
+  return result;
+}
+
+export function getContrastTextColor(hexColor: string): string {
+  // Strip # if present
+  let hex = hexColor.replace('#', '');
+
+  if (hex.length === 3) {
+    hex = hex.split('').map(char => char + char).join('');
+  }
+  
+  // Parse RGB
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  
+  // Calculate relative luminance (WCAG formula)
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  
+  return luminance > 0.5 ? '#1A1A1A' : '#FFFFFF';
 }

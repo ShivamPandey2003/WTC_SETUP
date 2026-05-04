@@ -4,7 +4,8 @@ import CustomForm from "@/components/global/CustomForm";
 import { setSelected } from "@/redux/ExhibitorSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import {
-    EditExhibitorSchema,
+  EditExhibitorSchema,
+  type EditExhibitorSchemaType,
   type ExhibitorSchemaType,
 } from "@/Schema/exhibitorSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,27 +29,37 @@ const EditFrom = () => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<ExhibitorSchemaType>({
+  } = useForm<EditExhibitorSchemaType>({
     resolver: zodResolver(EditExhibitorSchema),
   });
 
   useEffect(() => {
     if (!value) return;
-    const {logo, ...rest} = value
-    reset({ ...rest, logo:undefined, category: value.categoryId } as any);
+    const { logo, url, ...rest } = value;
+    reset({
+      ...rest,
+      logo: undefined,
+      category: value.categoryId,
+      url: url ? url : "",
+    } as any);
   }, [value, reset]);
   const dispatch = useDispatch<AppDispatch>();
 
-  const onSubmit = (newData: ExhibitorSchemaType) => {
+  const onSubmit = (newData: EditExhibitorSchemaType) => {
     const formData = new FormData();
     formData.append("full_name", newData.full_name as string);
-    formData.append("url", newData.url as string);
+    if (newData.url) {
+      formData.append("url", newData.url as string);
+    }
     formData.append("email", newData.email as string);
     formData.append("category", newData.category as string);
     formData.append("ads", String(newData?.ads));
     formData.append("show_mail", String(newData?.show_mail));
-    if(newData.logo?.[0]){
-      formData.append("file", newData.logo?.[0] as Blob);
+    if (newData.booth_no) {
+      formData.append("booth_no", newData.booth_no as string);
+    }
+    if (newData.logo?.[0]) {
+      formData.append("logo", newData.logo?.[0] as Blob);
     }
     EditExhibitor({ form: formData, id: `${selected}` });
   };
@@ -87,7 +98,12 @@ const EditFrom = () => {
       placeholder: "https://example.com",
     },
     { name: "email", label: "Email", placeholder: "example@mail.com" },
-    { name: "logo", label: "Logo", type: "file", accept: "image/png,image/jpg,image/webp,image/jpeg" },
+    {
+      name: "logo",
+      label: "Logo",
+      type: "file",
+      accept: "image/png,image/jpg,image/webp,image/jpeg",
+    },
     {
       name: "category",
       label: "Category",
@@ -98,6 +114,11 @@ const EditFrom = () => {
         .map((item: any) => {
           return { label: item.name, value: item.id };
         }),
+    },
+    {
+      name: "booth_no",
+      label: "Booth Location",
+      placeholder: "Enter booth location here",
     },
     { name: "ads", label: "Ads", type: "checkbox" },
     { name: "show_mail", label: "Show mail", type: "checkbox" },

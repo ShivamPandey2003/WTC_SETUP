@@ -24,11 +24,12 @@ export const ExhibitorSchema = z.object({
     }, "Only PNG, JPG, WEBP, JPEG images are allowed"),
   category: z.string().min(2, "Category is required"),
   ads: z.boolean(),
+  booth_no: z.string().optional(),
 });
 
 export const EditExhibitorSchema = z.object({
   full_name: z.string().min(2, "Full name is required"),
-  url: z.url(),
+  url: z.url().optional().or(z.literal("")),
   email: z.email(),
   show_mail: z.boolean(),
   logo: z
@@ -39,6 +40,8 @@ export const EditExhibitorSchema = z.object({
     }, "Only PNG, JPG, WEBP, JPEG images are allowed"),
   category: z.string().min(2, "Category is required"),
   ads: z.boolean(),
+  booth_no: z.string().optional(),
 });
 
 export type ExhibitorSchemaType = z.infer<typeof ExhibitorSchema>;
+export type EditExhibitorSchemaType = z.infer<typeof EditExhibitorSchema>;

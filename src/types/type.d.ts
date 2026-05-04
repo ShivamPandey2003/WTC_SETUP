@@ -1,3 +1,4 @@
+
 declare type ModelSliceType = {
   loginModel: boolean;
   searchModal: boolean;
@@ -15,6 +16,7 @@ declare type HomeDesignStateType = {
   unpublish: string | null;
   news: News[];
   uploadCSV: boolean;
+  searchText: string
 };
 
 declare type LoginResponse = {
@@ -75,6 +77,7 @@ declare type DeleteNewsResponse = {
 declare type CreateSessionResponse = {
   header: ResponseHeader;
   response: {
+    id: string;
     session_id: string;
     title: string;
   };
@@ -94,8 +97,8 @@ declare type Session = {
   description: string;
   bg_img: null | string;
   is_active: boolean;
-  venue: Shape;
-  attachments:{file:string, id:string}[]
+  venue: Shape & { designId: string };
+  attachments: { file: string, id: string }[]
 };
 
 declare type CreateSessionRequest = Omit<
@@ -118,6 +121,7 @@ declare type DeleteSessionResponse = {
 declare type CreateSpeakerResponse = {
   header: ResponseHeader;
   response: {
+    id: string;
     speaker_id: string;
     name: string;
   };
@@ -171,7 +175,7 @@ declare type SpeakerListResponse = {
 
 declare type AllSpeakerListResponse = {
   header: ResponseHeader;
-  response: {id:string, name:string}[];
+  response: { id: string, name: string }[];
 };
 
 declare type DeleteSpeakerResponse = {
@@ -217,8 +221,8 @@ declare type AppConfig = {
   home_design: {
     home_title: string;
     categories: any[]
-    show_carusole:boolean,
-    key_note_speaker:boolean
+    show_carusole: boolean,
+    key_note_speaker: boolean
   };
 };
 
@@ -247,7 +251,7 @@ declare type GlobalNavMenuResponse = {
 
 declare type GlobalVenue = {
   bg_venue: string;
-  attachent:string;
+  attachment: string;
   getting_there: {
     sub_title: string;
     description: string;
@@ -334,6 +338,14 @@ declare type SpeakerSetting = {
       title: string;
     };
   };
+  venue: {
+    getting_there_sub_title: string;
+    getting_there_description: string;
+    latitude: string;
+    longitude: string;
+    image: string | File;
+    attachment: string | File;
+  };
 };
 
 declare type SpeakerSettingResponse = {
@@ -343,10 +355,11 @@ declare type SpeakerSettingResponse = {
 
 declare type Programme = {
   attachments: {
-    id:string;
+    id: string;
     filename: string;
     has_attachment: boolean;
   }[];
+  type: string;
   id: string;
   title: string;
   location: string;
@@ -369,6 +382,7 @@ declare type Programme = {
   description: string;
   bg_image: string;
   venue: Shape & { designId: string; design_label: string };
+  space_type:string;
 };
 
 // declare type Programme = {
@@ -388,23 +402,39 @@ declare type Programme = {
 declare type GlobalProgrammeListResponse = {
   header: ResponseHeader;
   response: {
-    // conference_title: string;
-    // conference_start_date: string;
-    // conference_end_date: string;
-    // conference_start_time: sring;
-    // conference_end_time: string;
-    // conference_location: string;
-    // programme: {
-    //   [date: string]: Programme[];
-    // };
-    // seq: string[];
     programme: Programme[];
     all_categories: {
       id: string;
       name: string;
       color: string;
     }[];
+    types: string[]
   };
+};
+
+declare type GlobalProgrammeListResponse3_v2_Response_T = {
+  data: Record<string, Record<string, Programme[]>>;
+  dates: string[];
+  types: string[]
+}
+
+declare type GlobalProgrammeListResponse3_v2 = {
+  header: ResponseHeader;
+  response: GlobalProgrammeListResponse3_v2_Response_T;
+};
+
+type ProgrammeTypeList = {
+  "type": string,
+  "date": string,
+  "start_time": string,
+  "end_time": string,
+  "title": string,
+  "category_color": string,
+}
+
+declare type GlobalProgrammeTypeListResponse = {
+  header: ResponseHeader;
+  response: ProgrammeTypeList[]
 };
 
 declare type ProgrammeCreateCategoryResponse = {
@@ -422,32 +452,74 @@ declare type ProfileResponse = {
     user_info: {
       firstname: string;
       lastname: string;
+      image_id: string;
       email: string;
       designation: string;
       company_name: string;
       linkedin_url: string;
       phone_number: string;
       profile_image: string;
+      type: number;
+      gender: string
     };
     qr_image: string;
+    speaker_info: {
+      "firstname": string,
+      "lastname": string,
+      "designation": string,
+      "company": string,
+      "bio": string,
+      "profile_image": string,
+      "external_link": string,
+      "linkedin_url": string,
+      "whatsapp_url": string
+    } | null
+    exhibitor_info: {
+      "full_name": string,
+      "url": string,
+      "logo": string,
+      "booth_no": string
+    } | null
   };
 };
 
 declare type ProfilePicResponse = {
   header: ResponseHeader;
-  response: {};
+  response: {
+    id: string;
+  };
 };
 
 declare type ProfileUpdateRequest = {
-  name_prefix: string;
-  firstname: string;
-  lastname: string;
-  gender: string;
-  company_name: string;
-  designation: string;
-  linkedin_url: string;
-  // user_image: string;
-  phone_number: string;
+  user_info?: {
+    firstname: string;
+    lastname: string;
+    email?: string;
+    designation: string | null;
+    company_name: string | null;
+    linkedin_url: string | null;
+    phone_number: string | null;
+    profile_image?: string | null;
+    gender: "Male" | "Female" | "Other" | string
+    image_id?: string;
+  };
+  speaker_info?: {
+    "firstname": string,
+    "lastname": string,
+    "designation": string,
+    "company": string,
+    "bio": string,
+    "profile_image"?: string,
+    "external_link": string,
+    "linkedin_url": string,
+    "whatsapp_url": string
+  }
+  exhibitor_info?: {
+    "full_name": string,
+    "url": string,
+    "logo"?: string,
+    "booth_no": string
+  }
 };
 
 declare type OtpResponse = {
@@ -488,15 +560,15 @@ declare type Exhibitor = {
   logo: string;
   categoryId: string;
   ads: boolean;
-  category_name:string
+  category_name: string
+  booth_no: string
+  color?: string;
 };
 
 declare type ExhibitorListResponse = {
   header: ResponseHeader;
-  response: {
-    seq: string[];
-  } & {
-    [category: string]: Exhibitor[];
+  response: Infinity & {
+    data: Omit<Exhibitor, "category">[]
   };
 };
 
@@ -505,6 +577,7 @@ declare type Category = {
   name: string;
   color: string;
   type: number;
+  seq?: number;
 };
 
 declare type CategoryListResponse = {
@@ -514,8 +587,13 @@ declare type CategoryListResponse = {
 
 declare type GlobalExhibitorListResponse = {
   header: ResponseHeader;
-  response: Omit<Exhibitor, "category">[];
+  response: Omit<Exhibitor, "category">[]
 };
+
+declare type GlobalExhibitorListPageResponse = {
+  header: ResponseHeader;
+  response: Infinity & { data: Omit<Exhibitor, "category">[] };
+}
 
 declare type GlobalUsersProfile = {
   header: ResponseHeader;
@@ -579,7 +657,7 @@ declare type VenueDesignMap = {
 
 declare type GlobalVenueDesignMap = {
   header: ResponseHeader;
-  response: (MapT & { programmes: Programme[]; created_by: string })[];
+  response: (MapT & { programmes: (Programme & { venue_id: string; })[]; created_by: string })[];
 };
 
 declare type Infinity = {
@@ -615,6 +693,7 @@ declare type GlobalInfinityExhibitors = {
   response: Infinity & {
     data: {
       seq: string[];
+      colors?: Record<string, string>;
     } & {
       grouped: { [category: string]: Omit<Exhibitor, "category">[] };
     };
@@ -657,7 +736,7 @@ declare type Carusole = {
   bg_img: string;
   description: string | null;
   type: number;
-  category_name:string;
+  category_name: string;
 };
 
 declare type HeroCarusoleT = {
@@ -668,6 +747,7 @@ declare type HeroCarusoleT = {
 declare type FindExhibitorById = {
   header: ResponseHeader;
   response: {
+    booth_no: string;
     exhibitor_id: string;
     full_name: string;
     email: string;
@@ -681,6 +761,7 @@ declare type FindExhibitorById = {
     }[];
     description: string | null;
     created_at: string;
+    color?: string;
   };
 };
 
@@ -692,5 +773,5 @@ declare type FailedNewsEntry = {
 
 declare type BulkImageResponse = {
   header: ResponseHeader;
-  response: FailedNewsEntry[]
+  response: Record<string, FailedNewsEntry[]>;
 }

@@ -16,7 +16,7 @@ import { indexedDBStorage } from "@/services/indexdb";
 const persistConfig = {
   key: "root",
   storage: indexedDBStorage, // localStorage
-  // whitelist:["Global_DesignSlice", "AuthSlice"]
+  whitelist:["Global_DesignSlice", "AuthSlice"]
 };
 
 const rootReducer = combineReducers({

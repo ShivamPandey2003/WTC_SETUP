@@ -1,17 +1,21 @@
 import type { OutputItem } from "@/lib/extra";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
+type Step = "email" | "otp";
+
 export type ProgrammeRecord = {
   start_date: string;
   start_time: string;
   end_time: string;
   end_date: string;
-  data: Record<string, OutputItem[]>;
+  data: Record<string, OutputItem[][]>;
 };
 
 export type initialStateT = {
   Programmes: ProgrammeRecord;
   News: News[]
+  VenueActiveTab: string
+  step: Step;
 };
 
 const initialState: initialStateT = {
@@ -22,7 +26,9 @@ const initialState: initialStateT = {
     end_time: "",
     data: {},
   },
-  News:[]
+  News: [],
+  VenueActiveTab: "General Settings",
+  step: "email",
 };
 
 const ExtraSlice = createSlice({
@@ -35,8 +41,15 @@ const ExtraSlice = createSlice({
     setNews: (state, payload: PayloadAction<News[]>) => {
       state.News = payload.payload;
     },
+    setVenueActiveTab: (state, payload: PayloadAction<string>) => {
+      state.VenueActiveTab = payload.payload
+    },
+    setStep: (state, payload: PayloadAction<Step>) => {
+      state.step = payload.payload;
+      return state;
+    },
   },
 });
 
-export const { setProgrammes, setNews } = ExtraSlice.actions;
+export const { setProgrammes, setNews, setVenueActiveTab, setStep} = ExtraSlice.actions;
 export default ExtraSlice.reducer;

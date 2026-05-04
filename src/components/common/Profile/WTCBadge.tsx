@@ -29,7 +29,7 @@ export default function WTCBadge() {
           </div>
           <div className="flex items-center space-x-1">
             <MapPin size={14} />
-            <span>{conference_location}</span>
+            <p className="">{conference_location}</p>
           </div>
         </div>
       </div>

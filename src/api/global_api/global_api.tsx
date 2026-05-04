@@ -18,11 +18,9 @@ import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import {
-  setNews,
-  type ProgrammeRecord,
-} from "@/redux/ExtraSlice";
+import { setNews, type ProgrammeRecord } from "@/redux/ExtraSlice";
 import { nanoid } from "nanoid";
+import { groupIntoColumns } from "@/lib/GroupintoColumn";
 
 export const useGlobalDesign = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -37,7 +35,9 @@ export const useGlobalDesign = () => {
       return res.response;
     },
     select: (data) => {
-      dispatch(setAppConfig(data.response));
+      if (Object.keys(data.response).length > 0) {
+        dispatch(setAppConfig(data.response));
+      }
       return data;
     },
     refetchOnWindowFocus: false,
@@ -91,6 +91,7 @@ export const useInfiniteNews = () => {
       if (current_page < max_page) return next_page;
       return undefined; // no more pages
     },
+    refetchOnWindowFocus: false,
   });
 
   return {
@@ -144,6 +145,7 @@ export const useInfiniteSpeakers = () => {
       if (current_page < max_page) return next_page;
       return undefined; // no more pages
     },
+    retry: 0,
   });
 
   return {
@@ -218,6 +220,7 @@ export const useGetProgrammeList = () => {
                 };
               },
             );
+            if (detail.length === 0) return;
             return {
               session_id: Datas.id,
               id: nanoid(),
@@ -229,19 +232,59 @@ export const useGetProgrammeList = () => {
               type: "normal",
             };
           });
+        const result = transformSessions(val as any);
+        const columns = result ? groupIntoColumns(result) : [];
         value.data = {
-          [item]: transformSessions(val as any),
+          [item]: columns,
           ...value.data,
         };
       });
 
-      return {data:data, custom:value};
+      return { data: data, custom: value };
     },
     refetchOnWindowFocus: false,
     retry: 1,
   });
 
   return { ProgrammeList, isPending, error, refetch };
+};
+
+export const useGetProgrammeList3_v2 = () => {
+  const {
+    data: ProgrammeList,
+    isPending,
+    error,
+    refetch,
+  } = useQuery<GlobalProgrammeListResponse3_v2, AxiosError>({
+    queryKey: ["global-programme-calender"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "program/hybrid-calendar");
+      return res.response;
+    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  return { ProgrammeList, isPending, error, refetch };
+};
+
+export const useGetProgrammeTypeList = () => {
+  const {
+    data: ProgrammeTypeList,
+    isPending,
+    error,
+    refetch,
+  } = useQuery<GlobalProgrammeTypeListResponse, AxiosError>({
+    queryKey: ["global-programme-types"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "program/merged");
+      return res.response;
+    },
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  return { ProgrammeTypeList, isPending, error, refetch };
 };
 
 export const useGetNavMenu = () => {
@@ -283,6 +326,7 @@ export const useGetVenue = () => {
     },
     refetchOnWindowFocus: false,
     retry: 1,
+    staleTime: 0,
   });
 
   return { Venue, isPending, error };
@@ -333,14 +377,14 @@ export const useUploadLogo = () => {
   } = useMutation<
     LogoUpdateResponse,
     AxiosError,
-    { form: FormData; type: number; extra?: string }
+    { data: { file_path: string }; type: number; extra?: string }
   >({
     mutationFn: async (data) => {
       const params = data.extra ? `${data.type}${data.extra}` : data.type;
       const res = await apiRequest(
         "post",
         `global/settings/logo/update?main=${params}`,
-        data.form,
+        data.data,
       );
       return res.response;
     },
@@ -382,49 +426,205 @@ export const useSpeakerDesignUpdate = () => {
   };
 };
 
+type Segment = {
+  text: string;
+  bold: boolean;
+  italic: boolean;
+  underline: boolean;
+  color: string | null;
+};
+
+type Block = {
+  type: "paragraph" | "heading";
+  level?: number;
+  segments: Segment[];
+};
+
+export const convertHtmlToBlocks = (input: string): { blocks: Block[] } => {
+  // -----------------------------
+  // STEP 1: Parse once (no duplicate parser)
+  // -----------------------------
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(input, "text/html");
+
+  // Detect REAL HTML (not fake <text>)
+  const hasRealHtml = Array.from(doc.body.childNodes).some(
+    (node) => node.nodeType === Node.ELEMENT_NODE
+  );
+
+  // -----------------------------
+  // HANDLE PLAIN TEXT
+  // -----------------------------
+  if (!hasRealHtml) {
+    const lines = input.split("\n");
+
+    const blocks: Block[] = [];
+
+    lines.forEach((line) => {
+      const trimmed = line.trim();
+
+      // empty line → paragraph break
+      if (!trimmed) {
+        blocks.push({
+          type: "paragraph",
+          segments: [
+            {
+              text: "\n",
+              bold: false,
+              italic: false,
+              underline: false,
+              color: null,
+            },
+          ],
+        });
+        return;
+      }
+
+      // heading detection (unchanged)
+      let blockType: Block["type"] = "paragraph";
+      let level: number | undefined = undefined;
+
+      if (/^this is h1/i.test(trimmed)) {
+        blockType = "heading";
+        level = 1;
+      } else if (/^this is h2/i.test(trimmed)) {
+        blockType = "heading";
+        level = 2;
+      } else if (/^this is h3/i.test(trimmed)) {
+        blockType = "heading";
+        level = 3;
+      }
+
+      blocks.push({
+        type: blockType,
+        level,
+        segments: [
+          {
+            text: line,
+            bold: false,
+            italic: false,
+            underline: false,
+            color: null,
+          },
+        ],
+      });
+    });
+
+    return { blocks };
+  }
+
+  // -----------------------------
+  // HANDLE HTML (SAFE VERSION)
+  // -----------------------------
+  const blocks: Block[] = [];
+
+  const getStyles = (node: HTMLElement, parent: Segment): Segment => {
+    const tag = node.tagName?.toLowerCase();
+
+    return {
+      text: "",
+      bold: parent.bold || tag === "b" || tag === "strong",
+      italic: parent.italic || tag === "i" || tag === "em",
+      underline: parent.underline || tag === "u",
+      color: null,
+    };
+  };
+
+  const traverse = (node: ChildNode, styles: Segment, segments: Segment[]) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent || "";
+      if (text.length > 0) {
+        segments.push({ ...styles, text });
+      }
+      return;
+    }
+
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const el = node as HTMLElement;
+      const tag = el.tagName.toLowerCase();
+
+      if (tag === "br") {
+        segments.push({ ...styles, text: "\n" });
+        return;
+      }
+
+      const newStyles = getStyles(el, styles);
+      el.childNodes.forEach((child) => traverse(child, newStyles, segments));
+    }
+  };
+
+  const allowedTags = ["p", "h1", "h2", "h3"];
+
+  doc.body.childNodes.forEach((node) => {
+    // -----------------------------
+    // ELEMENT NODE
+    // -----------------------------
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const el = node as HTMLElement;
+      const tag = el.tagName.toLowerCase();
+
+      const segments: Segment[] = [];
+
+      traverse(
+        el,
+        {
+          text: "",
+          bold: false,
+          italic: false,
+          underline: false,
+          color: null,
+        },
+        segments
+      );
+
+      if (segments.length === 0) return;
+
+      // Allowed tags → original behavior
+      if (allowedTags.includes(tag)) {
+        blocks.push({
+          type: tag === "p" ? "paragraph" : "heading",
+          level: tag.startsWith("h") ? Number(tag[1]) : undefined,
+          segments,
+        });
+      } else {
+        // Fallback (prevents data loss)
+        blocks.push({
+          type: "paragraph",
+          segments,
+        });
+      }
+    }
+
+    // -----------------------------
+    // TEXT NODE (previously ignored → FIXED)
+    // -----------------------------
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent?.trim();
+
+      if (text) {
+        blocks.push({
+          type: "paragraph",
+          segments: [
+            {
+              text,
+              bold: false,
+              italic: false,
+              underline: false,
+              color: null,
+            },
+          ],
+        });
+      }
+    }
+  });
+
+  return { blocks };
+};
+
 export const useVenueDesignUpdate = () => {
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
-  const { venue_tab, venue } = CustomPick(SpeakerSettings, [
-    "venue_tab",
-    "venue",
-  ]);
-
-  const { image, ...rest } = venue;
-
-  const data =
-    typeof image === "string"
-      ? {
-          ...rest,
-          venue_tab,
-          floor_plan: "",
-          visa_title: "",
-          visa_sub_title: "",
-          visa_description: "",
-          travel_title: "",
-          travel_description: "",
-        }
-      : {
-          ...venue,
-          venue_tab,
-          floor_plan: "",
-          visa_title: "",
-          visa_sub_title: "",
-          visa_description: "",
-          travel_title: "",
-          travel_description: "",
-        };
-
-  const formData = new FormData();
-
-  Object.entries(data).forEach(([key, value]) => {
-    if(value !== null){
-      if(key === "image" && typeof value === "string") return;
-      if(key === "attachment" && typeof value === "string") return;
-      formData.append(key, value);
-    }
-  });
 
   const {
     mutate: UpdateVenueDesign,
@@ -432,11 +632,59 @@ export const useVenueDesignUpdate = () => {
     error: errorInUpdateVenueDesign,
   } = useMutation<ProfilePicResponse, AxiosError>({
     mutationFn: async () => {
-      const res = await apiRequest("post", "/venue/save", formData);
+      const { venue_tab, venue } = CustomPick(SpeakerSettings, [
+        "venue_tab",
+        "venue",
+      ]);
+
+      const { image, ...rest } = venue;
+
+      const data =
+        typeof image === "string"
+          ? {
+              ...rest,
+              venue_tab,
+              floor_plan: "",
+              visa_title: "",
+              visa_sub_title: "",
+              visa_description: "",
+              travel_title: "",
+              travel_description: "",
+            }
+          : {
+              ...venue,
+              venue_tab,
+              floor_plan: "",
+              visa_title: "",
+              visa_sub_title: "",
+              visa_description: "",
+              travel_title: "",
+              travel_description: "",
+            };
+
+      const payload: Record<string, any> = {};
+
+      Object.entries(data).forEach(([key, value]) => {
+        if (value !== null) {
+          if (key === "image" && typeof value === "string") return;
+          if (key === "attachment" && typeof value === "string") return;
+          if (
+            key === "getting_there_description" &&
+            typeof value === "string"
+          ) {
+            const result = convertHtmlToBlocks(value);
+            payload[key] = result;
+          } else {
+            payload[key] = value;
+          }
+        }
+      });
+      const res = await apiRequest("post", "/venue/save", payload);
       return res.response;
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
+      queryClient.invalidateQueries({ queryKey: ["Settings"] });
     },
   });
 
@@ -498,9 +746,12 @@ export const useCategoryList = () => {
       const res = await apiRequest("get", "category/all");
       return res.response;
     },
-    select: (data) => {
-      return data;
-    },
+    select: (data) => ({
+      ...data,
+      response: [...data.response].sort(
+        (a, b) => (a.seq ?? 0) - (b.seq ?? 0),
+      ),
+    }),
     retry: 1,
     refetchOnWindowFocus: false,
   });
@@ -554,6 +805,27 @@ export const useGetExhibitorsList = () => {
     },
     refetchOnWindowFocus: false,
     retry: 1,
+  });
+
+  return { ExhibitorList, isPending, error };
+};
+
+export const useGetExhibitorsListPage = (page: number = 1) => {
+  const {
+    data: ExhibitorList,
+    isPending,
+    error,
+  } = useQuery<GlobalExhibitorListPageResponse, AxiosError>({
+    queryKey: ["global-Exhibitors-Page", page],
+    queryFn: async () => {
+      const res = await apiRequest("get", `exhibitors/carusole?page=${page}`);
+      return res.response;
+    },
+    select: (data) => {
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    retry: 0,
   });
 
   return { ExhibitorList, isPending, error };
@@ -629,7 +901,7 @@ export const useGetConferenceDetails = () => {
       return data;
     },
     refetchOnWindowFocus: false,
-    retry: 1,
+    retry: 0,
   });
 
   return { ConferenceDetails, isPending, error };
@@ -643,22 +915,18 @@ export const useHomeDesignUpdate = () => {
   const payload = {
     home_title: filtered.home_design.home_title,
     carusole_display: filtered.home_design.categories,
-    show_carusole:filtered.home_design.show_carusole,
-    key_note_speaker:filtered.home_design.key_note_speaker
-  }
+    show_carusole: filtered.home_design.show_carusole,
+    key_note_speaker: filtered.home_design.key_note_speaker,
+  };
 
   const {
     mutate: UpdateHomeDesign,
     isPending: isUpdateHomeDesignPending,
     error: errorInUpdateHomeDesign,
-    data:HomeDesignUpdateData
+    data: HomeDesignUpdateData,
   } = useMutation<ProfilePicResponse, AxiosError>({
     mutationFn: async () => {
-      const res = await apiRequest(
-        "post",
-        "/home/design/save",
-        payload,
-      );
+      const res = await apiRequest("post", "/home/design/save", payload);
       return res.response;
     },
     onSuccess: (data) => {
@@ -671,7 +939,7 @@ export const useHomeDesignUpdate = () => {
     UpdateHomeDesign,
     isUpdateHomeDesignPending,
     errorInUpdateHomeDesign,
-    HomeDesignUpdateData
+    HomeDesignUpdateData,
   };
 };
 
@@ -740,7 +1008,7 @@ export const useGetTabs = () => {
       return data;
     },
     refetchOnWindowFocus: false,
-    retry: 1,
+    retry: 0,
   });
 
   return {

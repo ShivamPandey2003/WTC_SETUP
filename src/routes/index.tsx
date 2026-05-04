@@ -20,12 +20,10 @@ import V2_Venue_page from "@/v2_pages/V2_Venue.page";
 import V2_Programme_page from "@/v2_pages/V2_Programme.page";
 import V2_VenueDesign_page from "@/v2_pages/V2_VenueDesign.page";
 import V2_UserProfile_page from "@/v2_pages/V2_UserProfile.page";
-import NewsDetail from "@/v2_pages/NewsDetail";
-import SpeakerDetails from "@/v2_pages/SpeakerDetails";
-import ExhibitorsDetails from "@/v2_pages/ExhibitorsDetails";
 import AttachmentPdf from "@/v2_pages/AttachmentPdf";
 import Auth_page from "@/v2_pages/Auth.page";
 import Onboarding_page from "@/v2_pages/Onboarding.page";
+import Not_Found from "@/v2_components/global/Not_Found";
 
 const Router = createBrowserRouter(
   [
@@ -80,20 +78,12 @@ const Router = createBrowserRouter(
           ),
         },
         {
-          path: "news/:id",
-          element: <NewsDetail />,
-        },
-        {
-          path: "speaker/:id",
-          element: <SpeakerDetails />,
-        },
-        {
-          path: "exhibitors/:id",
-          element: <ExhibitorsDetails />,
-        },
-        {
           path: "attachment/:id",
           element: <AttachmentPdf />,
+        },
+        {
+          path: "*",
+          element: <Not_Found/>,
         },
       ],
     },
@@ -152,7 +142,7 @@ const Router = createBrowserRouter(
     {
       path: "/onboarding",
       element: <ProtectedRoute element={<Onboarding_page />} />,
-    }
+    },
   ],
   // {
   //   basename: "/wtc/",

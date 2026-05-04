@@ -3,16 +3,17 @@ import { cn } from "@/lib/utils";
 import { setSearchModal, setTitle } from "@/redux/ModalSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { ChevronLeft, Menu } from "lucide-react";
-import { useEffect, useState, type RefObject } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { SearchTrigger } from "./SearchTrigger";
 import NewDropdown from "./V2_DropDown";
 import { setUserInfo } from "@/redux/AuthSlice";
 import { useGetProfile } from "@/api/Profile_api/Profile_api";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Prop {
-  REF: RefObject<HTMLDivElement | null>;
+  REF: any;
   setOpen: () => void;
 }
 
@@ -29,28 +30,28 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
   const { speakers } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
   );
-  const { Exhibitors } = useSelector(
+  const { showSearch } = useSelector(
     (state: RootState) => state.ExhibitorSlice,
   );
   const menu = [
     ...(grp === 1
       ? [
-          {
-            id: "Dashboard",
-            label: "Dashboard",
-            onClick: () => {
-              navigate("/global-design");
-              dispatch(setTitle(null));
-            },
+        {
+          id: "Dashboard",
+          label: "Admin Module",
+          onClick: () => {
+            navigate("/global-design");
+            dispatch(setTitle(null));
           },
-        ]
+        },
+      ]
       : []),
     {
       id: "Profile",
       label: "Profile",
       onClick: () => {
         dispatch(setTitle(null));
-        navigate(grp === 1 ? "/wtc-profile" : "/user-profile");
+        navigate(grp === 1 ? "/wtc-profile" : "/user-profile", {state:{Title:"User Profile"}});
       },
     },
     {
@@ -66,25 +67,6 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
     },
   ];
   const { ArrayTabs } = useSelector((state: RootState) => state.Global_Slice);
-  const { title } = useSelector((state: RootState) => state.model);
-  const TitleFetch = (e: string) => {
-    switch (e) {
-      case "programme":
-        return ArrayTabs.programme_tab;
-      case "speaker":
-        return ArrayTabs.speaker_tab;
-      case "venue":
-        return ArrayTabs.venue_tab;
-      case "exhibitors":
-        return ArrayTabs.exhibitors_tab;
-      case "news":
-        return ArrayTabs.home_tab;
-      case "":
-        return ArrayTabs.home_tab;
-      default:
-        return "";
-    }
-  };
 
   useEffect(() => {
     const el = REF?.current;
@@ -102,10 +84,27 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
     };
   }, []);
 
+  const TitleFetch = (e: string) => {
+    switch (e) {
+      case "programme":
+        return ArrayTabs.programme_tab;
+      case "speaker":
+        return ArrayTabs.speaker_tab;
+      case "venue":
+        return ArrayTabs.venue_tab;
+      case "exhibitors":
+        return ArrayTabs.exhibitors_tab;
+      case "news":
+        return ArrayTabs.home_tab;
+      case "":
+        return "News";
+    }
+  };
+
   return (
     <header
       className={cn(
-        "sticky top-0 z-[999] flex items-center justify-between p-4 transition-colors duration-200",
+        "sticky top-0 z-99 bg-[#F2F2F2] flex items-center justify-between p-2 pl-4 pr-4 transition-colors duration-200 gap-x-2 ",
         showBackground && "bg-[#F2F2F2] shadow",
       )}
     >
@@ -121,21 +120,21 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
           />
         )}
         {state ? (
-          <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize text-ellipsis whitespace-nowrap overflow-hidden max-w-[100px] sm:max-w-[300px] md:max-w-[600px]">
+          <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize text-ellipsis whitespace-nowrap overflow-hidden sm:max-w-[300px] md:max-w-[600px]">
             {state.Title}
           </h2>
         ) : (
-          <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize text-ellipsis whitespace-nowrap overflow-hidden max-w-[100px] sm:max-w-[300px] md:max-w-[600px]">
-            {TitleFetch(pathname.split("/")[1])} {title ? `/ ${title}` : ""}
+          <h2 className="text-[26px] font-[600] text-[#575757] leading-[27px] capitalize text-ellipsis whitespace-nowrap overflow-hidden sm:max-w-[300px] md:max-w-[600px]">
+            {TitleFetch(pathname.split("/")[1])}
           </h2>
         )}
       </div>
       <div className="flex items-center gap-4">
         {((pathname === "/" && News.length > 0) ||
           (pathname === "/speaker" && speakers.length > 0) ||
-          (pathname === "/exhibitors" && Exhibitors.length > 0)) && (
-          <SearchTrigger onClick={() => dispatch(setSearchModal(true))} />
-        )}
+          (pathname === "/exhibitors" && showSearch)) && (
+            <SearchTrigger onClick={() => dispatch(setSearchModal(true))} tabname={TitleFetch(pathname.split("/")[1]) as string} />
+          )}
         {!token ? (
           <Button
             onClick={() => navigate("/auth")}
@@ -148,11 +147,15 @@ const V2_Navbar = ({ REF, setOpen }: Prop) => {
             className=""
             position="bottom-right"
             trigger={
-              <button className="p-2 flex items-center gap-3 text-sm hover:bg-primary/50 transition-colors border-t border-white/20 cursor-pointer rounded-full bg-primary">
-                {Profile && (
-                  <span className="text-sm font-bold text-white">{`${Profile?.response?.user_info.firstname[0]} ${Profile?.response?.user_info.lastname[0]}`}</span>
-                )}
-              </button>
+              Profile && Profile?.response?.user_info ? (
+                <button className="p-2 flex items-center gap-3 text-sm hover:bg-primary/50 transition-colors border-t border-white/20 cursor-pointer w-10 h-10 rounded-full bg-primary">
+                  <span className="text-sm font-bold text-white w-full">
+                    {`${Profile?.response?.user_info.firstname[0]}${Profile?.response?.user_info.lastname[0]}`}
+                  </span>
+                </button>
+              )
+              :
+              <Skeleton className="w-10 h-10 rounded-full" />
             }
             items={menu as any[]}
           />

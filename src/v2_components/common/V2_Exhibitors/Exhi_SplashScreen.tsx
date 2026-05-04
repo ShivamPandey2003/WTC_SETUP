@@ -18,7 +18,7 @@ const Exhi_SplashScreen = ({ open, setOpen }: V2_SplashScreenProps) => {
     setOpen(false);
   };
 
-  if (!open || !appConfig.show_exhibitor_splash) return null;
+  if (!open || !appConfig.show_exhibitor_splash || !appConfig.exhibitor_splash.image) return null;
 
   return (
     <div

@@ -1,4 +1,5 @@
 import { queryClient } from "@/provider/TanstackProvider";
+import { setVenueActiveTab } from "@/redux/ExtraSlice";
 import type { AppDispatch } from "@/redux/store";
 import {
   setEditFloorLevelModal,
@@ -9,6 +10,7 @@ import {
 import { apiRequest } from "@/services/apiService";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -26,7 +28,7 @@ export const useUploadFloorPlan = () => {
     onSuccess: (data) => {
       toast.success(data.header.message);
       queryClient.invalidateQueries({ queryKey: ["Floor-Plan"] });
-    }
+    },
   });
 
   return { UploadFloorPlan, isPending, error };
@@ -55,6 +57,7 @@ export const useGetFloorPlan = (func: (e: string) => void) => {
 };
 
 export const useSaveFloorPlanData = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const {
     mutate: SaveFloorPlanData,
@@ -71,9 +74,10 @@ export const useSaveFloorPlanData = () => {
     },
     onSuccess: (data) => {
       toast.success(data.header.message);
+      dispatch(setVenueActiveTab("Floor Plan"));
       navigate("/venue-design");
       // queryClient.invalidateQueries({ queryKey: ["Floor-Plan"] });
-    }
+    },
   });
 
   return { SaveFloorPlanData, isPending, error };
@@ -146,7 +150,7 @@ export const useV2GetFloorMApList = () => {
   return { V2_FloorMapList, V2_isFloorMapListPending, V2_FloorMapListError };
 };
 
-export const useCreateFloorLevel = () => {
+export const useCreateFloorLevel = (reset: () => void) => {
   const dispatch = useDispatch<AppDispatch>();
   const {
     mutate: CreateFloorLevel,
@@ -157,11 +161,35 @@ export const useCreateFloorLevel = () => {
       const res = await apiRequest("post", "/designer/save", data);
       return res.response;
     },
-    onSuccess: () => {
+    onSuccess: async (data, variable) => {
+      const file = variable.get("file") as File;
       toast.success("Floor Level created successfully");
+      if (file) {
+        const res = await apiRequest(
+          "post",
+          `/upload/presigned-url?file_name=${file.name}&module=${"floor_plan_design"}&ref_id=${data.response.id}`,
+        );
+
+        const { file_key, upload_url } = res.response.response;
+        await axios.put(upload_url, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+          responseType: "blob",
+        });
+
+        const newForm = new FormData();
+        newForm.append("module", "designer");
+        newForm.append("record_id", data.response.id);
+        newForm.append("file_path_image", file_key);
+
+        await apiRequest("post", "upload/common/files", newForm);
+      }
+
       queryClient.invalidateQueries({ queryKey: ["map-list_V2"] });
       dispatch(setFloorLevelModal(false));
-    }
+      reset();
+    },
   });
 
   return { CreateFloorLevel, isPending, error };
@@ -180,7 +208,7 @@ export const useDeleteFloorLevel = () => {
     onSuccess: () => {
       toast.success("Floor Level delete successfully");
       queryClient.invalidateQueries({ queryKey: ["map-list_V2"] });
-    }
+    },
   });
 
   return { DeleteFloorLevel, isPending, error };
@@ -205,7 +233,7 @@ export const useEditFloorLevel = () => {
       toast.success("Floor Level Edit successfully");
       queryClient.invalidateQueries({ queryKey: ["map-list_V2"] });
       dispatch(setEditFloorLevelModal(false));
-    }
+    },
   });
 
   return { EditFloorLevel, isPending, error };

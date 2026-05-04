@@ -1,5 +1,5 @@
 import { apiRequest } from "@/services/apiService";
-import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { queryClient } from "@/provider/TanstackProvider";
 import { toast } from "sonner";
@@ -11,33 +11,31 @@ import {
 } from "@/redux/ExhibitorSlice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
+import axios from "axios";
 
-// export const useGetExhibitorsList = () => {
-//   const dispatch = useDispatch<AppDispatch>();
-//   const {
-//     data: Exhibitors,
-//     isPending: isExhibitorsPending,
-//     error: errorInError,
-//   } = useQuery<ExhibitorListResponse, AxiosError>({
-//     queryKey: ["exhibitor-design-list"],
-//     queryFn: async () => {
-//       const res = await apiRequest("get", "exhibitors/listing");
-//       return res.response;
-//     },
-//     select: (data) => {
-//       dispatch(
-//         setExhibitors(
-//           data.response.seq.flatMap((string) => [...data.response[string]]),
-//         ),
-//       );
-//       return data;
-//     },
-//     refetchOnWindowFocus: false,
-//     retry: 1,
-//   });
+export const useGetExhibitorsList = (page: number = 1, search?:string) => {
 
-//   return { Exhibitors, isExhibitorsPending, errorInError };
-// };
+  const url = (search && search.trim())?`exhibitors/listing?page=${page}&search=${search}`:`exhibitors/listing?page=${page}`
+
+  const {
+    data: Exhibitors,
+    isPending: isExhibitorsPending,
+    error: errorInError,
+  } = useQuery<ExhibitorListResponse, AxiosError>({
+    queryKey: ["exhibitor-design-list", page, search],
+    queryFn: async () => {
+      const res = await apiRequest("get", url);
+      return res.response;
+    },
+    select: (data) => {
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    retry: 0,
+  });
+
+  return { Exhibitors, isExhibitorsPending, errorInError };
+};
 
 export const useAdminInfiniteExhibitors = () => {
   const {
@@ -65,7 +63,11 @@ export const useAdminInfiniteExhibitors = () => {
       if (current_page < max_page) return next_page;
       return undefined; // no more pages
     },
-    refetchOnWindowFocus:false
+    getPreviousPageParam: (lastPage) => {
+      const { next_page } = lastPage.response;
+      return next_page - 1 !== 0 ? next_page - 1 : undefined;
+    },
+    refetchOnWindowFocus: false,
   });
 
   return {
@@ -92,10 +94,37 @@ export const useCreateExhibitor = () => {
       const res = await apiRequest("post", "/exhibitors/add", data);
       return res.response;
     },
-    onSuccess: () => {
+    onSuccess: async(data, variable) => {
       toast.success("Exhibitor created successfully");
       dispatch(setIsCreating(false));
-      queryClient.invalidateQueries({ queryKey: ["Admin-Exhibitors-pagination"] });
+
+      const file = variable.get("logo") as File;
+
+      if (file) {
+        const res = await apiRequest(
+          "post",
+          `/upload/presigned-url?file_name=${file.name}&module=${"exhibitors_logo"}&ref_id=${data.response.id}`,
+        );
+        const { file_key, upload_url } = res.response.response;
+
+        await axios.put(upload_url, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+          responseType: "blob",
+        });
+
+        const newForm = new FormData();
+        newForm.append("module", "exhibitor");
+        newForm.append("record_id", data.response.id);
+        newForm.append("file_path_image", file_key);
+
+        await apiRequest("post", "upload/common/files", newForm);
+      }
+
+      queryClient.invalidateQueries({
+        queryKey: ["exhibitor-design-list"],
+      });
     },
   });
 
@@ -116,7 +145,9 @@ export const useDeleteExibitor = () => {
     onSuccess: (data) => {
       toast.success(data.header.message);
       dispatch(setIsDeleting(null));
-      queryClient.invalidateQueries({ queryKey: ["Admin-Exhibitors-pagination"] });
+      queryClient.invalidateQueries({
+        queryKey: ["exhibitor-design-list"],
+      });
     },
   });
 
@@ -139,10 +170,37 @@ export const useEditExhibitor = () => {
       const res = await apiRequest("post", `exhibitors/edit/${id}`, form);
       return res.response;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data, variable) => {
       toast.success(data.header.message);
       dispatch(setSelected(null));
-      queryClient.invalidateQueries({ queryKey: ["Admin-Exhibitors-pagination"] });
+
+      const file = variable.form.get("logo") as File;
+
+      if (file) {
+        const res = await apiRequest(
+          "post",
+          `/upload/presigned-url?file_name=${file.name}&module=${"exhibitors_logo"}&ref_id=${data.response.id}`,
+        );
+        const { file_key, upload_url } = res.response.response;
+
+        await axios.put(upload_url, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+          responseType: "blob",
+        });
+
+        const newForm = new FormData();
+        newForm.append("module", "exhibitor");
+        newForm.append("record_id", data.response.id);
+        newForm.append("file_path_image", file_key);
+
+        await apiRequest("post", "upload/common/files", newForm);
+      }
+
+      queryClient.invalidateQueries({
+        queryKey: ["exhibitor-design-list"],
+      });
     },
   });
 
@@ -178,7 +236,9 @@ export const useUploadExhibitorsCSV = () => {
       link.remove();
 
       toast.success("CSV downloaded successfully");
-      queryClient.invalidateQueries({ queryKey: ["Admin-Exhibitors-pagination"] });
+      queryClient.invalidateQueries({
+        queryKey: ["exhibitor-design-list"],
+      });
       dispatch(setUploadCSV(false));
     },
   });
@@ -244,10 +304,10 @@ export const useExhibitorsDownload = () => {
         return blob;
       },
       onMutate: () => {
-        toast.info("File is preparing for download");
+        toast.info("Preparing file for download");
       },
       onSuccess: () => {
-        toast.success("File download successfully");
+        toast.success("File ready");
       },
     });
 

@@ -10,7 +10,7 @@ import V2_Sidebar, {
 import V2_SplashScreen from "@/v2_components/global/V2_SplashScreen";
 import { X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Outlet } from "react-router";
+import { Outlet, useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { setSearchModal } from "@/redux/ModalSlice";
@@ -21,9 +21,35 @@ const V2_rootlayout = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [spashScreen, setSpashScreen] = useState<boolean>(false);
   const { searchModal } = useSelector((state: RootState) => state.model);
+  const { pathname } = useLocation();
   const dispatch = useDispatch<AppDispatch>();
   const { isGlobalDesignPending } = useGlobalDesign();
   const {} = useGetConferenceDetails();
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const saved = sessionStorage.getItem(pathname);
+    if (saved) {
+      requestAnimationFrame(() => {
+        el.scrollTop = parseFloat(saved);
+      });
+    }
+
+    const handleScroll = () => {
+      if(pathname === "/" || pathname === "/speaker" || pathname === "/exhibitors"){
+
+        sessionStorage.setItem(pathname, String(el.scrollTop));
+      }
+    };
+
+    el.addEventListener("scroll", handleScroll);
+
+    return () => {
+      el.removeEventListener("scroll", handleScroll);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     const isShowed = sessionStorage.getItem("App_Splash");
@@ -41,7 +67,7 @@ const V2_rootlayout = () => {
   return (
     <div className="flex h-screen bg-[#F2F2F2]">
       <V2_Sidebar />
-      <div ref={scrollRef} className="w-full overflow-y-auto">
+      <div id="Main_Scroll" ref={scrollRef} className="w-full overflow-y-auto">
         {!isGlobalDesignPending && (
           <V2_Navbar REF={scrollRef} setOpen={() => setOpen(true)} />
         )}

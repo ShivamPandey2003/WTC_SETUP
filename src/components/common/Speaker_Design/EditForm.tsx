@@ -33,6 +33,7 @@ const EditFrom = () => {
       profile_image,
       attachments,
       whatsapp_url,
+      external_link,
       linkedin_url = "",
       ...rest
     } = value;
@@ -40,6 +41,7 @@ const EditFrom = () => {
       ...rest,
       profile_image: undefined,
       attachments: undefined,
+      external_link: external_link ? external_link : "",
       whatsapp_url: whatsapp_url ? whatsapp_url : "",
       linkedin_url: linkedin_url ? linkedin_url : "",
     } as any);
@@ -90,6 +92,7 @@ const EditFrom = () => {
       | "array-attachment";
     placeholder?: string;
     accept?: string;
+    disable?: boolean;
   }[] = [
     { name: "prefix", label: "Prefix", placeholder: "Enter prefix here" },
     {
@@ -108,11 +111,12 @@ const EditFrom = () => {
       type: "textarea",
       placeholder: "Enter detailed bio...",
     },
-    // {
-    //   name: "email",
-    //   label: "Email",
-    //   placeholder: "Enter a valid email address",
-    // },
+    {
+      name: "email",
+      label: "Email",
+      placeholder: "Enter a valid email address",
+      disable:true
+    },
     { name: "designation", label: "Designation" },
     { name: "company", label: "Company" },
     {
@@ -139,7 +143,7 @@ const EditFrom = () => {
       placeholder: "https://wa.me/XXXXXXXXXX",
     },
     { name: "keyNote", label: "Keynote", type: "checkbox" },
-    { name: "show_mail", label: "Show mail", type: "checkbox"},
+    { name: "show_mail", label: "Show mail", type: "checkbox" },
   ];
 
   return (

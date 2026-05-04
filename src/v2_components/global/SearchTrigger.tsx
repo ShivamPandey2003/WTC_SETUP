@@ -3,9 +3,11 @@ import { useEffect } from 'react';
 
 interface SearchTriggerProps {
   onClick: () => void;
+  tabname: string;
+
 }
 
-export function SearchTrigger({ onClick }: SearchTriggerProps) {
+export function SearchTrigger({ onClick, tabname }: SearchTriggerProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -25,7 +27,7 @@ export function SearchTrigger({ onClick }: SearchTriggerProps) {
     >
       <Search className="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors" />
       <span className="hidden sm:block text-gray-500 group-hover:text-gray-700 transition-colors">
-        Search...
+        Search {tabname ? tabname : "..."}
       </span>
     </button>
   );

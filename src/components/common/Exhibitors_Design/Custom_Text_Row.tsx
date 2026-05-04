@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 interface Custom_Text_RowProp {
   index: string;
+  seq: number;
   id: string;
   value: string;
   color: string;
@@ -21,7 +22,7 @@ interface Custom_Text_RowProp {
 }
 
 const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
-  index,
+  seq,
   id,
   value,
   color,
@@ -34,9 +35,9 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
     (state: RootState) => state.ExhibitorSlice,
   );
 
-  // ✅ Local temp state
   const [tempName, setTempName] = useState(value);
   const [tempColor, setTempColor] = useState(color);
+  const [tempSeq, setTempSeq] = useState(seq);
 
   const { EditCategory, isEditCategoryPending } = useEditCategory();
 
@@ -44,131 +45,133 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
     setTempColor(color);
   }, [color]);
 
-  // Sync when edit mode starts
   useEffect(() => {
     if (isEditable[id]) {
       setTempName(value);
       setTempColor(color);
+      setTempSeq(seq);
       nameRef.current?.focus();
     }
-  }, [isEditable[id], value, color, id]);
+  }, [isEditable[id], value, color, seq, id]);
+
+  const editing = isEditable[id];
 
   return (
     <div className={cn("flex items-center gap-4 my-2", classname)}>
-      <div>{index}.</div>
+      {/* SEQUENCE */}
+      <input
+        type="number"
+        className={cn(
+          "w-12 h-[30px] rounded-[7px] px-2 text-center outline-none",
+          editing ? "bg-[#1111110D] outline-1" : "bg-transparent pointer-events-none",
+        )}
+        disabled={!editing}
+        value={editing ? tempSeq : seq}
+        min={1}
+        onChange={(e) => setTempSeq(Number(e.target.value))}
+      />
 
-      {/* NAME INPUT */}
+      {/* NAME */}
       <input
         ref={nameRef}
         className="w-[200px] h-[30px] rounded-[7px] bg-[#1111110D] px-2 outline-none"
-        disabled={!isEditable[id]}
-        value={isEditable[id] ? tempName : value}
+        disabled={!editing}
+        value={editing ? tempName : value}
         onChange={(e) => setTempName(e.target.value)}
       />
 
       {/* COLOR PREVIEW */}
       <input
         type="color"
-        className={cn(
-          "w-[50px] h-[30px] rounded-[7px]",
-        )}
-        disabled={!isEditable[id]}
-        value={isEditable[id] ? tempColor : color}
+        className="w-[50px] h-[30px] rounded-[7px]"
+        disabled={!editing}
+        value={editing ? tempColor : color}
         onChange={(e) => setTempColor(e.target.value)}
       />
 
-      {/* COLOR INPUT */}
+      {/* COLOR HEX INPUT */}
       <input
-        className={cn(
-          "w-[100px] h-[30px] rounded-[7px] px-2",
-          isEditable[id] && "outline-1",
-        )}
-        disabled={!isEditable[id]}
-        value={isEditable[id] ? tempColor : color}
+        className="w-[100px] h-[30px] rounded-[7px] px-2 outline-none"
+        disabled={!editing}
+        value={editing ? tempColor : color}
         onChange={(e) => setTempColor(e.target.value)}
       />
 
-      {!isEditable[id] ? (
-        <>
-          <Button
-            variant="link"
-            onClick={() =>
-              dispatch(
-                setIsEditable({
-                  ...isEditable,
-                  [id]: true,
-                }),
-              )
-            }
-          >
-            <Pencil />
-            Edit
-          </Button>
-
-          <Button
-            className="text-[#B85555]"
-            variant="link"
-            onClick={() => dispatch(setDeletingCategory(id))}
-          >
-            <Trash2 />
-            Delete
-          </Button>
-        </>
-      ) : (
-        <>
-          {/* UPDATE */}
-          <Button
-            disabled={isEditCategoryPending}
-            variant="link"
-            onClick={() => {
-              dispatch(
-                setCategory(
-                  Categorys.map((pre) =>
-                    pre.id === id
-                      ? { ...pre, name: tempName, color: tempColor }
-                      : pre,
+      {/* ACTIONS — fixed width to prevent layout shift */}
+      <div className="flex items-center gap-3 w-[200px]">
+        {!editing ? (
+          <>
+            <Button
+              variant="link"
+              size="sm"
+              onClick={() =>
+                dispatch(setIsEditable({ ...isEditable, [id]: true }))
+              }
+            >
+              <Pencil />
+              Edit
+            </Button>
+            <Button
+              className="text-[#B85555] hover:text-[#B85555]"
+              variant="link"
+              size="sm"
+              onClick={() => dispatch(setDeletingCategory(id))}
+            >
+              <Trash2 />
+              Delete
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              disabled={isEditCategoryPending}
+              variant="default"
+              size="sm"
+              onClick={() => {
+                dispatch(
+                  setCategory(
+                    Categorys.map((pre) =>
+                      pre.id === id
+                        ? { ...pre, name: tempName, color: tempColor, seq: tempSeq }
+                        : pre,
+                    ),
                   ),
-                ),
-              );
-
-              EditCategory({
-                id: id,
-                name: tempName,
-                color: tempColor,
-                category_type: type,
-              });
-            }}
-          >
-            {isEditCategoryPending ? (
-              <>
-                <Loader className="animate-spin" /> processing
-              </>
-            ) : (
-              <>
-                <Check />
-                Update
-              </>
-            )}
-          </Button>
-
-          {/* CANCEL */}
-          <Button
-            disabled={isEditCategoryPending}
-            variant="link"
-            onClick={() =>
-              dispatch(
-                setIsEditable({
-                  ...isEditable,
-                  [id]: false,
-                }),
-              )
-            }
-          >
-            <X />
-            Cancel
-          </Button>
-        </>
-      )}
+                );
+                EditCategory({
+                  id: id,
+                  name: tempName,
+                  color: tempColor,
+                  category_type: type,
+                  sequence: tempSeq,
+                });
+              }}
+            >
+              {isEditCategoryPending ? (
+                <>
+                  <Loader className="animate-spin" />
+                  Saving…
+                </>
+              ) : (
+                <>
+                  <Check />
+                  Update
+                </>
+              )}
+            </Button>
+            <Button
+              disabled={isEditCategoryPending}
+              variant="ghost"
+              size="sm"
+              onClick={() =>
+                dispatch(setIsEditable({ ...isEditable, [id]: false }))
+              }
+            >
+              <X />
+              Cancel
+            </Button>
+          </>
+        )}
+      </div>
     </div>
   );
 };

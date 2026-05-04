@@ -10,6 +10,7 @@ import {
   Plus,
   SquareArrowOutUpRight,
   Upload,
+  X,
 } from "lucide-react";
 import React from "react";
 import CreateModal from "@/components/common/Speaker_Design/CreateModal";
@@ -17,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
 import {
   setIsCreating,
+  setSearchText,
   setSpeakerSettings,
   setUploadCSV,
 } from "@/redux/SpeakerDesignSlice";
@@ -27,24 +29,23 @@ import {
 } from "@/api/speaker_design_api/speaker_design_api";
 import { cn, normalizeLabel } from "@/lib/utils";
 import { useSpeakerDesignUpdate } from "@/api/global_api/global_api";
-import ErrorDisplay from "@/components/global/ErrorDisplay";
-import NoData from "@/components/global/NoData";
+// import ErrorDisplay from "@/components/global/ErrorDisplay";
+// import NoData from "@/components/global/NoData";
 import CSVModel from "@/components/global/CSVModel";
 import ErrorModal from "@/components/global/ErrorModal";
 import { setResponseModal } from "@/redux/ModalSlice";
 
 const SpeakersDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
-  const { isCreating, SpeakerSettings, uploadCSV, speakers } = useSelector(
-    (state: RootState) => state.Speaker_DesignSlice,
-  );
+  const { isCreating, SpeakerSettings, uploadCSV, speakers, searchText } =
+    useSelector((state: RootState) => state.Speaker_DesignSlice);
   const { responseModal, responseData } = useSelector(
     (state: RootState) => state.model,
   );
   const {
-    SpeakerSettings: SpeakerSettingValues,
+    // SpeakerSettings: SpeakerSettingValues,
     isPending,
-    error,
+    // error,
   } = useGetSpeakerSetting();
   const { downloadSpeaker, isdownloadPending } = useSpeakerDownload();
   const { UploadSpeakerCSV, isPending: isUploadSpeakerCSV } =
@@ -64,21 +65,21 @@ const SpeakersDesign_page = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <ErrorDisplay title="News Feed Error" message={error.message} />
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="flex items-center justify-center h-[60vh]">
+  //       <ErrorDisplay title="News Feed Error" message={error.message} />
+  //     </div>
+  //   );
+  // }
 
-  if (!SpeakerSettingValues || !SpeakerSettingValues.response) {
-    return (
-      <div className="flex items-center justify-center h-[80vh]">
-        <NoData />
-      </div>
-    );
-  }
+  // if (!SpeakerSettingValues || !SpeakerSettingValues.response) {
+  //   return (
+  //     <div className="flex items-center justify-center h-[60vh]">
+  //       <NoData />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -91,22 +92,38 @@ const SpeakersDesign_page = () => {
         />
         {Boolean(value === "Session Data") && (
           <div className="absolute right-10 flex items-center gap-4">
+            <div className="w-[15vw] flex items-center bg-white border border-gray-300 rounded-md gap-1">
+              <input
+                value={searchText}
+                onChange={(e) => dispatch(setSearchText(e.target.value))}
+                type="text"
+                className="outline-0 py-1 px-2"
+                placeholder="Search Speakers"
+              />
+              {searchText && searchText.trim() && (
+                <X
+                  className="cursor-pointer"
+                  size={20}
+                  onClick={() => dispatch(setSearchText(""))}
+                />
+              )}
+            </div>
             {speakers.length > 0 && (
               <Button
                 onClick={() => downloadSpeaker()}
                 disabled={isdownloadPending}
-                className="w-fit py-1 h-7"
+                className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
+                title="Download Speaker Data"
               >
                 <Download />
-                Download
               </Button>
             )}
             <Button
               onClick={() => dispatch(setUploadCSV(true))}
-              className="w-fit py-1 h-7"
+              className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
+              title="Upload Speaker Data"
             >
               <Upload />
-              Upload
             </Button>
             <Button
               onClick={() => dispatch(setIsCreating(true))}
@@ -174,7 +191,7 @@ const SpeakersDesign_page = () => {
                         "exhibitors_setting",
                         "key_note_speaker",
                         "show_carusole",
-                        "show_home_title"
+                        "show_home_title",
                       ].includes(key),
                   )
                   .map(([key, value], i) => (
@@ -224,6 +241,7 @@ const SpeakersDesign_page = () => {
         onClose={() => dispatch(setIsCreating(false))}
       />
       <CSVModel
+        CSV_MODULE="speaker_csv"
         isOpen={uploadCSV}
         onClose={() => dispatch(setUploadCSV(false))}
         title="Speakers"
