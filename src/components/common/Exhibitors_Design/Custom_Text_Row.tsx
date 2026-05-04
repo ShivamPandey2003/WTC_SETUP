@@ -67,7 +67,7 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
           editing ? "bg-[#1111110D] outline-1" : "bg-transparent pointer-events-none",
         )}
         disabled={!editing}
-        value={editing ? tempSeq : index}
+        value={editing ? tempSeq : seq}
         min={1}
         onChange={(e) => setTempSeq(Number(e.target.value))}
       />
@@ -133,7 +133,7 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
                   setCategory(
                     Categorys.map((pre) =>
                       pre.id === id
-                        ? { ...pre, name: tempName, color: tempColor }
+                        ? { ...pre, name: tempName, color: tempColor, seq: tempSeq }
                         : pre,
                     ),
                   ),
