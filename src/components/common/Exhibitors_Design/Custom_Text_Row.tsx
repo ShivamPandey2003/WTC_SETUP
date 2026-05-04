@@ -22,7 +22,6 @@ interface Custom_Text_RowProp {
 }
 
 const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
-  index,
   seq,
   id,
   value,
