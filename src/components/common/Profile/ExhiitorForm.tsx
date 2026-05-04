@@ -182,8 +182,9 @@ export default function ExhibitorForm() {
           </label>
           <input
             {...register("booth_no")}
+            disabled
             className="w-full sm:w-[500px] border border-[#ddd] outline-0 rounded-md p-2 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
-            placeholder="XXXX" disabled
+            placeholder="XXXX"
           />
         </div>
         <Button
