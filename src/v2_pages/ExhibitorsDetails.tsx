@@ -49,10 +49,10 @@ const ExhibitorsDetails = ({ id, close }: ExhibitorProps) => {
 
   if (isLoading) {
     return (
-      <div className="py-6 px-5 mx-auto flex gap-5">
-        <Skeleton className="max-w-5xl mx-auto h-50 w-100" />
+      <div className="py-6 px-5 mx-auto flex flex-col sm:flex-col gap-5">
+        <Skeleton className="max-w-5xl mx-auto h-50 w-full sm:w-100" />
         <div className="flex flex-col gap-3 items-start justify-start w-full">
-          <Skeleton className="max-w-5xl h-7 w-100" />
+          <Skeleton className="max-w-5xl h-7 w-50 sm:w-100" />
           <Skeleton className="max-w-5xl h-7 w-30" />
           <Skeleton className="max-w-5xl h-7 w-40" />
         </div>
@@ -76,8 +76,8 @@ const ExhibitorsDetails = ({ id, close }: ExhibitorProps) => {
           className="absolute top-0 right-1 cursor-pointer border border-gray-400 bg-white text-gray-600 text-xs font-bold px-3 py-1 rounded-full shadow-lg">
           Close
         </div>
-        <div className="flex flex-col sm:flex-row gap-8 items-start">
-          <div className="shrink-0 w-1/3">
+        <div className="flex flex-col sm:flex-row sm:gap-8 items-start">
+          <div className="shrink-0 sm:w-1/3">
             <div className="h-40 sm:h-48 rounded-2xl overflow-hidden">
               <img
                 src={ExhibitorDetails.logo ?? ExPlaceholderImg}
@@ -87,7 +87,7 @@ const ExhibitorsDetails = ({ id, close }: ExhibitorProps) => {
             </div>
           </div>
 
-          <div className="pt-2 sm:pt-4 w-2/3">
+          <div className="pt-2 sm:pt-4 sm:w-2/3">
             <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
               <div>
                 <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-2 leading-tight">
@@ -95,11 +95,12 @@ const ExhibitorsDetails = ({ id, close }: ExhibitorProps) => {
                 </h1>
                 <div className="flex items-center gap-2 mt-3">
                   <span
-                    className="text-sm font-semibold px-3 py-1 rounded-full"
-                    style={{
-                      color: ExhibitorDetails.color,
-                      backgroundColor: ExhibitorDetails.color ? `${ExhibitorDetails.color}20` : '#fef3c7',
-                    }}>
+                    className="font-semibold rounded-full text-primary"
+                    // style={{
+                    //   color: ExhibitorDetails.color,
+                    //   backgroundColor: ExhibitorDetails.color ? `${ExhibitorDetails.color}20` : '#fef3c7',
+                    // }}
+                    >
                     {ExhibitorDetails &&
                       ("SponsorType" in ExhibitorDetails
                         ? ExhibitorDetails.SponsorType
@@ -124,7 +125,7 @@ const ExhibitorsDetails = ({ id, close }: ExhibitorProps) => {
                   href={`mailto:${ExhibitorDetails.email}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-lg transition-colors duration-200 text-sm"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-lg transition-colors duration-200 text-sm break-all max-w-full"
                 >
                   <Mail className="w-4 h-4 shrink-0" />
                   {ExhibitorDetails.email}
@@ -135,7 +136,7 @@ const ExhibitorsDetails = ({ id, close }: ExhibitorProps) => {
                   href={/^https?:\/\//i.test(ExhibitorDetails.url) ? ExhibitorDetails.url : `https://${ExhibitorDetails.url}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-lg transition-colors duration-200 text-sm"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-lg transition-colors duration-200 text-sm break-all max-w-full"
                 >
                   <Globe className="w-4 h-4 shrink-0" />
                   {ExhibitorDetails.url}

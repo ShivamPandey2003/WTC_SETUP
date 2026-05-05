@@ -23,7 +23,14 @@ export const useCreateSpeaker = () => {
     error,
   } = useMutation<CreateSpeakerResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
-      const res = await apiRequest("post", "speakers/create", data);
+      const cloned = new FormData();
+
+      for (let [key, value] of data.entries()) {
+        cloned.append(key, value);
+      }
+      cloned.delete("profile_image");
+      cloned.delete("attachments");
+      const res = await apiRequest("post", "speakers/create", cloned);
       return res.response;
     },
     onSuccess: async (data, variable) => {
@@ -61,7 +68,6 @@ export const useCreateSpeaker = () => {
           `/upload/presigned-url?file_name=${attachment.name}&module=${"speaker_attachments"}&ref_id=${data.response.speaker_id}`,
         );
         const { file_key, upload_url } = res.response.response;
-        
 
         await axios.put(upload_url, attachment, {
           headers: {
@@ -97,7 +103,14 @@ export const useEditSpeaker = () => {
   } = useMutation<CreateSpeakerResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
       const id = data.get("id");
-      const res = await apiRequest("post", `speakers/edit/${id}`, data);
+      const cloned = new FormData();
+
+      for (let [key, value] of data.entries()) {
+        cloned.append(key, value);
+      }
+      cloned.delete("profile_image");
+      cloned.delete("attachments");
+      const res = await apiRequest("post", `speakers/edit/${id}`, cloned);
       return res.response;
     },
     onSuccess: async (data, variable) => {

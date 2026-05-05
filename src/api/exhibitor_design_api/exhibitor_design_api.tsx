@@ -13,9 +13,11 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
 import axios from "axios";
 
-export const useGetExhibitorsList = (page: number = 1, search?:string) => {
-
-  const url = (search && search.trim())?`exhibitors/listing?page=${page}&search=${search}`:`exhibitors/listing?page=${page}`
+export const useGetExhibitorsList = (page: number = 1, search?: string) => {
+  const url =
+    search && search.trim()
+      ? `exhibitors/listing?page=${page}&search=${search}`
+      : `exhibitors/listing?page=${page}`;
 
   const {
     data: Exhibitors,
@@ -91,10 +93,17 @@ export const useCreateExhibitor = () => {
     error,
   } = useMutation<ProfilePicResponse, AxiosError, FormData>({
     mutationFn: async (data) => {
-      const res = await apiRequest("post", "/exhibitors/add", data);
+      const cloned = new FormData();
+
+      for (let [key, value] of data.entries()) {
+        cloned.append(key, value);
+      }
+
+      cloned.delete("logo");
+      const res = await apiRequest("post", "/exhibitors/add", cloned);
       return res.response;
     },
-    onSuccess: async(data, variable) => {
+    onSuccess: async (data, variable) => {
       toast.success("Exhibitor created successfully");
       dispatch(setIsCreating(false));
 
@@ -167,7 +176,14 @@ export const useEditExhibitor = () => {
   >({
     mutationFn: async (data) => {
       const { id, form } = data;
-      const res = await apiRequest("post", `exhibitors/edit/${id}`, form);
+      const cloned = new FormData();
+
+      for (let [key, value] of form.entries()) {
+        cloned.append(key, value);
+      }
+
+      cloned.delete("logo");
+      const res = await apiRequest("post", `exhibitors/edit/${id}`, cloned);
       return res.response;
     },
     onSuccess: async (data, variable) => {
