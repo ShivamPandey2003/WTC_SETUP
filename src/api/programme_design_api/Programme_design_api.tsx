@@ -30,8 +30,8 @@ export const useCreateSession = () => {
       for (let [key, value] of data.entries()) {
         cloned.append(key, value);
       }
-      cloned.delete("bg_image")
-      cloned.delete("attachment")
+      cloned.delete("bg_image");
+      cloned.delete("attachment");
       const res = await apiRequest("post", "programme/create", cloned);
       return res.response;
     },
@@ -315,8 +315,8 @@ export const useEditSession = () => {
       for (let [key, value] of data.entries()) {
         cloned.append(key, value);
       }
-      cloned.delete("bg_image")
-      cloned.delete("attachment")
+      cloned.delete("bg_image");
+      cloned.delete("attachment");
       const res = await apiRequest("post", `/programme/edit/${id}`, cloned);
       return res.response;
     },
