@@ -65,7 +65,9 @@ const NewFrom = () => {
     formData.append("location", newData.location);
     formData.append("external_link", newData?.external_link as string);
     formData.append("category", newData.category);
-    formData.append("speakers", JSON.stringify(newData.speakers));
+    if(newData.speakers && newData.speakers.length>0){
+      formData.append("speakers", JSON.stringify(newData.speakers));
+    }
     formData.append("venueID", `${newData.floorID}__${newData.venueID}`);
     if (newData.bg_image?.[0]) {
       formData.append("bg_image", newData.bg_image[0] as Blob);
