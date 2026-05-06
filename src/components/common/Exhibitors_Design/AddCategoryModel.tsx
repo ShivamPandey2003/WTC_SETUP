@@ -9,10 +9,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 
 export const CategorySchema = z.object({
-  name: z.string().nonempty().min(3, "minimum 3 word required"),
-  color: z.string().nonempty(),
-  allow_image: z.boolean()
+  name: z.string().min(1).min(3, "minimum 3 word required"), 
+  color: z.string().min(1),
+  allow_image: z.boolean(),
 });
+
 
 export type Category = z.infer<typeof CategorySchema>;
 

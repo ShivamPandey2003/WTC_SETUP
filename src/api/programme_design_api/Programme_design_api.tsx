@@ -208,7 +208,7 @@ export const useAddCategory = () => {
     onSuccess: () => {
       toast.success("Category added successfully");
       queryClient.invalidateQueries({ queryKey: ["category-list"] });
-      queryClient.invalidateQueries({queryKey:["category-Exhibitor-list"]})
+      queryClient.invalidateQueries({ queryKey: ["category-Exhibitor-list"] });
       dispatch(setCategoryModal(false));
       dispatch(exhibitorCategoryModal(false));
     },

@@ -34,7 +34,7 @@ const CustomTable = () => {
     isPending: isListPending,
     error,
   } = useGetSessionList(page, slectedDate, debouncedSearchText);
-  const { DeleteSession, isPending: isDeleetSessionPending } =
+  const { DeleteSession, isPending: isDeleteSessionPending } =
     useDeleteSession();
   const { AllCategory, isPending } = useGetCategoryAll();
   const dispatch = useDispatch<AppDispatch>();
@@ -218,7 +218,7 @@ const CustomTable = () => {
         isOpen={Boolean(isDeleting)}
         onClose={() => dispatch(setIsDeleting(null))}
         onConfirm={() => DeleteSession({ id: isDeleting as string })}
-        isDeleting={isDeleetSessionPending}
+        isDeleting={isDeleteSessionPending}
       />
     </div>
   );

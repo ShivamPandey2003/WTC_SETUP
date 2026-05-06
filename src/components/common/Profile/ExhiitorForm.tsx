@@ -236,6 +236,7 @@ export default function ExhibitorForm() {
                           await apiRequest("post", "upload/common/files", newForm);
 
                         } catch (err) {
+                          toast.error("Failed to upload carousel media");
                           console.error(err);
                           // revert using state (React way)
                           setPreviewUrl(oldSrc || null);
