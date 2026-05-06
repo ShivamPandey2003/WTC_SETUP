@@ -8,7 +8,7 @@ import {
   useProfileUpdate,
   // useUploadProfilePic,
 } from "@/api/Profile_api/Profile_api";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, Info } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { apiRequest } from "@/services/apiService";
 import axios from "axios";
@@ -101,7 +101,7 @@ export default function ExhibitorForm() {
     }
   };
 
-  const handleRemoveImage = () => setImage(null);
+  // const handleRemoveImage = () => setImage(null);
 
   return (
     <div className="p-6 bg-white rounded-xl space-y-4 relative min-h-[78vh]">
@@ -131,7 +131,7 @@ export default function ExhibitorForm() {
               onChange={handleImageChange}
             />
           </label>
-          {image && (
+          {/* {image && (
             <button
               type="button"
               onClick={handleRemoveImage}
@@ -139,7 +139,7 @@ export default function ExhibitorForm() {
             >
               Remove
             </button>
-          )}
+          )} */}
         </div>
       </div>
 
@@ -187,6 +187,98 @@ export default function ExhibitorForm() {
             placeholder="Booth No"
           />
         </div>
+
+        {exhibitor_info?.is_bg && (
+          <>
+            <div className="flex flex-col sm:flex-row sm:items-center p-2">
+              <label className="block text-sm font-medium text-gray-600 sm:w-[170px]">
+                Carousel Media
+              </label>
+
+              <div className="flex items-center justify-end h-full">
+                <div className="flex flex-col gap-3">
+                  <div className="flex gap-4 items-center">
+                    {/* File Input */}
+                    <input
+                      type="file"
+                      multiple={false}
+                      accept={"image/*"}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+
+                        const imgEl = document.getElementById("carousel-preview") as HTMLImageElement;
+
+                        // fallback (old image)
+                        const oldSrc = imgEl?.src;
+
+                        // instant preview
+                        const tempUrl = URL.createObjectURL(file);
+                        if (imgEl) imgEl.src = tempUrl;
+
+                        try {
+                          const res = await apiRequest(
+                            "post",
+                            `/upload/presigned-url?file_name=${file.name}&module=${"exhibitor_carusole"}&ref_id=${exhibitor_info?.exhibitor_id}`,
+                          );
+
+                          const { file_key, upload_url } = res.response.response;
+
+                          await axios.put(upload_url, file, {
+                            headers: {
+                              "Content-Type": file.type,
+                            },
+                          });
+
+                          const newForm = new FormData();
+                          newForm.append("module", "exhibitor_carusole");
+                          newForm.append("record_id", exhibitor_info?.exhibitor_id);
+                          newForm.append("category_id", exhibitor_info?.category);
+                          newForm.append("file_path_carusole_image", file_key);
+
+                          await apiRequest("post", "upload/common/files", newForm);
+
+                        } catch (err) {
+                          console.error(err);
+
+                          // ❌ revert if failed
+                          if (imgEl && oldSrc) {
+                            imgEl.src = oldSrc;
+                          }
+                        }
+                      }}
+                      className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary/20 file:text-primary hover:file:bg-primary/40"
+                    />
+
+                    {/* Image Preview */}
+                    <div className="w-[200px] h-[120px] rounded-lg border border-dashed border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden">
+                      {exhibitor_info?.carusole_image ? (
+                        <img
+                          id="carousel-preview"
+                          src={exhibitor_info?.carusole_image}
+                          alt="Venue"
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-xs text-gray-400 italic">
+                          No image uploaded
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-sm font-medium text-gray-600 mt-2">
+              <Info className="text-blue-500 w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+              <span>
+                <span className="font-semibold pr-1">Note:</span>
+                Admin has allowed carousel media for your exhibitor profile. If no carousel media is selected, your exhibitor logo will be displayed on the carousel.
+              </span>
+            </div>
+          </>
+        )}
+
         <Button
           disabled={updateProfileIsPending}
           type="submit"

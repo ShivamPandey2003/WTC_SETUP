@@ -141,7 +141,7 @@ export default function ProfileForm() {
               onChange={handleImageChange}
             />
           </label>
-          {image && (
+          {/* {image && (
             <button
               type="button"
               onClick={handleRemoveImage}
@@ -149,7 +149,7 @@ export default function ProfileForm() {
             >
               Remove
             </button>
-          )}
+          )} */}
         </div>
       </div>
 

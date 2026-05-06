@@ -208,9 +208,11 @@ export const useAddCategory = () => {
     onSuccess: () => {
       toast.success("Category added successfully");
       queryClient.invalidateQueries({ queryKey: ["category-list"] });
+      queryClient.invalidateQueries({queryKey:["category-Exhibitor-list"]})
       dispatch(setCategoryModal(false));
       dispatch(exhibitorCategoryModal(false));
     },
+    
   });
 
   return { AddCategory, isAddCategoryPending, error };
@@ -290,6 +292,7 @@ export const useEditCategory = () => {
     onSuccess: (_, vari) => {
       toast.success("Category edit successfully");
       queryClient.invalidateQueries({ queryKey: ["category-list"] });
+      queryClient.invalidateQueries({queryKey:["category-Exhibitor-list"]})
       dispatch(
         setIsEditable({
           ...isEditable,

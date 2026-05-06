@@ -478,7 +478,11 @@ declare type ProfileResponse = {
       "full_name": string,
       "url": string,
       "logo": string,
-      "booth_no": string
+      "booth_no": string,
+      "is_bg": boolean,
+      "carusole_image": string,
+      "category": string,
+      "exhibitor_id": string,
     } | null
   };
 };
@@ -518,7 +522,7 @@ declare type ProfileUpdateRequest = {
     "full_name": string,
     "url": string,
     "logo"?: string,
-    "booth_no": string
+    "booth_no": string,
   }
 };
 

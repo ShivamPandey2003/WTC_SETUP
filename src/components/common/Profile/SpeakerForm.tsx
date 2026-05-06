@@ -120,7 +120,7 @@ export default function SpeakerForm() {
     }
   };
 
-  const handleRemoveImage = () => setImage(null);
+  // const handleRemoveImage = () => setImage(null);
 
   return (
     <div className="p-6 bg-white rounded-xl space-y-4 relative">
@@ -150,7 +150,7 @@ export default function SpeakerForm() {
               onChange={handleImageChange}
             />
           </label>
-          {image && (
+          {/* {image && (
             <button
               type="button"
               onClick={handleRemoveImage}
@@ -158,7 +158,7 @@ export default function SpeakerForm() {
             >
               Remove
             </button>
-          )}
+          )} */}
         </div>
       </div>
 
@@ -259,6 +259,21 @@ export default function SpeakerForm() {
             />
             {errors.external_link && (
               <p className="text-red-500 text-sm">{errors.external_link.message}</p>
+            )}
+          </div>
+        </div>
+        <div className="flex flex-col sm:flex-row sm:items-start">
+          <label className="block text-sm font-medium text-gray-600 sm:w-[170px]">
+            Bio
+          </label>
+          <div>
+            <textarea
+              {...register("bio")}
+              className="w-full sm:w-[500px] border border-[#ddd] outline-0 rounded-md p-2 min-h-[100px]"
+              placeholder="Write a short bio"
+            />
+            {errors.bio && (
+              <p className="text-red-500 text-sm">{errors.bio.message}</p>
             )}
           </div>
         </div>
