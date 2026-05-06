@@ -31,6 +31,9 @@ export default function ExhibitorForm() {
   const { exhibitor_info, user_info } = useSelector(
     (state: RootState) => state.Profile_Slice,
   );
+  const [previewUrl, setPreviewUrl] = useState<string | null>(
+    exhibitor_info?.carusole_image ?? null
+  );
   // const { UploadPic, isPending } = useUploadProfilePic();
   const [isPending, setIsPending] = useState(false);
   const { UpdateProfile, isPending: updateProfileIsPending } =
@@ -206,15 +209,9 @@ export default function ExhibitorForm() {
                       onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (!file) return;
-
-                        const imgEl = document.getElementById("carousel-preview") as HTMLImageElement;
-
-                        // fallback (old image)
-                        const oldSrc = imgEl?.src;
-
-                        // instant preview
+                        const oldSrc = previewUrl;
                         const tempUrl = URL.createObjectURL(file);
-                        if (imgEl) imgEl.src = tempUrl;
+                        setPreviewUrl(tempUrl);
 
                         try {
                           const res = await apiRequest(
@@ -240,11 +237,8 @@ export default function ExhibitorForm() {
 
                         } catch (err) {
                           console.error(err);
-
-                          // ❌ revert if failed
-                          if (imgEl && oldSrc) {
-                            imgEl.src = oldSrc;
-                          }
+                          // revert using state (React way)
+                          setPreviewUrl(oldSrc || null);
                         }
                       }}
                       className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary/20 file:text-primary hover:file:bg-primary/40"

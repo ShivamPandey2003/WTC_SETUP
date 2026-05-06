@@ -138,7 +138,7 @@ const EditFrom = () => {
       ? [
           {
             name: "image",
-            label: "Image",
+            label: "Carousel Media",
             type: "file",
             accept: "image/png,image/jpg,image/webp,image/jpeg",
           } as const,
