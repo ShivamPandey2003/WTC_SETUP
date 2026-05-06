@@ -9,7 +9,8 @@ import {
 } from "@/Schema/exhibitorSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useMemo } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { useDispatch } from "react-redux";
 
 const NewFrom = () => {
@@ -20,10 +21,26 @@ const NewFrom = () => {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm<ExhibitorSchemaType>({
     resolver: zodResolver(ExhibitorSchema),
   });
   const dispatch = useDispatch<AppDispatch>();
+
+  const categoryType = useWatch({
+    control,
+    name: "category",
+  });
+
+  const IsShow = useMemo(() => {
+    if (!AllCategory?.response.length) return false;
+
+    const present = AllCategory.response.find((pre) => pre.id === categoryType);
+
+    if (!present) return false;
+
+    return present.allow_image;
+  }, [categoryType]);
 
   const onSubmit = (newData: ExhibitorSchemaType) => {
     const formData = new FormData();
@@ -31,6 +48,9 @@ const NewFrom = () => {
     formData.append("url", newData.url as string);
     formData.append("email", newData.email as string);
     formData.append("category", newData.category as string);
+    if(newData.image?.[0] && IsShow){
+      formData.append("image", newData.image?.[0] as Blob);
+    }
     formData.append("logo", newData.logo?.[0] as Blob);
     formData.append("ads", String(newData?.ads));
     formData.append("show_mail", String(newData?.show_mail));
@@ -72,7 +92,12 @@ const NewFrom = () => {
       placeholder: "https://example.com",
     },
     { name: "email", label: "Email", placeholder: "example@mail.com" },
-    { name: "logo", label: "Logo", type: "file", accept: "image/png,image/jpg,image/webp,image/jpeg" },
+    {
+      name: "logo",
+      label: "Logo",
+      type: "file",
+      accept: "image/png,image/jpg,image/webp,image/jpeg",
+    },
     {
       name: "category",
       label: "Category",
@@ -84,9 +109,23 @@ const NewFrom = () => {
           return { label: item.name, value: item.id };
         }),
     },
-    { name: "booth_no", label: "Booth Location", placeholder: "Enter booth location here" },
+    ...(IsShow
+      ? [
+          {
+            name: "image",
+            label: "Image",
+            type: "file",
+            accept: "image/png,image/jpg,image/webp,image/jpeg",
+          } as const,
+        ]
+      : []),
+    {
+      name: "booth_no",
+      label: "Booth Location",
+      placeholder: "Enter booth location here",
+    },
     { name: "ads", label: "Ads", type: "checkbox" },
-    { name: "show_mail", label: "Show mail", type: "checkbox"},
+    { name: "show_mail", label: "Show mail", type: "checkbox" },
   ];
 
   return (

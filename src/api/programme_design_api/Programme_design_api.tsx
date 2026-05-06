@@ -279,6 +279,7 @@ export const useEditCategory = () => {
       color: string;
       category_type: number;
       sequence: number;
+      allow_image:boolean
     }
   >({
     mutationFn: async (data) => {

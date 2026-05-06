@@ -22,6 +22,16 @@ export const ExhibitorSchema = z.object({
       if (!files || files.length === 0) return true;
       return allowedTypes.includes(files[0].type);
     }, "Only PNG, JPG, WEBP, JPEG images are allowed"),
+  image: z
+    .instanceof(FileList)
+    .optional()
+    .refine(
+      (files) => !files || files.length > 0,
+      "At least one file is required",
+    ).refine((files) => {
+      if (!files || files.length === 0) return true;
+      return allowedTypes.includes(files[0].type);
+    }, "Only PNG, JPG, WEBP, JPEG images are allowed"),
   category: z.string().min(2, "Category is required"),
   ads: z.boolean(),
   booth_no: z.string().optional(),
@@ -32,6 +42,16 @@ export const EditExhibitorSchema = z.object({
   url: z.url().optional().or(z.literal("")),
   email: z.email(),
   show_mail: z.boolean(),
+  image: z
+    .instanceof(FileList)
+    .optional()
+    .refine(
+      (files) => !files || files.length > 0,
+      "At least one file is required",
+    ).refine((files) => {
+      if (!files || files.length === 0) return true;
+      return allowedTypes.includes(files[0].type);
+    }, "Only PNG, JPG, WEBP, JPEG images are allowed"),
   logo: z
     .custom<FileList | undefined>()
     .optional().refine((files) => {

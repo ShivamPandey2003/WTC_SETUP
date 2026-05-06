@@ -19,10 +19,11 @@ import NoData from "@/components/global/NoData";
 import { cn, formatDate } from "@/lib/utils";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const CustomTable = () => {
   const [page, setPage] = useState<number>(1);
-  const { isDeleting, selected, slectedDate } = useSelector(
+  const { isDeleting, selected, slectedDate, searchText } = useSelector(
     (state: RootState) => state.Programme_Design,
   );
   // const {
@@ -40,7 +41,7 @@ const CustomTable = () => {
     SessionList,
     isPending: isListPending,
     error,
-  } = useGetSessionList(page, slectedDate);
+  } = useGetSessionList(page, slectedDate, useDebounce(searchText, 300));
   const { DeleteSession, isPending: isDeleetSessionPending } =
     useDeleteSession();
   const { AllCategory, isPending } = useGetCategoryAll();
@@ -65,9 +66,9 @@ const CustomTable = () => {
     start = Math.max(1, end - chunkSize + 1);
   }
 
-  useEffect(()=>{
-    setPage(1)
-  },[slectedDate])
+  useEffect(() => {
+    setPage(1);
+  }, [slectedDate]);
 
   useEffect(() => {
     if (NewValue.length === 0) return;

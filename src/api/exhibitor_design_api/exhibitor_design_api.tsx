@@ -100,6 +100,7 @@ export const useCreateExhibitor = () => {
       }
 
       cloned.delete("logo");
+      cloned.delete("image");
       const res = await apiRequest("post", "/exhibitors/add", cloned);
       return res.response;
     },
@@ -108,6 +109,8 @@ export const useCreateExhibitor = () => {
       dispatch(setIsCreating(false));
 
       const file = variable.get("logo") as File;
+      const image = variable.get("image") as File;
+      const category_id = variable.get("category") as string;
 
       if (file) {
         const res = await apiRequest(
@@ -127,6 +130,29 @@ export const useCreateExhibitor = () => {
         newForm.append("module", "exhibitor");
         newForm.append("record_id", data.response.id);
         newForm.append("file_path_image", file_key);
+
+        await apiRequest("post", "upload/common/files", newForm);
+      }
+
+      if(image){
+        const res = await apiRequest(
+          "post",
+          `/upload/presigned-url?file_name=${image.name}&module=${"exhibitor_carusole"}&ref_id=${data.response.id}`,
+        );
+        const { file_key, upload_url } = res.response.response;
+
+        await axios.put(upload_url, image, {
+          headers: {
+            "Content-Type": image.type,
+          },
+          responseType: "blob",
+        });
+
+        const newForm = new FormData();
+        newForm.append("module", "exhibitor_carusole");
+        newForm.append("record_id", data.response.id);
+        newForm.append("category_id", category_id);
+        newForm.append("file_path_carusole_image", file_key);
 
         await apiRequest("post", "upload/common/files", newForm);
       }
@@ -183,6 +209,7 @@ export const useEditExhibitor = () => {
       }
 
       cloned.delete("logo");
+      cloned.delete("image")
       const res = await apiRequest("post", `exhibitors/edit/${id}`, cloned);
       return res.response;
     },
@@ -191,6 +218,8 @@ export const useEditExhibitor = () => {
       dispatch(setSelected(null));
 
       const file = variable.form.get("logo") as File;
+      const image = variable.form.get("image") as File;
+      const category_id = variable.form.get("category") as string;
 
       if (file) {
         const res = await apiRequest(
@@ -210,6 +239,29 @@ export const useEditExhibitor = () => {
         newForm.append("module", "exhibitor");
         newForm.append("record_id", data.response.id);
         newForm.append("file_path_image", file_key);
+
+        await apiRequest("post", "upload/common/files", newForm);
+      }
+
+      if(image){
+        const res = await apiRequest(
+          "post",
+          `/upload/presigned-url?file_name=${image.name}&module=${"exhibitor_carusole"}&ref_id=${data.response.id}`,
+        );
+        const { file_key, upload_url } = res.response.response;
+        console.log("working")
+        await axios.put(upload_url, image, {
+          headers: {
+            "Content-Type": image.type,
+          },
+          responseType: "blob",
+        });
+        console.log("working with url:", upload_url)
+        const newForm = new FormData();
+        newForm.append("module", "exhibitor_carusole");
+        newForm.append("record_id", data.response.id);
+        newForm.append("category_id", category_id);
+        newForm.append("file_path_carusole_image", file_key);
 
         await apiRequest("post", "upload/common/files", newForm);
       }
@@ -329,3 +381,24 @@ export const useExhibitorsDownload = () => {
 
   return { downloadExhibitor, isdownloadPending };
 };
+
+export const useChangeExhibitorSeq = ()=>{
+   const { mutate: changeExhibitorSeq, isPending: isChangeExhibitorSeqPending } =
+    useMutation<any, AxiosError, string[]>({
+      mutationKey: ["exhibitors_download"],
+      mutationFn: async (data) => {
+        const res = await apiRequest(
+          "post",
+          "/category/update-sequence",
+          data
+        );
+
+        return res.response;
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({queryKey:["category-Exhibitor-list"]})
+      },
+    });
+
+  return { changeExhibitorSeq, isChangeExhibitorSeqPending };
+}

@@ -19,6 +19,8 @@ interface Custom_Text_RowProp {
   color: string;
   classname?: string;
   type: number;
+  allow_Image?: boolean;
+  assest?:boolean;
 }
 
 const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
@@ -28,6 +30,8 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
   color,
   classname,
   type,
+  allow_Image,
+  assest = false
 }) => {
   const nameRef = useRef<HTMLInputElement | null>(null);
   const dispatch = useDispatch();
@@ -38,6 +42,7 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
   const [tempName, setTempName] = useState(value);
   const [tempColor, setTempColor] = useState(color);
   const [tempSeq, setTempSeq] = useState(seq);
+  const [checked, setChecked] = useState<boolean>(Boolean(allow_Image));
 
   const { EditCategory, isEditCategoryPending } = useEditCategory();
 
@@ -50,20 +55,23 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
       setTempName(value);
       setTempColor(color);
       setTempSeq(seq);
+      setChecked(Boolean(allow_Image))
       nameRef.current?.focus();
     }
-  }, [isEditable[id], value, color, seq, id]);
+  }, [isEditable[id], value, color, seq, id, allow_Image]);
 
   const editing = isEditable[id];
 
   return (
-    <div className={cn("flex items-center gap-4 my-2", classname)}>
+    <div className={cn("flex items-center gap-3 my-2", classname)}>
       {/* SEQUENCE */}
       <input
         type="number"
         className={cn(
           "w-12 h-[30px] rounded-[7px] px-2 text-center outline-none",
-          editing ? "bg-[#1111110D] outline-1" : "bg-transparent pointer-events-none",
+          editing
+            ? "bg-[#1111110D] outline-1"
+            : "bg-transparent pointer-events-none",
         )}
         disabled={!editing}
         value={editing ? tempSeq : seq}
@@ -74,7 +82,7 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
       {/* NAME */}
       <input
         ref={nameRef}
-        className="w-[200px] h-[30px] rounded-[7px] bg-[#1111110D] px-2 outline-none"
+        className="w-[180px] h-[30px] rounded-[7px] bg-[#1111110D] px-2 outline-none"
         disabled={!editing}
         value={editing ? tempName : value}
         onChange={(e) => setTempName(e.target.value)}
@@ -96,6 +104,17 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
         value={editing ? tempColor : color}
         onChange={(e) => setTempColor(e.target.value)}
       />
+
+      {assest && <div className="flex items-center gap-2">
+        <input
+          checked={editing?checked:allow_Image}
+          onChange={(e) => setChecked(e.target.checked)}
+          disabled={!editing}
+          type="checkbox"
+          className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
+        />
+        <div className="w-12 text-sm">Assets</div>
+      </div>}
 
       {/* ACTIONS — fixed width to prevent layout shift */}
       <div className="flex items-center gap-3 w-[200px]">
@@ -132,7 +151,12 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
                   setCategory(
                     Categorys.map((pre) =>
                       pre.id === id
-                        ? { ...pre, name: tempName, color: tempColor, seq: tempSeq }
+                        ? {
+                            ...pre,
+                            name: tempName,
+                            color: tempColor,
+                            seq: tempSeq,
+                          }
                         : pre,
                     ),
                   ),
@@ -143,6 +167,7 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
                   color: tempColor,
                   category_type: type,
                   sequence: tempSeq,
+                  allow_image: checked
                 });
               }}
             >
