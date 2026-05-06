@@ -190,7 +190,7 @@ const OnboardingForm = () => {
               onChange={handleImageChange}
             />
           </label>
-          {image && (
+          {/* {image && (
             <button
               type="button"
               onClick={handleRemoveImage}
@@ -198,7 +198,7 @@ const OnboardingForm = () => {
             >
               Remove
             </button>
-          )}
+          )} */}
         </div>
       </div>
 

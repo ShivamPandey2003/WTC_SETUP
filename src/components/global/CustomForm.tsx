@@ -203,7 +203,7 @@ const CustomForm = <T extends Record<string, any>>({
           return (
             <div key={field.name} className="flex items-start gap-3 ">
               {
-                <label className="text-sm font-medium text-gray-700 w-32 pt-1">
+                <label className="text-sm font-medium text-gray-700 w-38 pt-1">
                   {field.label}
                 </label>
               }

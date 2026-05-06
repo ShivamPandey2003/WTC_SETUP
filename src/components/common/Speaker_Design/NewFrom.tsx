@@ -66,12 +66,12 @@ const NewFrom = () => {
     { name: "prefix", label: "Prefix", placeholder: "Enter prefix here" },
     {
       name: "firstname",
-      label: "Firstname",
+      label: "First Name",
       placeholder: "Enter first name here",
     },
     {
       name: "lastname",
-      label: "Lastname",
+      label: "Last Name",
       placeholder: "Enter last name here",
     },
     {
