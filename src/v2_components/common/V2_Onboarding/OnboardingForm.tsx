@@ -147,7 +147,7 @@ const OnboardingForm = () => {
     }
   };
 
-  const handleRemoveImage = () => setImage(null);
+  // const handleRemoveImage = () => setImage(null);
 
   useEffect(() => {
     if (profileData?.header.code === 200) {
