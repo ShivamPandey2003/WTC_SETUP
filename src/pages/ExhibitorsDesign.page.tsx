@@ -5,7 +5,7 @@ import Section from "@/components/global/Section";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
-import { Download, Loader, Plus, Upload, X } from "lucide-react";
+import { Download, GripVertical, Loader, Plus, Upload, X } from "lucide-react";
 import React, { useEffect } from "react";
 import CreateModal from "@/components/common/Exhibitors_Design/CreateModal";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +19,7 @@ import {
   setUploadCSV,
 } from "@/redux/ExhibitorSlice";
 import {
-  useCategoryList,
+  useExhibitorCategoryList,
   useGeneralExhibitorsUpdate,
   useGlobalDesign,
 } from "@/api/global_api/global_api";
@@ -29,6 +29,7 @@ import { setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
 // import NoData from "@/components/global/NoData";
 import CSVModel from "@/components/global/CSVModel";
 import {
+  useChangeExhibitorSeq,
   useExhibitorsDownload,
   useUploadExhibitorsCSV,
   useUploadSplash,
@@ -52,7 +53,8 @@ const ExhibitorsDesign_page = () => {
   }>({ image: "", title: "", subtitle: "", file_path: "" });
   const { UploadExhibitorsCSV, isPending: isUploadPending } =
     useUploadExhibitorsCSV();
-  const { Category, isCategoryPending } = useCategoryList();
+  const { Category, isCategoryPending } = useExhibitorCategoryList();
+  const {changeExhibitorSeq} = useChangeExhibitorSeq()
   const dispatch = useDispatch();
   const {
     // SpeakerSettings: SettingValue,
@@ -75,6 +77,8 @@ const ExhibitorsDesign_page = () => {
   const { downloadExhibitor, isdownloadPending } = useExhibitorsDownload();
   const { DeleteCategory, isDeleteCategoryPending } = useDeleteCategory();
   const { UploadSplash, isPending: isUploadSplashPending } = useUploadSplash();
+  const [categories, setCategories] = React.useState<Category[]>([]);
+  const [dragIndex, setDragIndex] = React.useState<number | null>(null);
 
   const OnSave = () => {
     const formData = new FormData();
@@ -118,6 +122,32 @@ const ExhibitorsDesign_page = () => {
     });
   };
 
+  const handleDragStart = (index: number) => {
+    setDragIndex(index);
+  };
+
+  const handleDrop = (dropIndex: number) => {
+    if (dragIndex === null) return;
+
+    const updated = [...categories];
+
+    const draggedItem = updated[dragIndex];
+
+    updated.splice(dragIndex, 1);
+
+    updated.splice(dropIndex, 0, draggedItem);
+
+    const finalData = updated.map((item, index) => ({
+      ...item,
+      seq: index + 1,
+    }));
+
+    setCategories(finalData);
+    changeExhibitorSeq(finalData.map(pre=>pre.id))
+
+    setDragIndex(null);
+  };
+
   useEffect(() => {
     const newState = Categorys.reduce(
       (acc, p) => {
@@ -136,6 +166,16 @@ const ExhibitorsDesign_page = () => {
     if (!splash) return;
     setSplashValue(splash);
   }, [GlobalDesign]);
+
+  useEffect(() => {
+    if (Category?.response) {
+      setCategories(
+        Category.response
+          .filter((pre) => Boolean(pre.type))
+          .sort((a, b) => (a.seq ?? 0) - (b.seq ?? 0)),
+      );
+    }
+  }, [Category]);
 
   const { SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
@@ -401,19 +441,27 @@ const ExhibitorsDesign_page = () => {
                 loading={false}
               >
                 <div className="">
-                  {Category?.response
-                    .filter((pre) => Boolean(pre.type))
-                    .sort((a, b) => (a.seq ?? 0) - (b.seq ?? 0))
-                    .map((data, index) => (
-                      <Custom_Text_Row
-                        type={data.type}
+                  {categories.map((data, index) => (
+                      <div
                         key={data.id}
-                        id={data.id}
-                        index={String(index + 1)}
-                        seq={data.seq ?? index + 1}
-                        value={data.name}
-                        color={data.color}
-                      />
+                        draggable
+                        onDragStart={() => handleDragStart(index)}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={() => handleDrop(index)}
+                        className="flex items-center"
+                      >
+                        <GripVertical className="cursor-move"/>
+                        <Custom_Text_Row
+                          type={data.type}
+                          id={data.id}
+                          index={String(index + 1)}
+                          seq={data.seq ?? index + 1}
+                          value={data.name}
+                          color={data.color}
+                          allow_Image={data.allow_image}
+                          asset
+                        />
+                      </div>
                     ))}
                   <Button
                     onClick={() => dispatch(setCategoryModal(true))}

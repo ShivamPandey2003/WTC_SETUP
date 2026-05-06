@@ -578,6 +578,7 @@ declare type Category = {
   color: string;
   type: number;
   seq?: number;
+  allow_image:boolean
 };
 
 declare type CategoryListResponse = {

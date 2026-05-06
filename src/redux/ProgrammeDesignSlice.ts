@@ -4,7 +4,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 type ProgrammeDesignStateType = Omit<
   HomeDesignStateType,
   "selected" | "isPublished" | "news" | "searchText"
-> & { session: Session[], categoryModal:boolean,  selected: string | null, slectedDate:string, uploadCSV:boolean };
+> & { session: Session[], categoryModal: boolean, selected: string | null, slectedDate: string, uploadCSV: boolean, searchText: string; };
 
 const initialState: ProgrammeDesignStateType = {
   session: [],
@@ -12,9 +12,10 @@ const initialState: ProgrammeDesignStateType = {
   isDeleting: null,
   isCreating: false,
   categoryModal: false,
-  slectedDate:`${formatDate(`${new Date()}`)}`,
+  slectedDate: `${formatDate(`${new Date()}`)}`,
   uploadCSV: false,
-  unpublish:null
+  unpublish: null,
+  searchText: ""
 };
 
 const Programme_DesignSlice = createSlice({
@@ -25,23 +26,23 @@ const Programme_DesignSlice = createSlice({
       state.isDeleting = payload.payload;
       return state;
     },
-    setIsCreating:(state, payload: PayloadAction<boolean>)=>{
-        state.isCreating = payload.payload
-        return state;
+    setIsCreating: (state, payload: PayloadAction<boolean>) => {
+      state.isCreating = payload.payload
+      return state;
     },
-    setCategoryModal:(state, payload: PayloadAction<boolean>)=>{
+    setCategoryModal: (state, payload: PayloadAction<boolean>) => {
       state.categoryModal = payload.payload
       return state;
     },
-    setSelected:(state, payload: PayloadAction<string | null>) => {
+    setSelected: (state, payload: PayloadAction<string | null>) => {
       state.selected = payload.payload;
       return state;
     },
-    setSession:(state, payload: PayloadAction<Session[]>)=>{
+    setSession: (state, payload: PayloadAction<Session[]>) => {
       state.session = payload.payload;
       return state;
     },
-    setSelectedDate:(state, payload: PayloadAction<string>)=>{
+    setSelectedDate: (state, payload: PayloadAction<string>) => {
       state.slectedDate = payload.payload;
       return state
     },
@@ -49,8 +50,11 @@ const Programme_DesignSlice = createSlice({
       state.uploadCSV = payload.payload;
       return state;
     },
+     setSearchText:(state, payload: PayloadAction<string>)=>{
+      state.searchText = payload.payload
+    }
   },
 });
 
-export const { setIsDeleting, setIsCreating, setCategoryModal, setSelected, setSession, setSelectedDate, setUploadCSV } = Programme_DesignSlice.actions;
+export const { setIsDeleting, setIsCreating, setCategoryModal, setSelected, setSession, setSelectedDate, setUploadCSV, setSearchText } = Programme_DesignSlice.actions;
 export default Programme_DesignSlice.reducer;

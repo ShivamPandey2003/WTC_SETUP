@@ -21,6 +21,7 @@ import {
 import {
   setCategoryModal,
   setIsCreating,
+  setSearchText,
   setSelectedDate,
   setUploadCSV,
 } from "@/redux/ProgrammeDesignSlice";
@@ -35,8 +36,10 @@ import {
   Loader,
   Navigation,
   Plus,
+  Search,
   SquareArrowOutUpRight,
   Upload,
+  X,
 } from "lucide-react";
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -57,6 +60,7 @@ import ErrorModal from "@/components/global/ErrorModal";
 
 const ProgrammeDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
+  const [isSearch, setIsSearch] = React.useState<boolean>(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const {
@@ -76,6 +80,7 @@ const ProgrammeDesign_page = () => {
     slectedDate,
     uploadCSV,
     session = [],
+    searchText
   } = useSelector((state: RootState) => state.Programme_Design);
   const { isCreating: isSpeakerCreating, SpeakerSettings } = useSelector(
     (state: RootState) => state.Speaker_DesignSlice,
@@ -172,53 +177,86 @@ const ProgrammeDesign_page = () => {
           loading={isUpdateProgrammeDesignPending}
         />
         {Boolean(value === "Session Data") && (
-          <div className="absolute right-10 top-24 flex items-center gap-4">
-            <div className="w-full max-w-xl flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => scroll("left")}
-              >
-                <ChevronLeft />
-              </Button>
-              <div className="overflow-hidden flex-1">
-                <div
-                  ref={scrollRef}
-                  className="flex items-center gap-3 overflow-x-auto scroll-smooth"
-                  style={{ scrollbarWidth: "none" }}
-                >
-                  {Dates.map((date) => (
+          <div className="absolute right-10 top-24 flex items-center gap-3">
+            {!isSearch && (
+              <>
+                {" "}
+                <div className="w-full max-w-xl flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => scroll("left")}
+                  >
+                    <ChevronLeft />
+                  </Button>
+                  <div className="overflow-hidden flex-1">
                     <div
-                      ref={(el) => {
-                        itemRefs.current[date] = el;
-                      }}
-                      key={date}
+                      ref={scrollRef}
+                      className="flex items-center gap-3 overflow-x-auto scroll-smooth"
+                      style={{ scrollbarWidth: "none" }}
                     >
-                      <Button
-                        onClick={() => dispatch(setSelectedDate(date))}
-                        key={date}
-                        variant={"ghost"}
-                        className={cn(
-                          "h-7 shrink-0",
-                          date === slectedDate
-                            ? "bg-primary text-white hover:bg-primary hover:text-white"
-                            : "hover:bg-primary/10 hover:text-primary/80 hover:border hover:border-green-700 border border-gray-100",
-                        )}
-                      >
-                        {date}
-                      </Button>
+                      {Dates.map((date) => (
+                        <div
+                          ref={(el) => {
+                            itemRefs.current[date] = el;
+                          }}
+                          key={date}
+                        >
+                          <Button
+                            onClick={() => dispatch(setSelectedDate(date))}
+                            key={date}
+                            variant={"ghost"}
+                            className={cn(
+                              "h-7 shrink-0",
+                              date === slectedDate
+                                ? "bg-primary text-white hover:bg-primary hover:text-white"
+                                : "hover:bg-primary/10 hover:text-primary/80 hover:border hover:border-green-700 border border-gray-100",
+                            )}
+                          >
+                            {date}
+                          </Button>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => scroll("right")}
+                  >
+                    <ChevronRight />
+                  </Button>
                 </div>
+                <Button
+                  onClick={() => setIsSearch(true)}
+                  className="w-fit py-1 h-7 bg-green-50/50 border border-green-700 text-green-700 hover:text-white"
+                  title="Search session"
+                >
+                  <Search />
+                </Button>
+              </>
+            )}
+            {isSearch && (
+              <div className="w-[15vw] flex items-center bg-white border border-gray-300 rounded-md gap-1">
+                <input
+                  value={searchText}
+                  onChange={(e) => dispatch(setSearchText(e.target.value))}
+                  type="text"
+                  className="outline-0 py-1 px-2"
+                  placeholder="Search Session Name"
+                />
+                {(
+                  <X
+                    className="cursor-pointer"
+                    size={20}
+                    onClick={() => {
+                      dispatch(setSearchText(""))
+                      setIsSearch(false)
+                    }}
+                  />
+                )}
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => scroll("right")}
-              >
-                <ChevronRight />
-              </Button>
-            </div>
+            )}
             {session.length > 0 && (
               <Button
                 onClick={() => downloadSession()}
