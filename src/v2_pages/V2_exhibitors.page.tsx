@@ -142,7 +142,7 @@ const V2_exhibitors_page = () => {
             onClick={() => setSelectedExhibitor(null)}
           >
             <div
-              className="bg-white rounded-xl p-6 animate-in fade-in zoom-in-95 duration-200 max-w-9/12 overflow-auto max-h-9/12"
+              className="bg-white rounded-xl p-4 animate-in fade-in zoom-in-95 duration-200 max-w-9/12 overflow-auto max-h-9/12"
               onClick={(e) => e.stopPropagation()}
             >
               <ExhibitorsDetails id={selectedExhibitor} close={() => setSelectedExhibitor(null)} />
@@ -188,7 +188,7 @@ const V2_exhibitors_page = () => {
           onClick={() => setSelectedExhibitor(null)}
         >
           <div
-            className="bg-white rounded-xl p-6 animate-in fade-in zoom-in-95 duration-200 max-w-9/12
+            className="bg-white rounded-xl p-4 animate-in fade-in zoom-in-95 duration-200 max-w-9/12
              overflow-auto max-h-9/12"
             onClick={(e) => e.stopPropagation()}
           >

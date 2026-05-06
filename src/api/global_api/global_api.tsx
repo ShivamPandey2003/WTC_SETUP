@@ -758,6 +758,28 @@ export const useCategoryList = () => {
   return { Category, isCategoryPending };
 };
 
+export const useExhibitorCategoryList = () => {
+  const { data: Category, isPending: isCategoryPending } = useQuery<
+    CategoryListResponse,
+    AxiosError
+  >({
+    queryKey: ["category-Exhibitor-list"],
+    queryFn: async () => {
+      const res = await apiRequest("get", "/category/exhibitors");
+      return res.response;
+    },
+    select: (data) => ({
+      ...data,
+      response: [...data.response].sort(
+        (a, b) => (a.seq ?? 0) - (b.seq ?? 0),
+      ),
+    }),
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+  return { Category, isCategoryPending };
+};
+
 export const useGeneralExhibitorsUpdate = () => {
   const { Categorys } = useSelector((state: RootState) => state.ExhibitorSlice);
   const { SpeakerSettings } = useSelector(

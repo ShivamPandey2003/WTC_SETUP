@@ -7,14 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
 import {
   increaseResendCount,
-  setEmail,
   setOtp,
   setResendCooldown,
   setUserInfo,
 } from "@/redux/AuthSlice";
 import { setLoginModel, setResgister } from "@/redux/ModalSlice";
 import { useNavigate } from "react-router";
-import { setStep } from "@/redux/ExtraSlice";
+import { setEmail, setStep } from "@/redux/ExtraSlice";
 
 const coolDownTime =
   Number(import.meta.env.VITE_REACT_COOLDOWN_TIME_SECONDS) || 60000;
@@ -87,8 +86,11 @@ export const useVerifyOtp = () => {
 
 export const useResendOtp = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { email, resendCount } = useSelector(
+  const { resendCount } = useSelector(
     (state: RootState) => state.AuthSlice,
+  );
+  const { email } = useSelector(
+    (state: RootState) => state.ExtraSlice,
   );
   const { mutate: Resend, isPending: isResendPending } = useMutation<
     ResendResponse,

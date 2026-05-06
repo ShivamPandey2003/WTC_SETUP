@@ -36,9 +36,9 @@ const SingleSelect = ({
   const filtered = useMemo(
     () =>
       options.filter((o) =>
-        o.label.toLowerCase().includes(search.toLowerCase())
+        o.label.toLowerCase().includes(search.toLowerCase()),
       ),
-    [options, search]
+    [options, search],
   );
 
   const selectedOption = options.find((o) => o.value === selected) ?? null;
@@ -70,10 +70,7 @@ const SingleSelect = ({
   };
 
   return (
-    <div
-      ref={containerRef}
-      className={cn(`relative w-[30vw]`, className)}
-    >
+    <div ref={containerRef} className={cn(`relative w-[30vw]`, className)}>
       <div
         className="flex min-h-[20px] cursor-pointer flex-wrap items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 transition-colors hover:border-gray-400 focus-within:ring-0"
         onClick={(e) => {

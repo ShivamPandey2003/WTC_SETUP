@@ -10,8 +10,8 @@ import {
 } from "@/Schema/exhibitorSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useMemo } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
 const EditFrom = () => {
@@ -29,6 +29,7 @@ const EditFrom = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    control
   } = useForm<EditExhibitorSchemaType>({
     resolver: zodResolver(EditExhibitorSchema),
   });
@@ -45,6 +46,21 @@ const EditFrom = () => {
   }, [value, reset]);
   const dispatch = useDispatch<AppDispatch>();
 
+  const categoryType = useWatch({
+      control,
+      name: "category",
+    });
+  
+    const IsShow = useMemo(() => {
+      if (!AllCategory?.response.length) return false;
+  
+      const present = AllCategory.response.find((pre) => pre.id === categoryType);
+  
+      if (!present) return false;
+  
+      return present.allow_image;
+    }, [categoryType]);
+
   const onSubmit = (newData: EditExhibitorSchemaType) => {
     const formData = new FormData();
     formData.append("full_name", newData.full_name as string);
@@ -60,6 +76,9 @@ const EditFrom = () => {
     }
     if (newData.logo?.[0]) {
       formData.append("logo", newData.logo?.[0] as Blob);
+    }
+    if(newData.image?.[0] && IsShow){
+      formData.append("image", newData.image?.[0] as Blob);
     }
     EditExhibitor({ form: formData, id: `${selected}` });
   };
@@ -115,6 +134,16 @@ const EditFrom = () => {
           return { label: item.name, value: item.id };
         }),
     },
+     ...(IsShow
+      ? [
+          {
+            name: "image",
+            label: "Carousel Media",
+            type: "file",
+            accept: "image/png,image/jpg,image/webp,image/jpeg",
+          } as const,
+        ]
+      : []),
     {
       name: "booth_no",
       label: "Booth Location",

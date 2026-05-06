@@ -17,7 +17,7 @@ type FormProp = {
 
 const LoginForm: React.FC<FormProp> = ({ apiCall, isPending }) => {
   const [notARobot, setNotARobot] = useState<boolean>(false);
-  const { email } = useSelector((state: RootState) => state.AuthSlice);
+  const { email } = useSelector((state: RootState) => state.ExtraSlice);
   const {
     register: registerEmail,
     handleSubmit: handleEmailSubmit,
@@ -57,7 +57,9 @@ const LoginForm: React.FC<FormProp> = ({ apiCall, isPending }) => {
   return (
     <form
       className="my-8 flex flex-col"
-      onSubmit={handleEmailSubmit((data) => apiCall(data))}
+      onSubmit={handleEmailSubmit((data) => {
+        apiCall(data)
+      })}
       noValidate
     >
       <div className="mb-6">

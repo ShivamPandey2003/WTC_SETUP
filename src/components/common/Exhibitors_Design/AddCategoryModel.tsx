@@ -9,9 +9,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { z } from "zod";
 
 export const CategorySchema = z.object({
-  name: z.string().nonempty().min(3, "minimum 3 word required"),
-  color: z.string().nonempty(),
+  name: z.string().min(1).min(3, "minimum 3 word required"), 
+  color: z.string().min(1),
+  allow_image: z.boolean(),
 });
+
 
 export type Category = z.infer<typeof CategorySchema>;
 
@@ -54,6 +56,7 @@ const AddCategoryModel = () => {
   }[] = [
     { name: "name", label: "Name", placeholder: "Enter category name" },
     { name: "color", label: "Color", placeholder: "ex: #ffffff", type:'color' },
+    { name: "allow_image", label: "Allow assets", type: "checkbox" }
   ];
 
   return (

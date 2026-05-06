@@ -30,8 +30,8 @@ export const useCreateSession = () => {
       for (let [key, value] of data.entries()) {
         cloned.append(key, value);
       }
-      cloned.delete("bg_image")
-      cloned.delete("attachment")
+      cloned.delete("bg_image");
+      cloned.delete("attachment");
       const res = await apiRequest("post", "programme/create", cloned);
       return res.response;
     },
@@ -208,9 +208,11 @@ export const useAddCategory = () => {
     onSuccess: () => {
       toast.success("Category added successfully");
       queryClient.invalidateQueries({ queryKey: ["category-list"] });
+      queryClient.invalidateQueries({ queryKey: ["category-Exhibitor-list"] });
       dispatch(setCategoryModal(false));
       dispatch(exhibitorCategoryModal(false));
     },
+    
   });
 
   return { AddCategory, isAddCategoryPending, error };
@@ -279,6 +281,7 @@ export const useEditCategory = () => {
       color: string;
       category_type: number;
       sequence: number;
+      allow_image:boolean
     }
   >({
     mutationFn: async (data) => {
@@ -289,6 +292,7 @@ export const useEditCategory = () => {
     onSuccess: (_, vari) => {
       toast.success("Category edit successfully");
       queryClient.invalidateQueries({ queryKey: ["category-list"] });
+      queryClient.invalidateQueries({queryKey:["category-Exhibitor-list"]})
       dispatch(
         setIsEditable({
           ...isEditable,
@@ -315,8 +319,8 @@ export const useEditSession = () => {
       for (let [key, value] of data.entries()) {
         cloned.append(key, value);
       }
-      cloned.delete("bg_image")
-      cloned.delete("attachment")
+      cloned.delete("bg_image");
+      cloned.delete("attachment");
       const res = await apiRequest("post", `/programme/edit/${id}`, cloned);
       return res.response;
     },

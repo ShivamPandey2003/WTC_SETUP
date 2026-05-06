@@ -15,8 +15,11 @@ const OtpForm = () => {
   const { verifyOtp, isVerifying } = useVerifyOtp();
   const { Resend, isResendPending } = useResendOtp();
   const dispatch = useDispatch<AppDispatch>();
-  const { email, otp, resendCooldownEnd } = useSelector(
+  const { otp, resendCooldownEnd } = useSelector(
     (state: RootState) => state.AuthSlice,
+  );
+  const { email } = useSelector(
+    (state: RootState) => state.ExtraSlice,
   );
   const {
     formState: { errors: otpErrors },

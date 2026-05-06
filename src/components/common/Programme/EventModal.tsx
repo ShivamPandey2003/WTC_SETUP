@@ -431,7 +431,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                           </div>
                           <div className="flex flex-row sm:flex-row flex-wrap gap-x-4 w-full">
                             <NewDropdown
-                              ListClassName="border-none w-fit outline-0 ml-0 mt-0 ring-1 ring-gray-200 font-bold text-xs sm:text-sm"
+                              ListClassName="border-none w-[180px] sm:w-fit outline-0 ml-0 mt-0 ring-1 ring-gray-200 font-bold text-xs sm:text-sm"
                               position="bottom-left"
                               trigger={
                                 <Button

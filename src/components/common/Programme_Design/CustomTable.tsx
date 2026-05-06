@@ -19,29 +19,22 @@ import NoData from "@/components/global/NoData";
 import { cn, formatDate } from "@/lib/utils";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const CustomTable = () => {
   const [page, setPage] = useState<number>(1);
-  const { isDeleting, selected, slectedDate } = useSelector(
+  const { isDeleting, selected, slectedDate, searchText } = useSelector(
     (state: RootState) => state.Programme_Design,
   );
-  // const {
-  //   AllProgramme,
-  //   fetchNextPage,
-  //   hasNextPage,
-  //   isFetchingNextPage,
-  //   isFetchingPreviousPage,
-  //   hasPreviousPage,
-  //   fetchPreviousPage,
-  //   status,
-  //   error,
-  // } = useAdminInfiniteProgramme(slectedDate);
+  
+  const debouncedSearchText = useDebounce(searchText, 300);
+
   const {
     SessionList,
     isPending: isListPending,
     error,
-  } = useGetSessionList(page, slectedDate);
-  const { DeleteSession, isPending: isDeleetSessionPending } =
+  } = useGetSessionList(page, slectedDate, debouncedSearchText);
+  const { DeleteSession, isPending: isDeleteSessionPending } =
     useDeleteSession();
   const { AllCategory, isPending } = useGetCategoryAll();
   const dispatch = useDispatch<AppDispatch>();
@@ -65,9 +58,9 @@ const CustomTable = () => {
     start = Math.max(1, end - chunkSize + 1);
   }
 
-  useEffect(()=>{
-    setPage(1)
-  },[slectedDate])
+  useEffect(() => {
+    setPage(1);
+  }, [slectedDate]);
 
   useEffect(() => {
     if (NewValue.length === 0) return;
@@ -225,7 +218,7 @@ const CustomTable = () => {
         isOpen={Boolean(isDeleting)}
         onClose={() => dispatch(setIsDeleting(null))}
         onConfirm={() => DeleteSession({ id: isDeleting as string })}
-        isDeleting={isDeleetSessionPending}
+        isDeleting={isDeleteSessionPending}
       />
     </div>
   );

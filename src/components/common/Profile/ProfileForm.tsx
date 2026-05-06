@@ -111,7 +111,7 @@ export default function ProfileForm() {
     }
   };
 
-  const handleRemoveImage = () => setImage(null);
+  // const handleRemoveImage = () => setImage(null);
 
   return (
     <div className="p-6 bg-white rounded-xl space-y-4 relative">
@@ -141,7 +141,7 @@ export default function ProfileForm() {
               onChange={handleImageChange}
             />
           </label>
-          {image && (
+          {/* {image && (
             <button
               type="button"
               onClick={handleRemoveImage}
@@ -149,7 +149,7 @@ export default function ProfileForm() {
             >
               Remove
             </button>
-          )}
+          )} */}
         </div>
       </div>
 

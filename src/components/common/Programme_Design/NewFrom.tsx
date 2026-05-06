@@ -65,7 +65,7 @@ const NewFrom = () => {
     formData.append("location", newData.location);
     formData.append("external_link", newData?.external_link as string);
     formData.append("category", newData.category);
-    if(newData.speakers && newData.speakers.length>0){
+    if(newData.speakers && newData.speakers.length > 0){
       formData.append("speakers", JSON.stringify(newData.speakers));
     }
     formData.append("venueID", `${newData.floorID}__${newData.venueID}`);
