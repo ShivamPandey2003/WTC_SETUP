@@ -111,7 +111,7 @@ export default function ProfileForm() {
     }
   };
 
-  const handleRemoveImage = () => setImage(null);
+  // const handleRemoveImage = () => setImage(null);
 
   return (
     <div className="p-6 bg-white rounded-xl space-y-4 relative">
