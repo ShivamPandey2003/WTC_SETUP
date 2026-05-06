@@ -249,7 +249,7 @@ export default function ExhibitorForm() {
                       {exhibitor_info?.carusole_image ? (
                         <img
                           id="carousel-preview"
-                          src={exhibitor_info?.carusole_image}
+                          src={previewUrl || exhibitor_info?.carusole_image}
                           alt="Venue"
                           className="h-full w-full object-cover"
                         />
