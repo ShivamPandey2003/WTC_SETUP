@@ -26,22 +26,14 @@ const CustomTable = () => {
   const { isDeleting, selected, slectedDate, searchText } = useSelector(
     (state: RootState) => state.Programme_Design,
   );
-  // const {
-  //   AllProgramme,
-  //   fetchNextPage,
-  //   hasNextPage,
-  //   isFetchingNextPage,
-  //   isFetchingPreviousPage,
-  //   hasPreviousPage,
-  //   fetchPreviousPage,
-  //   status,
-  //   error,
-  // } = useAdminInfiniteProgramme(slectedDate);
+  
+  const debouncedSearchText = useDebounce(searchText, 300);
+
   const {
     SessionList,
     isPending: isListPending,
     error,
-  } = useGetSessionList(page, slectedDate, useDebounce(searchText, 300));
+  } = useGetSessionList(page, slectedDate, debouncedSearchText);
   const { DeleteSession, isPending: isDeleetSessionPending } =
     useDeleteSession();
   const { AllCategory, isPending } = useGetCategoryAll();

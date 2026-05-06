@@ -209,7 +209,7 @@ export const useEditExhibitor = () => {
       }
 
       cloned.delete("logo");
-      cloned.delete("image")
+      cloned.delete("image");
       const res = await apiRequest("post", `exhibitors/edit/${id}`, cloned);
       return res.response;
     },
@@ -249,14 +249,12 @@ export const useEditExhibitor = () => {
           `/upload/presigned-url?file_name=${image.name}&module=${"exhibitor_carusole"}&ref_id=${data.response.id}`,
         );
         const { file_key, upload_url } = res.response.response;
-        console.log("working")
         await axios.put(upload_url, image, {
           headers: {
             "Content-Type": image.type,
           },
           responseType: "blob",
         });
-        console.log("working with url:", upload_url)
         const newForm = new FormData();
         newForm.append("module", "exhibitor_carusole");
         newForm.append("record_id", data.response.id);
@@ -385,7 +383,7 @@ export const useExhibitorsDownload = () => {
 export const useChangeExhibitorSeq = ()=>{
    const { mutate: changeExhibitorSeq, isPending: isChangeExhibitorSeqPending } =
     useMutation<any, AxiosError, string[]>({
-      mutationKey: ["exhibitors_download"],
+      mutationKey: ["change-exhibitor-sequence"],
       mutationFn: async (data) => {
         const res = await apiRequest(
           "post",

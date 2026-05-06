@@ -20,7 +20,7 @@ interface Custom_Text_RowProp {
   classname?: string;
   type: number;
   allow_Image?: boolean;
-  assest?:boolean;
+  asset?:boolean;
 }
 
 const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
@@ -31,7 +31,7 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
   classname,
   type,
   allow_Image,
-  assest = false
+  asset = false
 }) => {
   const nameRef = useRef<HTMLInputElement | null>(null);
   const dispatch = useDispatch();
@@ -105,7 +105,7 @@ const Custom_Text_Row: React.FC<Custom_Text_RowProp> = ({
         onChange={(e) => setTempColor(e.target.value)}
       />
 
-      {assest && <div className="flex items-center gap-2">
+      {asset && <div className="flex items-center gap-2">
         <input
           checked={editing?checked:allow_Image}
           onChange={(e) => setChecked(e.target.checked)}

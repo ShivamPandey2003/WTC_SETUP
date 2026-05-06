@@ -459,7 +459,7 @@ const ExhibitorsDesign_page = () => {
                           value={data.name}
                           color={data.color}
                           allow_Image={data.allow_image}
-                          assest
+                          asset
                         />
                       </div>
                     ))}
