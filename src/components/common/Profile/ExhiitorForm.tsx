@@ -193,7 +193,7 @@ export default function ExhibitorForm() {
 
         {exhibitor_info?.is_bg && (
           <>
-            <div className="flex flex-col sm:flex-row sm:items-center p-2">
+            <div className="flex flex-col sm:flex-row sm:items-center">
               <label className="block text-sm font-medium text-gray-600 sm:w-[170px]">
                 Carousel Media
               </label>
