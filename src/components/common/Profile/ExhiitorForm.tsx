@@ -216,7 +216,7 @@ export default function ExhibitorForm() {
                         try {
                           const res = await apiRequest(
                             "post",
-                            `/upload/presigned-url?file_name=${file.name}&module=${"exhibitor_carusole"}&ref_id=${exhibitor_info?.exhibitor_id}`,
+                            `/upload/presigned-url?file_name=${file.name}&module=exhibitor_carusole&ref_id=${exhibitor_info?.exhibitor_id}`,
                           );
 
                           const { file_key, upload_url } = res.response.response;
