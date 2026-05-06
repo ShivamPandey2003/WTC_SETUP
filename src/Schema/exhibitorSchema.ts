@@ -15,20 +15,15 @@ export const ExhibitorSchema = z.object({
   logo: z
     .instanceof(FileList)
     .optional()
-    .refine(
-      (files) => !files || files.length > 0,
-      "At least one file is required",
-    ).refine((files) => {
+    .refine((files) => {
       if (!files || files.length === 0) return true;
       return allowedTypes.includes(files[0].type);
     }, "Only PNG, JPG, WEBP, JPEG images are allowed"),
+
   image: z
     .instanceof(FileList)
     .optional()
-    .refine(
-      (files) => !files || files.length > 0,
-      "At least one file is required",
-    ).refine((files) => {
+    .refine((files) => {
       if (!files || files.length === 0) return true;
       return allowedTypes.includes(files[0].type);
     }, "Only PNG, JPG, WEBP, JPEG images are allowed"),
@@ -45,16 +40,15 @@ export const EditExhibitorSchema = z.object({
   image: z
     .instanceof(FileList)
     .optional()
-    .refine(
-      (files) => !files || files.length > 0,
-      "At least one file is required",
-    ).refine((files) => {
+    .refine((files) => {
       if (!files || files.length === 0) return true;
       return allowedTypes.includes(files[0].type);
     }, "Only PNG, JPG, WEBP, JPEG images are allowed"),
+
   logo: z
-    .custom<FileList | undefined>()
-    .optional().refine((files) => {
+    .instanceof(FileList)
+    .optional()
+    .refine((files) => {
       if (!files || files.length === 0) return true;
       return allowedTypes.includes(files[0].type);
     }, "Only PNG, JPG, WEBP, JPEG images are allowed"),
