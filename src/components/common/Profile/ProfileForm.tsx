@@ -58,14 +58,14 @@ export default function ProfileForm() {
   const onSubmit = (data: FormData) => {
     UpdateProfile({
       user_info: {
-        prefix:data.prefix as string,
+        prefix:data.prefix ?? "",
         firstname: data.firstName,
         lastname: data.lastName,
         gender: data.gender,
         email:user_info.email,
         company_name: data.company as string,
         designation: data.designation as string,
-        linkedin_url: data.linkedin as string,
+        linkedin_url: data.linkedin ?? "",
         // profile_image: image as string,
         phone_number: data.phone_number as string,
         image_id:user_info.image_id

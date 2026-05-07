@@ -55,7 +55,7 @@ export default function ExhibitorForm() {
       exhibitor_info: {
         full_name: data.full_name,
         // logo: image as string,
-        url: data.url as string,
+        url: data.url ?? "",
         booth_no: data.booth_no,
       },
     });
