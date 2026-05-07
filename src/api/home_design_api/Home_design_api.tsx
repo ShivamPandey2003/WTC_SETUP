@@ -10,7 +10,7 @@ import {
 } from "@/redux/HomeDesignSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -88,11 +88,13 @@ export const useEditNews = () => {
   return { EditNews, isPending, error };
 };
 
-export const useGetNewsList = (page: number = 1, search?: string) => {
+export const useGetNewsList = (page: number = 1, search: string = "") => {
   const url =
     search && search.trim()
       ? `news/list?page=${page}&search=${search}`
       : `news/list?page=${page}`;
+
+  const shouldFetch = search?.length === 0 || search?.length > 3;
 
   const {
     data: NewsList,
@@ -108,10 +110,12 @@ export const useGetNewsList = (page: number = 1, search?: string) => {
       return data;
     },
     refetchOnWindowFocus: false,
+    placeholderData: keepPreviousData,
+    enabled: shouldFetch,
     retry: 1,
   });
 
-  return { NewsList, isNewsListPending, errorInNewsList };
+  return { NewsList, isNewsListPending: shouldFetch ? isNewsListPending : false, errorInNewsList };
 };
 
 // export const useAdminInfiniteNews = () => {
@@ -325,7 +329,7 @@ export const useUploadCSVBulk = (onClose: () => void) => {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download",  `${variable.module}_upload_result.csv`);
+      link.setAttribute("download", `${variable.module}_upload_result.csv`);
 
       document.body.appendChild(link);
       link.click();

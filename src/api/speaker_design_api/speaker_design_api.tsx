@@ -9,7 +9,7 @@ import {
 } from "@/redux/SpeakerDesignSlice";
 import type { AppDispatch } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
-import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -234,11 +234,13 @@ export const useGetSpeakerList = () => {
   return { SpeakerList, isPending, error };
 };
 
-export const useGetAdminSpeakerList = (page: number = 1, search?: string) => {
+export const useGetAdminSpeakerList = (page: number = 1, search: string="") => {
   const url =
     search && search?.trim()
       ? `speakers/list?page=${page}&search=${search}`
       : `speakers/list?page=${page}`;
+
+  const shouldFetch = search?.length === 0 || search?.length > 3;
 
   const {
     data: SpeakerList,
@@ -254,6 +256,8 @@ export const useGetAdminSpeakerList = (page: number = 1, search?: string) => {
       return data;
     },
     refetchOnWindowFocus: false,
+    placeholderData: keepPreviousData,
+    enabled: shouldFetch,
     retry: 0,
   });
 

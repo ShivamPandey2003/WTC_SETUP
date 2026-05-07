@@ -47,6 +47,7 @@ const HomeDesign_page = () => {
   const { isGlobalDesignPending } = useGlobalDesign();
   const { AllCategory, isPending: isCategoriesPending } = useGetCategoryAll();
   const [path, setPath] = useState<string | null>(null);
+  const [limit, setLimit] = useState<number>(15);
   const dispatch = useDispatch<AppDispatch>();
   const {
     isCreating,
@@ -263,6 +264,7 @@ const HomeDesign_page = () => {
                           <div className="w-full flex flex-wrap gap-3">
                             {AllCategory?.response
                               .filter((pre) => pre.type === val)
+                              .slice(0, limit)
                               .map((p) => {
                                 return (
                                   <div
@@ -311,6 +313,31 @@ const HomeDesign_page = () => {
                                 );
                               })}
                           </div>
+                          {(AllCategory?.response.filter(
+                            (pre) => pre.type === val,
+                          ).length ?? 0) >= limit && (
+                            <div
+                              className="text-end cursor-pointer text-primary underline font-semibold mt-2"
+                              onClick={() => {
+                                setLimit((pre) =>
+                                  pre ===
+                                  (AllCategory?.response.filter(
+                                    (pre) => pre.type === val,
+                                  ).length ?? 0)
+                                    ? 15
+                                    : (AllCategory?.response.filter(
+                                        (pre) => pre.type === val,
+                                      ).length ?? 0),
+                                );
+                              }}
+                            >
+                              {(AllCategory?.response.filter(
+                                (pre) => pre.type === val,
+                              ).length ?? 0) === limit
+                                ? "Show less"
+                                : "Show more"}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
