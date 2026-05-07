@@ -22,12 +22,7 @@ const formSchema = z.object({
   gender: z.enum(["Male", "Female", "Other"]),
   company: z.string().nullable().optional(),
   designation: z.string().nullable().optional(),
-  linkedin: z.string().refine((text) => {
-    if (!text.trim()) return true;
-    return [".com", ".in", ".ca", ".org", ".co", ".ai", ".net", ".io"].some(
-      (domain) => text.includes(domain),
-    );
-  }, "Invalid url"),
+  linkedin: z.url().optional().or(z.literal(""))
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -97,6 +92,7 @@ const OnboardingForm = () => {
     setType(user.type);
 
     reset({
+      prefix:user.prefix??"",
       firstName: user.firstname,
       lastName: user.lastname,
       company: user.company_name ?? "",
@@ -108,6 +104,7 @@ const OnboardingForm = () => {
   const onSubmit = (data: FormData) => {
     UpdateProfile({
       user_info: {
+        prefix:data.prefix ?? "",
         firstname: data.firstName,
         lastname: data.lastName,
         gender: data.gender,
