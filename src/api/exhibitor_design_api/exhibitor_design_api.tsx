@@ -1,5 +1,5 @@
 import { apiRequest } from "@/services/apiService";
-import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { queryClient } from "@/provider/TanstackProvider";
 import { toast } from "sonner";
@@ -13,11 +13,13 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
 import axios from "axios";
 
-export const useGetExhibitorsList = (page: number = 1, search?: string) => {
+export const useGetExhibitorsList = (page: number = 1, search: string="") => {
   const url =
     search && search.trim()
       ? `exhibitors/listing?page=${page}&search=${search}`
       : `exhibitors/listing?page=${page}`;
+
+      const shouldFetch = search?.length === 0 || search?.length > 3;
 
   const {
     data: Exhibitors,
@@ -33,6 +35,8 @@ export const useGetExhibitorsList = (page: number = 1, search?: string) => {
       return data;
     },
     refetchOnWindowFocus: false,
+    placeholderData: keepPreviousData,
+    enabled: shouldFetch,
     retry: 0,
   });
 
