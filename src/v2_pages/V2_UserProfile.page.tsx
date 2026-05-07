@@ -45,7 +45,7 @@ const V2_UserProfile_page = () => {
 
   return (
     <div className="flex-1 overflow-y-auto">
-      <div className="mx-auto px-8 pb-4">
+      <div className="mx-auto px-4 sm:px-8 pb-4">
         <div
           className={cn(
             "flex flex-col sm:flex-row sm:items-start justify-between gap-4",

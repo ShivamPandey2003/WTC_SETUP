@@ -20,18 +20,9 @@ const formSchema = z.object({
   designation: z.string().optional(),
   company: z.string().optional(),
   bio: z.string().optional(),
-  external_link: z.string().refine((text) => {
-    if (!text.trim()) return true;
-    return [".com", ".in", ".ca", ".org", ".co", ".ai", ".net", ".io"].some((domain) => text.includes(domain));
-  }, "Invalid url"),
-  linkedin_url: z.string().refine((text) => {
-    if (!text.trim()) return true;
-    return [".com", ".in", ".ca", ".org", ".co", ".ai", ".net", ".io"].some((domain) => text.includes(domain));
-  }, "Invalid url"),
-  whatsapp_url: z.string().refine((text) => {
-    if (!text.trim()) return true;
-    return [".com", ".in", ".ca", ".org", ".co", ".ai", ".net", ".io"].some((domain) => text.includes(domain));
-  }, "Invalid url"),
+  external_link: z.url().optional().or(z.literal("")),
+  linkedin_url: z.url().optional().or(z.literal("")),
+  whatsapp_url: z.url().optional().or(z.literal("")),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -73,7 +64,7 @@ export default function SpeakerForm() {
         lastname: data.lastname,
         company: data.company as string,
         designation: data.designation as string,
-        linkedin_url: data.linkedin_url,
+        linkedin_url: data.linkedin_url ?? "",
         // profile_image: image as string,
         whatsapp_url: data.whatsapp_url as string,
         external_link: data.external_link as string,

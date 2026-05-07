@@ -12,6 +12,7 @@ type ProfileT = {
     profile_image: string | null;
     gender: "Male" | "Female" | "Other" | string
     image_id: string;
+    prefix:string
   };
   qr_image: string;
   speaker_info: {
@@ -39,6 +40,7 @@ type ProfileT = {
 
 const initialState: ProfileT = {
   user_info: {
+    prefix:'',
     firstname: "",
     lastname: "",
     email: "",
