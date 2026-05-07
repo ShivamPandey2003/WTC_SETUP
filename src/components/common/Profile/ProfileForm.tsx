@@ -22,10 +22,7 @@ const formSchema = z.object({
   company: z.string().optional(),
   designation: z.string().optional(),
   email: z.email("Invalid email"),
-  linkedin: z.string().refine((text) => {
-    if (!text.trim()) return true;
-    return [".com", ".in", ".ca", ".org", ".co", ".ai", ".net", ".io"].some((domain) => text.includes(domain));
-  }, "Invalid url"),
+  linkedin: z.url().optional().or(z.literal("")),
   phone_number: z.string().optional(),
 });
 
@@ -46,7 +43,7 @@ export default function ProfileForm() {
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      prefix: "",
+      prefix: user_info.prefix || "",
       firstName: user_info.firstname,
       lastName: user_info.lastname,
       gender: user_info.gender as any,
@@ -54,19 +51,21 @@ export default function ProfileForm() {
       designation: user_info.designation as string,
       email: user_info.email,
       linkedin: user_info.linkedin_url || "",
+      phone_number: user_info.phone_number || ""
     },
   });
 
   const onSubmit = (data: FormData) => {
     UpdateProfile({
       user_info: {
+        prefix:data.prefix as string,
         firstname: data.firstName,
         lastname: data.lastName,
         gender: data.gender,
         email:user_info.email,
         company_name: data.company as string,
         designation: data.designation as string,
-        linkedin_url: data.linkedin,
+        linkedin_url: data.linkedin as string,
         // profile_image: image as string,
         phone_number: data.phone_number as string,
         image_id:user_info.image_id
@@ -245,9 +244,9 @@ export default function ProfileForm() {
           </label>
           <div>
             <input
-              disabled
+              readOnly
               {...register("email")}
-              className="w-full sm:w-[500px] border border-[#ddd] outline-0 rounded-md p-2"
+              className="w-full sm:w-[500px] border border-[#ddd] outline-0 rounded-md p-2  read-only:bg-gray-100 read-only:text-gray-400 read-only:cursor-not-allowed"
               placeholder="Email"
             />
             {errors.email && (

@@ -32,7 +32,7 @@ export default function Sidebar({ activeItem = "global" }: SidebarProps) {
     {
       id: "Profile",
       label: "Admin Profile",
-      onClick: () => navigate("/wtc-profile"),
+      onClick: () => navigate("/user-profile", {state:{Title:userinfo.grp === 1 ?"Admin Profile":"User Profile"}}),
     },
     {
       id: "Logout",

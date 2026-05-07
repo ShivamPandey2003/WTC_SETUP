@@ -460,7 +460,8 @@ declare type ProfileResponse = {
       phone_number: string;
       profile_image: string;
       type: number;
-      gender: string
+      gender: string;
+      prefix:string;
     };
     qr_image: string;
     speaker_info: {
@@ -506,6 +507,7 @@ declare type ProfileUpdateRequest = {
     profile_image?: string | null;
     gender: "Male" | "Female" | "Other" | string
     image_id?: string;
+    prefix:string;
   };
   speaker_info?: {
     "firstname": string,

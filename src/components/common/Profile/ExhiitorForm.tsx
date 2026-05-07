@@ -16,13 +16,8 @@ import { toast } from "sonner";
 
 const formSchema = z.object({
   full_name: z.string().min(1),
-  url: z.string().refine((text) => {
-    if (!text.trim()) return true;
-    return [".com", ".in", ".ca", ".org", ".co", ".ai", ".net", ".io"].some(
-      (domain) => text.includes(domain),
-    );
-  }, "Invalid url"),
-  booth_no: z.string().min(1),
+  url: z.url().optional().or(z.literal("")),
+  booth_no: z.string(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -60,7 +55,7 @@ export default function ExhibitorForm() {
       exhibitor_info: {
         full_name: data.full_name,
         // logo: image as string,
-        url: data.url,
+        url: data.url as string,
         booth_no: data.booth_no,
       },
     });
