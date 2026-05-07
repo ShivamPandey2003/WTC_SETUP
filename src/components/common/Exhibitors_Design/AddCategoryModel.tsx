@@ -56,7 +56,7 @@ const AddCategoryModel = () => {
   }[] = [
     { name: "name", label: "Name", placeholder: "Enter category name" },
     { name: "color", label: "Color", placeholder: "ex: #ffffff", type:'color' },
-    { name: "allow_image", label: "Allow assets", type: "checkbox" }
+    { name: "allow_image", label: "Carousel Media", type: "checkbox" }
   ];
 
   return (

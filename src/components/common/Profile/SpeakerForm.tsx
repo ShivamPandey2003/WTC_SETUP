@@ -19,7 +19,7 @@ const formSchema = z.object({
   lastname: z.string().min(1, "Last name is required"),
   designation: z.string().optional(),
   company: z.string().optional(),
-  bio: z.string().min(5),
+  bio: z.string().optional(),
   external_link: z.string().refine((text) => {
     if (!text.trim()) return true;
     return [".com", ".in", ".ca", ".org", ".co", ".ai", ".net", ".io"].some((domain) => text.includes(domain));

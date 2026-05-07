@@ -10,7 +10,7 @@ import {
 import { setCategoryModal as exhibitorCategoryModal } from "@/redux/ExhibitorSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -83,7 +83,7 @@ export const useCreateSession = () => {
 export const useGetSessionList = (
   page: number = 1,
   date: string,
-  search?: string,
+  search: string = "",
 ) => {
   const input = new Date(date + " UTC");
 
@@ -97,6 +97,8 @@ export const useGetSessionList = (
     params.append("search", search.trim());
   }
   const url = `programme/list?${params.toString()}`;
+
+  const shouldFetch = search?.length === 0 || search?.length > 3;
 
   const {
     data: SessionList,
@@ -112,6 +114,8 @@ export const useGetSessionList = (
       return data;
     },
     refetchOnWindowFocus: false,
+    placeholderData: keepPreviousData,
+    enabled: shouldFetch,
     retry: 1,
   });
 

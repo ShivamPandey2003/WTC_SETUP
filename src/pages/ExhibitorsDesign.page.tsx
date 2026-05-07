@@ -1,11 +1,10 @@
-import Custom_Text_Row from "@/components/common/Exhibitors_Design/Custom_Text_Row";
 import CustomTable from "@/components/common/Exhibitors_Design/CustomTable";
 import AdminTitlebar from "@/components/global/AdminTitlebar";
 import Section from "@/components/global/Section";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ToggleSwitch from "@/components/ui/ToggleSwitch";
-import { Download, GripVertical, Loader, Plus, Upload, X } from "lucide-react";
+import { Download, Loader, Plus, Upload, X } from "lucide-react";
 import React, { useEffect } from "react";
 import CreateModal from "@/components/common/Exhibitors_Design/CreateModal";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,7 +28,6 @@ import { setSpeakerSettings } from "@/redux/SpeakerDesignSlice";
 // import NoData from "@/components/global/NoData";
 import CSVModel from "@/components/global/CSVModel";
 import {
-  useChangeExhibitorSeq,
   useExhibitorsDownload,
   useUploadExhibitorsCSV,
   useUploadSplash,
@@ -42,6 +40,7 @@ import { setResponseModal } from "@/redux/ModalSlice";
 import ErrorModal from "@/components/global/ErrorModal";
 import { apiRequest } from "@/services/apiService";
 import axios from "axios";
+import CategoryTable from "@/components/common/Exhibitors_Design/CategoryTable";
 
 const ExhibitorsDesign_page = () => {
   const [value, setValue] = React.useState<string>("General Settings");
@@ -54,7 +53,6 @@ const ExhibitorsDesign_page = () => {
   const { UploadExhibitorsCSV, isPending: isUploadPending } =
     useUploadExhibitorsCSV();
   const { Category, isCategoryPending } = useExhibitorCategoryList();
-  const {changeExhibitorSeq} = useChangeExhibitorSeq()
   const dispatch = useDispatch();
   const {
     // SpeakerSettings: SettingValue,
@@ -78,7 +76,6 @@ const ExhibitorsDesign_page = () => {
   const { DeleteCategory, isDeleteCategoryPending } = useDeleteCategory();
   const { UploadSplash, isPending: isUploadSplashPending } = useUploadSplash();
   const [categories, setCategories] = React.useState<Category[]>([]);
-  const [dragIndex, setDragIndex] = React.useState<number | null>(null);
 
   const OnSave = () => {
     const formData = new FormData();
@@ -120,32 +117,6 @@ const ExhibitorsDesign_page = () => {
       },
       responseType: "blob",
     });
-  };
-
-  const handleDragStart = (index: number) => {
-    setDragIndex(index);
-  };
-
-  const handleDrop = (dropIndex: number) => {
-    if (dragIndex === null) return;
-
-    const updated = [...categories];
-
-    const draggedItem = updated[dragIndex];
-
-    updated.splice(dragIndex, 1);
-
-    updated.splice(dropIndex, 0, draggedItem);
-
-    const finalData = updated.map((item, index) => ({
-      ...item,
-      seq: index + 1,
-    }));
-
-    setCategories(finalData);
-    changeExhibitorSeq(finalData.map(pre=>pre.id))
-
-    setDragIndex(null);
   };
 
   useEffect(() => {
@@ -440,8 +411,9 @@ const ExhibitorsDesign_page = () => {
                 show={false}
                 loading={false}
               >
-                <div className="">
-                  {categories.map((data, index) => (
+                <div className="w-full">
+                  <CategoryTable Categories={categories} setCategories={setCategories}/>
+                  {/* {categories.map((data, index) => (
                       <div
                         key={data.id}
                         draggable
@@ -462,7 +434,7 @@ const ExhibitorsDesign_page = () => {
                           asset
                         />
                       </div>
-                    ))}
+                    ))} */}
                   <Button
                     onClick={() => dispatch(setCategoryModal(true))}
                     className="mt-4"
