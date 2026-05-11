@@ -230,7 +230,13 @@ export const addToOutlookCalendar = ({
   end: string;
   location: string;
 }) => {
-  const url = `https://outlook.live.com/calendar/0/action/compose?subject=${encodeURIComponent(title)}&startdt=${start}&enddt=${end}&location=${encodeURIComponent(location)}`;
+  const url =
+    `https://outlook.office.com/calendar/action/compose` +
+    `?rru=addevent` +
+    `&startdt=${encodeURIComponent(start)}` +
+    `&enddt=${encodeURIComponent(end)}` +
+    `&subject=${encodeURIComponent(title)}` +
+    `&location=${encodeURIComponent(location)}`;
 
   window.open(url, "_blank");
 };

@@ -31,7 +31,8 @@ import SingleSelect from "@/v2_components/global/SingleSelect";
 import NoData from "@/components/global/NoData";
 import NewDropdown from "@/v2_components/global/V2_DropDown";
 import { PiMicrosoftOutlookLogoFill } from "react-icons/pi";
-import { FaGoogle, FaYahoo, FaApple } from "react-icons/fa";
+import { FaGoogle, FaYahoo } from "react-icons/fa";
+import { FaFile } from "react-icons/fa6";
 import SpeakerDetails from "@/v2_pages/SpeakerDetails";
 
 type ModalProps = {
@@ -94,10 +95,10 @@ const Menu = (s: Programme) => [
   },
   {
     id: "Ical",
-    label: "Ical",
+    label: "iCal / Event File",
     icon: (
       <div className="w-[38px] h-[38px] rounded-[9px] border-[0.5px] flex items-center justify-center bg-[#FFF0EF] border-[#FFF0EF]">
-        <FaApple color="#FF3B30" />
+        <FaFile color="#FF3B30" />
       </div>
     ),
     onClick: () => {
@@ -431,7 +432,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                           </div>
                           <div className="flex flex-row sm:flex-row flex-wrap gap-x-4 w-full">
                             <NewDropdown
-                              ListClassName="border-none w-[180px] sm:w-fit outline-0 ml-0 mt-0 ring-1 ring-gray-200 font-bold text-xs sm:text-sm"
+                              ListClassName="border-none w-[200px] sm:w-[200px] outline-0 ml-0 mt-0 ring-1 ring-gray-200 font-bold text-xs sm:text-sm"
                               position="bottom-left"
                               trigger={
                                 <Button
