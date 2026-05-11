@@ -10,7 +10,6 @@ import {
   LocateFixed,
   Clock,
   MapPin,
-  File,
 } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
