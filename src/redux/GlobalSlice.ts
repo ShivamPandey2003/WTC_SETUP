@@ -17,6 +17,7 @@ type initialStateType = {
   filterData: Record<string, Programme[]>;
   searchParams: string | null;
   searchParams2: string | null;
+  searchParams3: string | null;
   ArrayTabs: {
     home_tab: string;
     programme_tab: string;
@@ -70,6 +71,7 @@ const initialState: initialStateType = {
   filterData: {},
   searchParams: null,
   searchParams2: null,
+  searchParams3: null,
   ArrayTabs: {
     home_tab: "",
     programme_tab: "",
@@ -121,6 +123,10 @@ const Global_Slice = createSlice({
       state.searchParams2 = payload.payload;
       return state;
     },
+    setSearchParams3: (state, payload: PayloadAction<string | null>) => {
+      state.searchParams3 = payload.payload;
+      return state;
+    },
     setArrayTabs: (
       state,
       payload: PayloadAction<{
@@ -155,6 +161,7 @@ export const {
   setFilterData,
   setSearchParams,
   setSearchParams2,
+  setSearchParams3,
   setArrayTabs,
   setType,
   setAll_Categories

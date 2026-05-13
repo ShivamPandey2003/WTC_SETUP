@@ -18,7 +18,7 @@ const calculateOverlaps = (events: Programme[]) => {
     // Get the first category ID as the unique identifier for category
     const catId = Object.keys(event.categories || {})[0] || "no-cat";
     // Create a unique key for grouping
-    const mergeKey = `${event.start_time}-${event.end_time}-${catId}`;
+    const mergeKey = `${event.start_time}-${catId}`;
 
     if (mergedMap.has(mergeKey)) {
       const existing = mergedMap.get(mergeKey);
@@ -188,7 +188,8 @@ function DayColumn({
             event.categories?.[firstCatKey]?.color || color[event.type];
           const shouldBeGray = isAnyColumnHovered && !isThisColumnHovered;
           //const Title = event.title || (Object.values(event.categories || {})[0] as any)?.name || event.type;
-          const Title = event.categories?.[firstCatKey]?.name || event.title || event.type;
+          const Title =
+            event.categories?.[firstCatKey]?.name || event.title || event.type;
 
           const isFull = event.space_type === "full";
 
@@ -219,14 +220,17 @@ function DayColumn({
                 <div
                   className={cn(
                     "event-title text-[11px] text-center",
-                    duration < 30
-                      ? "truncate max-w-[70px]"
-                      : "font-bold whitespace-normal break-words w-full",
+                    cardHeight - GAP * 2 > 800
+                      ? "rotate-90 w-full"
+                      : duration < 30
+                        ? "truncate max-w-[70px]"
+                        : "font-bold whitespace-normal break-words w-full",
                   )}
                   style={{
                     color: shouldBeGray
                       ? "#fff"
                       : getContrastTextColor(eventColor),
+                    width: "100%"
                   }}
                 >
                   {Title}

@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { isBase64Image } from "@/lib/utils";
+import { useSearchParams } from "react-router";
 
 interface prop {
   id: string;
@@ -18,6 +19,7 @@ interface prop {
 const Map_V2 = ({ id }: prop) => {
   const stageRef = useRef<Konva.Stage | null>(null);
   const imageCache = useRef<Record<string, HTMLImageElement>>({});
+  const [searchParams] = useSearchParams();
   const isMobile = useIsMobile();
   const [, setImageTick] = useState(0);
   const [FloorPlan, setFloorPlan] = useState<
@@ -29,9 +31,9 @@ const Map_V2 = ({ id }: prop) => {
     y: number;
     id: string | null;
   } | null>(null);
-  const { searchParams, searchParams2 } = useSelector(
-    (state: RootState) => state.Global_Slice,
-  );
+  // const { searchParams, searchParams2, searchParams3 } = useSelector(
+  //   (state: RootState) => state.Global_Slice,
+  // );
   const { GlobalMap } = useSelector(
     (state: RootState) => state.Venue_Design_V2,
   );
@@ -62,13 +64,14 @@ const Map_V2 = ({ id }: prop) => {
   }, [FloorPlan]);
 
   useEffect(() => {
-    if (!searchParams2) return;
+    const shapeID =searchParams.get("venueid")
+    if (!shapeID) return;
 
     const stage = stageRef.current;
     if (!stage) return;
-    const node = stage.findOne(`#${searchParams2}`) as Konva.Shape | null;
+    const node = stage.findOne(`#${shapeID}`) as Konva.Shape | null;
     if (!node) return;
-    focusOnShape(node, searchParams2);
+    focusOnShape(node, shapeID);
   }, [searchParams, stageRef.current]);
 
   const getTooltipPosition = (node: Konva.Node) => {
@@ -89,9 +92,39 @@ const Map_V2 = ({ id }: prop) => {
 
     return {
       x: containerRect.left + point.x,
-      y: containerRect.top + point.y - 12, // offset above
+      y: containerRect.top + point.y, // offset above
     };
   };
+
+  //   const getTooltipPosition = (node: Konva.Node) => {
+  //   const stage = stageRef.current;
+
+  //   if (!stage) return null;
+
+  //   const rect = node.getClientRect();
+
+  //   const scaleX = stage.scaleX();
+  //   const scaleY = stage.scaleY();
+
+  //   const stageX = stage.x();
+  //   const stageY = stage.y();
+
+  //   const x =
+  //     rect.x * scaleX +
+  //     stageX +
+  //     rect.width * scaleX * 0.5;
+
+  //   // BOTTOM OF NODE
+  //   const y =
+  //     rect.y * scaleY +
+  //     stageY +
+  //     rect.height * scaleY;
+
+  //   return {
+  //     x,
+  //     y,
+  //   };
+  // };
 
   const focusOnShape = (node: Konva.Shape, id: string) => {
     if (activeNode && activeNode !== node) {
@@ -110,8 +143,13 @@ const Map_V2 = ({ id }: prop) => {
     node.strokeWidth(2);
 
     zoomToNode(node, 1.6, () => {
-      const pos = getTooltipPosition(node);
-      if (pos) setTooltip({ ...pos, id });
+      requestAnimationFrame(() => {
+        const pos = getTooltipPosition(node);
+
+        if (pos) {
+          setTooltip({ ...pos, id });
+        }
+      });
     });
 
     setActiveNode(node);
@@ -163,7 +201,7 @@ const Map_V2 = ({ id }: prop) => {
       duration: 0.3,
       easing: Konva.Easings.EaseInOut,
     });
-  }, [searchParams2]);
+  }, [searchParams]);
 
   function onClick(
     e: KonvaEventObject<MouseEvent, Node<NodeConfig>>,
@@ -282,6 +320,7 @@ const Map_V2 = ({ id }: prop) => {
         y={tooltip?.y as number}
         filterId={id}
         onClose={closeTooltip}
+        programmeId={searchParams.get("programmeid") as string}
       />
     </div>
   );

@@ -20,7 +20,7 @@ import { GoogleMap, LoadScriptNext, Marker } from "@react-google-maps/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import Map_V2 from "@/v2_components/common/V2_Venue/Map_V2";
 import { useSearchParams } from "react-router";
-import { setSearchParams, setSearchParams2 } from "@/redux/GlobalSlice";
+import { setSearchParams } from "@/redux/GlobalSlice";
 import { useGlobalV2GetFloorMapList } from "@/api/Venue_api/Venue_Design_api";
 import { setTitle } from "@/redux/ModalSlice";
 
@@ -47,11 +47,13 @@ const V2_Venue_page = () => {
 
   useEffect(() => {
     const venueId = searchParams.get("id");
-    const shapeId = searchParams.get("venueid");
+    // const shapeId = searchParams.get("venueid");
+    // const ProgrammeId = searchParams.get("programmeid")
     if (venueId) {
       setCurrentTab("floor plan");
       dispatch(setSearchParams(venueId));
-      dispatch(setSearchParams2(shapeId));
+      // dispatch(setSearchParams2(shapeId));
+      // dispatch(setSearchParams3(ProgrammeId));
     }
   }, [searchParams]);
 
