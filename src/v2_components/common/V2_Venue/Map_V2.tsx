@@ -74,10 +74,10 @@ const Map_V2 = ({ id }: prop) => {
     if (!stage) return;
     const node = stage.findOne(`#${shapeID}`) as Konva.Shape | null;
     if (!node) return;
-    focusOnShape(node, shapeID);
+    focusOnShape(node);
   }, [shapeID, FloorPlan]);
 
-  const focusOnShape = (node: Konva.Shape, id: string) => {
+  const focusOnShape = (node: Konva.Shape) => {
     if (activeNode && activeNode !== node) {
       const prevColor = activeNode.getAttr("originalStroke");
       if (prevColor) {
@@ -153,7 +153,7 @@ const Map_V2 = ({ id }: prop) => {
     const node = e.target as Konva.Shape;
     dispatch(setSelectedNode(id));
     setSelectedId(id);
-    focusOnShape(node, id);
+    focusOnShape(node);
   }
 
   const closeTooltip = () => {
