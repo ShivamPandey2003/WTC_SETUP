@@ -47,7 +47,7 @@ const AsideBar = ({ VenueId }: Props) => {
     };
   }, [GlobalMap, programmeId, VenueId, selectedNode]);
 
-  if (!CurrentItem) return;
+  if (!CurrentItem) return null;
 
   return (
     <div className="bg-white border border-border shadow-xl rounded-lg px-3 py-2 text-sm h-full">

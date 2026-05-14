@@ -19,7 +19,7 @@ import type { AppDispatch, RootState } from "@/redux/store";
 import { GoogleMap, LoadScriptNext, Marker } from "@react-google-maps/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import Map_V2 from "@/v2_components/common/V2_Venue/Map_V2";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate, useSearchParams, useLocation } from "react-router";
 import { setSearchParams } from "@/redux/GlobalSlice";
 import { useGlobalV2GetFloorMapList } from "@/api/Venue_api/Venue_Design_api";
 import { setTitle } from "@/redux/ModalSlice";
@@ -45,6 +45,7 @@ const V2_Venue_page = () => {
   const { Venue, isPending, error } = useGetVenue();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const location = useLocation();
   const venueId = searchParams.get("id");
   const programmeId = searchParams.get("programmeid");
   const isMobile = useIsMobile();

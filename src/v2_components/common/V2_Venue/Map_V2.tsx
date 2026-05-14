@@ -6,9 +6,8 @@ import Konva from "konva";
 import type { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
-// import { useIsMobile } from "@/hooks/use-mobile";
 import { isBase64Image } from "@/lib/utils";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate, useSearchParams, useLocation } from "react-router";
 import { setSelectedFloor, setSelectedNode } from "@/redux/MapSlice";
 
 interface prop {
@@ -21,7 +20,7 @@ const Map_V2 = ({ id }: prop) => {
   const imageCache = useRef<Record<string, HTMLImageElement>>({});
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
-  // const isMobile = useIsMobile();
+  const location = useLocation();
   const [, setImageTick] = useState(0);
   const dispatch = useDispatch<AppDispatch>();
   const [FloorPlan, setFloorPlan] = useState<
