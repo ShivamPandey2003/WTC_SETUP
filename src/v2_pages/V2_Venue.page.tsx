@@ -97,7 +97,6 @@ const V2_Venue_page = () => {
     };
   }, [GlobalMap, programmeId, selectedId, selectedNode]);
 
-  console.log(CurrentItem?.data);
 
   function parseCoordinate(value: string): number {
     const num = parseFloat(value); // get numeric part
