@@ -11,6 +11,7 @@ import AuthSlice from './AuthSlice'
 import ExhibitorSlice from './ExhibitorSlice'
 import ExtraSlice from './ExtraSlice'
 import venueDesignV2Slice from './venueDesignV2Slice'
+import Venue_Map_Slice from './MapSlice'
 import { indexedDBStorage } from "@/services/indexdb";
 
 const persistConfig = {
@@ -30,7 +31,8 @@ const rootReducer = combineReducers({
   AuthSlice:AuthSlice,
   ExhibitorSlice:ExhibitorSlice,
   ExtraSlice:ExtraSlice,
-  Venue_Design_V2: venueDesignV2Slice
+  Venue_Design_V2: venueDesignV2Slice,
+  Venue_Map: Venue_Map_Slice
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

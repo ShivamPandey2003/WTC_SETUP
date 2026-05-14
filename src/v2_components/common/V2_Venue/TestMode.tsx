@@ -14,12 +14,14 @@ type prop = {
   programmeId?: string;
 };
 
-const TestMode = ({ id, x, y, onClose, filterId, programmeId }: prop) => {
+const TestMode = ({ id, onClose, filterId, programmeId }: prop) => {
   const { GlobalMap } = useSelector(
     (state: RootState) => state.Venue_Design_V2,
   );
   const navigate = useNavigate();
   const location = useLocation();
+
+  const modalWidth = 325;
 
   const CurrentItem = useMemo(() => {
     if (!id || !filterId) return null;
@@ -39,6 +41,7 @@ const TestMode = ({ id, x, y, onClose, filterId, programmeId }: prop) => {
     return {
       data,
       shape: Shape,
+      Map: Map,
     };
   }, [GlobalMap, id, filterId]);
 
@@ -50,10 +53,10 @@ const TestMode = ({ id, x, y, onClose, filterId, programmeId }: prop) => {
     <div
       className="fixed z-50 bg-white border border-border shadow-xl rounded-lg px-3 py-2 text-sm"
       style={{
-        left: x,
-        top: y - 60,
-        width: "325px",
-        transform: "translateX(-50%)",
+        left: "200px",
+        top: "28%",
+        width: modalWidth,
+        // transform: "translateX(-50%)",
       }}
     >
       <div className="relative">
@@ -63,18 +66,19 @@ const TestMode = ({ id, x, y, onClose, filterId, programmeId }: prop) => {
             style={{
               color: "#318061",
             }}
-            className="font-semibold min-w-fit text-xs sm:text-base"
+            className="font-semibold min-w-fit text-xs sm:text-sm"
           >
-            {CurrentItem.shape?.name}
+            {CurrentItem.Map.label} - {CurrentItem.shape?.name}
           </p>
 
           <div
-            className="w-full h-1 rounded-full shadow-sm"
+            className="w-full h-1 flex-1 rounded-full shadow-sm"
             style={{
               background: "#318061",
             }}
           />
           <X
+            size={28}
             onClick={() => {
               const params = new URLSearchParams(location.search);
 
@@ -96,18 +100,20 @@ const TestMode = ({ id, x, y, onClose, filterId, programmeId }: prop) => {
         </div>
 
         {/* CONTENT */}
-        <div className={cn("mb-2 cursor-pointer max-h-[20vh] overflow-auto")}>
+        <div className={cn("mb-2 cursor-pointer max-h-[50vh] overflow-auto")}>
           {CurrentItem.data.map((value) => {
             return (
               <div
                 key={value.id}
                 className={cn(
-                  "w-full flex-col items-start px-3 py-2 rounded-lg border transition-colors mb-2",
-                  "data-[active=false]:bg-gray-50 data-[active=false]:border-transparent data-[active=false]:text-gray-600 hover:bg-gray-100",
-                  "data-[active=true]:bg-primary/10 data-[active=true]:border-primary/20 data-[active=true]:text-primary data-[active=true]:shadow-none",
+                  "w-full flex-col items-start px-3 py-2 rounded-lg border transition-colors mb-2 bg-gray-50 shadow",
+                  "bg-gray-50 border-transparent text-gray-600 hover:bg-gray-100",
                 )}
-                onClick={()=>{
-                  navigate(`/programme?date=${value.start_date}&programmeid=${value.session_id}`, {replace:true})
+                onClick={() => {
+                  navigate(
+                    `/programme?date=${value.start_date}&programmeid=${value.session_id}`,
+                    { replace: true },
+                  );
                 }}
               >
                 <span className="text-xs font-medium opacity-60">

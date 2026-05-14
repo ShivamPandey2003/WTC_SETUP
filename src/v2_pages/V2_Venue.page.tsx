@@ -8,7 +8,7 @@ import {
   normalizeTime,
 } from "@/lib/utils";
 import TextCard from "@/v2_components/common/V2_Venue/TextCard";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 // import MapText from "@/assets/Images/MapText.png";
 import { Calendar, Link, Navigation } from "lucide-react";
 import { useGetVenue } from "@/api/global_api/global_api";
@@ -19,10 +19,12 @@ import type { AppDispatch, RootState } from "@/redux/store";
 import { GoogleMap, LoadScriptNext, Marker } from "@react-google-maps/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import Map_V2 from "@/v2_components/common/V2_Venue/Map_V2";
-import { useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { setSearchParams } from "@/redux/GlobalSlice";
 import { useGlobalV2GetFloorMapList } from "@/api/Venue_api/Venue_Design_api";
 import { setTitle } from "@/redux/ModalSlice";
+import AsideBar from "@/v2_components/common/V2_Venue/AsideBar";
+import { setSelectedNode } from "@/redux/MapSlice";
 
 const apiKey = import.meta.env.VITE_REACT_GOOGLE_MAPS_API_KEY;
 
@@ -34,6 +36,9 @@ const V2_Venue_page = () => {
   const [searchParams] = useSearchParams();
   const { Venue, isPending, error } = useGetVenue();
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const venueId = searchParams.get("id");
+
   const {
     Venue: venue,
     conference_location,
@@ -44,18 +49,14 @@ const V2_Venue_page = () => {
     conference_title,
     searchParams: Params,
   } = useSelector((state: RootState) => state.Global_Slice);
+  const { selectedNode } = useSelector((state: RootState) => state.Venue_Map);
 
   useEffect(() => {
-    const venueId = searchParams.get("id");
-    // const shapeId = searchParams.get("venueid");
-    // const ProgrammeId = searchParams.get("programmeid")
     if (venueId) {
       setCurrentTab("floor plan");
       dispatch(setSearchParams(venueId));
-      // dispatch(setSearchParams2(shapeId));
-      // dispatch(setSearchParams3(ProgrammeId));
     }
-  }, [searchParams]);
+  }, [venueId]);
 
   function parseCoordinate(value: string): number {
     const num = parseFloat(value); // get numeric part
@@ -176,7 +177,9 @@ const V2_Venue_page = () => {
         <Button
           variant={currentTab === "floor plan" ? "default" : "ghost"}
           className={cn("capitalize rounded-full p-2 w-28")}
-          onClick={() => setCurrentTab("floor plan")}
+          onClick={() => {
+            setCurrentTab("floor plan");
+          }}
         >
           floor Plan
         </Button>
@@ -301,7 +304,23 @@ const V2_Venue_page = () => {
               <div className="flex items-center gap-4">
                 <select
                   value={selectedId as string}
-                  onChange={(e) => setSelectedId(e.target.value)}
+                  onChange={(e) => {
+                    dispatch(setSelectedNode(null))
+                    const params = new URLSearchParams(location.search);
+
+                    params.delete("programmeid");
+                    params.delete("venueid");
+                    params.delete("id");
+
+                    navigate(
+                      {
+                        pathname: location.pathname,
+                        search: params.toString(),
+                      },
+                      { replace: true },
+                    );
+                    setSelectedId(e.target.value);
+                  }}
                   className="rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary mb-1 cursor-pointer"
                 >
                   <option value="">{"Select an option"}</option>
@@ -334,17 +353,23 @@ const V2_Venue_page = () => {
                 </a>
               )}
             </div>
-            {typeof venue?.attachment === "string" && venue?.attachment.trim() !== "" && (
-              <a
-                href={venue.attachment}
-                target="_blank"
-                className="flex items-center text-blue-600 gap-1"
-              >
-                <Link size={18} /> Floor Plan
-              </a>
-            )}
+            {typeof venue?.attachment === "string" &&
+              venue?.attachment.trim() !== "" && (
+                <a
+                  href={venue.attachment}
+                  target="_blank"
+                  className="flex items-center text-blue-600 gap-1"
+                >
+                  <Link size={18} /> Floor Plan
+                </a>
+              )}
           </div>
-          <div className="w-full">
+          <div className="w-full flex">
+            {selectedNode && (
+              <div className="absolute z-[999] sm:relative sm:w-[25%] h-[66vh] transition-all duration-200">
+                <AsideBar VenueId={selectedId} />
+              </div>
+            )}
             {V2_Global_FloorMapList?.response &&
             V2_Global_FloorMapList?.response.length === 0 ? (
               <div className="w-full h-[65vh] mt-2 flex items-center justify-center">
