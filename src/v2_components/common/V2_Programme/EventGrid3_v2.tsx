@@ -2,6 +2,7 @@ import EventModal from "@/components/common/Programme/EventModal";
 import { cn, getContrastTextColor } from "@/lib/utils";
 import { useMemo, useState } from "react";
 import { color } from "./EventGrid2_v2";
+import { Tooltip } from "@/v2_components/global/Tooltip";
 
 /* ================= CONFIGURATION ================= */
 const PX_PER_MIN = 1.6; // Vertical scale (1 hour = 120px)
@@ -376,12 +377,11 @@ function DayColumn({
                   type: event.type,
                 })
               }
-              className="event-card cursor-pointer"
+              className={cn("event-card cursor-pointer", isFull? "z-1 hover:z-[99]":"z-10")}
               style={{
                 position: "absolute",
                 top: `${top + GAP}px`,
                 height: `${cardHeight - GAP * 2}px`,
-                zIndex: isFull ? 1 : 10,
                 backgroundColor: shouldBeGray ? "#d1d5db" : eventColor,
 
                 width: isFull
@@ -391,25 +391,28 @@ function DayColumn({
                 left: isFull ? `0px` : `calc(${leftOffset}% + ${GAP}px)`,
               }}
             >
+              <Tooltip content={Title} position="left">
               <div className="event-inner p-1 w-full h-full min-w-0 flex items-center justify-center">
                 <div
                   className={cn(
-                    "event-title text-[11px] text-center",
+                    "event-title text-[11px] text-center line-clamp-4",
                     cardHeight - GAP * 2 > 800
-                      ? "rotate-90 w-full"
+                      ? "-rotate-90"
                       : duration < 30
                         ? "truncate max-w-[70px]"
-                        : "font-bold whitespace-normal break-words w-full",
+                        : "font-bold whitespace-normal break-words",
                   )}
                   style={{
                     color: shouldBeGray
                       ? "#fff"
                       : getContrastTextColor(eventColor),
+                      width:cardHeight - GAP * 2 > 800 ?`${cardHeight - GAP * 2}px`:"auto"
                   }}
                 >
                   {Title}
                 </div>
               </div>
+              </Tooltip>
             </div>
           );
         })}

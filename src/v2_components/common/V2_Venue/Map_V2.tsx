@@ -6,7 +6,7 @@ import Konva from "konva";
 import type { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
-import { useIsMobile } from "@/hooks/use-mobile";
+// import { useIsMobile } from "@/hooks/use-mobile";
 import { isBase64Image } from "@/lib/utils";
 import { useNavigate, useSearchParams } from "react-router";
 import { setSelectedFloor, setSelectedNode } from "@/redux/MapSlice";
@@ -17,10 +17,11 @@ interface prop {
 
 const Map_V2 = ({ id }: prop) => {
   const stageRef = useRef<Konva.Stage | null>(null);
+  const {appConfig} = useSelector((state:RootState)=>state.Global_DesignSlice)
   const imageCache = useRef<Record<string, HTMLImageElement>>({});
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
-  const isMobile = useIsMobile();
+  // const isMobile = useIsMobile();
   const [, setImageTick] = useState(0);
   const dispatch = useDispatch<AppDispatch>();
   const [FloorPlan, setFloorPlan] = useState<
@@ -89,10 +90,10 @@ const Map_V2 = ({ id }: prop) => {
       node.setAttr("originalStroke", node.stroke());
     }
 
-    node.stroke("#2563eb");
+    node.stroke(appConfig.color_schema.primary_color);
     node.strokeWidth(2);
 
-    zoomToNode(node, 1.6);
+    zoomToNode(node, 2.2);
 
     setActiveNode(node);
   };
@@ -190,15 +191,14 @@ const Map_V2 = ({ id }: prop) => {
       style={{
         maxHeight: "66vh",
         WebkitOverflowScrolling: "touch",
-        touchAction: "pan-y pan-x",
       }}
     >
       <Stage
         ref={stageRef}
         width={1200}
         height={600}
-        draggable={isMobile}
-        style={{ touchAction: "auto" }}
+        // draggable={isMobile}
+        // style={{ touchAction: "auto" }}
       >
         <Layer>
           <Rect
@@ -220,7 +220,7 @@ const Map_V2 = ({ id }: prop) => {
                 if (!img) return null;
                 return (
                   <KonvaImage
-                    opacity={selectedId ? 0.2 : 1}
+                    // opacity={selectedId ? 0.5 : 1}
                     key={imgShape.id}
                     image={img}
                     x={imgShape.x}
@@ -263,7 +263,7 @@ const Map_V2 = ({ id }: prop) => {
                     key={shape.id}
                     shape={shape}
                     isDraggable={false}
-                    click={(e) => {
+                    click={(e:any) => {
                       onClick(e, shape.id);
                     }}
                     transformEnd={() => {}}

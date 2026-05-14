@@ -6,7 +6,11 @@ type ShapesProps = {
   selectedId: string | null;
   shape: Shape;
   isDraggable: boolean;
-  click: (e: KonvaEventObject<MouseEvent, Node<NodeConfig>>) => void;
+  click: (
+    e:
+      | KonvaEventObject<MouseEvent, Node<NodeConfig>>
+      | KonvaEventObject<TouchEvent>,
+  ) => void;
   dragEnd: (e: KonvaEventObject<MouseEvent, Node<NodeConfig>>) => void;
   transformEnd: (e: KonvaEventObject<MouseEvent, Node<NodeConfig>>) => void;
 };
@@ -24,23 +28,27 @@ const ShapesElement = ({
       const rect = shape as RectangleShape;
       return (
         <Rect
-        // opacity={(selectedId && selectedId !== shape.id)?0.5:1}
+          // opacity={(selectedId && selectedId !== shape.id)?0.5:1}
           id={rect.id}
           x={rect.x}
           y={rect.y}
           width={rect.width}
           height={rect.height}
-          fill={rect.fillColor}
+          fill={selectedId === shape.id
+      ? "rgba(37,99,235,0.15)"
+      : rect.fillColor}
           stroke={
-            (selectedId && selectedId !== shape.id)
+            selectedId && selectedId !== shape.id
               ? "#B2BEB5"
               : rect.strokeColor
                 ? rect.strokeColor
                 : "#000000"
           }
-          strokeWidth={rect.strokeWidth !== null ? rect.strokeWidth : 2}
+          strokeWidth={ selectedId && selectedId === shape.id? 4 :rect.strokeWidth !== null ? rect.strokeWidth : 2}
+          //  dash={selectedId === shape.id ? [8, 4] : undefined}
           draggable={isDraggable}
           onClick={click}
+          onTap={click}
           type={ACTIONS.RECTANGLE}
           onDragEnd={dragEnd}
           onTransformEnd={transformEnd}
@@ -57,7 +65,7 @@ const ShapesElement = ({
           radius={circle.radius}
           fill={circle.fillColor}
           stroke={
-            (selectedId && selectedId !== shape.id)
+            selectedId && selectedId !== shape.id
               ? "#B2BEB5"
               : circle.strokeColor
                 ? circle.strokeColor
@@ -95,7 +103,7 @@ const ShapesElement = ({
         <Line
           id={line.id}
           stroke={
-            (selectedId && selectedId !== shape.id)
+            selectedId && selectedId !== shape.id
               ? "#B2BEB5"
               : line.strokeColor
                 ? line.strokeColor
@@ -123,8 +131,8 @@ const ShapesElement = ({
           innerRadius={star.innerRadius}
           outerRadius={star.outerRadius}
           fill={star.fillColor}
-         stroke={
-            (selectedId && selectedId !== shape.id)
+          stroke={
+            selectedId && selectedId !== shape.id
               ? "#B2BEB5"
               : star.strokeColor
                 ? star.strokeColor
@@ -149,8 +157,8 @@ const ShapesElement = ({
           sides={polygon.sides}
           radius={polygon.radius}
           fill={polygon.fillColor}
-         stroke={
-            (selectedId && selectedId !== shape.id)
+          stroke={
+            selectedId && selectedId !== shape.id
               ? "#B2BEB5"
               : polygon.strokeColor
                 ? polygon.strokeColor
