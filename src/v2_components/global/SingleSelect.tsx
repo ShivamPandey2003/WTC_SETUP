@@ -158,7 +158,7 @@ const SingleSelect = ({
                           {o.start_time} - {o.end_time}
                         </span>
                         {Url && (
-                          <span className="text-primary text-xs font-semibold underline capitalize underline-offset-2 cursor-pointer">
+                          <span className="text-xs underline capitalize underline-offset-2 cursor-pointer">
                             view
                           </span>
                         )}

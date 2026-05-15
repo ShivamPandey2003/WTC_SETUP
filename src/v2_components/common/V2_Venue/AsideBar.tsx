@@ -96,22 +96,23 @@ const AsideBar = ({ VenueId }: Props) => {
                 );
               }}
             >
-              <div className="flex items-center justify-between">
+              <div onClick={(e)=>e.stopPropagation()} className="flex items-center justify-between">
                 <span className="text-xs font-medium opacity-60">
                   {formatDateDisplay(value.start_date)} /{" "}
                   {`${value.start_time.slice(0, 5)} – ${value.end_time.slice(0, 5)}`}
                 </span>
-                <span
-                  onClick={() => {
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation()
                     navigate(
                       `/programme?date=${value.start_date}&programmeid=${value.session_id}`,
                       { replace: true },
                     );
                   }}
-                  className="text-primary text-xs font-semibold underline capitalize underline-offset-2 cursor-pointer"
+                  className="text-xs font-medium underline capitalize underline-offset-2 cursor-pointer opacity-60"
                 >
                   view
-                </span>
+                </div>
               </div>
               <div className="text-sm font-semibold line-clamp-2 whitespace-normal text-start mt-0.5">
                 {value.title}

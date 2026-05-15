@@ -41,6 +41,7 @@ type ModalProps = {
   isOpen: boolean;
   onClose: React.Dispatch<React.SetStateAction<string | null>>;
   data: { id: string; date: string; type?: string };
+  ProgrammeData?: Programme[];
 };
 
 const Menu = (s: Programme) => [
@@ -75,8 +76,8 @@ const Menu = (s: Programme) => [
         start: formatForGoogleCalendar(s.start_date, s.start_time),
         end: formatForGoogleCalendar(s.end_date, s.end_time),
         location: s.location,
-        description:s.description,
-        icsUrl: `${platform_url}programme/${s.id}/calendar`
+        description: s.description,
+        icsUrl: `${platform_url}programme/${s.id}/calendar`,
       });
     },
   },
@@ -116,7 +117,12 @@ const Menu = (s: Programme) => [
   },
 ];
 
-const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
+const EventModal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  data,
+  ProgrammeData = [],
+}) => {
   const { Session, Types } = useSelector(
     (state: RootState) => state.Global_Slice,
   );
@@ -134,16 +140,19 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   const [date, setDate] = useState<string | null>(null);
 
   const selectedValue = React.useMemo(() => {
-    if (data.date.trim()) {
-      return Session.filter(
-        (pre) => data.date === pre.start_date && type === pre.type,
-      ).sort((a, b) => a.start_time.localeCompare(b.start_time));
-    } else {
-      return Session.filter(
-        (pre) => pre.start_date === date && type === pre.type,
-      ).sort((a, b) => a.start_time.localeCompare(b.start_time));
-    }
-  }, [Session, data.date, type, date]);
+    const sessionData = ProgrammeData?.length > 0 ? ProgrammeData : Session;
+
+    if (!sessionData?.length) return [];
+
+    const targetDate = data?.date?.trim() ? data.date : date;
+
+    const returnData = sessionData
+      .filter((pre) => pre.start_date === targetDate && pre.type === type)
+      .sort((a, b) => a.start_time.localeCompare(b.start_time));
+
+
+    return returnData;
+  }, [ProgrammeData, Session, data?.date, type, date]);
 
   const TypesSortArr = React.useMemo(() => {
     return [...Types].sort((a, b) => {
@@ -170,10 +179,11 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   };
 
   React.useEffect(() => {
+    const sessionData = ProgrammeData?.length > 0 ? ProgrammeData : Session;
     if (data.id) {
       setValue(data.id);
     }
-    const s = Session.find((pre) => pre.id === data.id);
+    const s = sessionData.find((pre) => pre.id === data.id);
     if (data.type) {
       setType(data.type);
     } else {
@@ -197,6 +207,8 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   React.useEffect(() => {
     ScrollWindow(data.id);
   }, [data.id, selectedValue]);
+
+  // if(selectedValue.length === 0) return null;
 
   return (
     <>
