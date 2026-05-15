@@ -34,9 +34,9 @@ const ShapesElement = ({
           y={rect.y}
           width={rect.width}
           height={rect.height}
-          fill={selectedId === shape.id
-      ? "rgba(37,99,235,0.15)"
-      : rect.fillColor}
+          fill={
+            selectedId === shape.id ? "rgba(37,99,235,0.15)" : rect.fillColor
+          }
           stroke={
             selectedId && selectedId !== shape.id
               ? "#B2BEB5"
@@ -44,7 +44,13 @@ const ShapesElement = ({
                 ? rect.strokeColor
                 : "#000000"
           }
-          strokeWidth={ selectedId && selectedId === shape.id? 4 :rect.strokeWidth !== null ? rect.strokeWidth : 2}
+          strokeWidth={
+            selectedId && selectedId === shape.id
+              ? 2
+              : rect.strokeWidth !== null
+                ? rect.strokeWidth
+                : 2
+          }
           //  dash={selectedId === shape.id ? [8, 4] : undefined}
           draggable={isDraggable}
           onClick={click}
@@ -63,7 +69,9 @@ const ShapesElement = ({
           x={circle.x}
           y={circle.y}
           radius={circle.radius}
-          fill={circle.fillColor}
+          fill={
+            selectedId === shape.id ? "rgba(37,99,235,0.15)" : circle.fillColor
+          }
           stroke={
             selectedId && selectedId !== shape.id
               ? "#B2BEB5"
@@ -71,9 +79,16 @@ const ShapesElement = ({
                 ? circle.strokeColor
                 : "#000000"
           }
-          strokeWidth={circle.strokeWidth !== null ? circle.strokeWidth : 2}
+          strokeWidth={
+            selectedId && selectedId === shape.id
+              ? 2
+              : circle.strokeWidth !== null
+                ? circle.strokeWidth
+                : 2
+          }
           draggable={isDraggable}
           onClick={click}
+          onTap={click}
           type={ACTIONS.CIRCLE}
           onDragEnd={dragEnd}
           onTransformEnd={transformEnd}
@@ -91,6 +106,7 @@ const ShapesElement = ({
           fill={arrow.fillColor}
           draggable={isDraggable}
           onClick={click}
+          onTap={click}
           type={ACTIONS.ARROW}
           onDragEnd={dragEnd}
           onTransformEnd={transformEnd}
@@ -112,6 +128,7 @@ const ShapesElement = ({
           points={line.points}
           draggable={isDraggable}
           onClick={click}
+          onTap={click}
           strokeWidth={line.strokeWidth !== null ? line.strokeWidth : 2}
           fill={line.fillColor}
           type={ACTIONS.LINE}
@@ -130,7 +147,9 @@ const ShapesElement = ({
           numPoints={star.numPoints}
           innerRadius={star.innerRadius}
           outerRadius={star.outerRadius}
-          fill={star.fillColor}
+          fill={
+            selectedId === shape.id ? "rgba(37,99,235,0.15)" : star.fillColor
+          }
           stroke={
             selectedId && selectedId !== shape.id
               ? "#B2BEB5"
@@ -138,9 +157,16 @@ const ShapesElement = ({
                 ? star.strokeColor
                 : "#000000"
           }
-          strokeWidth={star.strokeWidth !== null ? star.strokeWidth : 2}
+          strokeWidth={
+            selectedId && selectedId === shape.id
+              ? 2
+              : star.strokeWidth !== null
+                ? star.strokeWidth
+                : 2
+          }
           draggable={isDraggable}
           onClick={click}
+          onTap={click}
           type={ACTIONS.STAR}
           onDragEnd={dragEnd}
           onTransformEnd={transformEnd}
@@ -156,7 +182,9 @@ const ShapesElement = ({
           y={polygon.y}
           sides={polygon.sides}
           radius={polygon.radius}
-          fill={polygon.fillColor}
+          fill={
+            selectedId === shape.id ? "rgba(37,99,235,0.15)" : polygon.fillColor
+          }
           stroke={
             selectedId && selectedId !== shape.id
               ? "#B2BEB5"
@@ -164,9 +192,16 @@ const ShapesElement = ({
                 ? polygon.strokeColor
                 : "#000000"
           }
-          strokeWidth={polygon.strokeWidth !== null ? polygon.strokeWidth : 2}
+          strokeWidth={
+            selectedId && selectedId === shape.id
+              ? 2
+              : polygon.strokeWidth !== null
+                ? polygon.strokeWidth
+                : 2
+          }
           draggable={isDraggable}
           onClick={click}
+          onTap={click}
           type={ACTIONS.POLYGON}
           onDragEnd={dragEnd}
           onTransformEnd={transformEnd}
@@ -200,6 +235,7 @@ const ShapesElement = ({
           lineJoin="round"
           draggable={isDraggable && !pointShape.isErasing}
           onClick={click}
+          onTap={click}
           onDragEnd={dragEnd}
           onTransformEnd={transformEnd}
         />

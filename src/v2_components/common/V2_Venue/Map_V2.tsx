@@ -73,6 +73,7 @@ const Map_V2 = ({ id }: prop) => {
     if (!stage) return;
     const node = stage.findOne(`#${shapeID}`) as Konva.Shape | null;
     if (!node) return;
+    setSelectedId(shapeID)
     focusOnShape(node);
   }, [shapeID, FloorPlan]);
 
@@ -147,11 +148,23 @@ const Map_V2 = ({ id }: prop) => {
 
   function onClick(
     e: KonvaEventObject<MouseEvent, Node<NodeConfig>>,
-    id: string,
+    shapeId: string,
   ) {
     const node = e.target as Konva.Shape;
-    dispatch(setSelectedNode(id));
-    setSelectedId(id);
+    const params = new URLSearchParams(location.search);
+
+    params.set("id", id)
+    params.set("venueid", shapeId)
+
+    navigate(
+      {
+        pathname: location.pathname,
+        search: params.toString(),
+      },
+      { replace: true },
+    );
+    dispatch(setSelectedNode(shapeId));
+    setSelectedId(shapeId);
     focusOnShape(node);
   }
 

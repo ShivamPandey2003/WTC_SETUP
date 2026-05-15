@@ -219,26 +219,55 @@ export const addToGoogleCalendar = ({
   window.open(url, "_blank");
 };
 
-export const addToOutlookCalendar = ({
-  title,
-  start,
-  end,
-  location,
-}: {
+type CalendarEvent = {
   title: string;
   start: string;
   end: string;
-  location: string;
-}) => {
-  const url =
-    `https://outlook.office.com/calendar/action/compose` +
-    `?rru=addevent` +
-    `&startdt=${encodeURIComponent(start)}` +
-    `&enddt=${encodeURIComponent(end)}` +
-    `&subject=${encodeURIComponent(title)}` +
-    `&location=${encodeURIComponent(location)}`;
+  location?: string;
+  description?: string;
+  icsUrl: string; // your API endpoint that returns the .ics file
+};
 
-  window.open(url, "_blank");
+export const addToOutlookCalendar = (event: CalendarEvent): void => {
+  const params = new URLSearchParams({
+    rru: "addevent",
+    startdt: event.start,
+    enddt: event.end,
+    subject: event.title,
+    location: event.location ?? "",
+    body: event.description ?? "",
+  });
+
+  const url = `https://outlook.office.com/calendar/action/compose?${params}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+};
+
+export const addToCalendar = (event: CalendarEvent): void => {
+  const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
+
+  if (isMobile) {
+    // .ics URL directly — iOS/Android intercept and open native calendar
+    window.location.href = event.icsUrl;
+  } else {
+    // Desktop — Outlook Web compose (no app install needed)
+    addToOutlookCalendar(event);
+  }
+};
+
+export const downloadICSFromUrl = async (icsUrl: string, title: string): Promise<void> => {
+  try {
+    const res = await fetch(icsUrl);
+    if (!res.ok) throw new Error("Failed to fetch ICS file");
+    const blob = await res.blob();
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `${title.replace(/\s+/g, "_")}.ics`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  } catch (error) {
+    console.error("Error downloading ICS:", error);
+  }
 };
 
 export const addToICalendar = ({
