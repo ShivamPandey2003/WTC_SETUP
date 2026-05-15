@@ -31,8 +31,6 @@ import {
 } from "@/redux/MapSlice";
 import { useIsMobile } from "@/hooks/use-mobile";
 import SingleSelect from "@/v2_components/global/SingleSelect";
-// import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
-// import BottomDrawer from "@/v2_components/common/V2_Venue/BottomDrawer";
 
 const apiKey = import.meta.env.VITE_REACT_GOOGLE_MAPS_API_KEY;
 
@@ -62,7 +60,6 @@ const V2_Venue_page = () => {
     conference_start_time,
     conference_end_time,
     conference_title,
-    searchParams: Params,
   } = useSelector((state: RootState) => state.Global_Slice);
   const { selectedNode } = useSelector((state: RootState) => state.Venue_Map);
 
@@ -70,6 +67,7 @@ const V2_Venue_page = () => {
     if (venueId) {
       setCurrentTab("floor plan");
       dispatch(setSearchParams(venueId));
+      setSelectedId(venueId);
     }
   }, [venueId]);
 
@@ -82,21 +80,21 @@ const V2_Venue_page = () => {
 
     const Shape = Map.map_list.find((pre) => pre.id === selectedNode);
 
-    const data = programmeId
-      ? Map.programmes.filter((pre) => pre.session_id === programmeId)
-      : Map.programmes.filter(
-          (pre) => pre.venue_id === `${selectedId}__${selectedNode}`,
-        );
+    const data = Map.programmes.filter(
+      (pre) => pre.venue_id === `${selectedId}__${selectedNode}`,
+    );
 
     if (!data) return null;
+
+    const selected = data.find((pre) => pre.session_id === programmeId);
 
     return {
       data,
       shape: Shape,
       Map: Map,
+      selectedProgramme: selected,
     };
   }, [GlobalMap, programmeId, selectedId, selectedNode]);
-
 
   function parseCoordinate(value: string): number {
     const num = parseFloat(value); // get numeric part
@@ -116,16 +114,13 @@ const V2_Venue_page = () => {
   useEffect(() => {
     if (
       V2_Global_FloorMapList?.response &&
-      V2_Global_FloorMapList.response.length > 0
+      V2_Global_FloorMapList.response.length > 0 &&
+      !selectedId &&
+      !venueId
     ) {
       setSelectedId(V2_Global_FloorMapList.response[0].id);
     }
   }, [V2_Global_FloorMapList]);
-
-  useEffect(() => {
-    if (!Params) return;
-    setSelectedId(Params);
-  }, [Params]);
 
   useEffect(() => {
     dispatch(setTitle(null));
@@ -350,7 +345,7 @@ const V2_Venue_page = () => {
 
                     params.delete("programmeid");
                     params.delete("venueid");
-                    params.delete("id");
+                    params.set("id", e as string);
 
                     navigate(
                       {
@@ -400,9 +395,11 @@ const V2_Venue_page = () => {
                 </a>
               )}
             {isMobile && selectedNode && (
-              <div className={cn(
-                "flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2 w-1/2",
-              )}>
+              <div
+                className={cn(
+                  "flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2 w-1/2",
+                )}
+              >
                 <div className="text-sm font-[500] w-[100px] shrink-0">
                   {normalizeLabel("Room")}
                 </div>
@@ -412,6 +409,7 @@ const V2_Venue_page = () => {
                     const params = new URLSearchParams(location.search);
 
                     params.delete("programmeid");
+                    params.set("venueid", e as string);
 
                     navigate(
                       {
@@ -442,8 +440,8 @@ const V2_Venue_page = () => {
           {isMobile && selectedNode && (
             <div className="mb-2">
               <div className="text-sm font-[500] w-[100px] shrink-0">
-                  {normalizeLabel("Sessions")}
-                </div>
+                {normalizeLabel("Sessions")}
+              </div>
               <SingleSelect
                 onChange={(e) => {
                   const STR = e?.split("__");
@@ -455,14 +453,7 @@ const V2_Venue_page = () => {
                     { replace: true },
                   );
                 }}
-                selected={
-                  CurrentItem?.data?.find((pre) => pre.id === programmeId)
-                    ? `${programmeId}__${
-                        CurrentItem.data.find((pre) => pre.id === programmeId)!
-                          .start_date
-                      }`
-                    : programmeId
-                }
+                selected={`${CurrentItem?.selectedProgramme?.session_id}__${CurrentItem?.selectedProgramme?.start_date}`}
                 placeholder="Sessions"
                 options={
                   CurrentItem?.data.map((item) => ({
@@ -474,6 +465,7 @@ const V2_Venue_page = () => {
                 }
                 className="w-full text-xs"
                 capitalize
+                Url
               />
             </div>
           )}

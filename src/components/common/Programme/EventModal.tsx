@@ -17,11 +17,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import {
   addToGoogleCalendar,
   addToICalendar,
-  addToOutlookCalendar,
   addToYahooCalendar,
   cn,
   formatForGoogleCalendar,
   formatDateDisplay,
+  addToCalendar,
 } from "@/lib/utils";
 import { useLocation, useNavigate } from "react-router";
 import { useNotifyProgramme } from "@/api/programme_design_api/Programme_design_api";
@@ -34,6 +34,8 @@ import { PiMicrosoftOutlookLogoFill } from "react-icons/pi";
 import { FaGoogle, FaYahoo } from "react-icons/fa";
 import { FaFile } from "react-icons/fa6";
 import SpeakerDetails from "@/v2_pages/SpeakerDetails";
+
+const platform_url = import.meta.env.VITE_REACT_APP_API_URL;
 
 type ModalProps = {
   isOpen: boolean;
@@ -68,11 +70,13 @@ const Menu = (s: Programme) => [
       </div>
     ),
     onClick: () => {
-      addToOutlookCalendar({
+      addToCalendar({
         title: s.title,
         start: formatForGoogleCalendar(s.start_date, s.start_time),
         end: formatForGoogleCalendar(s.end_date, s.end_time),
         location: s.location,
+        description:s.description,
+        icsUrl: `${platform_url}programme/${s.id}/calendar`
       });
     },
   },
