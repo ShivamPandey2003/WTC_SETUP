@@ -515,10 +515,11 @@ const V2_VenueDesign_page = () => {
               default:
                 return (
                   <ShapesElement
+                  selectedId={null}
                     key={shape.id}
                     shape={shape}
                     isDraggable={shape.locked ? !shape.locked : isDraggable}
-                    click={(e) => onClick(e, shape.id)}
+                    click={(e:any) => onClick(e, shape.id)}
                     dragEnd={(e) => OnDragEnd(e, shape.id)}
                     transformEnd={(e) => OnTransformEnd(e, shape.id)}
                   />

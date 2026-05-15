@@ -6,7 +6,7 @@ type initialStateType = {
   selectId: string | null;
   FloorLevelModal: boolean;
   EditFloorLevelModal: boolean;
-  GlobalMap: (MapT & { programmes: (Programme&{venue_id:string})[]; created_by: string })[];
+  GlobalMap: (MapT & { programmes: (Programme&{venue_id:string, bg_img:string, session_id:string})[]; created_by: string })[];
 };
 
 const initialState: initialStateType = {
@@ -33,7 +33,7 @@ const venueDesignV2Slice = createSlice({
     setGlobalMap: (
       state,
       payload: PayloadAction<
-        (MapT & { programmes: (Programme&{venue_id:string})[]; created_by: string })[]
+        (MapT & { programmes: (Programme&{venue_id:string, bg_img:string, session_id:string})[]; created_by: string })[]
       >,
     ) => {
       state.GlobalMap = payload.payload;

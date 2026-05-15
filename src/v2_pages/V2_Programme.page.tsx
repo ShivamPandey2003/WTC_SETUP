@@ -24,9 +24,11 @@ import { SearchBox } from "@/v2_components/global/Search/SearchBox";
 import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useSearchParams } from "react-router";
 
 const V2_Programme_page = () => {
   const { ProgrammeList, isPending, error } = useGetProgrammeList();
+  const [searchParams] = useSearchParams();
   const {
     ProgrammeList: ProgrammeList3_v2,
     isPending: isPendingNewList,
@@ -40,6 +42,19 @@ const V2_Programme_page = () => {
     id: string;
     date: string;
   } | null>(null);
+
+  useEffect(()=>{
+    const progammeId = searchParams.get("programmeid");
+    const date = searchParams.get("date");
+
+    if(!progammeId && !date) return;
+
+    setSelected({
+      id:progammeId as string,
+      date:date as string,
+    })
+
+  },[searchParams])
 
   useEffect(() => {
     if (!ProgrammeList) return;
@@ -294,11 +309,12 @@ const V2_Programme_page = () => {
         {/* ) : ( */}
         {/* <EventGrid2_v2 programmeData={ProgrammeTypeList.response} /> */}
         {/* )} */}
-        {selected && (
+        {(ProgrammeList.data.response.programme.length > 0 && selected) && (
           <EventModal
             isOpen={Boolean(selected)}
             onClose={() => setSelected(null)}
             data={selected!}
+            ProgrammeData={ProgrammeList.data.response.programme}
           />
         )}
       </div>

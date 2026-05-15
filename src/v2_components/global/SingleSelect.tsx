@@ -16,6 +16,7 @@ interface SingleSelectProps {
   placeholder?: string;
   className?: string;
   capitalize?: boolean;
+  Url?: boolean;
 }
 
 const SingleSelect = ({
@@ -25,6 +26,7 @@ const SingleSelect = ({
   placeholder = "Select session",
   className,
   capitalize = false,
+  Url = false,
 }: SingleSelectProps) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -95,7 +97,7 @@ const SingleSelect = ({
             className={cn(
               "flex-1 truncate text-sm",
               selectedOption ? "text-primary font-medium" : "text-gray-400",
-              capitalize && "capitalize"
+              capitalize && "capitalize",
             )}
           >
             {selectedOption ? selectedOption.label : placeholder}
@@ -112,15 +114,18 @@ const SingleSelect = ({
             className="ml-auto shrink-0 text-gray-400"
           />
         ) : (
-          <ChevronDown
-            size={16}
-            className="ml-auto shrink-0 text-gray-400"
-          />
+          <ChevronDown size={16} className="ml-auto shrink-0 text-gray-400" />
         )}
       </div>
 
       {open && (
-        <ul ref={listRef} className={cn("absolute z-[999] mt-1 max-h-60 w-full overflow-auto rounded-lg border border-gray-200 bg-white p-1 shadow-lg", capitalize && "capitalize")}>
+        <ul
+          ref={listRef}
+          className={cn(
+            "absolute z-[999] mt-1 max-h-60 w-full overflow-auto rounded-lg border border-gray-200 bg-white p-1 shadow-lg",
+            capitalize && "capitalize",
+          )}
+        >
           {filtered.length === 0 ? (
             <li className="px-3 py-2 text-sm text-gray-400">
               No results found
@@ -146,9 +151,18 @@ const SingleSelect = ({
                   >
                     {isSelected && <Check size={10} />}
                   </span>
-                  <span className="flex flex-col">
+                  <span className={cn("flex flex-col", Url && "w-full")}>
                     {o.start_time && o.end_time && (
-                      <span className="text-xs opacity-60">{o.start_time} - {o.end_time}</span>
+                      <div className="flex items-center justify-between w-full">
+                        <span className="text-xs opacity-60">
+                          {o.start_time} - {o.end_time}
+                        </span>
+                        {Url && (
+                          <span className="text-xs underline capitalize underline-offset-2 cursor-pointer">
+                            view
+                          </span>
+                        )}
+                      </div>
                     )}
                     {o.label}
                   </span>

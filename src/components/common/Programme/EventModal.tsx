@@ -17,13 +17,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import {
   addToGoogleCalendar,
   addToICalendar,
-  addToOutlookCalendar,
   addToYahooCalendar,
   cn,
   formatForGoogleCalendar,
   formatDateDisplay,
+  addToCalendar,
 } from "@/lib/utils";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useNotifyProgramme } from "@/api/programme_design_api/Programme_design_api";
 import Description from "@/components/ui/Description";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -35,10 +35,13 @@ import { FaGoogle, FaYahoo } from "react-icons/fa";
 import { FaFile } from "react-icons/fa6";
 import SpeakerDetails from "@/v2_pages/SpeakerDetails";
 
+const platform_url = import.meta.env.VITE_REACT_APP_API_URL;
+
 type ModalProps = {
   isOpen: boolean;
   onClose: React.Dispatch<React.SetStateAction<string | null>>;
   data: { id: string; date: string; type?: string };
+  ProgrammeData?: Programme[];
 };
 
 const Menu = (s: Programme) => [
@@ -68,11 +71,13 @@ const Menu = (s: Programme) => [
       </div>
     ),
     onClick: () => {
-      addToOutlookCalendar({
+      addToCalendar({
         title: s.title,
         start: formatForGoogleCalendar(s.start_date, s.start_time),
         end: formatForGoogleCalendar(s.end_date, s.end_time),
         location: s.location,
+        description: s.description,
+        icsUrl: `${platform_url}programme/${s.id}/calendar`,
       });
     },
   },
@@ -112,7 +117,12 @@ const Menu = (s: Programme) => [
   },
 ];
 
-const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
+const EventModal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  data,
+  ProgrammeData = [],
+}) => {
   const { Session, Types } = useSelector(
     (state: RootState) => state.Global_Slice,
   );
@@ -130,16 +140,19 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   const [date, setDate] = useState<string | null>(null);
 
   const selectedValue = React.useMemo(() => {
-    if (data.date.trim()) {
-      return Session.filter(
-        (pre) => data.date === pre.start_date && type === pre.type,
-      ).sort((a, b) => a.start_time.localeCompare(b.start_time));
-    } else {
-      return Session.filter(
-        (pre) => pre.start_date === date && type === pre.type,
-      ).sort((a, b) => a.start_time.localeCompare(b.start_time));
-    }
-  }, [Session, data.date, type, date]);
+    const sessionData = ProgrammeData?.length > 0 ? ProgrammeData : Session;
+
+    if (!sessionData?.length) return [];
+
+    const targetDate = data?.date?.trim() ? data.date : date;
+
+    const returnData = sessionData
+      .filter((pre) => pre.start_date === targetDate && pre.type === type)
+      .sort((a, b) => a.start_time.localeCompare(b.start_time));
+
+
+    return returnData;
+  }, [ProgrammeData, Session, data?.date, type, date]);
 
   const TypesSortArr = React.useMemo(() => {
     return [...Types].sort((a, b) => {
@@ -152,6 +165,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   const [value, setValue] = React.useState<string>("");
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const ScrollWindow = (id: string) => {
     const el = tabRefs.current[id];
@@ -165,10 +179,11 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
   };
 
   React.useEffect(() => {
+    const sessionData = ProgrammeData?.length > 0 ? ProgrammeData : Session;
     if (data.id) {
       setValue(data.id);
     }
-    const s = Session.find((pre) => pre.id === data.id);
+    const s = sessionData.find((pre) => pre.id === data.id);
     if (data.type) {
       setType(data.type);
     } else {
@@ -206,7 +221,9 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
           >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-2.5 sm:px-6 sm:py-4 border-b border-gray-200 bg-gradient-to-r from-slate-50 to-slate-100">
-              <h2 className="text-xl font-bold text-slate-900">Speaker Profile</h2>
+              <h2 className="text-xl font-bold text-slate-900">
+                Speaker Profile
+              </h2>
               <button
                 onClick={() => setSelectedSpeaker(null)}
                 className="p-2 hover:bg-gray-200 cursor-pointer! rounded-full transition-colors"
@@ -219,10 +236,7 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
             {/* Content */}
             <div className="overflow-y-auto flex-1">
               <div className="p-4 sm:p-6">
-                <SpeakerDetails
-                  id={selectedSpeaker}
-                  close={null}
-                />
+                <SpeakerDetails id={selectedSpeaker} close={null} />
               </div>
             </div>
           </div>
@@ -231,13 +245,41 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
       <Modal
         showHeader={false}
         isOpen={isOpen}
-        onClose={() => onClose(null)}
+        onClose={() => {
+          const params = new URLSearchParams(location.search);
+
+          params.delete("programmeid");
+          params.delete("date");
+
+          navigate(
+            {
+              pathname: location.pathname,
+              search: params.toString(),
+            },
+            { replace: true },
+          );
+          onClose(null);
+        }}
         size={isMobile ? "lg" : "full"}
         showCloseButton
         classname="overflow-hidden custom-scrollbar p-2 sm:p-4"
       >
         <button
-          onClick={() => onClose(null)}
+          onClick={() => {
+            const params = new URLSearchParams(location.search);
+
+            params.delete("programmeid");
+            params.delete("date");
+
+            navigate(
+              {
+                pathname: location.pathname,
+                search: params.toString(),
+              },
+              { replace: true },
+            );
+            onClose(null);
+          }}
           className="absolute top-3 hover:cursor-pointer hover:bg-gray-200 right-3 p-2 rounded-full transition-colors"
           aria-label="Close"
         >
@@ -249,7 +291,8 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
           <div className="w-full min-h-[400px] sm:min-h-[350px] py-1 px-2">
             <div className="flex flex-row items-end sm:items-center w-full gap-4 mb-3 sm:mb-4">
               <p className="text-xl sm:text-xl font-bold text-primary">
-                Day View - {formatDateDisplay(data.date.trim() ? data.date : date)}
+                Day View -{" "}
+                {formatDateDisplay(data.date.trim() ? data.date : date)}
               </p>
             </div>
             {!isMobile && (
@@ -365,7 +408,10 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                   >
                     <div className="flex flex-col items-start gap-2 sm:gap-4 mb-2 px-2 sm:px-4 pb-4">
                       {Object.entries(s.categories).map(([key, value]) => (
-                        <div className="flex items-center gap-3 sm:gap-4 w-full" key={key}>
+                        <div
+                          className="flex items-center gap-3 sm:gap-4 w-full"
+                          key={key}
+                        >
                           <p
                             style={{
                               color:
@@ -416,7 +462,8 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                                 <Button
                                   onClick={() =>
                                     navigate(
-                                      `/venue?id=${s.venue.designId}&venueid=${s.venue.id}`,
+                                      `/venue?id=${s.venue.designId}&venueid=${s.venue.id}&programmeid=${s.id}`,
+                                      { replace: true },
                                     )
                                   }
                                   variant={"link"}
@@ -424,8 +471,13 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                                   className="p-0! h-fit! sm:ml-4 underline text-xs sm:text-sm"
                                 >
                                   <LocateFixed size={14} className="block" />
-                                  <span className="sm:hidden">Room: {s.venue.name}</span>
-                                  <span className="hidden sm:inline"> Room no: {s.venue.name}</span>
+                                  <span className="sm:hidden">
+                                    Room: {s.venue.name}
+                                  </span>
+                                  <span className="hidden sm:inline">
+                                    {" "}
+                                    Room no: {s.venue.name}
+                                  </span>
                                 </Button>
                               </div>
                             )}
@@ -440,7 +492,8 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                                   size={"sm"}
                                   className="p-0! underline text-xs sm:text-sm"
                                 >
-                                  <CalendarArrowDown size={14} /> Add to calendar
+                                  <CalendarArrowDown size={14} /> Add to
+                                  calendar
                                 </Button>
                               }
                               items={Menu(s)}
@@ -465,7 +518,9 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                     <div className="relative px-2 sm:px-4">
                       {s.attachments && s.attachments.length > 0 && (
                         <div className="mb-6">
-                          <p className="mb-2 font-semibold text-sm sm:text-base">Paper</p>
+                          <p className="mb-2 font-semibold text-sm sm:text-base">
+                            Paper
+                          </p>
                           {
                             // <a href={s.attachments.file} target="_blank">
                             s.attachments
@@ -475,7 +530,10 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                                   key={e.id}
                                   onClick={() =>
                                     navigate(`/Attachment/${s.id}`, {
-                                      state: { Title: e.filename, file_id: e.id },
+                                      state: {
+                                        Title: e.filename,
+                                        file_id: e.id,
+                                      },
                                     })
                                   }
                                   className="flex flex-row items-center gap-2 mb-5 text-xs sm:text-sm text-gray-700"
@@ -493,14 +551,16 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                       )}
                       {s.speakers && s.speakers.length > 0 && (
                         <div className="mb-6">
-                          <p className="font-semibold text-sm sm:text-base">Speakers</p>
+                          <p className="font-semibold text-sm sm:text-base">
+                            Speakers
+                          </p>
                           <div className="flex items-center gap-4 sm:gap-6 mt-4">
                             {s.speakers.map((speaker, index) => (
                               <div
                                 key={index}
                                 className="flex flex-col items-center cursor-pointer"
                                 onClick={() => {
-                                  setSelectedSpeaker(speaker.speaker_id)
+                                  setSelectedSpeaker(speaker.speaker_id);
                                 }}
                               >
                                 <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-full bg-gray-900 flex items-center justify-center mb-2 overflow-hidden">
@@ -534,7 +594,9 @@ const EventModal: React.FC<ModalProps> = ({ isOpen, onClose, data }) => {
                       )}
                       {s.description && s.description.trim() && (
                         <div>
-                          <p className="font-semibold text-sm sm:text-base">Description</p>
+                          <p className="font-semibold text-sm sm:text-base">
+                            Description
+                          </p>
                           <Description text={s.description} />
                         </div>
                       )}

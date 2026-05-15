@@ -4,12 +4,11 @@ import { ACTIONS } from "@/data/Action";
 import ShapesElement from "../V2_VenueDesign/Shapes";
 import Konva from "konva";
 import type { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
-import TestMode from "./TestMode";
-// import { Skeleton } from "@/components/ui/skeleton";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/redux/store";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/redux/store";
 import { isBase64Image } from "@/lib/utils";
+import { useNavigate, useSearchParams, useLocation } from "react-router";
+import { setSelectedFloor, setSelectedNode } from "@/redux/MapSlice";
 
 interface prop {
   id: string;
@@ -17,21 +16,19 @@ interface prop {
 
 const Map_V2 = ({ id }: prop) => {
   const stageRef = useRef<Konva.Stage | null>(null);
+  const {appConfig} = useSelector((state:RootState)=>state.Global_DesignSlice)
   const imageCache = useRef<Record<string, HTMLImageElement>>({});
-  const isMobile = useIsMobile();
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
   const [, setImageTick] = useState(0);
+  const dispatch = useDispatch<AppDispatch>();
   const [FloorPlan, setFloorPlan] = useState<
     (MapT & { programmes: Programme[] }) | null
   >(null);
+  const navigate = useNavigate();
   const [activeNode, setActiveNode] = useState<Konva.Shape | null>(null);
-  const [tooltip, setTooltip] = useState<{
-    x: number;
-    y: number;
-    id: string | null;
-  } | null>(null);
-  const { searchParams, searchParams2 } = useSelector(
-    (state: RootState) => state.Global_Slice,
-  );
+  const shapeID = searchParams.get("venueid");
   const { GlobalMap } = useSelector(
     (state: RootState) => state.Venue_Design_V2,
   );
@@ -39,6 +36,10 @@ const Map_V2 = ({ id }: prop) => {
   useEffect(() => {
     const value = GlobalMap.find((pre) => pre.id === id);
     if (!value) return;
+    if (FloorPlan?.id !== value.id) {
+      resetZoom()
+      setSelectedId(null)
+    }
     setFloorPlan(value);
   }, [id]);
 
@@ -62,38 +63,21 @@ const Map_V2 = ({ id }: prop) => {
   }, [FloorPlan]);
 
   useEffect(() => {
-    if (!searchParams2) return;
+    if (!shapeID) {
+      dispatch(setSelectedNode(null))
+      return
+    };
 
+    dispatch(setSelectedNode(shapeID));
     const stage = stageRef.current;
     if (!stage) return;
-    const node = stage.findOne(`#${searchParams2}`) as Konva.Shape | null;
+    const node = stage.findOne(`#${shapeID}`) as Konva.Shape | null;
     if (!node) return;
-    focusOnShape(node, searchParams2);
-  }, [searchParams, stageRef.current]);
+    setSelectedId(shapeID)
+    focusOnShape(node);
+  }, [shapeID, FloorPlan]);
 
-  const getTooltipPosition = (node: Konva.Node) => {
-    const stage = stageRef.current;
-    if (!stage) return null;
-
-    // 1. Visual bounding box AFTER zoom & pan
-    const box = node.getClientRect({ relativeTo: stage });
-
-    // 2. Top-center of the shape
-    const point = {
-      x: box.x + box.width / 2,
-      y: box.y,
-    };
-
-    // 3. Canvas position in viewport
-    const containerRect = stage.container().getBoundingClientRect();
-
-    return {
-      x: containerRect.left + point.x,
-      y: containerRect.top + point.y - 12, // offset above
-    };
-  };
-
-  const focusOnShape = (node: Konva.Shape, id: string) => {
+  const focusOnShape = (node: Konva.Shape) => {
     if (activeNode && activeNode !== node) {
       const prevColor = activeNode.getAttr("originalStroke");
       if (prevColor) {
@@ -106,13 +90,10 @@ const Map_V2 = ({ id }: prop) => {
       node.setAttr("originalStroke", node.stroke());
     }
 
-    node.stroke("#2563eb");
+    node.stroke(appConfig.color_schema.primary_color);
     node.strokeWidth(2);
 
-    zoomToNode(node, 1.6, () => {
-      const pos = getTooltipPosition(node);
-      if (pos) setTooltip({ ...pos, id });
-    });
+    zoomToNode(node, 2.2);
 
     setActiveNode(node);
   };
@@ -163,14 +144,28 @@ const Map_V2 = ({ id }: prop) => {
       duration: 0.3,
       easing: Konva.Easings.EaseInOut,
     });
-  }, [searchParams2]);
+  }, [searchParams]);
 
   function onClick(
     e: KonvaEventObject<MouseEvent, Node<NodeConfig>>,
-    id: string,
+    shapeId: string,
   ) {
     const node = e.target as Konva.Shape;
-    focusOnShape(node, id);
+    const params = new URLSearchParams(location.search);
+
+    params.set("id", id)
+    params.set("venueid", shapeId)
+
+    navigate(
+      {
+        pathname: location.pathname,
+        search: params.toString(),
+      },
+      { replace: true },
+    );
+    dispatch(setSelectedNode(shapeId));
+    setSelectedId(shapeId);
+    focusOnShape(node);
   }
 
   const closeTooltip = () => {
@@ -182,9 +177,23 @@ const Map_V2 = ({ id }: prop) => {
       }
       activeNode.getStage()?.batchDraw();
     }
+    const params = new URLSearchParams(location.search);
 
-    setTooltip(null);
+    params.delete("programmeid");
+    params.delete("venueid");
+    params.delete("id");
+
+    navigate(
+      {
+        pathname: location.pathname,
+        search: params.toString(),
+      },
+      { replace: true },
+    );
+    dispatch(setSelectedNode(null));
+    dispatch(setSelectedFloor(null));
     setActiveNode(null);
+    setSelectedId(null);
     resetZoom();
   };
 
@@ -194,15 +203,14 @@ const Map_V2 = ({ id }: prop) => {
       style={{
         maxHeight: "66vh",
         WebkitOverflowScrolling: "touch",
-        touchAction: "pan-y pan-x",
       }}
     >
       <Stage
         ref={stageRef}
         width={1200}
         height={600}
-        draggable={isMobile}
-        style={{ touchAction: "auto" }}
+        // draggable={isMobile}
+        // style={{ touchAction: "auto" }}
       >
         <Layer>
           <Rect
@@ -224,6 +232,7 @@ const Map_V2 = ({ id }: prop) => {
                 if (!img) return null;
                 return (
                   <KonvaImage
+                    // opacity={selectedId ? 0.5 : 1}
                     key={imgShape.id}
                     image={img}
                     x={imgShape.x}
@@ -262,10 +271,11 @@ const Map_V2 = ({ id }: prop) => {
               default:
                 return (
                   <ShapesElement
+                    selectedId={selectedId}
                     key={shape.id}
                     shape={shape}
                     isDraggable={false}
-                    click={(e) => {
+                    click={(e:any) => {
                       onClick(e, shape.id);
                     }}
                     transformEnd={() => {}}
@@ -276,13 +286,14 @@ const Map_V2 = ({ id }: prop) => {
           })}
         </Layer>
       </Stage>
-      <TestMode
+      {/* <TestMode
         id={tooltip?.id as string}
         x={tooltip?.x as number}
         y={tooltip?.y as number}
         filterId={id}
         onClose={closeTooltip}
-      />
+        programmeId={searchParams.get("programmeid") as string}
+      /> */}
     </div>
   );
 };
