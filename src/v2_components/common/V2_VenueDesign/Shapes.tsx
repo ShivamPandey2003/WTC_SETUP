@@ -3,14 +3,20 @@ import type { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
 import { Arrow, Circle, Line, Rect, RegularPolygon, Star } from "react-konva";
 
 type ShapesProps = {
+  selectedId: string | null;
   shape: Shape;
   isDraggable: boolean;
-  click: (e: KonvaEventObject<MouseEvent, Node<NodeConfig>>) => void;
+  click: (
+    e:
+      | KonvaEventObject<MouseEvent, Node<NodeConfig>>
+      | KonvaEventObject<TouchEvent>,
+  ) => void;
   dragEnd: (e: KonvaEventObject<MouseEvent, Node<NodeConfig>>) => void;
   transformEnd: (e: KonvaEventObject<MouseEvent, Node<NodeConfig>>) => void;
 };
 
 const ShapesElement = ({
+  selectedId,
   shape,
   isDraggable,
   click,
@@ -22,16 +28,27 @@ const ShapesElement = ({
       const rect = shape as RectangleShape;
       return (
         <Rect
+          // opacity={(selectedId && selectedId !== shape.id)?0.5:1}
           id={rect.id}
           x={rect.x}
           y={rect.y}
           width={rect.width}
           height={rect.height}
-          fill={rect.fillColor}
-          stroke={rect.strokeColor ? rect.strokeColor : "#000000"}
-          strokeWidth={rect.strokeWidth !== null ? rect.strokeWidth : 2}
+          fill={selectedId === shape.id
+      ? "rgba(37,99,235,0.15)"
+      : rect.fillColor}
+          stroke={
+            selectedId && selectedId !== shape.id
+              ? "#B2BEB5"
+              : rect.strokeColor
+                ? rect.strokeColor
+                : "#000000"
+          }
+          strokeWidth={ selectedId && selectedId === shape.id? 4 :rect.strokeWidth !== null ? rect.strokeWidth : 2}
+          //  dash={selectedId === shape.id ? [8, 4] : undefined}
           draggable={isDraggable}
           onClick={click}
+          onTap={click}
           type={ACTIONS.RECTANGLE}
           onDragEnd={dragEnd}
           onTransformEnd={transformEnd}
@@ -47,7 +64,13 @@ const ShapesElement = ({
           y={circle.y}
           radius={circle.radius}
           fill={circle.fillColor}
-          stroke={circle.strokeColor ? circle.strokeColor : "#000000"}
+          stroke={
+            selectedId && selectedId !== shape.id
+              ? "#B2BEB5"
+              : circle.strokeColor
+                ? circle.strokeColor
+                : "#000000"
+          }
           strokeWidth={circle.strokeWidth !== null ? circle.strokeWidth : 2}
           draggable={isDraggable}
           onClick={click}
@@ -79,7 +102,13 @@ const ShapesElement = ({
       return (
         <Line
           id={line.id}
-          stroke={line.strokeColor ? line.strokeColor : "#000000"}
+          stroke={
+            selectedId && selectedId !== shape.id
+              ? "#B2BEB5"
+              : line.strokeColor
+                ? line.strokeColor
+                : "#000000"
+          }
           points={line.points}
           draggable={isDraggable}
           onClick={click}
@@ -102,7 +131,13 @@ const ShapesElement = ({
           innerRadius={star.innerRadius}
           outerRadius={star.outerRadius}
           fill={star.fillColor}
-          stroke={star.strokeColor ? star.strokeColor : "#000000"}
+          stroke={
+            selectedId && selectedId !== shape.id
+              ? "#B2BEB5"
+              : star.strokeColor
+                ? star.strokeColor
+                : "#000000"
+          }
           strokeWidth={star.strokeWidth !== null ? star.strokeWidth : 2}
           draggable={isDraggable}
           onClick={click}
@@ -122,7 +157,13 @@ const ShapesElement = ({
           sides={polygon.sides}
           radius={polygon.radius}
           fill={polygon.fillColor}
-          stroke={polygon.strokeColor ? polygon.strokeColor : "#000000"}
+          stroke={
+            selectedId && selectedId !== shape.id
+              ? "#B2BEB5"
+              : polygon.strokeColor
+                ? polygon.strokeColor
+                : "#000000"
+          }
           strokeWidth={polygon.strokeWidth !== null ? polygon.strokeWidth : 2}
           draggable={isDraggable}
           onClick={click}

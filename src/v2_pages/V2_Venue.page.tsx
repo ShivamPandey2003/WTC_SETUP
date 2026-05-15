@@ -3,13 +3,13 @@ import {
   addToGoogleCalendar,
   cn,
   formatDate,
+  formatDateDisplay,
   formatForGoogleCalendar,
   normalizeLabel,
   normalizeTime,
 } from "@/lib/utils";
 import TextCard from "@/v2_components/common/V2_Venue/TextCard";
-import { useEffect, useState } from "react";
-// import MapText from "@/assets/Images/MapText.png";
+import React, { useEffect, useState } from "react";
 import { Calendar, Link, Navigation } from "lucide-react";
 import { useGetVenue } from "@/api/global_api/global_api";
 import ErrorDisplay from "@/components/global/ErrorDisplay";
@@ -19,10 +19,20 @@ import type { AppDispatch, RootState } from "@/redux/store";
 import { GoogleMap, LoadScriptNext, Marker } from "@react-google-maps/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import Map_V2 from "@/v2_components/common/V2_Venue/Map_V2";
-import { useSearchParams } from "react-router";
-import { setSearchParams, setSearchParams2 } from "@/redux/GlobalSlice";
+import { useNavigate, useSearchParams, useLocation } from "react-router";
+import { setSearchParams } from "@/redux/GlobalSlice";
 import { useGlobalV2GetFloorMapList } from "@/api/Venue_api/Venue_Design_api";
 import { setTitle } from "@/redux/ModalSlice";
+import AsideBar from "@/v2_components/common/V2_Venue/AsideBar";
+import {
+  setSelectedFloor,
+  setSelectedNode,
+  setSelectedProgramme,
+} from "@/redux/MapSlice";
+import { useIsMobile } from "@/hooks/use-mobile";
+import SingleSelect from "@/v2_components/global/SingleSelect";
+// import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+// import BottomDrawer from "@/v2_components/common/V2_Venue/BottomDrawer";
 
 const apiKey = import.meta.env.VITE_REACT_GOOGLE_MAPS_API_KEY;
 
@@ -34,6 +44,16 @@ const V2_Venue_page = () => {
   const [searchParams] = useSearchParams();
   const { Venue, isPending, error } = useGetVenue();
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const venueId = searchParams.get("id");
+  const programmeId = searchParams.get("programmeid");
+  const isMobile = useIsMobile();
+
+  const { GlobalMap } = useSelector(
+    (state: RootState) => state.Venue_Design_V2,
+  );
+
   const {
     Venue: venue,
     conference_location,
@@ -44,16 +64,39 @@ const V2_Venue_page = () => {
     conference_title,
     searchParams: Params,
   } = useSelector((state: RootState) => state.Global_Slice);
+  const { selectedNode } = useSelector((state: RootState) => state.Venue_Map);
 
   useEffect(() => {
-    const venueId = searchParams.get("id");
-    const shapeId = searchParams.get("venueid");
     if (venueId) {
       setCurrentTab("floor plan");
       dispatch(setSearchParams(venueId));
-      dispatch(setSearchParams2(shapeId));
     }
-  }, [searchParams]);
+  }, [venueId]);
+
+  const CurrentItem = React.useMemo(() => {
+    if (!selectedId) return null;
+
+    const Map = GlobalMap.find((pre) => pre.id === selectedId);
+
+    if (!Map) return null;
+
+    const Shape = Map.map_list.find((pre) => pre.id === selectedNode);
+
+    const data = programmeId
+      ? Map.programmes.filter((pre) => pre.session_id === programmeId)
+      : Map.programmes.filter(
+          (pre) => pre.venue_id === `${selectedId}__${selectedNode}`,
+        );
+
+    if (!data) return null;
+
+    return {
+      data,
+      shape: Shape,
+      Map: Map,
+    };
+  }, [GlobalMap, programmeId, selectedId, selectedNode]);
+
 
   function parseCoordinate(value: string): number {
     const num = parseFloat(value); // get numeric part
@@ -174,7 +217,9 @@ const V2_Venue_page = () => {
         <Button
           variant={currentTab === "floor plan" ? "default" : "ghost"}
           className={cn("capitalize rounded-full p-2 w-28")}
-          onClick={() => setCurrentTab("floor plan")}
+          onClick={() => {
+            setCurrentTab("floor plan");
+          }}
         >
           floor Plan
         </Button>
@@ -287,33 +332,45 @@ const V2_Venue_page = () => {
       )}
       {currentTab === "floor plan" && (
         <div className="w-full rounded-xl p-6 bg-white h-fit">
-          <div className="flex items-start sm:items-center justify-between">
+          <div className="flex items-start sm:items-center gap-2">
             <div
               className={cn(
-                "flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4",
+                "flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2 w-1/2",
               )}
             >
               <div className="text-sm font-[500] w-[100px] shrink-0">
                 {normalizeLabel("Floor Level")}
               </div>
-              <div className="flex items-center gap-4">
-                <select
-                  value={selectedId as string}
-                  onChange={(e) => setSelectedId(e.target.value)}
-                  className="rounded outline-0 border border-gray-200 px-2 py-1 focus:border-primary mb-1 cursor-pointer"
-                >
-                  <option value="">{"Select an option"}</option>
-                  {V2_Global_FloorMapList &&
-                    V2_Global_FloorMapList.response.map((opt) => (
-                      <option
-                        key={opt.id}
-                        value={opt.id}
-                        className="cursor-pointer"
-                      >
-                        {opt.label}
-                      </option>
-                    ))}
-                </select>
+              <div className="flex items-center gap-4 w-full">
+                <SingleSelect
+                  selected={selectedId as string}
+                  onChange={(e) => {
+                    dispatch(setSelectedNode(null));
+                    const params = new URLSearchParams(location.search);
+
+                    params.delete("programmeid");
+                    params.delete("venueid");
+                    params.delete("id");
+
+                    navigate(
+                      {
+                        pathname: location.pathname,
+                        search: params.toString(),
+                      },
+                      { replace: true },
+                    );
+                    setSelectedId(e as string);
+                  }}
+                  options={
+                    V2_Global_FloorMapList?.response.map((item) => ({
+                      label: item.label,
+                      value: item.id,
+                    })) || []
+                  }
+                  placeholder="Floor Level"
+                  className={cn("w-full sm:w-[200px] text-xs")}
+                  capitalize
+                />
               </div>
               {V2_Global_FloorMapList?.response.find(
                 (pre) => pre.id === selectedId,
@@ -332,17 +389,100 @@ const V2_Venue_page = () => {
                 </a>
               )}
             </div>
-            {typeof venue?.attachment === "string" && venue?.attachment.trim() !== "" && (
-              <a
-                href={venue.attachment}
-                target="_blank"
-                className="flex items-center text-blue-600 gap-1"
-              >
-                <Link size={18} /> Floor Plan
-              </a>
+            {typeof venue?.attachment === "string" &&
+              venue?.attachment.trim() !== "" && (
+                <a
+                  href={venue.attachment}
+                  target="_blank"
+                  className="flex items-center text-blue-600 gap-1"
+                >
+                  <Link size={18} /> Floor Plan
+                </a>
+              )}
+            {isMobile && selectedNode && (
+              <div className={cn(
+                "flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2 w-1/2",
+              )}>
+                <div className="text-sm font-[500] w-[100px] shrink-0">
+                  {normalizeLabel("Room")}
+                </div>
+                <SingleSelect
+                  onChange={(e) => {
+                    dispatch(setSelectedNode(e));
+                    const params = new URLSearchParams(location.search);
+
+                    params.delete("programmeid");
+
+                    navigate(
+                      {
+                        pathname: location.pathname,
+                        search: params.toString(),
+                      },
+                      { replace: true },
+                    );
+                  }}
+                  selected={selectedNode}
+                  placeholder="Rooms"
+                  options={
+                    CurrentItem?.Map.map_list
+                      .filter(
+                        (i) => !["IMAGE", "TEXT", "SCRIBBLE"].includes(i.type),
+                      )
+                      .map((item) => ({
+                        label: item.name || "",
+                        value: item.id || "",
+                      })) ?? []
+                  }
+                  className="w-full text-xs"
+                  capitalize
+                />
+              </div>
             )}
           </div>
-          <div className="w-full">
+          {isMobile && selectedNode && (
+            <div className="mb-2">
+              <div className="text-sm font-[500] w-[100px] shrink-0">
+                  {normalizeLabel("Sessions")}
+                </div>
+              <SingleSelect
+                onChange={(e) => {
+                  const STR = e?.split("__");
+                  dispatch(setSelectedNode(null));
+                  dispatch(setSelectedFloor(null));
+                  dispatch(setSelectedProgramme(null));
+                  navigate(
+                    `/programme?date=${STR?.[1]}&programmeid=${STR?.[0]}`,
+                    { replace: true },
+                  );
+                }}
+                selected={
+                  CurrentItem?.data?.find((pre) => pre.id === programmeId)
+                    ? `${programmeId}__${
+                        CurrentItem.data.find((pre) => pre.id === programmeId)!
+                          .start_date
+                      }`
+                    : programmeId
+                }
+                placeholder="Sessions"
+                options={
+                  CurrentItem?.data.map((item) => ({
+                    label: item.title,
+                    value: `${item.session_id}__${item.start_date}`,
+                    start_time: `${formatDateDisplay(item.start_date)} / ${item.start_time}`,
+                    end_time: item.end_time,
+                  })) ?? []
+                }
+                className="w-full text-xs"
+                capitalize
+              />
+            </div>
+          )}
+          <div className="w-full flex">
+            {!isMobile && selectedNode && (
+              <div className="w-[25%] h-[66vh] transition-all duration-200">
+                <AsideBar VenueId={selectedId} />
+              </div>
+            )}
             {V2_Global_FloorMapList?.response &&
             V2_Global_FloorMapList?.response.length === 0 ? (
               <div className="w-full h-[65vh] mt-2 flex items-center justify-center">
@@ -362,6 +502,9 @@ const V2_Venue_page = () => {
                 className="w-full h-[65vh] mt-2"
               />
             )}
+            {/* {isMobile && selectedNode && (
+              <BottomDrawer isOpen={Boolean(isMobile && selectedNode)} VenueId={selectedId} />
+            )} */}
           </div>
         </div>
       )}
