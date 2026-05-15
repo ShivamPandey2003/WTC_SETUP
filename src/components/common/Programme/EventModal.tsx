@@ -208,8 +208,6 @@ const EventModal: React.FC<ModalProps> = ({
     ScrollWindow(data.id);
   }, [data.id, selectedValue]);
 
-  // if(selectedValue.length === 0) return null;
-
   return (
     <>
       {selectedSpeaker && (

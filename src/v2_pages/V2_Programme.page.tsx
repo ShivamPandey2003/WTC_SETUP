@@ -309,7 +309,7 @@ const V2_Programme_page = () => {
         {/* ) : ( */}
         {/* <EventGrid2_v2 programmeData={ProgrammeTypeList.response} /> */}
         {/* )} */}
-        {(ProgrammeList.data.response.programme.length && selected) && (
+        {(ProgrammeList.data.response.programme.length > 0 && selected) && (
           <EventModal
             isOpen={Boolean(selected)}
             onClose={() => setSelected(null)}

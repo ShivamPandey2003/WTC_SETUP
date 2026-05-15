@@ -453,7 +453,11 @@ const V2_Venue_page = () => {
                     { replace: true },
                   );
                 }}
-                selected={`${CurrentItem?.selectedProgramme?.session_id}__${CurrentItem?.selectedProgramme?.start_date}`}
+                selected={
+                  CurrentItem?.selectedProgramme
+                    ? `${CurrentItem.selectedProgramme.session_id}__${CurrentItem.selectedProgramme.start_date}`
+                    : null
+                }
                 placeholder="Sessions"
                 options={
                   CurrentItem?.data.map((item) => ({

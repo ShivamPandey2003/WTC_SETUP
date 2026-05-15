@@ -219,28 +219,6 @@ export const addToGoogleCalendar = ({
   window.open(url, "_blank");
 };
 
-// export const addToOutlookCalendar = ({
-//   title,
-//   start,
-//   end,
-//   location,
-// }: {
-//   title: string;
-//   start: string;
-//   end: string;
-//   location: string;
-// }) => {
-//   const url =
-//     `https://outlook.office.com/calendar/action/compose` +
-//     `?rru=addevent` +
-//     `&startdt=${encodeURIComponent(start)}` +
-//     `&enddt=${encodeURIComponent(end)}` +
-//     `&subject=${encodeURIComponent(title)}` +
-//     `&location=${encodeURIComponent(location)}`;
-
-//   window.open(url, "_blank");
-// };
-
 type CalendarEvent = {
   title: string;
   start: string;
@@ -277,14 +255,19 @@ export const addToCalendar = (event: CalendarEvent): void => {
 };
 
 export const downloadICSFromUrl = async (icsUrl: string, title: string): Promise<void> => {
-  const res = await fetch(icsUrl);
-  const blob = await res.blob();
+  try {
+    const res = await fetch(icsUrl);
+    if (!res.ok) throw new Error("Failed to fetch ICS file");
+    const blob = await res.blob();
 
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = `${title.replace(/\s+/g, "_")}.ics`;
-  link.click();
-  URL.revokeObjectURL(link.href);
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `${title.replace(/\s+/g, "_")}.ics`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  } catch (error) {
+    console.error("Error downloading ICS:", error);
+  }
 };
 
 export const addToICalendar = ({
