@@ -71,13 +71,10 @@ const Menu = (s: Programme) => [
       </div>
     ),
     onClick: () => {
-      // Pass plain ISO strings without UTC conversion — Outlook interprets
-      // timezone-free datetimes as local time, which matches what the user sees.
-      // formatForGoogleCalendar would shift the time to UTC (wrong for Outlook).
       addToCalendar({
         title: s.title,
-        start: `${s.start_date}T${s.start_time.split(".")[0]}`,
-        end: `${s.end_date}T${s.end_time.split(".")[0]}`,
+        start: formatForGoogleCalendar(s.start_date, s.start_time),
+        end: formatForGoogleCalendar(s.end_date, s.end_time),
         location: s.location,
         description: s.description,
         icsUrl: `${platform_url}/programme/${s.id}/calendar`,

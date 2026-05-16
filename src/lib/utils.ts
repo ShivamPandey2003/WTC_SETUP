@@ -255,22 +255,33 @@ const tryProtocolWithFallback = (nativeUrl: string, fallbackUrl: string): void =
   }, 1500);
 };
 
+// formatForGoogleCalendar produces compact ISO ("20260517T123000Z" — no separators).
+// Outlook requires standard ISO ("2026-05-17T12:30:00Z") to parse correctly.
+const toOutlookIso = (compact: string): string => {
+  const m = compact.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z?)$/);
+  if (!m) return compact;
+  return `${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}${m[7]}`;
+};
+
 export const addToOutlookCalendar = (event: CalendarEvent): void => {
+  const start = toOutlookIso(event.start);
+  const end   = toOutlookIso(event.end);
+
   // ms-outlook://events/new — opens Outlook mobile/desktop app.
   // Note: Microsoft has a known bug where event params sometimes don't pre-fill
   // the form; the app opens but the user may need to fill details manually.
   const nativeParams = new URLSearchParams({
     title: event.title,
-    start: event.start,
-    end: event.end,
+    start,
+    end,
     location: event.location ?? "",
   });
   const nativeUrl = `ms-outlook://events/new?${nativeParams.toString().replace(/\+/g, "%20")}`;
 
   // /deeplink/compose is the current working format; the older /action/compose?rru=addevent is deprecated.
   const webParams = new URLSearchParams({
-    startdt: event.start,
-    enddt: event.end,
+    startdt: start,
+    enddt: end,
     subject: event.title,
     location: event.location ?? "",
     body: event.description ?? "",
