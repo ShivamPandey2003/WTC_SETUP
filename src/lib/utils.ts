@@ -228,9 +228,10 @@ type CalendarEvent = {
   icsUrl: string; // your API endpoint that returns the .ics file
 };
 
-// Attempts to open a custom protocol (e.g. ms-outlook://, webcal://) and falls back
-// to a web URL if the native app is not installed. Detection works by listening for
-// window blur / visibilitychange — both fire when the OS switches to the native app.
+// Tries to open a native app via a custom URL scheme, falling back to a web URL if
+// the app is not installed. When a native app opens, the browser loses focus —
+// detected via blur + visibilitychange. If neither fires within 1.5 s, the app
+// was not installed and we open the web fallback instead.
 const tryProtocolWithFallback = (nativeUrl: string, fallbackUrl: string): void => {
   let nativeAppOpened = false;
   const onFocusLost = () => { nativeAppOpened = true; };
@@ -255,34 +256,32 @@ const tryProtocolWithFallback = (nativeUrl: string, fallbackUrl: string): void =
 };
 
 export const addToOutlookCalendar = (event: CalendarEvent): void => {
-  const sharedParams = {
-    subject: event.title,
+  // ms-outlook://events/new — opens Outlook mobile/desktop app.
+  // Note: Microsoft has a known bug where event params sometimes don't pre-fill
+  // the form; the app opens but the user may need to fill details manually.
+  const nativeParams = new URLSearchParams({
+    title: event.title,
+    start: event.start,
+    end: event.end,
+    location: event.location ?? "",
+  });
+  const nativeUrl = `ms-outlook://events/new?${nativeParams}`;
+
+  // /deeplink/compose is the current working format; the older /action/compose?rru=addevent is deprecated.
+  const webParams = new URLSearchParams({
     startdt: event.start,
     enddt: event.end,
+    subject: event.title,
     location: event.location ?? "",
     body: event.description ?? "",
-  };
-
-  const nativeUrl = `ms-outlook://events/newevent?${new URLSearchParams(sharedParams)}`;
-  const webUrl = `https://outlook.office.com/calendar/action/compose?${new URLSearchParams({
-    rru: "addevent",
-    ...sharedParams,
-  })}`;
+  });
+  const webUrl = `https://outlook.office.com/calendar/0/deeplink/compose?${webParams}`;
 
   tryProtocolWithFallback(nativeUrl, webUrl);
 };
 
 export const addToCalendar = (event: CalendarEvent): void => {
-  const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
-
-  if (isMobile) {
-    // webcal:// tells iOS/Android to open the ICS with the native calendar app.
-    // Falls back to direct ICS navigation if no handler is registered.
-    const webcalUrl = event.icsUrl.replace(/^https?:\/\//, "webcal://");
-    tryProtocolWithFallback(webcalUrl, event.icsUrl);
-  } else {
-    addToOutlookCalendar(event);
-  }
+  addToOutlookCalendar(event);
 };
 
 export const downloadICSFromUrl = async (icsUrl: string, title: string): Promise<void> => {
