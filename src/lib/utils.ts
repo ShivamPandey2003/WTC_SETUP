@@ -243,15 +243,15 @@ export const addToOutlookCalendar = (event: CalendarEvent): void => {
 };
 
 export const addToCalendar = (event: CalendarEvent): void => {
-  const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
+  // const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
 
-  if (isMobile) {
+  // if (isMobile) {
     // .ics URL directly — iOS/Android intercept and open native calendar
-    window.location.href = event.icsUrl;
-  } else {
+  //   window.location.href = event.icsUrl;
+  // } else {
     // Desktop — Outlook Web compose (no app install needed)
     addToOutlookCalendar(event);
-  }
+  // }
 };
 
 export const downloadICSFromUrl = async (icsUrl: string, title: string): Promise<void> => {

@@ -77,7 +77,7 @@ const Menu = (s: Programme) => [
         end: formatForGoogleCalendar(s.end_date, s.end_time),
         location: s.location,
         description: s.description,
-        icsUrl: `${platform_url}programme/${s.id}/calendar`,
+        icsUrl: `${platform_url}/programme/${s.id}/calendar`,
       });
     },
   },
