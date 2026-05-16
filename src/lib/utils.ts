@@ -265,7 +265,7 @@ export const addToOutlookCalendar = (event: CalendarEvent): void => {
     end: event.end,
     location: event.location ?? "",
   });
-  const nativeUrl = `ms-outlook://events/new?${nativeParams}`;
+  const nativeUrl = `ms-outlook://events/new?${nativeParams.toString().replace(/\+/g, "%20")}`;
 
   // /deeplink/compose is the current working format; the older /action/compose?rru=addevent is deprecated.
   const webParams = new URLSearchParams({
