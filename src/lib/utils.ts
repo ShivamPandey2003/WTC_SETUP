@@ -198,6 +198,11 @@ export const formatForGoogleCalendar = (date: string, time: string) => {
   return dateTime.toISOString().replace(/-|:|\.\d+/g, "");
 };
 
+// Yahoo Calendar needs compact local time WITHOUT a Z suffix ("20260517T083000").
+// formatForGoogleCalendar converts to UTC (adds Z), which Yahoo can misinterpret.
+export const formatForYahooCalendar = (date: string, time: string) =>
+  `${date.replace(/-/g, "")}T${time.replace(/:/g, "").slice(0, 6).padEnd(6, "0")}`;
+
 export function normalizeTime(time: string) {
   if (!time) return "";
   return time.split(".")[0].slice(0, 5);

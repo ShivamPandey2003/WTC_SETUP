@@ -20,6 +20,7 @@ import {
   addToYahooCalendar,
   cn,
   formatForGoogleCalendar,
+  formatForYahooCalendar,
   formatDateDisplay,
   addToCalendar,
 } from "@/lib/utils";
@@ -92,8 +93,8 @@ const Menu = (s: Programme) => [
     onClick: () => {
       addToYahooCalendar({
         title: s.title,
-        start: formatForGoogleCalendar(s.start_date, s.start_time),
-        end: formatForGoogleCalendar(s.end_date, s.end_time),
+        start: formatForYahooCalendar(s.start_date, s.start_time),
+        end: formatForYahooCalendar(s.end_date, s.end_time),
         location: s.location,
       });
     },
