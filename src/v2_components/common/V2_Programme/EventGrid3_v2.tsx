@@ -391,7 +391,7 @@ function DayColumn({
                 left: isFull ? `0px` : `calc(${leftOffset}% + ${GAP}px)`,
               }}
             >
-              <Tooltip content={Title} position="left">
+              <Tooltip content={Title} position="top">
               <div className="event-inner p-1 w-full h-full min-w-0 flex items-center justify-center">
                 <div
                   className={cn(

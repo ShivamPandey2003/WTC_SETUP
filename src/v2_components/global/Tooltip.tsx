@@ -19,6 +19,8 @@ interface Coords {
 
 const OFFSET = 8;
 
+// Uses viewport coords directly — tooltip is position:fixed so no scroll offset needed.
+// Works correctly even when ancestors have CSS zoom applied.
 function getCoords(
   trigger: DOMRect,
   tooltip: DOMRect,
@@ -27,26 +29,26 @@ function getCoords(
   switch (position) {
     case 'top':
       return {
-        top: trigger.top - tooltip.height - OFFSET + window.scrollY,
-        left: trigger.left + trigger.width / 2 - tooltip.width / 2 + window.scrollX,
+        top: trigger.top - tooltip.height - OFFSET,
+        left: trigger.left + trigger.width / 2 - tooltip.width / 2,
         transformOrigin: 'bottom center',
       };
     case 'bottom':
       return {
-        top: trigger.bottom + OFFSET + window.scrollY,
-        left: trigger.left + trigger.width / 2 - tooltip.width / 2 + window.scrollX,
+        top: trigger.bottom + OFFSET,
+        left: trigger.left + trigger.width / 2 - tooltip.width / 2,
         transformOrigin: 'top center',
       };
     case 'left':
       return {
-        top: trigger.top + trigger.height / 2 - tooltip.height / 2 + window.scrollY,
-        left: trigger.left - tooltip.width - OFFSET + window.scrollX,
+        top: trigger.top + trigger.height / 2 - tooltip.height / 2,
+        left: trigger.left - tooltip.width - OFFSET,
         transformOrigin: 'right center',
       };
     case 'right':
       return {
-        top: trigger.top + trigger.height / 2 - tooltip.height / 2 + window.scrollY,
-        left: trigger.right + OFFSET + window.scrollX,
+        top: trigger.top + trigger.height / 2 - tooltip.height / 2,
+        left: trigger.right + OFFSET,
         transformOrigin: 'left center',
       };
   }
@@ -115,23 +117,11 @@ export function Tooltip({
     />
   );
 
-  const arrowClasses: Record<TooltipPosition, { outer: string; inner: string }> = {
-    top: {
-      outer: 'bottom-[-6px] left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-b-transparent border-t-gray-900',
-      inner: 'bottom-[-8px] left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-b-transparent border-t-gray-900',
-    },
-    bottom: {
-      outer: 'top-[-6px] left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-t-transparent border-b-gray-900',
-      inner: 'top-[-5px] left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-t-transparent border-b-gray-900',
-    },
-    left: {
-      outer: 'right-[-6px] top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-r-transparent border-l-gray-900',
-      inner: 'right-[-15px] top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-r-transparent border-l-gray-900',
-    },
-    right: {
-      outer: 'left-[-6px] top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-l-transparent border-r-gray-900',
-      inner: 'left-[-5px] top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-l-transparent border-r-gray-900',
-    },
+  const arrowClasses: Record<TooltipPosition, string> = {
+    top:    'bottom-[-4px] left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-b-transparent border-t-gray-900',
+    bottom: 'top-[-4px]    left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-t-transparent border-b-gray-900',
+    left:   'right-[-4px]  top-1/2  -translate-y-1/2 border-t-transparent border-b-transparent border-r-transparent border-l-gray-900',
+    right:  'left-[-4px]   top-1/2  -translate-y-1/2 border-t-transparent border-b-transparent border-l-transparent border-r-gray-900',
   };
 
   return (
@@ -142,7 +132,7 @@ export function Tooltip({
           ref={tooltipRef}
           role="tooltip"
           style={{
-            position: 'absolute',
+            position: 'fixed',
             zIndex: 2147483647,
             top: coords ? coords.top : 0,
             left: coords ? coords.left : 0,
@@ -153,23 +143,12 @@ export function Tooltip({
         >
           <div
             className={[
-              'relative max-w-3xs rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white shadow-lg break-words',
+              'relative max-w-3xs rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white shadow-lg wrap-break-word',
               className,
             ].join(' ')}
           >
             {content}
-            <span
-              className={[
-                'absolute border-4',
-                arrowClasses[position].outer,
-              ].join(' ')}
-            />
-            <span
-              className={[
-                'absolute border-8',
-                arrowClasses[position].inner,
-              ].join(' ')}
-            />
+            <span className={['absolute border-4', arrowClasses[position]].join(' ')} />
           </div>
         </div>,
         document.body
