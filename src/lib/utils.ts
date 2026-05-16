@@ -228,42 +228,6 @@ type CalendarEvent = {
   icsUrl: string; // your API endpoint that returns the .ics file
 };
 
-// Tries to open a native app via a custom URL scheme, falling back to a web URL if
-// the app is not installed. When a native app opens, the browser loses focus —
-// detected via blur + visibilitychange. If neither fires within 1.5 s, the app
-// was not installed and we navigate the pre-opened tab to the web fallback.
-//
-// The fallback tab must be opened BEFORE the setTimeout — browsers block
-// window.open() in async callbacks because the user gesture context expires (~1 s).
-const tryProtocolWithFallback = (nativeUrl: string, fallbackUrl: string): void => {
-  let nativeAppOpened = false;
-  const onFocusLost = () => { nativeAppOpened = true; };
-
-  window.addEventListener("blur", onFocusLost);
-  document.addEventListener("visibilitychange", onFocusLost);
-
-  // Open a blank tab now, while still inside the user gesture.
-  const fallbackWin = window.open("about:blank", "_blank");
-
-  const link = document.createElement("a");
-  link.href = nativeUrl;
-  link.style.display = "none";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-
-  setTimeout(() => {
-    window.removeEventListener("blur", onFocusLost);
-    document.removeEventListener("visibilitychange", onFocusLost);
-    if (!nativeAppOpened) {
-      // App not installed — navigate the pre-opened tab to Outlook web.
-      if (fallbackWin) fallbackWin.location.href = fallbackUrl;
-    } else {
-      // App opened — close the unnecessary blank tab.
-      fallbackWin?.close();
-    }
-  }, 1500);
-};
 
 // formatForGoogleCalendar produces compact ISO ("20260517T123000Z" — no separators).
 // Outlook requires standard ISO ("2026-05-17T12:30:00Z") to parse correctly.
@@ -288,17 +252,12 @@ export const addToOutlookCalendar = (event: CalendarEvent): void => {
   });
   const nativeUrl = `ms-outlook://events/new?${nativeParams.toString().replace(/\+/g, "%20")}`;
 
-  // /deeplink/compose is the current working format; the older /action/compose?rru=addevent is deprecated.
-  const webParams = new URLSearchParams({
-    startdt: start,
-    enddt: end,
-    subject: event.title,
-    location: event.location ?? "",
-    body: event.description ?? "",
-  });
-  const webUrl = `https://outlook.office.com/calendar/0/deeplink/compose?${webParams}`;
-
-  tryProtocolWithFallback(nativeUrl, webUrl);
+  const link = document.createElement("a");
+  link.href = nativeUrl;
+  link.style.display = "none";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };
 
 export const addToCalendar = (event: CalendarEvent): void => {
