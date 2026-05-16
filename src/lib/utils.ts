@@ -228,30 +228,61 @@ type CalendarEvent = {
   icsUrl: string; // your API endpoint that returns the .ics file
 };
 
+// Attempts to open a custom protocol (e.g. ms-outlook://, webcal://) and falls back
+// to a web URL if the native app is not installed. Detection works by listening for
+// window blur / visibilitychange — both fire when the OS switches to the native app.
+const tryProtocolWithFallback = (nativeUrl: string, fallbackUrl: string): void => {
+  let nativeAppOpened = false;
+  const onFocusLost = () => { nativeAppOpened = true; };
+
+  window.addEventListener("blur", onFocusLost);
+  document.addEventListener("visibilitychange", onFocusLost);
+
+  const link = document.createElement("a");
+  link.href = nativeUrl;
+  link.style.display = "none";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  setTimeout(() => {
+    window.removeEventListener("blur", onFocusLost);
+    document.removeEventListener("visibilitychange", onFocusLost);
+    if (!nativeAppOpened) {
+      window.open(fallbackUrl, "_blank", "noopener,noreferrer");
+    }
+  }, 1500);
+};
+
 export const addToOutlookCalendar = (event: CalendarEvent): void => {
-  const params = new URLSearchParams({
-    rru: "addevent",
+  const sharedParams = {
+    subject: event.title,
     startdt: event.start,
     enddt: event.end,
-    subject: event.title,
     location: event.location ?? "",
     body: event.description ?? "",
-  });
+  };
 
-  const url = `https://outlook.office.com/calendar/action/compose?${params}`;
-  window.open(url, "_blank", "noopener,noreferrer");
+  const nativeUrl = `ms-outlook://events/newevent?${new URLSearchParams(sharedParams)}`;
+  const webUrl = `https://outlook.office.com/calendar/action/compose?${new URLSearchParams({
+    rru: "addevent",
+    ...sharedParams,
+  })}`;
+
+  tryProtocolWithFallback(nativeUrl, webUrl);
 };
 
 export const addToCalendar = (event: CalendarEvent): void => {
-  // const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
+  const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
 
-  // if (isMobile) {
-    // .ics URL directly — iOS/Android intercept and open native calendar
-  //   window.location.href = event.icsUrl;
-  // } else {
-    // Desktop — Outlook Web compose (no app install needed)
+  if (isMobile) {
+    // webcal:// tells iOS/Android to open the ICS with the native calendar app.
+    // Falls back to direct ICS navigation if no handler is registered.
+    const webcalUrl = event.icsUrl.replace(/^https?:\/\//, "webcal://");
+    tryProtocolWithFallback(webcalUrl, event.icsUrl);
+  } else {
     addToOutlookCalendar(event);
-  // }
+  }
 };
 
 export const downloadICSFromUrl = async (icsUrl: string, title: string): Promise<void> => {
