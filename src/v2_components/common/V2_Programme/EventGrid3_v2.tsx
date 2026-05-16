@@ -2,7 +2,7 @@ import EventModal from "@/components/common/Programme/EventModal";
 import { cn, getContrastTextColor } from "@/lib/utils";
 import { useMemo, useState } from "react";
 import { color } from "./EventGrid2_v2";
-import { Tooltip } from "@/v2_components/global/Tooltip";
+
 
 /* ================= CONFIGURATION ================= */
 const PX_PER_MIN = 1.6; // Vertical scale (1 hour = 120px)
@@ -391,7 +391,6 @@ function DayColumn({
                 left: isFull ? `0px` : `calc(${leftOffset}% + ${GAP}px)`,
               }}
             >
-              <Tooltip content={Title} position="top">
               <div className="event-inner p-1 w-full h-full min-w-0 flex items-center justify-center">
                 <div
                   className={cn(
@@ -412,7 +411,6 @@ function DayColumn({
                   {Title}
                 </div>
               </div>
-              </Tooltip>
             </div>
           );
         })}
