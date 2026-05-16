@@ -444,6 +444,7 @@ const V2_Venue_page = () => {
               </div>
               <SingleSelect
                 onChange={(e) => {
+                  if (!e) return;
                   const STR = e?.split("__");
                   dispatch(setSelectedNode(null));
                   dispatch(setSelectedFloor(null));
