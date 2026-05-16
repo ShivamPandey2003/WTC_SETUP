@@ -231,13 +231,19 @@ type CalendarEvent = {
 // Tries to open a native app via a custom URL scheme, falling back to a web URL if
 // the app is not installed. When a native app opens, the browser loses focus —
 // detected via blur + visibilitychange. If neither fires within 1.5 s, the app
-// was not installed and we open the web fallback instead.
+// was not installed and we navigate the pre-opened tab to the web fallback.
+//
+// The fallback tab must be opened BEFORE the setTimeout — browsers block
+// window.open() in async callbacks because the user gesture context expires (~1 s).
 const tryProtocolWithFallback = (nativeUrl: string, fallbackUrl: string): void => {
   let nativeAppOpened = false;
   const onFocusLost = () => { nativeAppOpened = true; };
 
   window.addEventListener("blur", onFocusLost);
   document.addEventListener("visibilitychange", onFocusLost);
+
+  // Open a blank tab now, while still inside the user gesture.
+  const fallbackWin = window.open("about:blank", "_blank");
 
   const link = document.createElement("a");
   link.href = nativeUrl;
@@ -250,7 +256,11 @@ const tryProtocolWithFallback = (nativeUrl: string, fallbackUrl: string): void =
     window.removeEventListener("blur", onFocusLost);
     document.removeEventListener("visibilitychange", onFocusLost);
     if (!nativeAppOpened) {
-      window.open(fallbackUrl, "_blank", "noopener,noreferrer");
+      // App not installed — navigate the pre-opened tab to Outlook web.
+      if (fallbackWin) fallbackWin.location.href = fallbackUrl;
+    } else {
+      // App opened — close the unnecessary blank tab.
+      fallbackWin?.close();
     }
   }, 1500);
 };
