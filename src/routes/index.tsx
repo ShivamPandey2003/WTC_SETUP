@@ -18,6 +18,8 @@ import V2_Speakers_page from "@/v2_pages/V2_Speakers.page";
 import V2_exhibitors_page from "@/v2_pages/V2_exhibitors.page";
 import V2_Venue_page from "@/v2_pages/V2_Venue.page";
 import V2_Programme_page from "@/v2_pages/V2_Programme.page";
+import V2_ProgrammeSchedule_page from "@/v2_pages/V2_ProgrammeSchedule.page";
+import V2_ProgrammeTracks_page from "@/v2_pages/V2_ProgrammeTracks.page";
 import V2_VenueDesign_page from "@/v2_pages/V2_VenueDesign.page";
 import V2_UserProfile_page from "@/v2_pages/V2_UserProfile.page";
 import AttachmentPdf from "@/v2_pages/AttachmentPdf";
@@ -51,6 +53,36 @@ const Router = createBrowserRouter(
               }
             >
               <V2_Programme_page />
+            </ErrorBoundary>
+          ),
+        },
+        {
+          path: "programme-schedule",
+          element: (
+            <ErrorBoundary
+              fallback={
+                <ErrorDisplay
+                  title="Something went wrong"
+                  message="Oops!, Something went wrong. please wait for a while"
+                />
+              }
+            >
+              <V2_ProgrammeSchedule_page />
+            </ErrorBoundary>
+          ),
+        },
+        {
+          path: "programme-tracks",
+          element: (
+            <ErrorBoundary
+              fallback={
+                <ErrorDisplay
+                  title="Something went wrong"
+                  message="Oops!, Something went wrong. please wait for a while"
+                />
+              }
+            >
+              <V2_ProgrammeTracks_page />
             </ErrorBoundary>
           ),
         },
