@@ -1,7 +1,10 @@
 import axios from "axios";
 import { toast } from "sonner";
 
-const platform_url = import.meta.env.VITE_REACT_APP_API_URL;
+// In dev, go through the Vite proxy (see vite.config.ts); builds call the API directly
+export const platform_url = import.meta.env.DEV
+  ? "/api/"
+  : import.meta.env.VITE_REACT_APP_API_URL;
 
 type ApiMethod = "get" | "post" | "put" | "delete";
 

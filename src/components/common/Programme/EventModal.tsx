@@ -35,8 +35,8 @@ import { PiMicrosoftOutlookLogoFill } from "react-icons/pi";
 import { FaGoogle, FaYahoo } from "react-icons/fa";
 import { FaFile } from "react-icons/fa6";
 import SpeakerDetails from "@/v2_pages/SpeakerDetails";
+import { platform_url } from "@/services/apiService";
 
-const platform_url = import.meta.env.VITE_REACT_APP_API_URL;
 
 type ModalProps = {
   isOpen: boolean;

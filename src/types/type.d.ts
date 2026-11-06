@@ -782,3 +782,51 @@ declare type BulkImageResponse = {
   header: ResponseHeader;
   response: Record<string, FailedNewsEntry[]>;
 }
+
+// --- Programme by date (program/dates, program/types, program/hybrid-calendar-by-date) ---
+
+declare type ProgrammeDatesResponse = {
+  header: ResponseHeader;
+  response: { dates: string[] };
+};
+
+declare type ProgrammeTypesCategory = {
+  id: string;
+  name: string;
+  color: string;
+  type: number;
+  allow_image: boolean;
+};
+
+declare type ProgrammeTypesResponse = {
+  header: ResponseHeader;
+  response: { types: string[]; categories: ProgrammeTypesCategory[] };
+};
+
+declare type ProgrammeByDateSession = {
+  id: string;
+  is_merged: boolean;
+  type: string;
+  title: string;
+  location: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  speakers: {
+    speaker_id: string;
+    fullname: string;
+    designation: string;
+    company: string;
+    profile_img: string;
+  }[];
+  categories: Record<string, { name: string; color: string }>;
+  description: string;
+  bg_image: string;
+  attachments: Programme["attachments"] | null;
+  space_type: string;
+};
+
+declare type ProgrammeByDateResponse = {
+  header: ResponseHeader;
+  response: ProgrammeByDateSession[];
+};
