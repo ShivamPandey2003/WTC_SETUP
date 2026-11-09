@@ -3,12 +3,12 @@ import { emailSchema, type EmailFormValues } from "@/Schema/authSchema";
 import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import ReCAPTCHA from "react-google-recaptcha";
+// import ReCAPTCHA from "react-google-recaptcha";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
 import { apiRequest } from "@/services/apiService";
 
-const ApiRecaptcha = import.meta.env.VITE_REACT_RECAPTCHA;
+// const ApiRecaptcha = import.meta.env.VITE_REACT_RECAPTCHA;
 
 type FormProp = {
   apiCall: ({ email }: { email: string }) => void;
@@ -58,7 +58,7 @@ const LoginForm: React.FC<FormProp> = ({ apiCall, isPending }) => {
     <form
       className="my-8 flex flex-col"
       onSubmit={handleEmailSubmit((data) => {
-        apiCall(data)
+        apiCall(data);
       })}
       noValidate
     >
@@ -81,16 +81,20 @@ const LoginForm: React.FC<FormProp> = ({ apiCall, isPending }) => {
           </p>
         )}
       </div>
-      <ReCAPTCHA
+      {/*<ReCAPTCHA
         sitekey={ApiRecaptcha}
         onChange={onChange}
         onExpired={() => {
           setNotARobot(false);
         }}
         className="self-center mb-3"
-      />
+      />*/}
       <div className="flex justify-center">
-        <Button type="submit" disabled={isPending || !notARobot}>
+        <Button
+          type="submit"
+          // disabled={isPending || !notARobot}
+          disabled={isPending}
+        >
           {isPending ? "Sending OTP..." : "Continue"}
         </Button>
       </div>

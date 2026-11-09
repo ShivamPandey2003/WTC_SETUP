@@ -19,13 +19,15 @@ import {
   Sheet,
 } from "../V2_ProgrammeShared/ProgrammeUI";
 import { dayParts, toMinutes } from "../V2_ProgrammeShared/programmeUtils";
-import { useFavourites } from "../V2_ProgrammeShared/useFavourites";
+import type { Favourites } from "../V2_ProgrammeShared/useFavourites";
+import { useToggleAgenda } from "@/api/global_api/programme_agenda_api";
 import { useFillViewport } from "../V2_ProgrammeShared/useFillViewport";
 import { useNow } from "../V2_ProgrammeShared/useNow";
 import { useQueryParams } from "../V2_ProgrammeShared/useQueryParams";
 import AgendaDetail from "./AgendaDetail";
 import AgendaFilterPanel from "./AgendaFilterPanel";
 import AgendaList from "./AgendaList";
+import LoginPromptModal from "./LoginPromptModal";
 import { AgendaDetailSkeleton, AgendaFilterSkeleton, AgendaListSkeleton } from "./AgendaSkeleton";
 import { activeCount, applyFilters, scrollWithin, slotId, type AgendaFilters } from "./agendaFilters";
 import { useAgendaData } from "./useAgendaData";
@@ -153,7 +155,6 @@ const DayPicker = ({
  * date strip, compact timeline and bottom sheets on mobile.
  */
 const AgendaView = () => {
-  const favourites = useFavourites();
   const { today, minutes: nowMin } = useNow();
   const q = useQueryParams();
   const noRail = useIsMobile(1060); // matches the `md` breakpoint
@@ -162,9 +163,29 @@ const AgendaView = () => {
   const listRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
+
+  // "My agenda" needs a login: the API answers 401 without a token, and apiRequest treats
+  // any 401 as an expired session (clears storage, reloads the app). So never request it
+  // while logged out; ask the user to log in instead.
+  const isLoggedIn = Boolean(localStorage.getItem("token"));
+  const wantsMine = q.get("tab") === "mine";
+  const changeTab = (t: "all" | "mine") => {
+    if (t === "mine" && !isLoggedIn) {
+      setLoginOpen(true);
+      return;
+    }
+    q.set({ tab: t === "all" ? null : t });
+  };
+  // A shared ?tab=mine link opened while logged out
+  useEffect(() => {
+    if (!wantsMine || isLoggedIn) return;
+    setLoginOpen(true);
+    q.set({ tab: null });
+  }, [wantsMine, isLoggedIn]);
 
   // State in the URL: ?day=&tab=mine&q=&track=&stage=&room=&session=
-  const tab = q.get("tab") === "mine" ? "mine" : "all";
+  const tab = wantsMine && isLoggedIn ? "mine" : "all";
   const search = q.get("q") ?? "";
   const filters: AgendaFilters = {
     tracks: q.getList("track"),
@@ -179,11 +200,33 @@ const AgendaView = () => {
     dayParam: q.get("day"),
     today,
     search,
-    favouriteIds: favourites.favourites,
+    tab,
+    isLoggedIn,
   });
+
+  // Agenda membership comes from the server (`is_in_agenda`); a heart click toggles it
+  // via program/agenda/toggle and refetches the day. Logged out: ask to log in.
+  const toggleAgenda = useToggleAgenda();
+  const inAgenda = new Set([
+    ...data.saved.map((s) => s.id),
+    ...data.matched.filter((s) => s.is_in_agenda).map((s) => s.id),
+  ]);
+  const favourites: Favourites = {
+    favourites: data.saved.map((s) => s.id),
+    isFavourite: (id) => inAgenda.has(id),
+    toggleFavourite: (id) => {
+      if (!isLoggedIn) {
+        setLoginOpen(true);
+        return;
+      }
+      toggleAgenda.mutate(id);
+    },
+  };
+
   const day = data.day ?? "";
   const daySessions = data.daySessions;
-  const base = data.matched.filter((s) => tab === "all" || favourites.isFavourite(s.id));
+  // The server already narrows "My agenda" (view_type: my-agenda)
+  const base = data.matched;
   const visible = applyFilters(base, filters);
   const selected = selectedId
     ? (daySessions.find((s) => s.id === selectedId) ?? data.saved.find((s) => s.id === selectedId))
@@ -267,7 +310,7 @@ const AgendaView = () => {
   const tabSwitch = (
     <Segmented
       value={tab}
-      onChange={(t) => q.set({ tab: t === "all" ? null : t })}
+      onChange={changeTab}
       className="p-0.5"
       options={[
         { value: "all", label: "All" },
@@ -467,6 +510,8 @@ const AgendaView = () => {
         </div>
       </div>
 
+      <LoginPromptModal open={loginOpen} onClose={() => setLoginOpen(false)} />
+
       {/* Mobile: floating All / My agenda switch */}
       {noRail && (
         <div
@@ -483,7 +528,7 @@ const AgendaView = () => {
                 role="tab"
                 aria-selected={active}
                 aria-label={t === "all" ? "All sessions" : `My agenda (${favourites.favourites.length})`}
-                onClick={() => q.set({ tab: t === "all" ? null : t })}
+                onClick={() => changeTab(t)}
                 className={cn(
                   "w-11 h-11 rounded-lg flex flex-col items-center justify-center text-xs font-semibold transition-colors",
                   active ? "bg-primary text-white" : "text-gray-600 hover:bg-gray-100",

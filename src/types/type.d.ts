@@ -383,6 +383,8 @@ declare type Programme = {
   bg_image: string;
   venue: Shape & { designId: string; design_label: string };
   space_type:string;
+  /** Agenda view only: in the logged-in user's agenda. */
+  is_in_agenda?: boolean;
 };
 
 // declare type Programme = {
@@ -824,6 +826,8 @@ declare type ProgrammeByDateSession = {
   bg_image: string;
   attachments: Programme["attachments"] | null;
   space_type: string;
+  /** In the logged-in user's agenda (program/agenda/toggle). */
+  is_in_agenda?: boolean;
 };
 
 declare type ProgrammeByDateResponse = {
