@@ -216,6 +216,8 @@ const AgendaView = () => {
     isFavourite: (id) => inAgenda.has(id),
     toggleFavourite: (id) => {
       if (!isLoggedIn) {
+        // The session bottom sheet sits above the modal, so close it first
+        if (detailAsSheet && selectedId) q.set({ session: null });
         setLoginOpen(true);
         return;
       }
