@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/Button";
 import { emailSchema, type EmailFormValues } from "@/Schema/authSchema";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, 
+  // useState 
+} from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 // import ReCAPTCHA from "react-google-recaptcha";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
-import { apiRequest } from "@/services/apiService";
+// import { apiRequest } from "@/services/apiService";
 
 // const ApiRecaptcha = import.meta.env.VITE_REACT_RECAPTCHA;
 
@@ -16,7 +18,7 @@ type FormProp = {
 };
 
 const LoginForm: React.FC<FormProp> = ({ apiCall, isPending }) => {
-  const [notARobot, setNotARobot] = useState<boolean>(false);
+  // const [notARobot, setNotARobot] = useState<boolean>(false);
   const { email } = useSelector((state: RootState) => state.ExtraSlice);
   const {
     register: registerEmail,
@@ -36,23 +38,23 @@ const LoginForm: React.FC<FormProp> = ({ apiCall, isPending }) => {
     }
   }, [email]);
 
-  async function onChange(token: string | null) {
-    try {
-      if (!token) return;
+  // async function onChange(token: string | null) {
+  //   try {
+  //     if (!token) return;
 
-      const response = await apiRequest("post", "/verify-captcha", {
-        captcha_token: token,
-      });
+  //     const response = await apiRequest("post", "/verify-captcha", {
+  //       captcha_token: token,
+  //     });
 
-      if (response.response.response.success) {
-        setNotARobot(true);
-      } else {
-        setNotARobot(false);
-      }
-    } catch (error) {
-      setNotARobot(false);
-    }
-  }
+  //     if (response.response.response.success) {
+  //       setNotARobot(true);
+  //     } else {
+  //       setNotARobot(false);
+  //     }
+  //   } catch (error) {
+  //     setNotARobot(false);
+  //   }
+  // }
 
   return (
     <form
